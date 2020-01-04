@@ -1,3 +1,28 @@
+#### st-aes
+
+Fork of the st terminal. (suckless.org)
+
+Stripped of unicode support.
+Unicode encoding needs 4 Bytes per char within st,
+and I nearly never need unicode chars in the terminal.
+
+So, in my quest to slim down all programs I'm using,
+I'm about to strip unicode and utf8 support.
+
+Yet I managed to get a memory footprint of around 8MB. 
+(>20MB before)
+I'm always keeping more than 10 terminals open,
+so that sums up.
+
+The smaller memory footprint also pays out in a more responsive
+system overall, st's printing speed gets far higher as well.
+
+(Close to urxvt now).
+
+
+
+
+
 st - simple terminal
 --------------------
 st is a simple terminal emulator for X which sucks less.
