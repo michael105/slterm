@@ -23,8 +23,13 @@ The smaller memory footprint also pays out in a more responsive
 system overall, improving st's speed as well. (3x here, and close to urxvt now)
 
 It's however a crude hack, much (unused) utf8 supporting code is left yet.
+Next step might be stripping of rgb colors. 
 
-(misc)
+256 colors might be enough for everyone.
+(Am I confusing something..?..)
+
+
+(misc 2020)
 
 
 
