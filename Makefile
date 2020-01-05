@@ -10,13 +10,13 @@ OBJ = $(SRC:.c=.o)
 all: options st
 
 options:
-	@echo st build options:
-	@echo "CFLAGS  = $(STCFLAGS)"
-	@echo "LDFLAGS = $(STLDFLAGS)"
-	@echo "CC      = $(CC)"
+#	@echo st build options:
+#	@echo "CFLAGS  = $(STCFLAGS)"
+#	@echo "LDFLAGS = $(STLDFLAGS)"
+#	@echo "CC      = $(CC)"
 
-config.h:
-	cp config.def.h config.h
+#config.h: # that's .. utterly meaningless ??
+#	cp config.def.h config.h
 
 .c.o:
 	$(CC) $(STCFLAGS) -c $<
