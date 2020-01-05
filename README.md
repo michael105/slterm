@@ -36,6 +36,17 @@ Which, again, count's with 2 integers ( 8 Bytes ) per char.
 
 ---- snip ----
 
+#### roadmap
+
+- strip unicode (done partially)
+- strip rgb colors
+- gain world domination
+- 
+xxxx
+---- snip snip -----
+
+
+
 st - simple terminal
 --------------------
 st is a simple terminal emulator for X which sucks less.
