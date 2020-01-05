@@ -31,7 +31,16 @@ I'm always keeping more than 10 terminals open,
 so that sums up.
 
 The smaller memory footprint also pays out in a more responsive
-system overall, improving st's speed as well. (3x here, and close to urxvt now)
+system overall, improving st's speed as well. (3x here)
+I checked several emulators, closest in terms of performance would be 
+urxvt. However, testing and comparing more, the speed of urxvt is given
+by a (neat) trick. When dumping many chars into the terminal, eg. with cat,
+the screen doesn't show every single character. It's more sort of an animation,
+showing only enough chars to give the perception of a continous scrolling
+terminal. When confronted with, e.g., a `dd if=data bs=1000`;
+this cheat doesn't work anymore, dumping the data takes (depending on the size, etc)
+up to 20times longer. 
+So st seems to be the fastest terminal emulator available. 
 
 It's however a crude hack, much (unused) utf8 supporting code is left yet.
 Hopefully the compiler does it's job eliminating unneeded potions.
@@ -43,10 +52,27 @@ Which, again, count's with 2 integers ( 8 Bytes ) per char.
 (Am I confusing something..?..)
 
 
----
+--- Links
+
 About utf8 (Know your enemy.. although I have nothing against utf8,
 it's just useless for my main work at the terminal.)
-[http://doc.cat-v.org/bell_labs/utf-8_history]
+http://doc.cat-v.org/bell_labs/utf-8_history
+
+A comparison on latency, speed and memory consumption of
+different terminal emulators. st and urxvt standing out.
+So my feelings on st being suitable as base for a slimmed down terminal emulator
+have been right.
+https://anarc.at/blog/2018-05-04-terminal-emulators-2/
+
+Latency. https://danluu.com/term-latency/
+
+Latency, comparing old (1980) and nowadays systems.
+That's. Bad. If nothing changes, in ten years we will have a latency
+in the magnitude of seconds. When the exponential growth would be continue.
+https://danluu.com/input-lag/
+
+
+
 
 
 (misc 2020, misc.myer@zoho.com )
