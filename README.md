@@ -40,7 +40,7 @@ Me, I'm going to strip of the rgb color support.
 Which, again, count's with 2 integers ( 8 Bytes ) per char.
 
 256 colors might be enough for everyone.
-*(Am I confusing something..?..)*
+(Am I confusing something..?..)
 
 
 (misc 2020, misc.myer@zoho.com )
