@@ -31,7 +31,10 @@ I'm always keeping more than 10 terminals open,
 so that sums up.
 
 The smaller memory footprint also pays out in a more responsive
-system overall, improving st's speed as well. (3x here)
+system overall, improving st's speed as well. (3x here) Ok.
+I tried hard, to get "benchmarks", the removed unicode support
+doesn't profit of. Still, this shows up with a gain of 2x.
+
 I checked several emulators, closest in terms of performance would be 
 urxvt. However, testing and comparing more, the speed of urxvt is given
 by a (neat) trick. When dumping many chars into the terminal, eg. with cat,
@@ -41,6 +44,9 @@ terminal. When confronted with, e.g., a `dd if=data bs=1000`;
 this cheat doesn't work anymore, dumping the data takes (depending on the size, etc)
 up to 20times longer. 
 So st seems to be the fastest terminal emulator available. 
+
+
+
 
 It's however a crude hack, much (unused) utf8 supporting code is left yet.
 Hopefully the compiler does it's job eliminating unneeded potions.
@@ -68,14 +74,33 @@ Latency. https://danluu.com/term-latency/
 
 Latency, comparing old (1980) and nowadays systems.
 That's. Bad. If nothing changes, in ten years we will have a latency
-in the magnitude of seconds. When the exponential growth would be continue.
+in the magnitude of seconds. When the growth would continue.
 https://danluu.com/input-lag/
 
 
+A rant against some sort of scientists, btw.
+So, someone is sure, and "prooves" this 
+by a study, humans cannot perceipt a latency &lower 200ms,
+since that's our reaction time. 
+
+That's. Bullshit. 
+One can think, what this scientist did believe.
+But - just ask an musician. A system, used for plaing live e.g. synthesizer,
+is really hard to play with a latency of 200ms. 
+
+I'd say, it's going to be hard to get a medium timing with anything bigger than 40ms.
+
+The latency is feelable at, say, 5ms. at least. I did never really check,
+since even 20ms are hard to get with nowadays systems.
+But you can tell, in each case, the difference to a "real" instrument. 
+Which also doe's have some latency. But, amongst others, this latency is steady.
+
+Oh. There's another example, showing this scientist being wrong. 
+It's our capability to perceive the location of an audible source.
+What needs a perception and combination of both ears in the scale of microseconds.
+Maybe even nanoseconds. But 200ms is. Painful slow.
 
 
-
-(misc 2020, misc.myer@zoho.com )
 
 ---- snip ----
 
@@ -90,6 +115,11 @@ https://danluu.com/input-lag/
 
 xxxx
 ---- snip snip -----
+
+(misc 2020, misc.myer@zoho.com )
+
+
+====================
 
 
 
