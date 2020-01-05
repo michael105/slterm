@@ -2266,16 +2266,16 @@ tputc(Rune u)
 	Glyph *gp;
 
 	control = ISCONTROL(u);
-	if (!IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
+	//if (!IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
 		c[0] = u;
 		width = len = 1;
-	} else {
+	/*} else {
 		len = utf8encode(u, c);
 		if (!control && (width = wcwidth(u)) == -1) {
-			//memcpy(c, "\357\277\275", 4); /* UTF_INVALID */
+			//memcpy(c, "\357\277\275", 4); // UTF_INVALID 
 			width = 1;
 		}
-	}
+	}*/
 
 	if (IS_SET(MODE_PRINT))
 		tprinter(c, len);

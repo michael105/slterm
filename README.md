@@ -34,8 +34,7 @@ Which, again, count's with 2 integers ( 8 Bytes ) per char.
 
 (misc 2020)
 
-
-
+---- snip ----
 
 st - simple terminal
 --------------------
