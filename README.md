@@ -43,6 +43,12 @@ Which, again, count's with 2 integers ( 8 Bytes ) per char.
 (Am I confusing something..?..)
 
 
+---
+About utf8 (Know your enemy.. although I have nothing against utf8,
+it's just useless for my main work at the terminal.)
+[http://doc.cat-v.org/bell_labs/utf-8_history]
+
+
 (misc 2020, misc.myer@zoho.com )
 
 ---- snip ----
