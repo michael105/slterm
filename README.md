@@ -9,7 +9,7 @@ Unicode encoding needs 4 Bytes per char within st,
 and I nearly never need unicode chars in the terminal.
 
 >(I'd even propose, unicode isn't needed for system administration/
-development. You are going to get into all sort of troubles,
+development at all. You are going to get into all sort of troubles,
 when, e.g., you'd name files and directories in the root fs
 using unicode characters. Furthermore, let's assume, there are, say,
 100.000 instances of st running. Now, on the world. Multiply this
@@ -43,7 +43,7 @@ Which, again, count's with 2 integers ( 8 Bytes ) per char.
 (Am I confusing something..?..)
 
 
-(misc 2020)
+(misc 2020, misc.myer@zoho.com )
 
 ---- snip ----
 
