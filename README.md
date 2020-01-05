@@ -7,7 +7,8 @@ Stripped of unicode support.
 
 Unicode encoding needs 4 Bytes per char within st,
 and I nearly never need unicode chars in the terminal.
-(I'd even propose, unicode isn't needed for system administration/
+
+>(I'd even propose, unicode isn't needed for system administration/
 development. You are going to get into all sort of troubles,
 when, e.g., you'd name files and directories in the root fs
 using unicode characters. Furthermore, let's assume, there are, say,
