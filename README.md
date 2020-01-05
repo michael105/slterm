@@ -3,12 +3,19 @@
 Fork of the st terminal. (suckless.org)
 
 Stripped of unicode support.
+
+
 Unicode encoding needs 4 Bytes per char within st,
 and I nearly never need unicode chars in the terminal.
 (I'd even propose, unicode isn't needed for system administration/
 development. You are going to get into all sort of troubles,
-when, e.g. you're naming files and directories in the root fs
-with unicode characters..)
+when, e.g., you'd name files and directories in the root fs
+using unicode characters. Furthermore, let's assume, there are, say,
+100.000 instances of st running. Now, on the world. Multiply this
+with, umm, 10 MB, multiply with cpu cycles of 100.000 (swapping, and so on),
+and . It's not theorethical anymore. Ok. The calculation might be a little bit wrong,
+admittedly, you shouldn't multiply memory and cpu cycles.
+Anyways, my point is valid.)
 
 
 So, in my quest to slim down all programs I'm using,
@@ -23,7 +30,7 @@ The smaller memory footprint also pays out in a more responsive
 system overall, improving st's speed as well. (3x here, and close to urxvt now)
 
 It's however a crude hack, much (unused) utf8 supporting code is left yet.
-Hopefully the compiles does it's job eliminating unneeded potions.
+Hopefully the compiler does it's job eliminating unneeded potions.
 
 Me, I'm going to strip of the rgb color support. 
 Which, again, count's with 2 integers ( 8 Bytes ) per char.
@@ -40,10 +47,10 @@ Which, again, count's with 2 integers ( 8 Bytes ) per char.
 
 - strip unicode (done partially)
 - strip rgb colors
+- add patches
 - gain earth domination
 - quench vogones
 - stifle this laughter
--
 
 xxxx
 ---- snip snip -----
