@@ -1,0 +1,39 @@
+.. 2020/01
+
+scrolling - is this the job of the terminal emulator,
+or for a separate tool?
+
+not sure. 
+Ok. I try to break this down - 
+it's also the question, whether one likes to have (graphical) scrollbars.
+
+.. 2020/01/06
+
+Patched the existing scrollback patch in.
+I did find a terminal scroller, and somehow this would be nicer.
+This would be more consistent, despite what terminal or -emulation
+is used. But this thing slowed down st quite a bit.
+
+Ok. At the moment, the ripped unicode and rgb support
+really show some effect.
+But the scrollback patch somehow is quite memory consuming.
+
+Possibly I should either come back to the terminal scroller,
+and see, whether this thing could be optimized for better speed.
+Or, the scrollback buffer within st is, well, not exactly 
+well dessigned. It's a static buffer,
+even the variable is made globally static.
+so. For me, always keeping at least 10 terminals open,
+that's not so good.
+Have to look at it.
+
+For now I'll upload my changes, again.
+And it seems, like I should do a real fork of st.
+
+I already changed quite a bit, and merging all my changes
+might be too much work.
+We'll see.
+
+..
+
+
