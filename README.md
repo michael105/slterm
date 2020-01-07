@@ -116,12 +116,12 @@ Saving 6 Bytes per glyph.
 ;) 256 colors might be enough for everyone.
 (Am I confusing something..?..)
 
-![](doc/colors.png?raw=true)
+![](images/colors.png?raw=true)
 
 "256" colors (with attributes faint, normal, bold) and the ascii table without control characters as displayed by st-asc.<br>
 The scripts for creating the output are within ./test
 
-![](doc/ascii.png)
+![](images/ascii.png)
 
 
 ### Links
