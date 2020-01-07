@@ -25,14 +25,12 @@ Applied Patches:
 
 
 
-<br>
 
 ### Requirements
 
 - Xlib headers
 - Xft headers
-	
-<br>
+
 
 ### Install
 
@@ -44,8 +42,6 @@ Edit config.h
 make
 make install
 ```
-
-<br>
 
 ### About
 
@@ -130,8 +126,6 @@ The scripts for creating the output are within ./test
 ![](doc/ascii.png)
 
 
-<br>
-
 ### Links
 
 About utf8 
@@ -149,7 +143,6 @@ Latency, comparing old (1980) and nowadays systems.
 https://danluu.com/input-lag/
 
 
-<br>
 
 ---- snip ----
 
