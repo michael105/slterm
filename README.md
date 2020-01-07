@@ -14,9 +14,8 @@ Applied Patches:
 - scrollback-mouse
 - scrollback-mouse-increment
 - selectioncolors
-- xresources
-
-		added a commandline switch -x to enable reading the xresources,
+- xresources <br>
+		added a commandline switch -x to enable reading the xresources,<br>
 		and a compile time switch "XRESOURCES"
 
 
