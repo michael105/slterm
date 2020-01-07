@@ -1,5 +1,8 @@
 ### st-asc
 
+
+<img align="right" src="images/vt-102-1984.jpg"> 
+
 Fork of the st terminal. (suckless.org)
 
 Stripped of unicode support and rgb colors.
