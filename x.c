@@ -21,6 +21,10 @@ static char *argv0;
 #include "st.h"
 #include "win.h"
 
+//#define dbg(...) printf(__VA_ARGS__)
+#define dbg(...) {}
+
+
 /* types used in config.h */
 typedef struct {
 	uint mod;
@@ -1747,14 +1751,19 @@ kmap(KeySym k, uint state)
 	Key *kp;
 	int i;
 
+	//printf("Key: %d %c\n", k,k);
 	/* Check for mapped keys out of X11 function keys. */
-	for (i = 0; i < LEN(mappedkeys); i++) {
+	for (i = 0; i < LEN(mappedkeys); i++) { //? misc. 
+			// Better compare first with a bitfield, 
+			// by the or'ed mapped keys 
 		if (mappedkeys[i] == k)
 			break;
 	}
 	if (i == LEN(mappedkeys)) {
-		if ((k & 0xFFFF) < 0xFD00)
-			return NULL;
+		if ((k & 0xFFFF) < 0xFD00){ // No control/function/mod key
+				//printf ("Here\n");// 
+				return NULL;
+		}
 	}
 
 	for (kp = key; kp < key + LEN(key); kp++) {
@@ -1814,10 +1823,13 @@ kpress(XEvent *ev)
 		return;
 	}
 
+	dbg("Key2: %d %c, state:%x, mod1: %x, len %d\n", 
+					ksym, ksym, e->state, Mod1Mask, len);
 	/* 3. composed string from input method */
 	if (len == 0)
 		return;
 	if (len == 1 && e->state & Mod1Mask) {
+		dbg("K\n");
 		if (IS_SET(MODE_8BIT)) {
 			if (*buf < 0177) {
 				c = *buf | 0x80;
