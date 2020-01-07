@@ -33,6 +33,7 @@ Applied Patches:
 #### Install
 
 Edit Makefile
+
 Edit config.h
 
 ```
@@ -145,12 +146,13 @@ https://danluu.com/input-lag/
 
 #### roadmap
 
-- strip ~~unicode~~ (done partially)
+- strip ~~unicode~~ (done mostly)
 - ~~strip rgb colors~~
 - ~~add patches~~
 - gain earth domination
 - quench vogones
 - stifle laughter
+- stop being childish
 
 xxxx
 ---- SNIP -----
@@ -162,37 +164,13 @@ xxxx
 
 
 
-st - simple terminal
---------------------
-st is a simple terminal emulator for X which sucks less.
-
-
-Requirements
-------------
-In order to build st you need the Xlib header files.
-
-
-Installation
-------------
-Edit config.mk to match your local setup (st is installed into
-the /usr/local namespace by default).
-
-Afterwards enter the following command to build and install st (if
-necessary as root):
-
-    make clean install
-
-
-Running st
-----------
-If you did not install st with make clean install, you must compile
-the st terminfo entry with the following command:
-
-    tic -sx st.info
-
-See the man page for additional details.
-
 Credits
 -------
+
 Based on Aurélien APTEL <aurelien dot aptel at gmail dot com> bt source code.
+
+Fetched from the suckless git repo (suckless.org) on 2020/01/01.
+
+All authors of the several patches.
+
 
