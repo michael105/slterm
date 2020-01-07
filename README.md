@@ -42,6 +42,12 @@ make install
 
 #### About
 
+
+(A screenshot of i3 and 3 instances of st-asc)
+
+![screenshot](images/st-asc_with_i3.png)
+
+
 Unicode encoding needs 4 Bytes per char within st,
 and I nearly never need unicode chars in the terminal.
 
