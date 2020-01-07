@@ -97,7 +97,7 @@ Latency. https://danluu.com/term-latency/
 
 Latency, comparing old (1980) and nowadays systems.
 That's. Bad. If nothing changes, in ten years we will have a latency
-in the magnitude of seconds. When the growth would continue.
+in the magnitude of seconds. When the growth would be continuing.
 https://danluu.com/input-lag/
 
 
@@ -134,7 +134,7 @@ Maybe even nanoseconds. But 200ms is. Painful slow.
 - ~~add patches~~
 - gain earth domination
 - quench vogones
-- stifle this laughter
+- stifle laughter
 
 xxxx
 ---- snip snip -----

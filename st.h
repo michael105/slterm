@@ -110,7 +110,7 @@ void ttyhangup(void);
 int ttynew(char *, char *, char *, char **);
 size_t ttyread(void);
 void ttyresize(int, int);
-void ttywrite(const char *, size_t, int);
+void ttywrite(const unsigned char *, size_t, int);
 
 void resettitle(void);
 

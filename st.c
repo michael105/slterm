@@ -22,6 +22,10 @@
 #include "st.h"
 #include "win.h"
 
+
+//#define dbg(...) printf(__VA_ARGS__)
+#define dbg(...) {}
+
 #if   defined(__linux)
  #include <pty.h>
 #elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
@@ -168,7 +172,7 @@ typedef struct {
 static void execsh(char *, char **);
 static void stty(char **);
 static void sigchld(int);
-static void ttywriteraw(const char *, size_t);
+static void ttywriteraw(const unsigned char *, size_t);
 
 static void csidump(void);
 static void csihandle(void);
@@ -205,7 +209,7 @@ static void tsetdirt(int, int);
 static void tsetscroll(int, int);
 static void tswapscreen(void);
 static void tsetmode(int, int, int *, int);
-static int twrite(const char *, int, int);
+static int twrite(const unsigned char *, int, int);
 static void tfulldirt(void);
 static void tcontrolcode(uchar );
 static void tdectest(char );
@@ -841,6 +845,8 @@ ttyread(void)
 	if ((ret = read(cmdfd, buf+buflen, LEN(buf)-buflen)) < 0)
 		die("couldn't read from shell: %s\n", strerror(errno));
 	buflen += ret;
+	
+	dbg("ttyread, ret: %d, buflen: %d, buf[0] %c\n", ret, buflen, buf[0] );
 
 	written = twrite(buf, buflen, 0);
 	buflen -= written;
@@ -852,23 +858,30 @@ ttyread(void)
 }
 
 void
-ttywrite(const char *s, size_t n, int may_echo)
+ttywrite(const unsigned char *s, size_t n, int may_echo)
 {
-	const char *next;
+	const unsigned char *next;
 	Arg arg = (Arg) { .i = term.scr };
 
 	kscrolldown(&arg);
 
-	if (may_echo && IS_SET(MODE_ECHO))
+	dbg("ttywrite %d %x %c\n", n, s[0], s[0]);
+	if (may_echo && IS_SET(MODE_ECHO)){
+			dbg("t1\n");
 		twrite(s, n, 1);
+	}
 
 	if (!IS_SET(MODE_CRLF)) {
+			dbg("t2\n");
 		ttywriteraw(s, n);
 		return;
 	}
 
+	dbg("ttywrite2 %d %x %c\n", n, s[0], s[0]);
 	/* This is similar to how the kernel handles ONLCR for ttys */
 	while (n > 0) {
+
+	dbg("ttywrite3 %d %x %c\n", n, s[0], s[0]);
 		if (*s == '\r') {
 			next = s + 1;
 			ttywriteraw("\r\n", 2);
@@ -883,11 +896,13 @@ ttywrite(const char *s, size_t n, int may_echo)
 }
 
 void
-ttywriteraw(const char *s, size_t n)
+ttywriteraw(const unsigned char *s, size_t n)
 {
 	fd_set wfd, rfd;
 	ssize_t r;
 	size_t lim = 256;
+
+	dbg("ttywriteraw n: %d s[0]: %c\n", n, s[0] );
 
 	/*
 	 * Remember that we are using a pty, which might be a modem line.
@@ -901,6 +916,7 @@ ttywriteraw(const char *s, size_t n)
 		FD_SET(cmdfd, &wfd);
 		FD_SET(cmdfd, &rfd);
 
+		dbg("ttywriteraw while n: %d s[0]: %c\n", n, s[0] );
 		/* Check if we can write. */
 		if (pselect(cmdfd+1, &rfd, &wfd, NULL, NULL, NULL) < 0) {
 			if (errno == EINTR)
@@ -915,6 +931,7 @@ ttywriteraw(const char *s, size_t n)
 			 */
 			if ((r = write(cmdfd, s, (n < lim)? n : lim)) < 0)
 				goto write_error;
+			dbg("ttywriteraw  n: %d s[0]: %c lim: %d  r: %d\n", n, s[0], lim, r );
 			if (r < n) {
 				/*
 				 * We weren't able to write out everything.
@@ -2513,12 +2530,13 @@ check_control_code:
 }
 
 int
-twrite(const char *buf, int buflen, int show_ctrl)
+twrite(const unsigned char *buf, int buflen, int show_ctrl)
 {
 	int charsize;
 	Rune u;
 	int n;
 
+	dbg("twrite0 %d %c  %d\n",buflen,buf[0],show_ctrl);
 	for (n = 0; n < buflen; n += charsize) {
 		/*if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
 			// process a complete utf8 char 
@@ -2529,7 +2547,9 @@ twrite(const char *buf, int buflen, int show_ctrl)
 			u = buf[n] & 0xFF;
 			charsize = 1;
 		//}
+		dbg("twrite1 %d %c\n",u,u);
 		if (show_ctrl && ISCONTROL(u)) {
+		dbg("twrite %d %c\n",u,u);
 			if (u & 0x80) {
 				u &= 0x7f;
 				tputc('^');
@@ -2768,7 +2788,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
     
 #if 1 
     if ( selectsearch_mode & 2 ) { // never ?? misc
-				printf("Strange\n");
+				dbg("Strange\n");
 		if ( ksym == XK_Return ) {
 			selectsearch_mode ^= 2;
 			set_notifmode(selectsearch_mode, -2);
