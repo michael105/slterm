@@ -34,10 +34,8 @@ Applied Patches:
 
 ### Install
 
-Edit Makefile
-
+Edit Makefile <br>
 Edit config.h
-
 ```
 make
 make install
