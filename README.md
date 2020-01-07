@@ -2,7 +2,21 @@
 
 Fork of the st terminal. (suckless.org)
 
-Stripped of unicode support.
+Stripped of unicode support and rgb colors.
+
+Added history patch, with 10k lines by default.
+
+Applied Patches:
+
+- anysize
+- clipboard
+- keyboard_select
+- relative_border
+- scrollback
+- scrollback-mouse
+- scrollback-mouse-increment
+- selectioncolors
+- xresources (added a commandline switch -x to enable reading the xresources)
 
 
 Unicode encoding needs 4 Bytes per char within st,
@@ -25,10 +39,16 @@ will strike, anyways. That's the law..)
 So, in my quest to slim down all programs I'm using,
 I'm about to strip unicode and utf8 support.
 
-Yet I managed to get a memory footprint of around 8MB. 
+Yet I managed to get a memory footprint of around 8MB.
+Ok. Added all patches, and with the current history of 10k lines,
+it's at 12MB.
 (>20MB before)
 I'm always keeping more than 10 terminals open,
-so that sums up.
+so that sums up. What now has two meanings. 
+I have to look for what exactly blows that much.
+Every Glyph (char at the screen, with attributes and colors) now
+needs 4 Bytes. ( around 16Bytes before stripping unicode and rgb)
+
 
 The smaller memory footprint also pays out in a more responsive
 system overall, improving st's speed as well. (3x here) Ok.
@@ -106,9 +126,9 @@ Maybe even nanoseconds. But 200ms is. Painful slow.
 
 #### roadmap
 
-- strip unicode (done partially)
-- strip rgb colors
-- add patches
+- strip ~~unicode~~ (done partially)
+- ~~strip rgb colors~~
+- ~~add patches~~
 - gain earth domination
 - quench vogones
 - stifle this laughter
