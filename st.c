@@ -245,8 +245,8 @@ static pid_t pid;
 //static Rune utfmax[UTF_SIZ + 1] = {0x10FFFF, 0x7F, 0x7FF, 0xFFFF, 0x10FFFF};
 static uchar utfbyte[UTF_SIZ + 4] = {0x80,    0, 0xC0, 0xE0, 0xF0};
 static uchar utfmask[UTF_SIZ + 4] = {0xC0, 0x80, 0xE0, 0xF0, 0xF8};
-static Rune utfmin[UTF_SIZ + 4] = {       0,    0,  0x80,  0x800,  0x10000};
-static Rune utfmax[UTF_SIZ + 4] = {0x10FFFF, 0x7F, 0x7FF, 0xFFFF, 0x10FFFF};
+static Rune utfmin[UTF_SIZ + 4] = {       0,    0,  0x80,  0x0,  0x0};
+static Rune utfmax[UTF_SIZ + 4] = {0xFF, 0x7F, 0xFF, 0xFF, 0xFF};
 
 
 ssize_t
@@ -333,6 +333,8 @@ utf8decodebyte(char c, size_t *i)
 size_t
 utf8encode(Rune u, char *c)
 {
+		c[0] = u;
+		return(1);
 	size_t len, i;
 
 	len = utf8validate(&u, 0);
@@ -1035,7 +1037,7 @@ treset(void)
 		term.tabs[i] = 1;
 	term.top = 0;
 	term.bot = term.row - 1;
-	term.mode = MODE_WRAP|MODE_UTF8;
+	term.mode = MODE_WRAP; //|MODE_UTF8;
 	memset(term.trantbl, CS_USA, sizeof(term.trantbl));
 	term.charset = 0;
 
@@ -1275,9 +1277,9 @@ tsetchar(Rune u, Glyph *attr, int x, int y)
 	/*
 	 * The table is proudly stolen from rxvt.
 	 */
-	if (term.trantbl[term.charset] == CS_GRAPHIC0 &&
+/*	if (term.trantbl[term.charset] == CS_GRAPHIC0 &&
 	   BETWEEN(u, 0x41, 0x7e) && vt100_0[u - 0x41])
-		utf8decode(vt100_0[u - 0x41], &u, UTF_SIZ);
+		utf8decode(vt100_0[u - 0x41], &u, UTF_SIZ);*/
 
 	if (term.line[y][x].mode & ATTR_WIDE) {
 		if (x+1 < term.col) {
@@ -2518,15 +2520,15 @@ twrite(const char *buf, int buflen, int show_ctrl)
 	int n;
 
 	for (n = 0; n < buflen; n += charsize) {
-		if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
-			/* process a complete utf8 char */
+		/*if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
+			// process a complete utf8 char 
 			charsize = utf8decode(buf + n, &u, buflen - n);
 			if (charsize == 0)
 				break;
-		} else {
+		} else  {*/
 			u = buf[n] & 0xFF;
 			charsize = 1;
-		}
+		//}
 		if (show_ctrl && ISCONTROL(u)) {
 			if (u & 0x80) {
 				u &= 0x7f;
@@ -2764,8 +2766,9 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
     static char selectsearch_mode;
     int i, bound, *xy;
     
-    
-    if ( selectsearch_mode & 2 ) {
+#if 0 
+    if ( selectsearch_mode & 2 ) { // never ?? misc
+				printf("Strange\n");
 		if ( ksym == XK_Return ) {
 			selectsearch_mode ^= 2;
 			set_notifmode(selectsearch_mode, -2);
@@ -2794,6 +2797,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
         drawregion(0, term.bot, term.col, term.bot + 1);
         return 0;
     }
+#endif
 
     switch ( ksym ) {
     case -1 :
