@@ -1162,6 +1162,10 @@ tscrollup(int orig, int n, int copyhist)
 	if (copyhist) {
 		term.histi = (term.histi + 1) % HISTSIZE;
 		temp = term.hist[term.histi]; // candidate for swap (misc) or, malloc hist here.
+		// "compression" might take place here, as well.
+		// (sort of count*glyph for adjacent equal glyphs
+		// maybe another text attribute. then, the next glyph
+		// as union int gives the count.)
 		term.hist[term.histi] = term.line[orig];
 		term.line[orig] = temp;
 	}
