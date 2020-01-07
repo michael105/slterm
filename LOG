@@ -81,7 +81,7 @@ And further testing would be useful.
 About adding patches, and so on: When you guard your changes 
 with an #ifdef YOURPATCHNAME / #endif, 
 I'll add patches in each case. 
-Just do a fork, and consequently file a merge request. 
+Just do a fork, and consequently file a pull request. 
 
 You can grep for the switch "XRESOURCES",
 where I did exactly this, guard a patch 
