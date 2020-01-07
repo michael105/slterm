@@ -142,6 +142,12 @@ https://danluu.com/input-lag/
 
 
 
+### Bugs
+
+Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
+with Xorg programs. 
+
+
 ---- snip ----
 
 ### roadmap
