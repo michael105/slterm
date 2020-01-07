@@ -79,7 +79,8 @@ Counting 2 integers ( 8 Bytes ) per glyph.
 
 ![](doc/colors.png?raw=true)
 
-"256" colors (with attributes faint, normal, bold) and the ascii table without control characters as dumped out by st-asc.
+"256" colors (with attributes faint, normal, bold) and the ascii table without control characters as dumped out by st-asc.<br>
+The scripts for creating the output are within ./test
 
 ![](doc/ascii.png)
 
