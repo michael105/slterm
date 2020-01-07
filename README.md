@@ -4,8 +4,6 @@ Fork of the st terminal. (suckless.org)
 
 Stripped of unicode support and rgb colors.
 
-Added history patch, with 10k lines by default.
-
 Applied Patches:
 
 - anysize
@@ -17,9 +15,8 @@ Applied Patches:
 - scrollback-mouse-increment
 - selectioncolors
 - xresources 
-		added a commandline switch -x to enable reading the xresources
-		And needs to have the switch XRESOURCES defined at compile time
-		(somehow I don't have a good feeling with this patch)
+		added a commandline switch -x to enable reading the xresources, <br>
+		and a compile time switch "XRESOURCES"
 
 
 Unicode encoding needs 4 Bytes per char within st,
