@@ -1529,7 +1529,8 @@ xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
 	if (IS_SET(MODE_FOCUSED)) {
 		switch (win.cursor) {
 		case 7: /* st extension: snowman (U+2603) */
-			g.u = 0x2603;
+			//g.u = 0x2603;
+			g.u = 'X';
 		case 0: /* Blinking Block */
 		case 1: /* Blinking Block (Default) */
 		case 2: /* Steady Block */
@@ -1866,110 +1867,110 @@ resize(XEvent *e)
 void
 run(void)
 {
-	XEvent ev;
-	int w = win.w, h = win.h;
-	fd_set rfd;
-	int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 0, dodraw = 0;
-	int ttyfd;
-	struct timespec drawtimeout, *tv = NULL, now, last, lastblink;
-	long deltatime;
+		XEvent ev;
+		int w = win.w, h = win.h;
+		fd_set rfd;
+		int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 0, dodraw = 0;
+		int ttyfd;
+		struct timespec drawtimeout, *tv = NULL, now, last, lastblink;
+		long deltatime;
 
-	/* Waiting for window mapping */
-	do {
-		XNextEvent(xw.dpy, &ev);
-		/*
-		 * This XFilterEvent call is required because of XOpenIM. It
-		 * does filter out the key event and some client message for
-		 * the input method too.
-		 */
-		if (XFilterEvent(&ev, None))
-			continue;
-		if (ev.type == ConfigureNotify) {
-			w = ev.xconfigure.width;
-			h = ev.xconfigure.height;
-		}
-	} while (ev.type != MapNotify);
-
-	ttyfd = ttynew(opt_line, shell, opt_io, opt_cmd);
-	cresize(w, h);
-
-	clock_gettime(CLOCK_MONOTONIC, &last);
-	lastblink = last;
-
-	for (xev = actionfps;;) {
-		FD_ZERO(&rfd);
-		FD_SET(ttyfd, &rfd);
-		FD_SET(xfd, &rfd);
-
-		if (pselect(MAX(xfd, ttyfd)+1, &rfd, NULL, NULL, tv, NULL) < 0) {
-			if (errno == EINTR)
-				continue;
-			die("select failed: %s\n", strerror(errno));
-		}
-		if (FD_ISSET(ttyfd, &rfd)) {
-			ttyread();
-			if (blinktimeout) {
-				blinkset = tattrset(ATTR_BLINK);
-				if (!blinkset)
-					MODBIT(win.mode, 0, MODE_BLINK);
-			}
-		}
-
-		if (FD_ISSET(xfd, &rfd))
-			xev = actionfps;
-
-		clock_gettime(CLOCK_MONOTONIC, &now);
-		drawtimeout.tv_sec = 0;
-		drawtimeout.tv_nsec =  (1000 * 1E6)/ xfps;
-		tv = &drawtimeout;
-
-		dodraw = 0;
-		if (blinktimeout && TIMEDIFF(now, lastblink) > blinktimeout) {
-			tsetdirtattr(ATTR_BLINK);
-			win.mode ^= MODE_BLINK;
-			lastblink = now;
-			dodraw = 1;
-		}
-		deltatime = TIMEDIFF(now, last);
-		if (deltatime > 1000 / (xev ? xfps : actionfps)) {
-			dodraw = 1;
-			last = now;
-		}
-
-		if (dodraw) {
-			while (XPending(xw.dpy)) {
+		/* Waiting for window mapping */
+		do {
 				XNextEvent(xw.dpy, &ev);
+				/*
+				 * This XFilterEvent call is required because of XOpenIM. It
+				 * does filter out the key event and some client message for
+				 * the input method too.
+				 */
 				if (XFilterEvent(&ev, None))
-					continue;
-				if (handler[ev.type])
-					(handler[ev.type])(&ev);
-			}
-
-			draw();
-			XFlush(xw.dpy);
-
-			if (xev && !FD_ISSET(xfd, &rfd))
-				xev--;
-			if (!FD_ISSET(ttyfd, &rfd) && !FD_ISSET(xfd, &rfd)) {
-				if (blinkset) {
-					if (TIMEDIFF(now, lastblink) \
-							> blinktimeout) {
-						drawtimeout.tv_nsec = 1000;
-					} else {
-						drawtimeout.tv_nsec = (1E6 * \
-							(blinktimeout - \
-							TIMEDIFF(now,
-								lastblink)));
-					}
-					drawtimeout.tv_sec = \
-					    drawtimeout.tv_nsec / 1E9;
-					drawtimeout.tv_nsec %= (long)1E9;
-				} else {
-					tv = NULL;
+						continue;
+				if (ev.type == ConfigureNotify) {
+						w = ev.xconfigure.width;
+						h = ev.xconfigure.height;
 				}
-			}
+		} while (ev.type != MapNotify);
+
+		ttyfd = ttynew(opt_line, shell, opt_io, opt_cmd);
+		cresize(w, h);
+
+		clock_gettime(CLOCK_MONOTONIC, &last);
+		lastblink = last;
+
+		for (xev = actionfps;;) {
+				FD_ZERO(&rfd);
+				FD_SET(ttyfd, &rfd);
+				FD_SET(xfd, &rfd);
+
+				if (pselect(MAX(xfd, ttyfd)+1, &rfd, NULL, NULL, tv, NULL) < 0) {
+						if (errno == EINTR)
+								continue;
+						die("select failed: %s\n", strerror(errno));
+				}
+				if (FD_ISSET(ttyfd, &rfd)) {
+						ttyread();
+						if (blinktimeout) {
+								blinkset = tattrset(ATTR_BLINK);
+								if (!blinkset)
+										MODBIT(win.mode, 0, MODE_BLINK);
+						}
+				}
+
+				if (FD_ISSET(xfd, &rfd))
+						xev = actionfps;
+
+				clock_gettime(CLOCK_MONOTONIC, &now);
+				drawtimeout.tv_sec = 0;
+				drawtimeout.tv_nsec =  (1000 * 1E6)/ xfps;
+				tv = &drawtimeout;
+
+				dodraw = 0;
+				if (blinktimeout && TIMEDIFF(now, lastblink) > blinktimeout) {
+						tsetdirtattr(ATTR_BLINK);
+						win.mode ^= MODE_BLINK;
+						lastblink = now;
+						dodraw = 1;
+				}
+				deltatime = TIMEDIFF(now, last);
+				if (deltatime > 1000 / (xev ? xfps : actionfps)) {
+						dodraw = 1;
+						last = now;
+				}
+
+				if (dodraw) {
+						while (XPending(xw.dpy)) {
+								XNextEvent(xw.dpy, &ev);
+								if (XFilterEvent(&ev, None))
+										continue;
+								if (handler[ev.type])
+										(handler[ev.type])(&ev);
+						}
+
+						draw();
+						XFlush(xw.dpy);
+
+						if (xev && !FD_ISSET(xfd, &rfd))
+								xev--;
+						if (!FD_ISSET(ttyfd, &rfd) && !FD_ISSET(xfd, &rfd)) {
+								if (blinkset) {
+										if (TIMEDIFF(now, lastblink) \
+														> blinktimeout) {
+												drawtimeout.tv_nsec = 1000;
+										} else {
+												drawtimeout.tv_nsec = (1E6 * \
+																(blinktimeout - \
+																 TIMEDIFF(now,
+																		 lastblink)));
+										}
+										drawtimeout.tv_sec = \
+																				 drawtimeout.tv_nsec / 1E9;
+										drawtimeout.tv_nsec %= (long)1E9;
+								} else {
+										tv = NULL;
+								}
+						}
+				}
 		}
-	}
 }
 
 #ifdef XRESOURCES
