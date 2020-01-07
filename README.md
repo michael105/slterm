@@ -77,11 +77,14 @@ Counting 2 integers ( 8 Bytes ) per glyph.
 ;) 256 colors might be enough for everyone.
 (Am I confusing something..?..)
 
+
+![](doc/ascii.png)
+
+
 ![](doc/colors.png?raw=true)
 
 "256" colors (with attributes faint, normal, bold) and the ascii table without control characters as dumped out by st-asc.
 
-![](doc/ascii.png)
 
 
 #### Links
