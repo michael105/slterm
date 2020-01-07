@@ -44,7 +44,7 @@ make
 make install
 ```
 
-#### About
+### About
 
 
 (A screenshot of i3 and 3 instances of st-asc)
@@ -127,7 +127,7 @@ The scripts for creating the output are within ./test
 ![](doc/ascii.png)
 
 
-#### Links
+### Links
 
 About utf8 
 http://doc.cat-v.org/bell_labs/utf-8_history
@@ -147,7 +147,7 @@ https://danluu.com/input-lag/
 
 ---- snip ----
 
-#### roadmap
+### roadmap
 
 - strip ~~unicode~~ (done mostly)
 - ~~strip rgb colors~~
@@ -159,7 +159,7 @@ https://danluu.com/input-lag/
 - stop being childish
 
 xxxx
----- SNIP -----
+**---- SNIP -----**
 
 (misc 2020, misc.myer@zoho.com )
 
