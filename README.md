@@ -33,7 +33,7 @@ Applied Patches:
 - Xft headers
 
 
-#### Install
+### Install
 
 Edit Makefile
 
