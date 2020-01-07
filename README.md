@@ -25,7 +25,7 @@ Applied Patches:
 
 
 
-<br><br>
+<br>
 
 ### Requirements
 
