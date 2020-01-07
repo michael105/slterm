@@ -149,6 +149,7 @@ https://danluu.com/input-lag/
 - strip ~~unicode~~ (done mostly)
 - ~~strip rgb colors~~
 - ~~add patches~~
+- Compression of history buffer
 - gain earth domination
 - quench vogones
 - stifle laughter
