@@ -24,6 +24,9 @@ Applied Patches:
 		compile time switch "XRESOURCES"
 
 
+
+<br><br>
+
 ### Requirements
 
 - Xlib headers
