@@ -1,0 +1,74 @@
+VT100.net VT102 User Guide
+
+   --------------------------------------------------------------------------
+
+                Table 5-2 Control Characters Recognized by VT102
+         Character       Mnemonic  Octal Code            Function
+   --------------------------------------------------------------------------
+    Null                 NUL       000         Ignored when received (not
+                                               stored in input buffer) and
+                                               used as a fill character.
+    End of text          ETX       003         Can be selected as a
+                                               half-duplex turnaround
+                                               character.
+    End of transmission  EOT       004         Can be selected as a
+                                               disconnect character or
+                                               half-duplex turnaround
+                                               character. When used as a
+                                               turnaround character, the
+                                               disconnect character is
+                                               DLE-EOT.
+    Enquire              ENQ       005         Transmits answerback message.
+    Bell                 BEL       007         Generates bell tone.
+    Backspace            BS        010         Moves cursor to the left one
+                                               character position; if cursor
+                                               is at left margin, no action
+                                               occurs.
+    Horizontal tab       HT        011         Moves cursor to next tab
+                                               stop, or to right margin if
+                                               there are no more tab stops.
+    Linefeed             LF        012         Causes a linefeed or a new
+                                               line operation. (See
+                                               Linefeed/New Line). Also
+                                               causes printing if auto print
+                                               operation is selected.
+    Vertical tab         VT        013         Processed as LF.
+    Form feed            FF        014         Processed as LF. FF can also
+                                               be selected as a half-duplex
+                                               turnaround character.
+    Carriage return      CR        015         Moves cursor to left margin
+                                               on current line. CR can also
+                                               be selected as a half-duplex
+                                               turnaround character.
+    Shift out            SO        016         Selects G1 character set
+                                               designated by a select
+                                               character set sequence.
+    Shift in             SI        017         Selects G0 character set
+                                               designated by a select
+                                               character set sequence.
+    Device control 1     DC1       021         Processed as XON. DC1 causes
+                                               terminal to continue
+                                               transmitting characters.
+    Device control 3     DC3       023         Processed as XOFF. DC3 causes
+                                               terminal to stop transmitting
+                                               all characters except XOFF
+                                               and XON. DC3 can also be
+                                               selected as a half-duplex
+                                               turnaround character.
+    Cancel               CAN       030         If received during an escape
+                                               or control sequence, cancels
+                                               the sequence and displays
+                                               substitution character
+                                               ([4][]).
+    Substitute           SUB       032         Processed as CAN.
+    Escape               ESC       033         Processed as a sequence
+                                               introducer.
+
+
+   --------------------------------------------------------------------------
+
+
+source:
+   VT100.net VT102 User Guide
+   http://vt100.net/docs/vt102-ug/table5-2.html
+
