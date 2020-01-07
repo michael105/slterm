@@ -146,12 +146,16 @@ https://danluu.com/input-lag/
 
 ### roadmap
 
+
+<img align="right" src="images/noticket.jpg"> 
+
 - strip ~~unicode~~ (done mostly)
 - ~~strip rgb colors~~
 - ~~add patches~~
 - Compression of history buffer
+- separation into a shared library and st-asc
 - gain earth domination
-- quench vogones
+- quench vogons
 - stifle laughter
 - stop being childish
 
