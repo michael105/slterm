@@ -1,0 +1,17 @@
+anysize 
+clipboard 
+relativeborder
+scrollback 
+scrollback-mouse 
+scrollback-mouse-increment
+selectioncolors
+vim_browse
+xresources (only optional, via switch -x on)
+
+//st-keyboard-select in suckless dir
+
+
+omitted:
+	newterm ( doesn't detach->parent killed->child too )
+	vertcenter ( somehow doesn't look right)
+
