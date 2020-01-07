@@ -16,6 +16,8 @@
 #include <termios.h>
 #include <unistd.h>
 #include <wchar.h>
+#include <X11/keysym.h>
+#include <X11/X.h>
 
 #include "st.h"
 #include "win.h"
@@ -29,20 +31,23 @@
 #endif
 
 /* Arbitrary sizes */
-#define UTF_INVALID   0xFFFD
+#define UTF_INVALID   0xff
+//#define UTF_INVALID   0xFFFD
 #define UTF_SIZ       1
 #define ESC_BUF_SIZ   (128*UTF_SIZ)
 #define ESC_ARG_SIZ   16
 #define STR_BUF_SIZ   ESC_BUF_SIZ
 #define STR_ARG_SIZ   ESC_ARG_SIZ
-#define HISTSIZE      2000
+/* Length of history, in lines */
+#define HISTSIZE      10000
+
 
 /* macros */
 #define IS_SET(flag)		((term.mode & (flag)) != 0)
 #define ISCONTROLC0(c)		(BETWEEN(c, 0, 0x1f) || (c) == '\177')
 #define ISCONTROLC1(c)		(BETWEEN(c, 0x80, 0x9f))
 #define ISCONTROL(c)		(ISCONTROLC0(c) || ISCONTROLC1(c))
-#define ISDELIM(u)		(utf8strchr(worddelimiters, u) != NULL)
+#define ISDELIM(u)		(u && wcschr(worddelimiters, u))
 #define TLINE(y)		((y) < term.scr ? term.hist[((y) + term.histi - \
 				term.scr + HISTSIZE + 1) % HISTSIZE] : \
 				term.line[(y) - term.scr])
@@ -121,7 +126,7 @@ typedef struct {
 	int col;      /* nb col */
 	Line *line;   /* screen */
 	Line *alt;    /* alternate screen */
-	Line hist[HISTSIZE]; /* history buffer */
+	Line hist[HISTSIZE]; /* history buffer */ //misc - change to vararr
 	int histi;    /* history index */
 	int scr;      /* scroll back */
 	int *dirty;   /* dirtyness of lines */
@@ -142,7 +147,7 @@ typedef struct {
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
 typedef struct {
 	char buf[ESC_BUF_SIZ]; /* raw string */
-	int len;               /* raw string length */
+	size_t len;            /* raw string length */
 	char priv;
 	int arg[ESC_ARG_SIZ];
 	int narg;              /* nb of args */
@@ -153,8 +158,9 @@ typedef struct {
 /* ESC type [[ [<priv>] <arg> [;]] <mode>] ESC '\' */
 typedef struct {
 	char type;             /* ESC type ... */
-	char buf[STR_BUF_SIZ]; /* raw string */
-	int len;               /* raw string length */
+	char *buf;             /* allocated raw string */
+	size_t siz;            /* allocation size */
+	size_t len;            /* raw string length */
 	char *args[STR_ARG_SIZ];
 	int narg;              /* nb of args */
 } STREscape;
@@ -217,7 +223,6 @@ static void selsnap(int *, int *, int);
 static size_t utf8decode(const char *, Rune *, size_t);
 static Rune utf8decodebyte(char, size_t *);
 static char utf8encodebyte(Rune, size_t);
-static char *utf8strchr(char *, Rune);
 static size_t utf8validate(Rune *, size_t);
 
 static char *base64dec(const char *);
@@ -226,11 +231,11 @@ static char base64dec_getc(const char **);
 static ssize_t xwrite(int, const char *, size_t);
 
 /* Globals */
-static Term term;
+static Term term; // misc make local?
 static Selection sel;
 static CSIEscape csiescseq;
 static STREscape strescseq;
-static int iofd = 1;
+static int iofd = 1; // this might bloat
 static int cmdfd;
 static pid_t pid;
 
@@ -293,44 +298,71 @@ xstrdup(char *s)
 size_t
 utf8decode(const char *c, Rune *u, size_t clen)
 {
-		die("utf8decode",1);
+	size_t i, j, len, type;
+	Rune udecoded;
+
+	*u = UTF_INVALID;
+	if (!clen)
+		return 0;
+	udecoded = utf8decodebyte(c[0], &len);
+	if (!BETWEEN(len, 1, UTF_SIZ))
+		return 1;
+	for (i = 1, j = 1; i < clen && j < len; ++i, ++j) {
+		udecoded = (udecoded << 6) | utf8decodebyte(c[i], &type);
+		if (type != 0)
+			return j;
+	}
+	if (j < len)
+		return 0;
+	*u = udecoded;
+	utf8validate(u, len);
+
+	return len;
 }
 
 Rune
 utf8decodebyte(char c, size_t *i)
 {
+	for (*i = 0; *i < LEN(utfmask); ++(*i))
+		if (((uchar)c & utfmask[*i]) == utfbyte[*i])
+			return (uchar)c & ~utfmask[*i];
 
-		die("utf8 1",1);
+	return 0;
 }
 
 size_t
 utf8encode(Rune u, char *c)
 {
-		c[0] = u;
-		return(1);
+	size_t len, i;
+
+	len = utf8validate(&u, 0);
+	if (len > UTF_SIZ)
+		return 0;
+
+	for (i = len - 1; i != 0; --i) {
+		c[i] = utf8encodebyte(u, 0);
+		u >>= 6;
+	}
+	c[0] = utf8encodebyte(u, len);
+
+	return len;
 }
 
 char
 utf8encodebyte(Rune u, size_t i)
 {
-
-		die("utf8 3",1);
 	return utfbyte[i] | (u & ~utfmask[i]);
-}
-
-char *
-utf8strchr(char *s, Rune u)
-{
-
-		die("utf8 4",1);
-
 }
 
 size_t
 utf8validate(Rune *u, size_t i)
 {
+	if (!BETWEEN(*u, utfmin[i], utfmax[i]) || BETWEEN(*u, 0xD800, 0xDFFF))
+		*u = UTF_INVALID;
+	for (i = 1; *u > utfmax[i]; ++i)
+		;
 
-		die("utf8 5",1);
+	return i;
 }
 
 static const char base64_digits[] = {
@@ -352,7 +384,7 @@ char
 base64dec_getc(const char **src)
 {
 	while (**src && !isprint(**src)) (*src)++;
-	return *((*src)++);
+	return **src ? *((*src)++) : '=';  /* emulate padding if string ends */
 }
 
 char *
@@ -369,6 +401,10 @@ base64dec(const char *src)
 		int b = base64_digits[(unsigned char) base64dec_getc(&src)];
 		int c = base64_digits[(unsigned char) base64dec_getc(&src)];
 		int d = base64_digits[(unsigned char) base64dec_getc(&src)];
+
+		/* invalid input. 'a' can be -1, e.g. if src is "\n" (c-str) */
+		if (a == -1 || b == -1)
+			break;
 
 		*dst++ = (a << 2) | ((b & 0x30) >> 4);
 		if (c == -1)
@@ -444,7 +480,7 @@ selextend(int col, int row, int type, int done)
 	selnormalize();
 	sel.type = type;
 
-	if (oldey != sel.oe.y || oldex != sel.oe.x || oldtype != sel.type)
+	if (oldey != sel.oe.y || oldex != sel.oe.x || oldtype != sel.type || sel.mode == SEL_EMPTY)
 		tsetdirt(MIN(sel.nb.y, oldsby), MAX(sel.ne.y, oldsey));
 
 	sel.mode = done ? SEL_IDLE : SEL_READY;
@@ -634,9 +670,6 @@ selclear(void)
 void
 die(const char *errstr, ...)
 {
-		printf("die\n");
-		printf(": %s\n", errstr );
-		exit(7);
 	va_list ap;
 
 	va_start(ap, errstr);
@@ -1002,7 +1035,7 @@ treset(void)
 		term.tabs[i] = 1;
 	term.top = 0;
 	term.bot = term.row - 1;
-	term.mode = MODE_WRAP;//|MODE_UTF8;
+	term.mode = MODE_WRAP|MODE_UTF8;
 	memset(term.trantbl, CS_USA, sizeof(term.trantbl));
 	term.charset = 0;
 
@@ -1022,6 +1055,11 @@ tnew(int col, int row)
 	treset();
 }
 
+int tisaltscr(void)
+{
+	return IS_SET(MODE_ALTSCREEN);
+}
+
 void
 tswapscreen(void)
 {
@@ -1032,6 +1070,7 @@ tswapscreen(void)
 	term.mode ^= MODE_ALTSCREEN;
 	tfulldirt();
 }
+
 void
 kscrolldown(const Arg* a)
 {
@@ -1054,6 +1093,7 @@ void
 kscrollup(const Arg* a)
 {
 	int n = a->i;
+
 	if (n < 0)
 		n = term.row + n;
 
@@ -1235,9 +1275,9 @@ tsetchar(Rune u, Glyph *attr, int x, int y)
 	/*
 	 * The table is proudly stolen from rxvt.
 	 */
-	/*if (term.trantbl[term.charset] == CS_GRAPHIC0 &&
+	if (term.trantbl[term.charset] == CS_GRAPHIC0 &&
 	   BETWEEN(u, 0x41, 0x7e) && vt100_0[u - 0x41])
-		utf8decode(vt100_0[u - 0x41], &u, UTF_SIZ);*/
+		utf8decode(vt100_0[u - 0x41], &u, UTF_SIZ);
 
 	if (term.line[y][x].mode & ATTR_WIDE) {
 		if (x+1 < term.col) {
@@ -1597,6 +1637,7 @@ tsetmode(int priv, int set, int *args, int narg)
 			case 1015: /* urxvt mangled mouse mode; incompatible
 				      and can be mistaken for other control
 				      codes. */
+				break;
 			default:
 				fprintf(stderr,
 					"erresc: unknown private set/reset mode %d\n",
@@ -1838,7 +1879,7 @@ csihandle(void)
 void
 csidump(void)
 {
-	int i;
+	size_t i;
 	uint c;
 
 	fprintf(stderr, "ESC[");
@@ -1868,7 +1909,7 @@ csireset(void)
 void
 strhandle(void)
 {
-	char *p = NULL;
+	char *p = NULL, *dec;
 	int j, narg, par;
 
 	term.esc &= ~(ESC_STR_END|ESC_STR);
@@ -1886,8 +1927,6 @@ strhandle(void)
 			return;
 		case 52:
 			if (narg > 2) {
-				char *dec;
-
 				dec = base64dec(strescseq.args[2]);
 				if (dec) {
 					xsetsel(dec);
@@ -1905,7 +1944,10 @@ strhandle(void)
 		case 104: /* color reset, here p = NULL */
 			j = (narg > 1) ? atoi(strescseq.args[1]) : -1;
 			if (xsetcolorname(j, p)) {
-				fprintf(stderr, "erresc: invalid color %s\n", p);
+				if (par == 104 && narg <= 1)
+					return; /* color reset without parameter */
+				fprintf(stderr, "erresc: invalid color j=%d, p=%s\n",
+				        j, p ? p : "(null)");
 			} else {
 				/*
 				 * TODO if defaultbg color is changed, borders
@@ -1955,7 +1997,7 @@ strparse(void)
 void
 strdump(void)
 {
-	int i;
+	size_t i;
 	uint c;
 
 	fprintf(stderr, "ESC%c", strescseq.type);
@@ -1982,7 +2024,10 @@ strdump(void)
 void
 strreset(void)
 {
-	memset(&strescseq, 0, sizeof(strescseq));
+	strescseq = (STREscape){
+		.buf = xrealloc(strescseq.buf, STR_BUF_SIZ),
+		.siz = STR_BUF_SIZ,
+	};
 }
 
 void
@@ -2075,9 +2120,10 @@ tputtab(int n)
 void
 tdefutf8(char ascii)
 {
-	if (ascii == 'G')
-		term.mode;// |= MODE_UTF8;
-	else if (ascii == '@')
+	//if (ascii == 'G')
+	//	term.mode |= MODE_UTF8;
+	//else 
+	if (ascii == '@')
 		term.mode &= ~MODE_UTF8;
 }
 
@@ -2330,7 +2376,7 @@ tputc(Rune u)
 	/*} else {
 		len = utf8encode(u, c);
 		if (!control && (width = wcwidth(u)) == -1) {
-			//memcpy(c, "\357\277\275", 4); // UTF_INVALID 
+			memcpy(c, "\357\277\275", 4); // UTF_INVALID 
 			width = 1;
 		}
 	}*/
@@ -2357,7 +2403,6 @@ tputc(Rune u)
 			goto check_control_code;
 		}
 
-
 		if (IS_SET(MODE_SIXEL)) {
 			/* TODO: implement sixel mode */
 			return;
@@ -2365,7 +2410,7 @@ tputc(Rune u)
 		if (term.esc&ESC_DCS && strescseq.len == 0 && u == 'q')
 			term.mode |= MODE_SIXEL;
 
-		if (strescseq.len+len >= sizeof(strescseq.buf)-1) {
+		if (strescseq.len+len >= strescseq.siz) {
 			/*
 			 * Here is a bug in terminals. If the user never sends
 			 * some code to stop the str or esc command, then st
@@ -2379,7 +2424,10 @@ tputc(Rune u)
 			 * term.esc = 0;
 			 * strhandle();
 			 */
-			return;
+			if (strescseq.siz > (SIZE_MAX - UTF_SIZ) / 2)
+				return;
+			strescseq.siz *= 2;
+			strescseq.buf = xrealloc(strescseq.buf, strescseq.siz);
 		}
 
 		memmove(&strescseq.buf[strescseq.len], c, len);
@@ -2472,7 +2520,7 @@ twrite(const char *buf, int buflen, int show_ctrl)
 	for (n = 0; n < buflen; n += charsize) {
 		if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
 			/* process a complete utf8 char */
-			//charsize = utf8decode(buf + n, &u, buflen - n);
+			charsize = utf8decode(buf + n, &u, buflen - n);
 			if (charsize == 0)
 				break;
 		} else {
@@ -2502,6 +2550,9 @@ tresize(int col, int row)
 	int mincol = MIN(col, term.col);
 	int *bp;
 	TCursor c;
+
+	if ( row < term.row  || col < term.col )
+        toggle_winmode(trt_kbdselect(XK_Escape, NULL, 0));
 
 	if (col < 1 || row < 1) {
 		fprintf(stderr,
@@ -2622,9 +2673,10 @@ draw(void)
 	drawregion(0, 0, term.col, term.row);
 	if (term.scr == 0)
 		xdrawcursor(cx, term.c.y, term.line[term.c.y][cx],
-			term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
+				term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
 	term.ocx = cx, term.ocy = term.c.y;
 	xfinishdraw();
+	xximspot(term.ocx, term.ocy);
 }
 
 void
@@ -2632,4 +2684,221 @@ redraw(void)
 {
 	tfulldirt();
 	draw();
+}
+
+void set_notifmode(int type, KeySym ksym) {
+    static char *lib[] = { " MOVE ", " SEL  "};
+    static Glyph *g, *deb, *fin;
+    static int col, bot;
+
+    if ( ksym == -1 ) {
+        free(g);
+        col = term.col, bot = term.bot;
+        g = xmalloc(col * sizeof(Glyph));
+        memcpy(g, term.line[bot], col * sizeof(Glyph));
+    
+    }
+    else if ( ksym == -2 )
+        memcpy(term.line[bot], g, col * sizeof(Glyph));
+
+    if ( type < 2 ) {
+        char *z = lib[type];
+        for (deb = &term.line[bot][col - 6], fin = &term.line[bot][col]; deb < fin; z++, deb++)
+            deb->mode = ATTR_REVERSE,
+            deb->u = *z,
+            deb->fg = defaultfg, deb->bg = defaultbg;
+    }
+    else if ( type < 5 )
+        memcpy(term.line[bot], g, col * sizeof(Glyph));
+    else {
+        for (deb = &term.line[bot][0], fin = &term.line[bot][col]; deb < fin; deb++)
+            deb->mode = ATTR_REVERSE,
+            deb->u = ' ',
+            deb->fg = defaultfg, deb->bg = defaultbg;
+        term.line[bot][0].u = ksym;
+    }
+
+    term.dirty[bot] = 1;
+    drawregion(0, bot, col, bot + 1);
+}
+
+void select_or_drawcursor(int selectsearch_mode, int type) {
+    int done = 0;
+
+    if ( selectsearch_mode & 1 ) {
+        selextend(term.c.x, term.c.y, type, done);
+        xsetsel(getsel());
+    }
+    else
+        xdrawcursor(term.c.x, term.c.y, term.line[term.c.y][term.c.x],
+                    term.ocx, term.ocy, term.line[term.ocy][term.ocx]);
+}
+
+void search(int selectsearch_mode, Rune *target, int ptarget, int incr, int type, TCursor *cu) {
+    Rune *r;
+    int i, bound = (term.col * cu->y + cu->x) * (incr > 0) + incr;
+
+    for (i = term.col * term.c.y + term.c.x + incr; i != bound; i += incr) {
+        for (r = target; r - target < ptarget; r++) {
+            if ( *r == term.line[(i + r - target) / term.col][(i + r - target) % term.col].u ) {
+                if ( r - target == ptarget - 1 )     break;
+            } else {
+                r = NULL;
+                break;
+            }
+        }
+        if ( r != NULL )    break;
+    }
+        
+    if ( i != bound ) {
+        term.c.y = i / term.col, term.c.x = i % term.col;
+        select_or_drawcursor(selectsearch_mode, type);
+    }
+}
+
+int trt_kbdselect(KeySym ksym, char *buf, int len) {
+    static TCursor cu;
+    static Rune target[64];
+    static int type = 1, ptarget, in_use;
+    static int sens, quant;
+    static char selectsearch_mode;
+    int i, bound, *xy;
+    
+    
+    if ( selectsearch_mode & 2 ) {
+		if ( ksym == XK_Return ) {
+			selectsearch_mode ^= 2;
+			set_notifmode(selectsearch_mode, -2);
+            if ( ksym == XK_Escape )    ptarget = 0;
+			return 0;
+		}
+        else if ( ksym == XK_BackSpace ) {
+            if ( !ptarget )     return 0;
+            term.line[term.bot][ptarget--].u = ' ';
+		}
+        else if ( len < 1 ) {
+			return 0;
+		}
+        else if ( ptarget == term.col  || ksym == XK_Escape ) {
+            return 0;
+        }
+		else {
+            utf8decode(buf, &target[ptarget++], len);
+            term.line[term.bot][ptarget].u = target[ptarget - 1];
+		}
+
+        if ( ksym != XK_BackSpace )
+            search(selectsearch_mode, &target[0], ptarget, sens, type, &cu);
+
+        term.dirty[term.bot] = 1; 
+        drawregion(0, term.bot, term.col, term.bot + 1);
+        return 0;
+    }
+
+    switch ( ksym ) {
+    case -1 :
+        in_use = 1;
+        cu.x = term.c.x, cu.y = term.c.y;
+        set_notifmode(0, ksym);
+        return MODE_KBDSELECT;
+    case XK_s :
+        if ( selectsearch_mode & 1 )
+            selclear();
+        else
+            selstart(term.c.x, term.c.y, 0);
+        set_notifmode(selectsearch_mode ^= 1, ksym);
+        break;
+    case XK_t :
+        selextend(term.c.x, term.c.y, type ^= 3, i = 0);  /* 2 fois */
+        selextend(term.c.x, term.c.y, type, i = 0);
+        break;
+    case XK_slash :
+    case XK_KP_Divide :
+    case XK_question :
+        ksym &= XK_question;                /* Divide to slash */
+        sens = (ksym == XK_slash) ? -1 : 1;
+        ptarget = 0;
+        set_notifmode(15, ksym);
+        selectsearch_mode ^= 2;
+        break;
+    case XK_Escape :
+        if ( !in_use )  break;
+        selclear();
+    case XK_Return :
+        set_notifmode(4, ksym);
+        term.c.x = cu.x, term.c.y = cu.y;
+        select_or_drawcursor(selectsearch_mode = 0, type);
+        in_use = quant = 0;
+        return MODE_KBDSELECT;
+    case XK_n :
+    case XK_N :
+        if ( ptarget )
+            search(selectsearch_mode, &target[0], ptarget, (ksym == XK_n) ? -1 : 1, type, &cu);
+        break;
+    case XK_BackSpace :
+        term.c.x = 0;
+        select_or_drawcursor(selectsearch_mode, type);
+        break;
+    case XK_dollar :
+        term.c.x = term.col - 1;
+        select_or_drawcursor(selectsearch_mode, type);
+        break;
+    case XK_Home :
+        term.c.x = 0, term.c.y = 0;
+        select_or_drawcursor(selectsearch_mode, type);
+        break;
+    case XK_End :
+        term.c.x = cu.x, term.c.y = cu.y;
+        select_or_drawcursor(selectsearch_mode, type);
+        break;
+    case XK_Page_Up :
+    case XK_Page_Down :
+        term.c.y = (ksym == XK_Prior ) ? 0 : cu.y;
+        select_or_drawcursor(selectsearch_mode, type);
+        break;
+    case XK_exclam :
+        term.c.x = term.col >> 1;
+        select_or_drawcursor(selectsearch_mode, type);
+        break;
+    case XK_asterisk :
+    case XK_KP_Multiply :
+        term.c.x = term.col >> 1;
+    case XK_underscore :
+        term.c.y = cu.y >> 1;
+        select_or_drawcursor(selectsearch_mode, type);
+        break;
+    default :
+        if ( ksym >= XK_0 && ksym <= XK_9 ) {               /* 0-9 keyboard */
+            quant = (quant * 10) + (ksym ^ XK_0);
+            return 0;
+        }
+        else if ( ksym >= XK_KP_0 && ksym <= XK_KP_9 ) {    /* 0-9 numpad */
+            quant = (quant * 10) + (ksym ^ XK_KP_0);
+            return 0;
+        }
+        else if ( ksym == XK_k || ksym == XK_h )
+            i = ksym & 1;
+        else if ( ksym == XK_l || ksym == XK_j )
+            i = ((ksym & 6) | 4) >> 1;
+        else if ( (XK_Home & ksym) != XK_Home || (i = (ksym ^ XK_Home) - 1) > 3 )
+            break;
+
+        xy = (i & 1) ? &term.c.y : &term.c.x;
+        sens = (i & 2) ? 1 : -1;
+        bound = (i >> 1 ^ 1) ? 0 : (i ^ 3) ? term.col - 1 : term.bot;
+
+        if ( quant == 0 )
+            quant++;
+
+        if ( *xy == bound && ((sens < 0 && bound == 0) || (sens > 0 && bound > 0)) )
+            break;
+
+        *xy += quant * sens;
+        if ( *xy < 0 || ( bound > 0 && *xy > bound) )
+            *xy = bound;
+
+        select_or_drawcursor(selectsearch_mode, type);
+    }
+    quant = 0;
+    return 0;
 }

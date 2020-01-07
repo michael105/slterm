@@ -28,13 +28,22 @@ enum glyph_attribute {
 	ATTR_UNDERLINE  = 1 << 3,
 	ATTR_BLINK      = 1 << 4,
 	ATTR_REVERSE    = 1 << 5,
-	ATTR_INVISIBLE  = 1 << 6,
+	ATTR_WRAP       = 1 << 6,
+	ATTR_WDUMMY     = 1 << 7,
+	ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
+
+	ATTR_INVISIBLE = 0,
+	ATTR_STRUCK     = 0,
+	ATTR_WIDE       = 0,
+
+};
+/*	ATTR_INVISIBLE  = 1 << 6,
 	ATTR_STRUCK     = 1 << 7,
 	ATTR_WRAP       = 1 << 8,
 	ATTR_WIDE       = 1 << 9,
 	ATTR_WDUMMY     = 1 << 10,
 	ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
-};
+};*/
 
 enum selection_mode {
 	SEL_IDLE = 0,
@@ -58,13 +67,17 @@ typedef unsigned long ulong;
 typedef unsigned short ushort;
 
 typedef unsigned char Rune;
+//typedef uint_least32_t Rune;
 
 #define Glyph Glyph_
 typedef struct {
 	Rune u;           /* character code */
-	ushort mode;      /* attribute flags */
-	uint32_t fg;      /* foreground  */
-	uint32_t bg;      /* background  */
+	unsigned char mode;      /* attribute flags */
+	//ushort mode;      /* attribute flags */
+	unsigned char fg;      /* foreground  */
+	//uint32_t fg;      /* foreground  */
+	unsigned char bg;      /* background  */
+	//uint32_t bg;      /* background  */
 } Glyph;
 
 typedef Glyph *Line;
@@ -74,6 +87,7 @@ typedef union {
 	uint ui;
 	float f;
 	const void *v;
+	const char *s;
 } Arg;
 
 void die(const char *, ...);
@@ -88,6 +102,7 @@ void sendbreak(const Arg *);
 void toggleprinter(const Arg *);
 
 int tattrset(int);
+int tisaltscr(void);
 void tnew(int, int);
 void tresize(int, int);
 void tsetdirtattr(int);
@@ -111,14 +126,20 @@ size_t utf8encode(Rune, char *);
 void *xmalloc(size_t);
 void *xrealloc(void *, size_t);
 char *xstrdup(char *);
+int trt_kbdselect(KeySym, char *, int);
 
 /* config.h globals */
 extern char *utmp;
 extern char *stty_args;
 extern char *vtiden;
-extern char *worddelimiters;
+extern wchar_t *worddelimiters;
 extern int allowaltscreen;
 extern char *termname;
 extern unsigned int tabspaces;
-extern unsigned int defaultfg;
-extern unsigned int defaultbg;
+extern unsigned char defaultfg;
+//extern unsigned int defaultfg;
+extern unsigned char defaultbg;
+//extern unsigned int defaultbg;
+int borderpx;
+extern int borderperc;
+
