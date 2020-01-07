@@ -160,6 +160,7 @@ static unsigned int mousebg = 0;
 /*
  * Xresources preferences to load at startup
  */
+#ifdef XRESOURCES
 ResourcePref resources[] = {
 		{ "font",         STRING,  &font },
 		{ "color0",       STRING,  &colorname[0] },
@@ -192,7 +193,7 @@ ResourcePref resources[] = {
 		{ "cwscale",      FLOAT,   &cwscale },
 		{ "chscale",      FLOAT,   &chscale },
 };
-
+#endif
 /*
  * Color used to display font attributes when fontconfig selected a font which
  * doesn't match the ones requested.

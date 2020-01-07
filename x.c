@@ -14,7 +14,9 @@
 #include <X11/keysym.h>
 #include <X11/Xft/Xft.h>
 #include <X11/XKBlib.h>
+#ifdef XRESOURCES
 #include <X11/Xresource.h>
+#endif
 
 static char *argv0;
 #include "arg.h"
@@ -47,6 +49,8 @@ typedef struct {
 	signed char appcursor; /* application cursor */
 } Key;
 
+
+#ifdef XRESOURCES
 /* Xresources preferences */
 enum resource_type {
 	STRING = 0,
@@ -59,6 +63,7 @@ typedef struct {
 	enum resource_type type;
 	void *dst;
 } ResourcePref;
+#endif
 
 /* X modifiers */
 #define XK_ANY_MOD    UINT_MAX
@@ -834,8 +839,14 @@ xclear(int x1, int y1, int x2, int y2)
 void
 xhints(void)
 {
+#ifdef XRESOURCES
 	XClassHint class = {opt_name ? opt_name : "st",
 	                    opt_class ? opt_class : "St"};
+#else
+	XClassHint class = {opt_name ? opt_name : termname,
+	                    opt_class ? opt_class : termname};
+#endif
+
 	XWMHints wm = {.flags = InputHint, .input = 1};
 	XSizeHints *sizeh;
 
@@ -1095,8 +1106,13 @@ xinit(int cols, int rows)
 	pid_t thispid = getpid();
 	XColor xmousefg, xmousebg;
 
+#ifdef XRESOURCES
 	xw.scr = XDefaultScreen(xw.dpy);
 	xw.vis = XDefaultVisual(xw.dpy, xw.scr);
+#else	
+	if (!(xw.dpy = XOpenDisplay(NULL)))
+			die("can't open display\n");
+#endif
 
 	/* font */
 	if (!FcInit())
@@ -1956,6 +1972,7 @@ run(void)
 	}
 }
 
+#ifdef XRESOURCES
 int
 resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 {
@@ -2008,6 +2025,7 @@ config_init(void)
 	for (p = resources; p < resources + LEN(resources); p++)
 		resource_load(db, p->name, p->type, p->dst);
 }
+#endif
 
 void
 usage(void)
@@ -2094,11 +2112,13 @@ run:
 	setlocale(LC_CTYPE, "");
 	XSetLocaleModifiers("");
 
+#ifdef XRESOURCES
 	if(!(xw.dpy = XOpenDisplay(NULL)))
 		die("Can't open display\n");
 
 	if ( opt_xresources )
 			config_init();
+#endif
 
 	cols = MAX(cols, 1);
 	rows = MAX(rows, 1);
