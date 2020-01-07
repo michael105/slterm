@@ -111,7 +111,7 @@ https://danluu.com/input-lag/
 - stifle laughter
 
 xxxx
----- snip snip -----
+---- SNIP -----
 
 (misc 2020, misc.myer@zoho.com )
 
