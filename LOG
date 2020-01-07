@@ -49,4 +49,44 @@ would be, especially:
 However, something is bloating st, when setting the scrollback buffer
 to larger values (>10k lines)
 
+Ok. So. Found it. It's obvious.
+The history within st needs to keep track of every glyph,
+meaning not only the displayed chars, with it's attributes, 
+but also the "empty" Glyphs. (Which also do have attributes, 
+e.g. the backgroundcolor.
+
+So. What to do. 
+An external scrollback buffer has the advantage, 
+of holding only chars, which are displayed, and control sequences.
+But - e.g., when scrolling backwards, there might be colors
+and text attributes displayed wrong.
+Copying also could give problems.
+Either the control sequences are parsed within st AND the external scrollback.
+or. :/ dunno. I like a colored scrollback buffer.
+
+Seems I should see, whether I'm able to optimize the scrollback buffer
+of st. 
+The current implementation: 
+  - allocates a complete line of glyphs
+  - for every single line. Does this even for completely empty, 
+    or yet unusedlines.
+  - reallocates every single line of the "history" on win resize
+	- The "history" is more like a preallocated buffer, 
+	  where scrolled lines are copied into.
+
+So. Instead of doing this, I'm now going to prepare 0.9rc1.
+There still is some utf8 stuff left to clean.
+And further testing would be useful.
+
+About adding patches, and so on: When you guard your changes 
+with an #ifdef YOURPATCHNAME / #endif, 
+I'll add patches in each case. 
+Just do a fork, and consequently file a merge request. 
+
+You can grep for the switch "XRESOURCES",
+where I did exactly this, guard a patch 
+to be optional.
+
+;) It's also your showcase, bookmarks, about what you added.
+
 
