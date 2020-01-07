@@ -1,4 +1,4 @@
-### st-asc
+## st-asc
 
 
 
@@ -24,7 +24,7 @@ Applied Patches:
 		compile time switch "XRESOURCES"
 
 
-#### Requirements
+### Requirements
 
 - Xlib headers
 - Xft headers
