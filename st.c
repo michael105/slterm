@@ -2766,7 +2766,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
     static char selectsearch_mode;
     int i, bound, *xy;
     
-#if 0 
+#if 1 
     if ( selectsearch_mode & 2 ) { // never ?? misc
 				printf("Strange\n");
 		if ( ksym == XK_Return ) {
