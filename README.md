@@ -4,11 +4,12 @@
 
 Fork of the st terminal. (suckless.org)
 
-Stripped of unicode support and rgb colors.
+Stripped unicode support and rgb colors.
 
-<img align="right" src="images/vt-102-1984.jpg"> 
 
 Applied Patches:
+
+<img align="right" src="images/vt-102-1984.jpg"> 
 
 - anysize
 - clipboard
