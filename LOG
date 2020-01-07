@@ -37,3 +37,16 @@ We'll see.
 ..
 
 
+Thinking about it - it might be better keeping the scrollback
+buffer within st. The problems arising by separating the scrollback 
+would be, especially: 
+- Ansi control characters either being resent when scrolling back,
+	or they would have to be parsed
+- Color codes and textattributes, same problem;
+	worse, when scrolling back they would have to be parsed again.
+- this also prevents the scrollback from being accordingly seekable
+
+However, something is bloating st, when setting the scrollback buffer
+to larger values (>10k lines)
+
+
