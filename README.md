@@ -111,7 +111,7 @@ It's however a crude hack, much (unused) utf8 supporting code is left yet.
 Hopefully the compiler does it's job eliminating unneeded potions.
 
 The rgb color support is stripped.
-Counting 2 integers ( 8 Bytes ) per glyph.
+Saving 6 Bytes per glyph.
 
 ;) 256 colors might be enough for everyone.
 (Am I confusing something..?..)
