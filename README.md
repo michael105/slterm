@@ -15,8 +15,8 @@ Applied Patches:
 - scrollback-mouse-increment
 - selectioncolors
 - xresources <br>
-		added a commandline switch -x to enable reading the xresources,<br>
-		and a compile time switch "XRESOURCES"
+		added commandline switch -x to enable reading the xresources,<br>
+		compile time switch "XRESOURCES"
 
 
 Unicode encoding needs 4 Bytes per char within st,
