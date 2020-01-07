@@ -43,7 +43,7 @@
 #define STR_BUF_SIZ   ESC_BUF_SIZ
 #define STR_ARG_SIZ   ESC_ARG_SIZ
 /* Length of history, in lines */
-#define HISTSIZE      10000
+#define HISTSIZE      8000
 
 
 /* macros */
@@ -127,15 +127,15 @@ typedef struct {
 
 /* Internal representation of the screen */
 typedef struct {
-	int row;      /* nb row */
-	int col;      /* nb col */
+	Line hist[HISTSIZE]; /* history buffer */ //misc - change to vararr
 	Line *line;   /* screen */
 	Line *alt;    /* alternate screen */
-	Line hist[HISTSIZE]; /* history buffer */ //misc - change to vararr
+	TCursor c;    /* cursor */
+	int row;      /* nb row */
+	int col;      /* nb col */
 	int histi;    /* history index */
 	int scr;      /* scroll back */
 	int *dirty;   /* dirtyness of lines */
-	TCursor c;    /* cursor */
 	int ocx;      /* old cursor col */
 	int ocy;      /* old cursor row */
 	int top;      /* top    scroll limit */
@@ -1161,7 +1161,7 @@ tscrollup(int orig, int n, int copyhist)
 
 	if (copyhist) {
 		term.histi = (term.histi + 1) % HISTSIZE;
-		temp = term.hist[term.histi];
+		temp = term.hist[term.histi]; // candidate for swap (misc) or, malloc hist here.
 		term.hist[term.histi] = term.line[orig];
 		term.line[orig] = temp;
 	}
@@ -2608,7 +2608,8 @@ tresize(int col, int row)
 	term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
 	term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
 
-	for (i = 0; i < HISTSIZE; i++) {
+	for (i = 0; i < HISTSIZE; i++) { //umm misc there's the memory going :/&
+//			printf("umm");
 		term.hist[i] = xrealloc(term.hist[i], col * sizeof(Glyph));
 		for (j = mincol; j < col; j++) {
 			term.hist[i][j] = term.c.attr;
