@@ -1,5 +1,5 @@
 # st version
-VERSION = 0.8.2
+VERSION = st-asc-0.9rc1
 
 # Customize below to fit your system
 

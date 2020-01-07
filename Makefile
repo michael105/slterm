@@ -16,7 +16,7 @@ options:
 	@echo "CC      = $(CC)"
 
 config.h:
-	#cp config.def.h config.h # utterly useless and confusing
+# cp config.def.h config.h # utterly useless and confusing
 
 .c.o:
 	$(CC) $(STCFLAGS) -c $<
@@ -26,8 +26,12 @@ x.o: arg.h config.h st.h win.h
 
 $(OBJ): config.h config.mk
 
-st: $(OBJ)
-	$(CC) -o $@ $(OBJ) $(STLDFLAGS)
+#st: $(OBJ)
+# better go in one run. Gives way more room to the compiler for optimizations.
+st: config.h config.mk st.h st.c x.c win.h arg.h
+	$(CC) -o st st.c x.c $(STCFLAGS) $(STLDFLAGS)
+	
+# $(CC) -o $@ $(OBJ) $(STLDFLAGS)
 
 clean:
 	rm -f st $(OBJ) st-$(VERSION).tar.gz
