@@ -83,8 +83,7 @@ Counting 2 integers ( 8 Bytes ) per glyph.
 
 #### Links
 
-About utf8 (Know your enemy.. although I have nothing against utf8,
-it's just useless for my main work at the terminal.)
+About utf8 
 http://doc.cat-v.org/bell_labs/utf-8_history
 
 A comparison on latency, speed and memory consumption of
