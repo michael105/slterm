@@ -74,14 +74,14 @@ So st seems to be the fastest terminal emulator available.
 It's however a crude hack, much (unused) utf8 supporting code is left yet.
 Hopefully the compiler does it's job eliminating unneeded potions.
 
-Me, I'm going to strip of the rgb color support. 
-Which, again, count's with 2 integers ( 8 Bytes ) per char.
+The rgb color support is stripped.
+Counting 2 integers ( 8 Bytes ) per glyph.
 
 256 colors might be enough for everyone.
 (Am I confusing something..?..)
 
 
---- Links
+#### Links
 
 About utf8 (Know your enemy.. although I have nothing against utf8,
 it's just useless for my main work at the terminal.)
@@ -96,32 +96,7 @@ https://anarc.at/blog/2018-05-04-terminal-emulators-2/
 Latency. https://danluu.com/term-latency/
 
 Latency, comparing old (1980) and nowadays systems.
-That's. Bad. If nothing changes, in ten years we will have a latency
-in the magnitude of seconds. When the growth would be continuing.
 https://danluu.com/input-lag/
-
-
-A rant against some sort of scientists, btw.
-So, someone is sure, and "prooves" this 
-by a study, humans cannot perceipt a latency &lower 200ms,
-since that's our reaction time. 
-
-That's. Bullshit. 
-One can think, what this scientist did believe.
-But - just ask an musician. A system, used for plaing live e.g. synthesizer,
-is really hard to play with a latency of 200ms. 
-
-I'd say, it's going to be hard to get a medium timing with anything bigger than 40ms.
-
-The latency is feelable at, say, 5ms. at least. I did never really check,
-since even 20ms are hard to get with nowadays systems.
-But you can tell, in each case, the difference to a "real" instrument. 
-Which also doe's have some latency. But, amongst others, this latency is steady.
-
-Oh. There's another example, showing this scientist being wrong. 
-It's our capability to perceive the location of an audible source.
-What needs a perception and combination of both ears in the scale of microseconds.
-Maybe even nanoseconds. But 200ms is. Painful slow.
 
 
 
