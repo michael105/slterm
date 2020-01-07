@@ -74,8 +74,10 @@ Hopefully the compiler does it's job eliminating unneeded potions.
 The rgb color support is stripped.
 Counting 2 integers ( 8 Bytes ) per glyph.
 
-256 colors might be enough for everyone.
+;) 256 colors might be enough for everyone.
 (Am I confusing something..?..)
+
+!()[doc/colors-bold.png]
 
 
 #### Links
