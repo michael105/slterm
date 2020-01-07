@@ -5,7 +5,7 @@
 include config.mk
 
 SRC = st.c x.c
-OBJ = $(SRC:.c=.o)
+HEADER = st.h config.h win.h arg.h
 
 all: options st
 
@@ -18,18 +18,11 @@ options:
 config.h:
 # cp config.def.h config.h # utterly useless and confusing
 
-.c.o:
-	$(CC) $(STCFLAGS) -c $<
-
-st.o: config.h st.h win.h
-x.o: arg.h config.h st.h win.h
-
-$(OBJ): config.h config.mk
 
 #st: $(OBJ)
 # better go in one run. Gives way more room to the compiler for optimizations.
-st: config.h config.mk st.h st.c x.c win.h arg.h
-	$(CC) -o st st.c x.c $(STCFLAGS) $(STLDFLAGS)
+st: $(SRC) $(HEADER)
+	$(CC) -o st $(SRC) $(STCFLAGS) $(STLDFLAGS)
 	
 # $(CC) -o $@ $(OBJ) $(STLDFLAGS)
 
