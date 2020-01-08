@@ -1418,18 +1418,24 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
     case 5: /* Blinking bar */
     case 6: /* Steady bar */
       XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-                  win.vborderpx + cy * win.ch, cursorthickness, win.ch);
+                  win.vborderpx + (cy+1) * win.ch, cursorthickness, win.ch);
       break;
     }
   } else {
     XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
                 win.vborderpx + cy * win.ch, win.cw - 1, 1);
     XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-                win.vborderpx + cy * win.ch, 1, win.ch - 1);
+       win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
     XftDrawRect(xw.draw, &drawcol, win.hborderpx + (cx + 1) * win.cw - 1,
-                win.vborderpx + cy * win.ch, 1, win.ch - 1);
+       win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+ 
+
     XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-                win.vborderpx + (cy + 1) * win.ch - 1, win.cw, 1);
+        (win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
+    XftDrawRect(xw.draw, &drawcol, win.hborderpx + (cx + 1) * win.cw - 1,
+        win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
+    XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+                win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
   }
 }
 
@@ -1714,7 +1720,7 @@ void run(void) {
   clock_gettime(CLOCK_MONOTONIC, &last);
   lastblink = last;
 
-  for (xev = actionfps;;) { // main loop
+  for (xev = (1<<actionfps_shift);;) { // main loop
     FD_ZERO(&rfd);
     FD_SET(ttyfd, &rfd);
     FD_SET(xfd, &rfd);
@@ -1734,11 +1740,12 @@ void run(void) {
     }
 
     if (FD_ISSET(xfd, &rfd))
-      xev = actionfps;
+      xev = (1<<actionfps_shift);
 
     clock_gettime(CLOCK_MONOTONIC, &now);
     drawtimeout.tv_sec = 0;
-    drawtimeout.tv_nsec = (1000 * 1E6) / xfps;
+    drawtimeout.tv_nsec = 1000000000 >> xfps_shift;
+    //drawtimeout.tv_nsec = (1000 * 1E6) / xfps;
     tv = &drawtimeout;
 
     dodraw = 0;
@@ -1749,7 +1756,7 @@ void run(void) {
       dodraw = 1;
     }
     deltatime = TIMEDIFF(now, last);
-    if (deltatime > 1000 / (xev ? xfps : actionfps)) {
+    if (deltatime > (1000 >> (xev ? xfps_shift : actionfps_shift) ) ) {
       dodraw = 1;
       last = now;
     }
