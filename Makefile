@@ -14,6 +14,9 @@ VERSION = asc-0.9rc1
 # (in addition, st-asc has to be started with the option "-x on")
 # XRESOURCES=-DXRESOURCES
 
+OPT_FLAG = -O3
+LINKER_FLAG = -O3 -s
+
 # paths
 PREFIX = /usr/local
 MANPREFIX = $(PREFIX)/share/man
@@ -34,8 +37,8 @@ LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft \
 
 # flags
 STCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 
-STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCES)
-STLDFLAGS = $(LIBS) $(LDFLAGS)
+STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCES) $(OPT_FLAG)
+STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG)
 
 # OpenBSD:
 #CPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 -D_BSD_SOURCE

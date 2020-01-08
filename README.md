@@ -24,8 +24,6 @@ Applied Patches:
 		compile time switch "XRESOURCES"
 
 
-
-
 ### Requirements
 
 - Xlib headers
@@ -40,6 +38,8 @@ Edit config.h
 make
 make install
 ```
+
+---
 
 ### About
 
@@ -148,6 +148,12 @@ Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
 with Xorg programs. 
 
 
+(unconfirmed)
+* fix shift up/down (shift selection in emacs)
+* remove DEC test sequence when appropriate
+
+
+
 ---- snip ----
 
 ### roadmap
@@ -160,19 +166,21 @@ with Xorg programs.
 - ~~add patches~~
 - Compression of history buffer
 - separation into a shared library and st-asc
-- ~~Store fonts in either the shared library,<br>
-  or use the core Xorg interface / freetype2 ?~~
-	(https://en.wikibooks.org/wiki/Guide_to_X11/Fonts)
-	uuuh. that's a whole bunch of wasps. Better leave 
-  the working system as it is. Resource saving might also be possible
-	by the separation into libstasc.so and st-asc
-	Probably with the drawback of having only one font available,
-	without having to dig to much into the internals of library loading
 - wayland? postponed.
 - gain earth domination
 - quench vogons
 - stifle laughter
 - stop being childish
+___
+
+- ~~Store fonts in either the shared library,<br>
+  or use the core Xorg interface / freetype2 ?~~
+	_(https://en.wikibooks.org/wiki/Guide_to_X11/Fonts)
+	uuuh. that's a whole bunch of wasps. Better leave 
+  the working system as it is. Resource saving might also be possible
+	by the separation into libstasc.so and st-asc
+	Probably with the drawback of having only one font available,
+	without having to dig to much into the internals of library loading_
 
 xxxx
 **---- SNIP -----**
@@ -187,7 +195,7 @@ xxxx
 Credits
 -------
 
-Based on Aurélien APTEL <aurelien dot aptel at gmail dot com> bt source code.
+Based on Aurelien APTEL <aurelien dot aptel at gmail dot com> bt source code.
 
 Fetched from the suckless git repo (suckless.org) on 2020/01/01.
 
