@@ -1714,13 +1714,13 @@ void run(void) {
   clock_gettime(CLOCK_MONOTONIC, &last);
   lastblink = last;
 
-  for (xev = actionfps;;) {
+  for (xev = actionfps;;) { // main loop
     FD_ZERO(&rfd);
     FD_SET(ttyfd, &rfd);
     FD_SET(xfd, &rfd);
 
     if (pselect(MAX(xfd, ttyfd) + 1, &rfd, NULL, NULL, tv, NULL) < 0) {
-      if (errno == EINTR)
+      if (errno == EINTR) //? xevent ?
         continue;
       die("select failed: %s\n", strerror(errno));
     }
@@ -1759,7 +1759,7 @@ void run(void) {
         XNextEvent(xw.dpy, &ev);
         if (XFilterEvent(&ev, None))
           continue;
-        if (handler[ev.type])
+        if (handler[ev.type]) // process x events 
           (handler[ev.type])(&ev);
       }
 
@@ -1774,10 +1774,22 @@ void run(void) {
             drawtimeout.tv_nsec = 1000;
           } else {
             drawtimeout.tv_nsec =
-                (1E6 * (blinktimeout - TIMEDIFF(now, lastblink)));
+                ((long)(blinktimeout - TIMEDIFF(now, lastblink)) << 20);
+                //(1E6 * (blinktimeout - TIMEDIFF(now, lastblink)));
           }
-          drawtimeout.tv_sec = drawtimeout.tv_nsec / 1E9;
-          drawtimeout.tv_nsec %= (long)1E9;
+         // drawtimeout.tv_nsec = ( drawtimeout.tv_nsec - ( drawtimeout.tv_sec = (drawtimeout.tv_nsec >> 9 )) >>9) ; //
+         //drawtimeout.tv_sec = drawtimeout.tv_nsec / 1E9; // Thats bad misc
+          //drawtimeout.tv_nsec %= (long)1E9; // Better don't divide
+					//
+				 // better shift ? division is the most expensive operation.
+				 // Anyways. doesn't seem to be a big difference. I'm however wondering.
+				 // More strange. E.g. dividing by 512 prevents blinking??? 
+				 // Ok. I confused exponential and hexadecimal. It's exponential.
+				 // 1E9 equals 1.000.000.000
+				 // 2^30 might be close enough
+
+					drawtimeout.tv_sec = (drawtimeout.tv_nsec >> 30); // .. 
+				  drawtimeout.tv_nsec -= (long)(drawtimeout.tv_sec << 30); 
         } else {
           tv = NULL;
         }
