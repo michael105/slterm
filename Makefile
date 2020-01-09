@@ -14,7 +14,7 @@ VERSION = asc-0.9rc1
 # (in addition, st-asc has to be started with the option "-x on")
 # XRESOURCES=-DXRESOURCES
 
-OPT_FLAG = -O3 -Wall
+OPT_FLAG = -O2
 LINKER_FLAG = -s
 
 # paths
