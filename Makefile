@@ -47,7 +47,7 @@ STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG)
 #       `pkg-config --libs freetype2`
 
 # compiler and linker
-# CC = c99
+CC = gcc
 
 
 ######### end of config options

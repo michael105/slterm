@@ -50,8 +50,10 @@
 #define ESC_ARG_SIZ 16
 #define STR_BUF_SIZ ESC_BUF_SIZ
 #define STR_ARG_SIZ ESC_ARG_SIZ
+// misc. uuuh. I realize - the "history" set's itself back, when 
+// filled up. That's .. bad. Sorry.
 /* Length of history, in lines */
-#define HISTSIZE 2000
+#define HISTSIZE 400
 
 /* macros */
 #define IS_SET(flag) ((term.mode & (flag)) != 0)
@@ -65,6 +67,21 @@
   ((y) < term.scr                                                              \
        ? term.hist[((y) + term.histi - term.scr + HISTSIZE + 1) % HISTSIZE]    \
        : term.line[(y)-term.scr])
+
+#if (__SIZEOF_POINTER__==8)
+#define POINTER unsigned long
+#else
+#if (__SIZEOF_POINTER__==4)
+#define POINTER unsigned int
+#else
+#error
+#endif
+#endif
+
+#define SWAP(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
+		      b = (void*)((POINTER)a ^ (POINTER)b);\
+		      a = (void*)((POINTER)a ^ (POINTER)b);}
+#define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
 enum term_mode {
   MODE_WRAP = 1 << 0,
@@ -133,7 +150,7 @@ typedef struct {
 
 /* Internal representation of the screen */
 typedef struct {
-  Line hist[HISTSIZE]; /* history buffer */ // misc - change to vararr
+  Line hist[HISTSIZE]; /* history buffer */ // misc - change to circular buffer
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */
   TCursor c;                                /* cursor */
@@ -1076,10 +1093,10 @@ void tnew(int col, int row) {
 int tisaltscr(void) { return IS_SET(MODE_ALTSCREEN); }
 
 void tswapscreen(void) {
-  Line *tmp = term.line;
-
+		SWAP( term.line, term.alt );
+/*  Line *tmp = term.line;
   term.line = term.alt;
-  term.alt = tmp;
+  term.alt = tmp;*/
   term.mode ^= MODE_ALTSCREEN;
   tfulldirt();
 }
@@ -1184,9 +1201,10 @@ void tscrollup(int orig, int n, int copyhist) {
   tsetdirt(orig + n, term.bot);
 
   for (i = orig; i <= term.bot - n; i++) {
-    temp = term.line[i];
+			SWAP(term.line[i],term.line[i+n]);
+    /* temp = term.line[i];
     term.line[i] = term.line[i + n];
-    term.line[i + n] = temp;
+    term.line[i + n] = temp;*/
   }
 
   selscroll(orig, -n);
@@ -1329,10 +1347,12 @@ void tclearregion(int x1, int y1, int x2, int y2) {
   Glyph *gp;
 
   if (x1 > x2) {
-    temp = x1, x1 = x2, x2 = temp;
+			SWAPint(x1,x2);
+    //temp = x1, x1 = x2, x2 = temp;
   }
   if (y1 > y2) {
-    temp = y1, y1 = y2, y2 = temp;
+			SWAPint(y1,y2);
+    //temp = y1, y1 = y2, y2 = temp;
   }
 
   LIMIT(x1, 0, term.col - 1);
