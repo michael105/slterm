@@ -1105,24 +1105,27 @@ void kscrolldown(const Arg *a) {
 }
 
 void kscrollup(const Arg *a) {
-  int n = a->i;
+		int n = a->i;
 
-	dbg2("kscrollup, n: %d\n",n);
-  if (n < 0) {
-    n = term.row + n;
-  }
-	dbg2("kscrollup2, n: %d\n",n);
+		dbg2("kscrollup, n: %d, term.histi: %d, term.row: %d \n",n, term.histi, term.row);
+		if (n < 0) {
+				n = term.row + n;
+		}
+		dbg2("kscrollup2, n: %d\n",n);
 
-  if (term.scr <= HISTSIZE - n) {
-  if (term.scr <= term.histi - n) {
-    term.scr += n;
-	} else {
-			term.scr = term.histi;
-	}
-    selscroll(0, n);
-    tfulldirt();
-  }
-	
+		if (term.scr < term.histi ) { // misc: patch back to scrollback upstream
+				/*if (term.scr <= term.histi - n)
+						term.scr += n;
+				else 
+						term.scr = term.histi;*/
+				term.scr += n;
+				if ( term.scr > term.histi )
+						term.scr = term.histi;
+
+				selscroll(0, n);
+				tfulldirt();
+		}
+
 }
 
 void tscrolldown(int orig, int n, int copyhist) {
