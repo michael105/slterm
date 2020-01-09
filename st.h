@@ -29,13 +29,11 @@ enum glyph_attribute {
   ATTR_BLINK = 1 << 4,
   ATTR_REVERSE = 1 << 5,
   ATTR_WRAP = 1 << 6,
-  ATTR_WDUMMY = 1 << 7,
 #ifndef UTF8
   ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
 
   ATTR_INVISIBLE = 0,
   ATTR_STRUCK = 0,
-  ATTR_WIDE = 0,
 
 #else
 	ATTR_INVISIBLE  = 1 << 6,
@@ -57,19 +55,21 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned short ushort;
-
+#ifdef UTF8
+typedef uint_least32_t Rune;
+#else
 typedef unsigned char Rune;
-// typedef uint_least32_t Rune;
+#endif
 
 #define Glyph Glyph_
 typedef struct {
   Rune u;             /* character code */
   unsigned char mode; /* attribute flags */
-  // ushort mode;      /* attribute flags */
   unsigned char fg; /* foreground  */
-  // uint32_t fg;      /* foreground  */
   unsigned char bg; /* background  */
-                    // uint32_t bg;      /* background  */
+  // ushort mode;      /* attribute flags */
+  // uint32_t fg;      /* foreground  */
+  // uint32_t bg;      /* background  */
 } Glyph;
 
 typedef Glyph *Line;

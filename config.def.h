@@ -126,7 +126,7 @@ unsigned char defaultbg = 0;
 static unsigned char defaultcs = 255;
 static unsigned char defaultrcs = 202;
 // Unfocused window
-static unsigned char unfocusedrcs = 226; 
+static unsigned char unfocusedrcs = 46; //118;//226; 
 
 /* Colors used for selection */
 unsigned int selectionbg = 257;

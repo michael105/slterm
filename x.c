@@ -1117,16 +1117,22 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
     rune = glyphs[i].u;
     mode = glyphs[i].mode;
 
+#ifdef UTF8
     /* Skip dummy wide-character spacing. */
     if (mode == ATTR_WDUMMY)
       continue;
+#endif
 
     /* Determine font for glyph if different from previous glyph. */
     if (prevmode != mode) {
       prevmode = mode;
       font = &dc.font;
       frcflags = FRC_NORMAL;
+#ifdef UTF8
       runewidth = win.cw * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
+#else
+      runewidth = win.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
+#endif
       if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD)) {
         font = &dc.ibfont;
         frcflags = FRC_ITALICBOLD;
@@ -1224,7 +1230,11 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
                          int x, int y) {
+#ifdef UTF8
   int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
+#else
+  int charlen = len;// * ((base.mode & ATTR_WIDE) ? 2 : 1);
+#endif
   int winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
       width = charlen * win.cw;
   Color *fg, *bg, *temp, revfg, revbg, truefg, truebg;
@@ -1375,7 +1385,11 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
   /*
    * Select the right color for the right mode.
    */
+#ifdef UTF8
   g.mode &= ATTR_BOLD | ATTR_ITALIC | ATTR_UNDERLINE | ATTR_STRUCK | ATTR_WIDE;
+#else
+  g.mode &= ATTR_BOLD | ATTR_ITALIC | ATTR_UNDERLINE | ATTR_STRUCK;
+#endif
 
   if (IS_SET(MODE_REVERSE)) {
     g.mode |= ATTR_REVERSE;
@@ -1469,8 +1483,10 @@ void xdrawline(Line line, int x1, int y1, int x2) {
   i = ox = 0;
   for (x = x1; x < x2 && i < numspecs; x++) {
     new = line[x];
+#ifdef UTF8
     if (new.mode == ATTR_WDUMMY)
       continue;
+#endif
     if (selected(x, y1))
       new.mode ^= ATTR_REVERSE;
     if (i > 0 && ATTRCMP(base, new)) {

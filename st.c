@@ -34,9 +34,18 @@
 #endif
 
 /* Arbitrary sizes */
+
+#define UTF_SIZ 4
+#define UTF_INVALID 0xFFFD
+
+// silence quirky cpp warnings
+#ifndef UTF8
+#undef UTF_INVALID
 #define UTF_INVALID 0xff
-//#define UTF_INVALID   0xFFFD
+#undef UTF_SIZ
 #define UTF_SIZ 1
+#endif
+
 #define ESC_BUF_SIZ (128 * UTF_SIZ)
 #define ESC_ARG_SIZ 16
 #define STR_BUF_SIZ ESC_BUF_SIZ
@@ -330,8 +339,10 @@ Rune utf8decodebyte(char c, size_t *i) {
 }
 
 size_t utf8encode(Rune u, char *c) {
+#ifndef UTF8
   c[0] = u;
   return 1;
+#else
   size_t len, i;
 
   len = utf8validate(&u, 0);
@@ -346,6 +357,7 @@ size_t utf8encode(Rune u, char *c) {
   c[0] = utf8encodebyte(u, len);
 
   return len;
+#endif
 }
 
 char utf8encodebyte(Rune u, size_t i) { return utfbyte[i] | (u & ~utfmask[i]); }
@@ -564,10 +576,18 @@ void selsnap(int *x, int *y, int direction) {
 
       gp = &TLINE(newy)[newx];
       delim = ISDELIM(gp->u);
+#ifdef UTF8
       if (!(gp->mode & ATTR_WDUMMY) &&
           (delim != prevdelim || (delim && gp->u != prevgp->u))) {
         break;
       }
+#else
+      if (delim != prevdelim || (delim && gp->u != prevgp->u)) {
+        break;
+      }
+#endif
+
+
 
       *x = newx;
       *y = newy;
@@ -635,9 +655,11 @@ char *getsel(void) {
       if (gp->mode & ATTR_WDUMMY) {
         continue;
       }
-#endif
-
       ptr += utf8encode(gp->u, ptr);
+#else
+			*ptr = gp->u;
+			ptr++;
+#endif
     }
 
 
@@ -2302,16 +2324,20 @@ void tputc(Rune u) {
   Glyph *gp;
 
   control = ISCONTROL(u);
-  // if (!IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
+#ifdef UTF8
+  if (!IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
+#endif
   c[0] = u;
   width = len = 1;
-  /*} else {
+#ifdef UTF8
+  } else {
       len = utf8encode(u, c);
       if (!control && (width = wcwidth(u)) == -1) {
           memcpy(c, "\357\277\275", 4); // UTF_INVALID
           width = 1;
       }
-  }*/
+  }
+#endif
 
   if (IS_SET(MODE_PRINT)) {
     tprinter(c, len);
@@ -2457,15 +2483,19 @@ int twrite(const unsigned char *buf, int buflen, int show_ctrl) {
 
   dbg("twrite0 %d %c  %d\n", buflen, buf[0], show_ctrl);
   for (n = 0; n < buflen; n += charsize) {
-    /*if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
+#ifdef UTF8
+    if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
         // process a complete utf8 char
         charsize = utf8decode(buf + n, &u, buflen - n);
         if (charsize == 0)
             break;
-    } else  {*/
+    } else  {
+#endif
     u = buf[n] & 0xFF;
     charsize = 1;
-    //}
+#ifdef UTF8
+    }
+#endif
     dbg("twrite1 %d %c\n", u, u);
     if (show_ctrl && ISCONTROL(u)) {
       dbg("twrite %d %c\n", u, u);
@@ -2711,9 +2741,8 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
   static char selectsearch_mode;
   int i, bound, *xy;
 
-#if 1
   if (selectsearch_mode & 2) { // never ?? misc
-    dbg("Strange\n");
+    dbg("selectsearch_mode & 2\n");
     if (ksym == XK_Return) {
       selectsearch_mode ^= 2;
       set_notifmode(selectsearch_mode, -2);
@@ -2743,7 +2772,6 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
     drawregion(0, term.bot, term.col, term.bot + 1);
     return 0;
   }
-#endif
 
   switch (ksym) {
   case -1:
