@@ -22,9 +22,8 @@
 #include "st.h"
 #include "win.h"
 
-//#define dbg(...) printf(__VA_ARGS__)
-#define dbg(...)                                                               \
-  {}
+#define dbg2(...) printf(__VA_ARGS__)
+#define dbg(...) {}
 
 #if defined(__linux)
 #include <pty.h>
@@ -43,7 +42,7 @@
 #define STR_BUF_SIZ ESC_BUF_SIZ
 #define STR_ARG_SIZ ESC_ARG_SIZ
 /* Length of history, in lines */
-#define HISTSIZE 8000
+#define HISTSIZE 2000
 
 /* macros */
 #define IS_SET(flag) ((term.mode & (flag)) != 0)
@@ -632,12 +631,15 @@ char *getsel(void) {
     }
 
     for (; gp <= last; ++gp) {
+#ifdef UTF8
       if (gp->mode & ATTR_WDUMMY) {
         continue;
       }
+#endif
 
       ptr += utf8encode(gp->u, ptr);
     }
+
 
     /*
      * Copy and pasting of line endings is inconsistent
@@ -1246,6 +1248,7 @@ void tmoveto(int x, int y) {
 }
 
 void tsetchar(Rune u, Glyph *attr, int x, int y) {
+#ifdef UTF8
   static char *vt100_0[62] = {
       /* 0x41 - 0x7e */
       "↑", "↓", "→", "←", "█", "▚", "☃",      /* A - G */
@@ -1261,19 +1264,22 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
   /*
    * The table is proudly stolen from rxvt.
    */
-  /*	if (term.trantbl[term.charset] == CS_GRAPHIC0 &&
+  	if (term.trantbl[term.charset] == CS_GRAPHIC0 &&
              BETWEEN(u, 0x41, 0x7e) && vt100_0[u - 0x41])
-                  utf8decode(vt100_0[u - 0x41], &u, UTF_SIZ);*/
+                  utf8decode(vt100_0[u - 0x41], &u, UTF_SIZ);
 
   if (term.line[y][x].mode & ATTR_WIDE) {
+		dbg2("Attr_wide: %c\n",term.line[y][x].u);
     if (x + 1 < term.col) {
       term.line[y][x + 1].u = ' ';
       term.line[y][x + 1].mode &= ~ATTR_WDUMMY;
     }
   } else if (term.line[y][x].mode & ATTR_WDUMMY) {
+		dbg2("Attr_dummy: %c\n",term.line[y][x].u);
     term.line[y][x - 1].u = ' ';
     term.line[y][x - 1].mode &= ~ATTR_WIDE;
   }
+#endif
 
   term.dirty[y] = 1;
   term.line[y][x] = *attr;
@@ -2426,13 +2432,17 @@ check_control_code:
 
   tsetchar(u, &term.c.attr, term.c.x, term.c.y);
 
+#ifdef UTF8
   if (width == 2) {
+			dbg2("tputchar width2: %x %c", gp[0].u, gp[0].u );
     gp->mode |= ATTR_WIDE;
     if (term.c.x + 1 < term.col) {
       gp[1].u = '\0';
       gp[1].mode = ATTR_WDUMMY;
     }
   }
+#endif
+
   if (term.c.x + width < term.col) {
     tmoveto(term.c.x + width, term.c.y);
   } else {
@@ -2591,12 +2601,15 @@ void draw(void) {
   /* adjust cursor position */
   LIMIT(term.ocx, 0, term.col - 1);
   LIMIT(term.ocy, 0, term.row - 1);
+	
+#ifdef UTF8
   if (term.line[term.ocy][term.ocx].mode & ATTR_WDUMMY) {
     term.ocx--;
   }
   if (term.line[term.c.y][cx].mode & ATTR_WDUMMY) {
     cx--;
   }
+#endif 
 
   drawregion(0, 0, term.col, term.row);
   if (term.scr == 0) {
