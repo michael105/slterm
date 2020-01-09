@@ -43,8 +43,11 @@ static unsigned int tripleclicktimeout = 600;
 int allowaltscreen = 1;
 
 /* frames per second st should at maximum draw to the screen */
-static unsigned int xfps = 120;
-static unsigned int actionfps = 30;
+/* set to log(framerate) ->   log(128) = 7; log(64) = 6 */
+//static unsigned int xfps = 128;
+#define xfps_shift 7
+#define actionfps_shift 5
+//#define actionfps 32
 
 /*
  * blinking timeout (set to 0 to disable blinking) for the terminal blinking
@@ -61,7 +64,7 @@ static unsigned int cursorthickness = 2;
  * bell volume. It must be a value between -100 and 100. Use 0 for disabling
  * it
  */
-static int bellvolume = 0;
+static int bellvolume = 50;
 
 /* default TERM value */
 char *termname = "st-256color";
@@ -120,10 +123,10 @@ unsigned char defaultfg = 7;
 //unsigned int defaultfg = 7;
 unsigned char defaultbg = 0;
 //unsigned int defaultbg = 0;
-static unsigned char defaultcs = 7;
-//static unsigned int defaultcs = 256;
-static unsigned char defaultrcs = 1;
-//static unsigned int defaultrcs = 256;
+static unsigned char defaultcs = 255;
+static unsigned char defaultrcs = 202;
+// Unfocused window
+static unsigned char unfocusedrcs = 226; 
 
 /* Colors used for selection */
 unsigned int selectionbg = 257;
@@ -139,7 +142,7 @@ static int ignoreselfg = 1;
  * 6: Bar ("|")
  * 7: Snowman ("☃")
  */
-static unsigned int cursorshape = 2;
+static unsigned int cursorshape = 4;
 
 /*
  * Default columns and rows numbers
@@ -182,8 +185,8 @@ ResourcePref resources[] = {
     { "cursorColor", STRING, &colorname[258] },
     { "termname", STRING, &termname },
     { "shell", STRING, &shell },
-    { "xfps", INTEGER, &xfps },
-    { "actionfps", INTEGER, &actionfps },
+    //{ "xfps", INTEGER, &xfps },
+    //{ "actionfps", INTEGER, &actionfps },
     { "blinktimeout", INTEGER, &blinktimeout },
     { "bellvolume", INTEGER, &bellvolume },
     { "tabspaces", INTEGER, &tabspaces },
