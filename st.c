@@ -1087,6 +1087,7 @@ void tswapscreen(void) {
 void kscrolldown(const Arg *a) {
   int n = a->i;
 
+	dbg2("kscrolldown, n: %d\n",n);
   if (n < 0) {
     n = term.row + n;
   }
@@ -1094,6 +1095,7 @@ void kscrolldown(const Arg *a) {
   if (n > term.scr) {
     n = term.scr;
   }
+	dbg2("kscrolldown2, n: %d\n",n);
 
   if (term.scr > 0) {
     term.scr -= n;
@@ -1105,21 +1107,29 @@ void kscrolldown(const Arg *a) {
 void kscrollup(const Arg *a) {
   int n = a->i;
 
+	dbg2("kscrollup, n: %d\n",n);
   if (n < 0) {
     n = term.row + n;
   }
+	dbg2("kscrollup2, n: %d\n",n);
 
   if (term.scr <= HISTSIZE - n) {
+  if (term.scr <= term.histi - n) {
     term.scr += n;
+	} else {
+			term.scr = term.histi;
+	}
     selscroll(0, n);
     tfulldirt();
   }
+	
 }
 
 void tscrolldown(int orig, int n, int copyhist) {
   int i;
   Line temp;
 
+	dbg2("tscrolldown, orig, n, copyhist: %d %d %d\n",orig,n, copyhist);
   LIMIT(n, 0, term.bot - orig + 1);
 
   if (copyhist) {
@@ -1145,10 +1155,13 @@ void tscrollup(int orig, int n, int copyhist) {
   int i;
   Line temp;
 
+	dbg2("tscrollup, orig, n, copyhist: %d %d %d\n",orig,n, copyhist);
   LIMIT(n, 0, term.bot - orig + 1);
 
   if (copyhist) {
+		dbg2("term.histi: %d\n", term.histi);
     term.histi = (term.histi + 1) % HISTSIZE;
+		dbg2("term.histi: %d\n", term.histi);
     temp = term.hist[term.histi]; 
 		// candidate for swap or, malloc hist here
     // "compression" might take place here, as well.
