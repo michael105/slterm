@@ -898,7 +898,7 @@ void ttywrite(const unsigned char *s, size_t n, int may_echo) {
     dbg("ttywrite3 %d %x %c\n", n, s[0], s[0]);
     if (*s == '\r') {
       next = s + 1;
-      ttywriteraw("\r\n", 2);
+      ttywriteraw((uchar*)"\r\n", 2);
     } else {
       next = memchr(s, '\r', n);
       DEFAULT(next, s + n);
