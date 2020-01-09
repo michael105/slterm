@@ -30,20 +30,22 @@ enum glyph_attribute {
   ATTR_REVERSE = 1 << 5,
   ATTR_WRAP = 1 << 6,
   ATTR_WDUMMY = 1 << 7,
+#ifndef UTF8
   ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
 
   ATTR_INVISIBLE = 0,
   ATTR_STRUCK = 0,
   ATTR_WIDE = 0,
 
+#else
+	ATTR_INVISIBLE  = 1 << 6,
+  ATTR_STRUCK     = 1 << 7,
+  ATTR_WRAP       = 1 << 8,
+  ATTR_WIDE       = 1 << 9,
+  ATTR_WDUMMY     = 1 << 10,
+  ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
+#endif
 };
-/*	ATTR_INVISIBLE  = 1 << 6,
-        ATTR_STRUCK     = 1 << 7,
-        ATTR_WRAP       = 1 << 8,
-        ATTR_WIDE       = 1 << 9,
-        ATTR_WDUMMY     = 1 << 10,
-        ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
-};*/
 
 enum selection_mode { SEL_IDLE = 0, SEL_EMPTY = 1, SEL_READY = 2 };
 
