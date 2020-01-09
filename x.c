@@ -1237,7 +1237,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #endif
   int winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
       width = charlen * win.cw;
-  Color *fg, *bg, *temp, revfg, revbg, truefg, truebg;
+  Color *fg, *bg, revfg, revbg, truefg, truebg;
   XRenderColor colfg, colbg;
   XRectangle r;
 

@@ -1093,10 +1093,7 @@ void tnew(int col, int row) {
 int tisaltscr(void) { return IS_SET(MODE_ALTSCREEN); }
 
 void tswapscreen(void) {
-		SWAP( term.line, term.alt );
-/*  Line *tmp = term.line;
-  term.line = term.alt;
-  term.alt = tmp;*/
+	SWAP( term.line, term.alt );
   term.mode ^= MODE_ALTSCREEN;
   tfulldirt();
 }
@@ -1130,6 +1127,12 @@ void kscrollup(const Arg *a) {
 		}
 		dbg2("kscrollup2, n: %d\n",n);
 
+	if (term.scr <= HISTSIZE-n) {
+		term.scr += n;
+		selscroll(0, n);
+		tfulldirt();
+	}
+#if 0
 		if (term.scr < term.histi ) { // misc: patch back to scrollback upstream
 				/*if (term.scr <= term.histi - n)
 						term.scr += n;
@@ -1142,30 +1145,25 @@ void kscrollup(const Arg *a) {
 				selscroll(0, n);
 				tfulldirt();
 		}
-
+#endif
 }
 
 void tscrolldown(int orig, int n, int copyhist) {
   int i;
-  Line temp;
 
 	dbg2("tscrolldown, orig, n, copyhist: %d %d %d\n",orig,n, copyhist);
   LIMIT(n, 0, term.bot - orig + 1);
 
   if (copyhist) {
     term.histi = (term.histi - 1 + HISTSIZE) % HISTSIZE;
-    temp = term.hist[term.histi];
-    term.hist[term.histi] = term.line[term.bot];
-    term.line[term.bot] = temp;
+		SWAP( term.hist[term.histi], term.line[term.bot] );
   }
 
   tsetdirt(orig, term.bot - n);
   tclearregion(0, term.bot - n + 1, term.col - 1, term.bot);
 
   for (i = term.bot; i >= orig + n; i--) {
-    temp = term.line[i];
-    term.line[i] = term.line[i - n];
-    term.line[i - n] = temp;
+    SWAP( term.line[i], term.line[i-n] );
   }
 
   selscroll(orig, n);
@@ -1173,7 +1171,6 @@ void tscrolldown(int orig, int n, int copyhist) {
 
 void tscrollup(int orig, int n, int copyhist) {
   int i;
-  Line temp;
 
 	dbg2("tscrollup, orig, n, copyhist: %d %d %d\n",orig,n, copyhist);
   LIMIT(n, 0, term.bot - orig + 1);
@@ -1182,15 +1179,13 @@ void tscrollup(int orig, int n, int copyhist) {
 		dbg2("term.histi: %d\n", term.histi);
     term.histi = (term.histi + 1) % HISTSIZE;
 		dbg2("term.histi: %d\n", term.histi);
-    temp = term.hist[term.histi]; 
+    SWAP( term.hist[term.histi], term.line[orig] );
 		// candidate for swap or, malloc hist here
     // "compression" might take place here, as well.
     // sort of count*glyph for adjacent equal glyphs.
     // Maybe another text attribute. Then, the next glyph
     // as union int gives the count. Giving for, e.g. an empty line
 		// with 200 cols a compression ratio of 200/2 (misc)
-    term.hist[term.histi] = term.line[orig];
-    term.line[orig] = temp;
   }
 
   if (term.scr > 0 && term.scr < HISTSIZE) {
@@ -1202,9 +1197,6 @@ void tscrollup(int orig, int n, int copyhist) {
 
   for (i = orig; i <= term.bot - n; i++) {
 			SWAP(term.line[i],term.line[i+n]);
-    /* temp = term.line[i];
-    term.line[i] = term.line[i + n];
-    term.line[i + n] = temp;*/
   }
 
   selscroll(orig, -n);
@@ -1343,16 +1335,14 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 }
 
 void tclearregion(int x1, int y1, int x2, int y2) {
-  int x, y, temp;
+  int x, y;
   Glyph *gp;
 
   if (x1 > x2) {
 			SWAPint(x1,x2);
-    //temp = x1, x1 = x2, x2 = temp;
   }
   if (y1 > y2) {
 			SWAPint(y1,y2);
-    //temp = y1, y1 = y2, y2 = temp;
   }
 
   LIMIT(x1, 0, term.col - 1);
@@ -1558,17 +1548,16 @@ void tsetattr(int *attr, int l) {
 }
 
 void tsetscroll(int t, int b) {
-  int temp;
-
   LIMIT(t, 0, term.row - 1);
   LIMIT(b, 0, term.row - 1);
   if (t > b) {
-    temp = t;
-    t = b;
-    b = temp;
-  }
-  term.top = t;
-  term.bot = b;
+	//		SWAPint( t,b );
+			term.top = b;
+			term.bot = t;
+  } else {
+			term.top = t;
+			term.bot = b;
+	}
 }
 
 void tsetmode(int priv, int set, int *args, int narg) {
