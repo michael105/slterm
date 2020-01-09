@@ -14,8 +14,8 @@ VERSION = asc-0.9rc1
 # (in addition, st-asc has to be started with the option "-x on")
 # XRESOURCES=-DXRESOURCES
 
-OPT_FLAG = -O3
-LINKER_FLAG = -O3 -s
+OPT_FLAG = -O2
+LINKER_FLAG = -s
 
 # paths
 PREFIX = /usr/local
@@ -36,7 +36,7 @@ LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft \
        `$(PKG_CONFIG) --libs freetype2`
 
 # flags
-STCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 
+STCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600
 STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCES) $(OPT_FLAG)
 STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG)
 
