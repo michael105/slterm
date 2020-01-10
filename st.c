@@ -210,11 +210,7 @@ typedef struct {
 static void execsh(char *, char **);
 static void stty(char **);
 static void sigchld(int);
-#ifdef UTF8
-static void ttywriteraw(const char *, size_t);
-#else
-static void ttywriteraw(const unsigned char *, size_t);
-#endif
+static void ttywriteraw(const utfchar *, size_t);
 
 static void csidump(void);
 static void csihandle(void);
@@ -251,17 +247,13 @@ static void tsetdirt(int, int);
 static void tsetscroll(int, int);
 static void tswapscreen(void);
 static void tsetmode(int, int, int *, int);
-#ifdef UTF8
-static int twrite(const char *, int, int);
-#else
-static int twrite(const unsigned char *, int, int);
-#endif
+static int twrite(const utfchar *, int, int);
 static void tfulldirt(void);
 static void tcontrolcode(uchar);
-static void tdectest(char);
-static void tdefutf8(char);
+static void tdectest(utfchar);
+static void tdefutf8(utfchar);
 static int32_t tdefcolor(int *, int *, int);
-static void tdeftran(char);
+static void tdeftran(utfchar);
 static void tstrsequence(uchar);
 
 static void drawregion(int, int, int, int);
@@ -2153,7 +2145,7 @@ void tputtab(int n) {
   term.c.x = LIMIT(x, 0, term.col - 1);
 }
 
-void tdefutf8(char ascii) {
+void tdefutf8(utfchar ascii) {
 #ifdef UTF8
   if (ascii == 'G')
    term.mode |= MODE_UTF8;
@@ -2164,7 +2156,7 @@ void tdefutf8(char ascii) {
   }
 }
 
-void tdeftran(char ascii) {
+void tdeftran(utfchar ascii) {
   static char cs[] = "0B";
   static int vcs[] = {CS_GRAPHIC0, CS_USA};
   char *p;
@@ -2176,7 +2168,7 @@ void tdeftran(char ascii) {
   }
 }
 
-void tdectest(char c) {
+void tdectest(utfchar c) {
   int x, y;
 
   if (c == '8') { /* DEC screen alignment test. */
