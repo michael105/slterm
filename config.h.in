@@ -1,13 +1,58 @@
-/* See LICENSE file for copyright and license details. */
+#if 0
+ifdef UNDEF
 
-/*
- * appearance
- *
- * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
- * defaultfont */
+The file to edit the config
+Makefile syntax config below.
+
+
+endif
+
+# version
+VERSION = asc-0.9rc2
+
+# Set to 1 enable Xresource configuration
+# (in addition, st-asc has to be started with the option "-x on")
+XRESOURCES = 0
+
+# compile with utf8-support
+UTF8 = 0
+
+# Length of history, in bits, -> log(size in lines) ~ bits */
+# 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
+HISTSIZEBITS = 12
+
+# opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
+OPT_FLAG = -O2
+
+# Linker Flags
+LINKER_FLAG = -s
+
+# paths
+PREFIX = /usr/local
+MANPREFIX = $(PREFIX)/share/man
+
+X11INC = /usr/X11R6/include
+X11LIB = /usr/X11R6/lib
+
+# Executables
+
+# pkg-config
+PKG_CONFIG = pkg-config
+
+# compiler and linker
+CC = gcc
+
+
+#end of Makefile syntax options. C-Style options below
+ifdef UNDEF
+#endif
+
+// font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
+// defaultfont 
 static char *font = "Monospace:pixelsize=13:Bold:antialias=true:autohint=true";
 //static int borderpx = 4;
-// in percent of a char's width
+
+// borderwidth in percent of a char's width
 int borderperc = 40;
 
 /*
@@ -513,4 +558,8 @@ static char ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~";
+
+#if 0
+endif
+#endif
 

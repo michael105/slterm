@@ -13,6 +13,12 @@
 
 </div>
 
+omitted:
+
+newterm ( doesn't detach->parent killed->child too )
+	
+vertcenter ( somehow doesn't look right to me)
+
 
 ---
 ### keyboard\_select
