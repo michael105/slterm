@@ -14,7 +14,7 @@ VERSION = asc-0.9rc1
 # (in addition, st-asc has to be started with the option "-x on")
 # XRESOURCES=-DXRESOURCES
 
-OPT_FLAG = -O2
+OPT_FLAG = -O3
 LINKER_FLAG = -s
 
 # paths
@@ -73,6 +73,12 @@ config.h:
 st: $(SRC) $(HEADER)
 	$(CC) -o st $(SRC) $(STCFLAGS) $(STLDFLAGS)
 	
+shared: $(SRC) $(HEADER) st-asc.so
+	gcc -o st-asc st-asc.c -lst-asc $(OPT_FLAG) 
+
+st-asc.so: $(SRC) $(HEADER) x.h
+	$(CC) -o libst-asc.so -shared -fpic $(SRC) $(STCFLAGS) $(STLDFLAGS) -Dshared
+
 
 clean:
 	rm -f st $(OBJ) st-$(VERSION).tar.gz

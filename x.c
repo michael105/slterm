@@ -68,14 +68,14 @@ typedef struct {
 #define XK_SWITCH_MOD (1 << 13)
 
 /* function definitions used in config.h */
-static void clipcopy(const Arg *);
-static void clippaste(const Arg *);
-static void numlock(const Arg *);
-static void selpaste(const Arg *);
-static void zoom(const Arg *);
-static void zoomabs(const Arg *);
-static void zoomreset(const Arg *);
-static void ttysend(const Arg *);
+void clipcopy(const Arg *);
+void clippaste(const Arg *);
+void numlock(const Arg *);
+void selpaste(const Arg *);
+void zoom(const Arg *);
+void zoomabs(const Arg *);
+void zoomreset(const Arg *);
+void ttysend(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -154,55 +154,55 @@ typedef struct {
   GC gc;
 } DC;
 
-static inline ushort sixd_to_16bit(int);
-static int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int,
-                               int);
-static void xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int);
-static void xdrawglyph(Glyph, int, int);
-static void xclear(int, int, int, int);
-static int xgeommasktogravity(int);
-static void ximopen(Display *);
-static void ximinstantiate(Display *, XPointer, XPointer);
-static void ximdestroy(XIM, XPointer, XPointer);
-static void xinit(int, int);
-static void cresize(int, int);
-static void xresize(int, int);
-static void xhints(void);
-static int xloadcolor(int, const char *, Color *);
-static int xloadfont(Font *, FcPattern *);
-static void xloadfonts(char *, double);
-static void xunloadfont(Font *);
-static void xunloadfonts(void);
-static void xsetenv(void);
-static void xseturgency(int);
-static int evcol(XEvent *);
-static int evrow(XEvent *);
+inline ushort sixd_to_16bit(int);
+int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int,
+                        int);
+void xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int);
+void xdrawglyph(Glyph, int, int);
+void xclear(int, int, int, int);
+int xgeommasktogravity(int);
+void ximopen(Display *);
+void ximinstantiate(Display *, XPointer, XPointer);
+void ximdestroy(XIM, XPointer, XPointer);
+void xinit(int, int);
+void cresize(int, int);
+void xresize(int, int);
+void xhints(void);
+int xloadcolor(int, const char *, Color *);
+int xloadfont(Font *, FcPattern *);
+void xloadfonts(char *, double);
+void xunloadfont(Font *);
+void xunloadfonts(void);
+void xsetenv(void);
+void xseturgency(int);
+int evcol(XEvent *);
+int evrow(XEvent *);
 
-static void expose(XEvent *);
-static void visibility(XEvent *);
-static void unmap(XEvent *);
-static void kpress(XEvent *);
-static void cmessage(XEvent *);
-static void resize(XEvent *);
-static void focus(XEvent *);
-static int mouseaction(XEvent *, uint);
-static void brelease(XEvent *);
-static void bpress(XEvent *);
-static void bmotion(XEvent *);
-static void propnotify(XEvent *);
-static void selnotify(XEvent *);
-static void selclear_(XEvent *);
-static void selrequest(XEvent *);
-static void setsel(char *, Time);
-static void mousesel(XEvent *, int);
-static void mousereport(XEvent *);
-static char *kmap(KeySym, uint);
-static int match(uint, uint);
+void expose(XEvent *);
+void visibility(XEvent *);
+void unmap(XEvent *);
+void kpress(XEvent *);
+void cmessage(XEvent *);
+void resize(XEvent *);
+void focus(XEvent *);
+int mouseaction(XEvent *, uint);
+void brelease(XEvent *);
+void bpress(XEvent *);
+void bmotion(XEvent *);
+void propnotify(XEvent *);
+void selnotify(XEvent *);
+void selclear_(XEvent *);
+void selrequest(XEvent *);
+void setsel(char *, Time);
+void mousesel(XEvent *, int);
+void mousereport(XEvent *);
+char *kmap(KeySym, uint);
+int match(uint, uint);
 
-static void run(void);
-static void usage(void);
+void run(void);
+void usage(void);
 
-static void (*handler[LASTEvent])(XEvent *) = {
+void (*handler[LASTEvent])(XEvent *) = {
     [KeyPress] = kpress,
     [ClientMessage] = cmessage,
     [ConfigureNotify] = resize,
@@ -229,10 +229,10 @@ static void (*handler[LASTEvent])(XEvent *) = {
 };
 
 /* Globals */
-static DC dc;
-static XWindow xw;
-static XSelection xsel;
-static TermWindow win;
+DC dc;
+XWindow xw;
+XSelection xsel;
+TermWindow win;
 
 /* Font Ring Cache */
 enum { FRC_NORMAL, FRC_ITALIC, FRC_BOLD, FRC_ITALICBOLD };
@@ -244,24 +244,24 @@ typedef struct {
 } Fontcache;
 
 /* Fontcache is an array now. A new font will be appended to the array. */
-static Fontcache *frc = NULL;
-static int frclen = 0;
-static int frccap = 0;
-static char *usedfont = NULL;
-static double usedfontsize = 0;
-static double defaultfontsize = 0;
+Fontcache *frc = NULL;
+ int frclen = 0;
+ int frccap = 0;
+ char *usedfont = NULL;
+ double usedfontsize = 0;
+ double defaultfontsize = 0;
 
-static char *opt_class = NULL;
-static char **opt_cmd = NULL;
-static char *opt_embed = NULL;
-static char *opt_font = NULL;
-static char *opt_io = NULL;
-static char *opt_line = NULL;
-static char *opt_name = NULL;
-static char *opt_title = NULL;
-static char *opt_xresources = NULL;
+ char *opt_class = NULL;
+ char **opt_cmd = NULL;
+ char *opt_embed = NULL;
+ char *opt_font = NULL;
+ char *opt_io = NULL;
+ char *opt_line = NULL;
+ char *opt_name = NULL;
+ char *opt_title = NULL;
+ char *opt_xresources = NULL;
 
-static int oldbutton = 3; /* button event on startup: 3 = release */
+int oldbutton = 3; /* button event on startup: 3 = release */
 
 void clipcopy(const Arg *dummy) {
   Atom clipboard;
@@ -1894,7 +1894,11 @@ void keyboard_select(const Arg *dummy) {
   win.mode ^= trt_kbdselect(-1, NULL, 0);
 }
 
+#ifdef shared
+int stmain(int argc, char *argv[]) {
+#else
 int main(int argc, char *argv[]) {
+#endif
   xw.l = xw.t = 0;
   xw.isfixed = False;
   win.cursor = cursorshape;
