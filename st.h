@@ -4,6 +4,13 @@
 #include <sys/types.h>
 
 /* macros */
+
+#ifdef UTF8
+#define utfchar char
+#else
+#define utfchar unsigned char
+#endif
+
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 #define LEN(a) (sizeof(a) / sizeof(a)[0])
@@ -28,8 +35,8 @@ enum glyph_attribute {
   ATTR_UNDERLINE = 1 << 3,
   ATTR_BLINK = 1 << 4,
   ATTR_REVERSE = 1 << 5,
-  ATTR_WRAP = 1 << 6,
 #ifndef UTF8
+  ATTR_WRAP = 1 << 6,
   ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
 
   ATTR_INVISIBLE = 0,
@@ -64,12 +71,15 @@ typedef unsigned char Rune;
 #define Glyph Glyph_
 typedef struct {
   Rune u;             /* character code */
+#ifndef UTF8
   unsigned char mode; /* attribute flags */
   unsigned char fg; /* foreground  */
   unsigned char bg; /* background  */
-  // ushort mode;      /* attribute flags */
-  // uint32_t fg;      /* foreground  */
-  // uint32_t bg;      /* background  */
+#else
+  ushort mode;      /* attribute flags */
+  uint32_t fg;      /* foreground  */
+  uint32_t bg;      /* background  */
+#endif
 } Glyph;
 
 typedef Glyph *Line;
@@ -102,7 +112,7 @@ void ttyhangup(void);
 int ttynew(char *, char *, char *, char **);
 size_t ttyread(void);
 void ttyresize(int, int);
-void ttywrite(const unsigned char *, size_t, int);
+void ttywrite(const utfchar *, size_t, int);
 
 void resettitle(void);
 
@@ -128,9 +138,14 @@ extern wchar_t *worddelimiters;
 extern int allowaltscreen;
 extern char *termname;
 extern unsigned int tabspaces;
+
+#ifndef UTFXXX
 extern unsigned char defaultfg;
-// extern unsigned int defaultfg;
 extern unsigned char defaultbg;
-// extern unsigned int defaultbg;
+#else
+extern unsigned int defaultfg;
+extern unsigned int defaultbg;
+#endif
+
 int borderpx;
 extern int borderperc;

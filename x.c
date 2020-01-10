@@ -1413,7 +1413,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
     drawcol = dc.col[g.bg];
   }
 
-  /* draw the new one */
+  /* draw text cursor */
   if (IS_SET(MODE_FOCUSED)) {
     switch (win.cursor) {
     case 7: /* st extension: snowman (U+2603) */
@@ -1436,7 +1436,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
                   win.vborderpx + (cy+1) * win.ch, cursorthickness, win.ch);
       break;
     }
-  } else { // window hasn't the focus
+  } else { // window hasn't the focus. 
 			//g.fg = unfocusedrcs;
       drawcol = dc.col[unfocusedrcs];
     XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,

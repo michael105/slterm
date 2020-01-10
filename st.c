@@ -39,6 +39,7 @@
 
 #define UTF_SIZ 4
 #define UTF_INVALID 0xFFFD
+//#define utfchar char
 
 // silence quirky cpp warnings
 #ifndef UTF8
@@ -46,6 +47,8 @@
 #define UTF_INVALID 0xff
 #undef UTF_SIZ
 #define UTF_SIZ 1
+#undef utfchar
+#define utfchar unsigned char
 #endif
 
 #define ESC_BUF_SIZ (128 * UTF_SIZ)
@@ -53,11 +56,9 @@
 #define STR_BUF_SIZ ESC_BUF_SIZ
 #define STR_ARG_SIZ ESC_ARG_SIZ
 
-/* Length of history, in bits */
-// 8 equals 1<<8 equals 256, 9 = 512, ...
+/* Length of history, in bits, -> log(size in lines) ~ bits */
+// 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
 #define HISTSIZEBITS 12
-
-
 
 
 #define HISTSIZE (1<<HISTSIZEBITS)
@@ -69,7 +70,12 @@
 #define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
 //#define ISCONTROL(c)		(ISCONTROLC0(c) || ISCONTROLC1(c)) // \177
 //equals 0xf7 misc
+//#ifdef UTF8
+//#define ISDELIM(u)    (utf8strchr(worddelimiters, u) != NULL)
+//#else
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
+//#endif
+
 #define TLINE(y)                                                               \
   ((y) < term.scr                                                              \
        ? term.hist[(((y) + term.histi - term.scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]\
@@ -176,6 +182,7 @@ typedef struct {
   int charset;                              /* current charset */
   int icharset;                             /* selected charset for sequence */
   int *tabs;
+	char circledhist;
 } Term;
 
 /* CSI Escape sequence structs */
@@ -203,7 +210,11 @@ typedef struct {
 static void execsh(char *, char **);
 static void stty(char **);
 static void sigchld(int);
+#ifdef UTF8
+static void ttywriteraw(const char *, size_t);
+#else
 static void ttywriteraw(const unsigned char *, size_t);
+#endif
 
 static void csidump(void);
 static void csihandle(void);
@@ -240,7 +251,11 @@ static void tsetdirt(int, int);
 static void tsetscroll(int, int);
 static void tswapscreen(void);
 static void tsetmode(int, int, int *, int);
+#ifdef UTF8
+static int twrite(const char *, int, int);
+#else
 static int twrite(const unsigned char *, int, int);
+#endif
 static void tfulldirt(void);
 static void tcontrolcode(uchar);
 static void tdectest(char);
@@ -258,6 +273,9 @@ static void selsnap(int *, int *, int);
 static size_t utf8decode(const char *, Rune *, size_t);
 static Rune utf8decodebyte(char, size_t *);
 static char utf8encodebyte(Rune, size_t);
+#ifdef UTF8
+static char *utf8strchr(char *, Rune);
+#endif
 static size_t utf8validate(Rune *, size_t);
 
 static char *base64dec(const char *);
@@ -274,14 +292,17 @@ static int iofd = 1; // this might bloat
 static int cmdfd;
 static pid_t pid;
 
-// static uchar utfbyte[UTF_SIZ + 1] = {0x80,    0, 0xC0, 0xE0, 0xF0};
-// static uchar utfmask[UTF_SIZ + 1] = {0xC0, 0x80, 0xE0, 0xF0, 0xF8};
-// static Rune utfmin[UTF_SIZ + 1] = {       0,    0,  0x80,  0x800,  0x10000};
-// static Rune utfmax[UTF_SIZ + 1] = {0x10FFFF, 0x7F, 0x7FF, 0xFFFF, 0x10FFFF};
+#ifdef UTF8
+static uchar utfbyte[UTF_SIZ + 1] = {0x80,    0, 0xC0, 0xE0, 0xF0};
+static uchar utfmask[UTF_SIZ + 1] = {0xC0, 0x80, 0xE0, 0xF0, 0xF8};
+static Rune utfmin[UTF_SIZ + 1] = {       0,    0,  0x80,  0x800,  0x10000};
+static Rune utfmax[UTF_SIZ + 1] = {0x10FFFF, 0x7F, 0x7FF, 0xFFFF, 0x10FFFF};
+#else
 static uchar utfbyte[UTF_SIZ + 4] = {0x80, 0, 0xC0, 0xE0, 0xF0};
 static uchar utfmask[UTF_SIZ + 4] = {0xC0, 0x80, 0xE0, 0xF0, 0xF8};
 static Rune utfmin[UTF_SIZ + 4] = {0, 0, 0x80, 0x0, 0x0};
 static Rune utfmax[UTF_SIZ + 4] = {0xFF, 0x7F, 0xFF, 0xFF, 0xFF};
+#endif
 
 ssize_t xwrite(int fd, const char *s, size_t len) {
   size_t aux = len;
@@ -385,6 +406,23 @@ size_t utf8encode(Rune u, char *c) {
 }
 
 char utf8encodebyte(Rune u, size_t i) { return utfbyte[i] | (u & ~utfmask[i]); }
+
+#ifdef UTF8
+char *utf8strchr(char *s, Rune u) {
+  Rune r;
+  size_t i, j, len;
+
+  len = strlen(s);
+  for (i = 0, j = 0; i < len; i += j) {
+    if (!(j = utf8decode(&s[i], &r, len - i)))
+      break;
+    if (r == u)
+      return &(s[i]);
+  }
+
+  return NULL;
+}
+#endif
 
 size_t utf8validate(Rune *u, size_t i) {
   if (!BETWEEN(*u, utfmin[i], utfmax[i]) || BETWEEN(*u, 0xD800, 0xDFFF)) {
@@ -875,7 +913,11 @@ int ttynew(char *line, char *cmd, char *out, char **args) {
 }
 
 size_t ttyread(void) {
+#ifdef UTF8
+  static char buf[BUFSIZ];
+#else
   static unsigned char buf[BUFSIZ];
+#endif
   static int buflen = 0;
   int written;
   int ret;
@@ -898,8 +940,8 @@ size_t ttyread(void) {
   return ret;
 }
 
-void ttywrite(const unsigned char *s, size_t n, int may_echo) {
-  const unsigned char *next;
+void ttywrite(const utfchar *s, size_t n, int may_echo) {
+  const utfchar *next;
   Arg arg = (Arg){.i = term.scr};
 
   kscrolldown(&arg);
@@ -933,7 +975,7 @@ void ttywrite(const unsigned char *s, size_t n, int may_echo) {
   }
 }
 
-void ttywriteraw(const unsigned char *s, size_t n) {
+void ttywriteraw(const utfchar *s, size_t n) {
   fd_set wfd, rfd;
   ssize_t r;
   size_t lim = 256;
@@ -1079,7 +1121,11 @@ void treset(void) {
   }
   term.top = 0;
   term.bot = term.row - 1;
+#ifdef UTF8
+  term.mode = MODE_WRAP | MODE_UTF8;
+#else
   term.mode = MODE_WRAP; //|MODE_UTF8;
+#endif
   memset(term.trantbl, CS_USA, sizeof(term.trantbl));
   term.charset = 0;
 
@@ -1134,25 +1180,15 @@ void kscrollup(const Arg *a) {
 		}
 		dbg2("kscrollup2, n: %d\n",n);
 
-	if (term.scr <= HISTSIZE-n) {
+	if ( term.scr <= HISTSIZE-n ) {
 		term.scr += n;
+		
+		if ( (term.circledhist==0) && (term.scr>term.histi ) )
+				term.scr=term.histi;
+
 		selscroll(0, n);
 		tfulldirt();
 	}
-#if 0
-		if (term.scr < term.histi ) { // misc: patch back to scrollback upstream
-				/*if (term.scr <= term.histi - n)
-						term.scr += n;
-				else 
-						term.scr = term.histi;*/
-				term.scr += n;
-				if ( term.scr > term.histi )
-						term.scr = term.histi;
-
-				selscroll(0, n);
-				tfulldirt();
-		}
-#endif
 }
 
 void tscrolldown(int orig, int n, int copyhist) {
@@ -1186,7 +1222,9 @@ void tscrollup(int orig, int n, int copyhist) {
   if (copyhist) {
 		dbg2("term.histi: %d\n", term.histi);
     term.histi = ((term.histi + 1) ^ HISTSIZE ) & (HISTSIZE-1);
-		dbg2("term.histi: %d\n", term.histi);
+		dbg2("term.histi: %d, \n", term.histi);
+		if ( term.histi == 0 )
+				term.circledhist=1;
     SWAP( term.hist[term.histi], term.line[orig] );
 		// candidate for swap or, malloc hist here
     // "compression" might take place here, as well.
@@ -2116,9 +2154,11 @@ void tputtab(int n) {
 }
 
 void tdefutf8(char ascii) {
-  // if (ascii == 'G')
-  //	term.mode |= MODE_UTF8;
-  // else
+#ifdef UTF8
+  if (ascii == 'G')
+   term.mode |= MODE_UTF8;
+  else
+#endif
   if (ascii == '@') {
     term.mode &= ~MODE_UTF8;
   }
@@ -2509,7 +2549,7 @@ check_control_code:
   }
 }
 
-int twrite(const unsigned char *buf, int buflen, int show_ctrl) {
+int twrite(const utfchar *buf, int buflen, int show_ctrl) {
   int charsize;
   Rune u;
   int n;
@@ -2592,7 +2632,7 @@ void tresize(int col, int row) {
     term.hist[i] = xrealloc(term.hist[i], col * sizeof(Glyph));
     for (j = mincol; j < col; j++) {
       term.hist[i][j] = term.c.attr;
-      term.hist[i][j].u = ' ';
+      term.hist[i][j].u = ' '; // append empty chars, if more cols than before
     }
   }
 

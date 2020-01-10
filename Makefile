@@ -1,4 +1,4 @@
-# st - simple terminal
+# st-asc - simple terminal
 # See LICENSE file for copyright and license details.
 .POSIX:
 
@@ -6,15 +6,19 @@
 # to change the config
 
 # st version
-VERSION = asc-0.9rc1
+VERSION = asc-0.9rc3
 
-# Customize below to fit your system
+# Customize below 
 
 # Uncomment to enable Xresource configuration
 # (in addition, st-asc has to be started with the option "-x on")
 # XRESOURCES=-DXRESOURCES
 
-OPT_FLAG = -O3
+# Uncomment to compile with utf8-support
+# UTF8=-DUTF8
+
+# opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
+OPT_FLAG = -O2
 LINKER_FLAG = -s
 
 # paths
@@ -25,6 +29,12 @@ X11INC = /usr/X11R6/include
 X11LIB = /usr/X11R6/lib
 
 PKG_CONFIG = pkg-config
+
+# compiler and linker
+CC = gcc
+
+
+
 
 # includes and libs
 INCS = -I$(X11INC) \
@@ -37,7 +47,7 @@ LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft \
 
 # flags
 STCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600
-STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCES) $(OPT_FLAG)
+STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCES) $(OPT_FLAG) $(UTF8)
 STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG)
 
 # OpenBSD:
@@ -45,9 +55,6 @@ STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG)
 #LIBS = -L$(X11LIB) -lm -lX11 -lutil -lXft \
 #       `pkg-config --libs fontconfig` \
 #       `pkg-config --libs freetype2`
-
-# compiler and linker
-CC = gcc
 
 
 ######### end of config options
