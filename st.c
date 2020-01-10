@@ -56,10 +56,11 @@
 #define STR_BUF_SIZ ESC_BUF_SIZ
 #define STR_ARG_SIZ ESC_ARG_SIZ
 
-/* Length of history, in bits, -> log(size in lines) ~ bits */
-// 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
-#define HISTSIZEBITS 12
 
+#ifndef HISTSIZEBITS
+// Should be set in config.in
+#define HISTSIZEBITS 11
+#endif
 
 #define HISTSIZE (1<<HISTSIZEBITS)
 

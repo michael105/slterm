@@ -2,10 +2,12 @@
 # See LICENSE file for copyright and license details.
 .POSIX:
 
+ifdef UNDEF
+
 ######### edit values below, and in config.h, 
 # to change the config
 
-# st version
+# version
 VERSION = asc-0.9rc2
 
 # Customize below 
@@ -33,6 +35,17 @@ PKG_CONFIG = pkg-config
 # compiler and linker
 CC = gcc
 
+endif
+
+include config.h.in
+
+ifeq "$(strip $(XRESOURCES))" "1"
+		XRESOURCESFLAG=-DXRESOURCES
+endif
+
+ifeq "$(strip $(UTF8))" "1"
+		UTF8FLAG=-DUTF8
+endif
 
 
 
@@ -47,7 +60,7 @@ LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft \
 
 # flags
 STCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600
-STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCES) $(OPT_FLAG) $(UTF8)
+STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCESFLAG) $(OPT_FLAG) $(UTF8FLAG) -DHISTSIZEBITS=$(HISTSIZEBITS)
 STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG)
 
 # OpenBSD:
