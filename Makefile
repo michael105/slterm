@@ -74,6 +74,8 @@ options:
 config.h:
 # cp config.def.h config.h # utterly useless and confusing
 
+with-utf8:
+	UTF8=-DUTF8 make st
 
 #st: $(OBJ)
 # better go in one run. Gives way more room to the compiler for optimizations.
