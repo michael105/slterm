@@ -22,8 +22,10 @@
 #include "st.h"
 #include "win.h"
 
-#define dbg2(...) printf(__VA_ARGS__)
 #define dbg(...) {}
+//#define dbg(...) printf(__VA_ARGS__)
+#define dbg2(...) dbg(__VA_ARGS__)
+//#define dbg2(...) printf(__VA_ARGS__)
 
 #if defined(__linux)
 #include <pty.h>
@@ -50,10 +52,15 @@
 #define ESC_ARG_SIZ 16
 #define STR_BUF_SIZ ESC_BUF_SIZ
 #define STR_ARG_SIZ ESC_ARG_SIZ
-// misc. uuuh. I realize - the "history" set's itself back, when 
-// filled up. That's .. bad. Sorry.
-/* Length of history, in lines */
-#define HISTSIZE 400
+
+/* Length of history, in bits */
+// 8 equals 1<<8 equals 256, 9 = 512, ...
+#define HISTSIZEBITS 12
+
+
+
+
+#define HISTSIZE (1<<HISTSIZEBITS)
 
 /* macros */
 #define IS_SET(flag) ((term.mode & (flag)) != 0)
@@ -65,7 +72,7 @@
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
 #define TLINE(y)                                                               \
   ((y) < term.scr                                                              \
-       ? term.hist[((y) + term.histi - term.scr + HISTSIZE + 1) % HISTSIZE]    \
+       ? term.hist[(((y) + term.histi - term.scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]\
        : term.line[(y)-term.scr])
 
 #if (__SIZEOF_POINTER__==8)
@@ -1155,7 +1162,8 @@ void tscrolldown(int orig, int n, int copyhist) {
   LIMIT(n, 0, term.bot - orig + 1);
 
   if (copyhist) {
-    term.histi = (term.histi - 1 + HISTSIZE) % HISTSIZE;
+    term.histi = ((term.histi - 1 ) ^ HISTSIZE) & (HISTSIZE-1); 
+    //term.histi = (term.histi - 1 + HISTSIZE) % HISTSIZE; //??? uh. negative number, I guess
 		SWAP( term.hist[term.histi], term.line[term.bot] );
   }
 
@@ -1177,7 +1185,7 @@ void tscrollup(int orig, int n, int copyhist) {
 
   if (copyhist) {
 		dbg2("term.histi: %d\n", term.histi);
-    term.histi = (term.histi + 1) % HISTSIZE;
+    term.histi = ((term.histi + 1) ^ HISTSIZE ) & (HISTSIZE-1);
 		dbg2("term.histi: %d\n", term.histi);
     SWAP( term.hist[term.histi], term.line[orig] );
 		// candidate for swap or, malloc hist here
