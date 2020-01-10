@@ -164,7 +164,7 @@ typedef struct {
 
 /* Internal representation of the screen */
 typedef struct {
-  Line hist[HISTSIZE]; /* history buffer */ // misc - change to circular buffer
+  Line hist[HISTSIZE]; /* history buffer */ // 
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */
   TCursor c;                                /* cursor */
@@ -1218,7 +1218,14 @@ void tscrollup(int orig, int n, int copyhist) {
 		dbg2("term.histi: %d, \n", term.histi);
 		if ( term.histi == 0 )
 				term.circledhist=1;
-    SWAP( term.hist[term.histi], term.line[orig] );
+
+    if ( term.hist[term.histi] ){
+				SWAP( term.hist[term.histi], term.line[orig] );
+		}	 else {
+				dbg2("New line, term.col: %d\n", term.col);
+				term.hist[term.histi] = term.line[orig];
+    		term.line[orig] = xmalloc( term.col * sizeof(Glyph));
+		}
 		// candidate for swap or, malloc hist here
     // "compression" might take place here, as well.
     // sort of count*glyph for adjacent equal glyphs.
@@ -2541,6 +2548,46 @@ check_control_code:
     term.c.state |= CURSOR_WRAPNEXT;
   }
 }
+#if 0
+void histputc(utfchar c){
+  gp = &term.line[term.c.y][term.c.x];
+  if (IS_SET(MODE_WRAP) && (term.c.state & CURSOR_WRAPNEXT)) {
+    gp->mode |= ATTR_WRAP;
+    tnewline(1);
+    gp = &term.line[term.c.y][term.c.x];
+  }
+
+  if (IS_SET(MODE_INSERT) && term.c.x + width < term.col) {
+    memmove(gp + width, gp, (term.col - term.c.x - width) * sizeof(Glyph));
+  }
+
+  if (term.c.x + width > term.col) {
+    tnewline(1);
+    gp = &term.line[term.c.y][term.c.x];
+  }
+
+  tsetchar(u, &term.c.attr, term.c.x, term.c.y);
+
+
+#ifdef UTF8
+  if (width == 2) {
+			dbg2("tputchar width2: %x %c", gp[0].u, gp[0].u );
+    gp->mode |= ATTR_WIDE;
+    if (term.c.x + 1 < term.col) {
+      gp[1].u = '\0';
+      gp[1].mode = ATTR_WDUMMY;
+    }
+  }
+#endif
+
+  if (term.c.x + width < term.col) {
+    tmoveto(term.c.x + width, term.c.y);
+  } else {
+    term.c.state |= CURSOR_WRAPNEXT;
+  }
+}
+#endif
+
 
 int twrite(const utfchar *buf, int buflen, int show_ctrl) {
   int charsize;
@@ -2620,7 +2667,11 @@ void tresize(int col, int row) {
   term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
   term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
 
-  for (i = 0; i < HISTSIZE; i++) { // umm misc there's the memory going :/&
+	int t = term.histi;
+	if ( term.circledhist  )
+			t = HISTSIZE;
+			dbg2("t: %d\n",t);
+  	for (i = 0; i < t; i++) { // umm misc there's the memory going :/&
     //			printf("umm");
     term.hist[i] = xrealloc(term.hist[i], col * sizeof(Glyph));
     for (j = mincol; j < col; j++) {
