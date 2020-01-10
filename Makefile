@@ -77,7 +77,16 @@ with-utf8:
 #st: $(OBJ)
 # better go in one run. Gives way more room to the compiler for optimizations.
 st-asc: $(SRC) $(HEADER)
-	$(CC) -o st-asc $(SRC) $(STCFLAGS) $(STLDFLAGS)
+	@echo -ne const char* compilecommand=\" > compile.h 
+	@echo -ne '$(CC) -o st-asc $(SRC) $(STCFLAGS) $(STLDFLAGS)' >> compile.h
+	@echo -e \"\; >> compile.h
+	@echo -e '#define __COMPILEDATE__ "'`date`\" >>compile.h
+	@echo -e '#define __UNAME__ "'`uname -m -o -r -s`\" >> compile.h
+	@echo -e '#define __OPT_FLAG__ "$(OPT_FLAG)"' >> compile.h
+	@echo -e '#define __UTF8__ "$(UTF8)"\n#define __XRESOURCES__  "$(XRESOURCES)"' >> compile.h
+	$(CC) -o st-asc $(SRC) $(STCFLAGS) $(STLDFLAGS) 
+	
+#-DCOMPILECOMMAND='$(CC) -o st-asc $(SRC) $(STCFLAGS) $(STLDFLAGS)'
 	
 shared: $(SRC) $(HEADER) libst-asc.so
 	gcc -o st-asc.shared st-asc.c -lst-asc $(OPT_FLAG) 

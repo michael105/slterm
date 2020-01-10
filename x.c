@@ -20,6 +20,7 @@ static char *argv0;
 #include "arg.h"
 #include "st.h"
 #include "win.h"
+#include "compile.h"
 
 //#define dbg(...) printf(__VA_ARGS__)
 #define dbg(...)                                                               \
@@ -259,7 +260,7 @@ Fontcache *frc = NULL;
  char *opt_line = NULL;
  char *opt_name = NULL;
  char *opt_title = NULL;
- char *opt_xresources = NULL;
+ char opt_xresources;
 
 int oldbutton = 3; /* button event on startup: 3 = release */
 
@@ -1884,7 +1885,7 @@ void usage(void) {
       "       %s [-aiv] [-c class] [-f font] [-g geometry]"
       " [-n name] [-o file]\n"
       "          [-T title] [-t title] [-w windowid] -l line"
-      " [stty_args ...]\n",
+      " [stty_args ...] [-x] [-v]\n",
       argv0, argv0);
 }
 
@@ -1940,10 +1941,18 @@ int main(int argc, char *argv[]) {
     opt_embed = EARGF(usage());
     break;
   case 'x':
-    opt_xresources = EARGF(usage());
+    opt_xresources = 1;
     break;
   case 'v':
-    die("%s " VERSION "\n", argv0);
+    printf( "st-asc version " VERSION "\n\n"
+			"Compiled " __COMPILEDATE__ "\n"
+			"on " __UNAME__ "\n\n"
+			"Compileflags:\n"
+			__OPT_FLAG__ "\n"
+			"UTF8: "__UTF8__"\n"
+			"XRESOURCES: "__XRESOURCES__"\n"
+			"%s\n", compilecommand );
+		exit(0);
     break;
   default:
     usage();
