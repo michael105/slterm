@@ -6,7 +6,7 @@
 # to change the config
 
 # st version
-VERSION = asc-0.9rc3
+VERSION = asc-0.9rc2
 
 # Customize below 
 
