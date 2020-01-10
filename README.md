@@ -2,10 +2,26 @@
 
 
 
-Fork of the st terminal. (suckless.org)
+##### Fork of the st terminal. (suckless.org)
 
-Stripped unicode support and rgb colors.
+Slim version with performance and memory footprint related modifications.
+ 
+___   
 
+	Stripped unicode support and rgb colors.
+			utf8 is an optional compiletime switch now
+
+	Dynamic allocation of the history buffer. 
+			Saves up to tenth or even hundreds of MB, 
+			depending on the terminal's width and history size
+
+	Several minor optimizations.
+
+	Nicer cursor and configurable cursorcolor for unfocused windows.
+	No scrollback "behind" the current history anymore.
+
+Please see [LOG](LOG) for a more detailed list.
+___
 
 Applied Patches:
 
@@ -112,8 +128,12 @@ Hopefully the compiler does it's job eliminating unneeded potions.
 
 The rgb color support is stripped.
 Saving 6 Bytes per glyph.
+Oh. I see. There still is the option to
+have "rgb" colors via modifying the indexed 256 color palette.
+I just slimmed down the memory usage for the colors from 8 Bytes to 2 Bytes per glyph.
 
-;) 256 colors might be enough for everyone.
+
+;) To quote Bill, 256 colors might be enough for everyone.
 (Am I confusing something..?..)
 
 ![](images/colors.png?raw=true)
@@ -165,7 +185,6 @@ with Xorg programs.
 - ~~strip rgb colors~~
 - ~~add patches~~
 - Compression of history buffer
-- separation into a shared library and st-asc
 - wayland? postponed.
 - gain earth domination
 - quench vogons
@@ -181,6 +200,10 @@ ___
 	by the separation into libstasc.so and st-asc
 	Probably with the drawback of having only one font available,
 	without having to dig to much into the internals of library loading_
+- ~~separation into a shared library and st-asc~~
+	Doesn't give much gain.
+	I leave the option for compiling st as shared library within the makefile
+	But you'd have to install the shared lib yourself (with ldconfig on linux)
 
 xxxx
 **---- SNIP -----**
