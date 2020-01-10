@@ -77,7 +77,7 @@ void zoomabs(const Arg *);
 void zoomreset(const Arg *);
 void ttysend(const Arg *);
 
-/* config.h for applying patches and the configuration. */
+/* the configuration is in config.h.in */
 #include "config.h.in"
 
 /* XEMBED messages */

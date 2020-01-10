@@ -4,8 +4,10 @@ ifdef UNDEF
 The file to edit the config
 Makefile syntax config below.
 
-
 endif
+
+# Set to 0
+SHOWCONFIGINFO = 1
 
 # version
 VERSION = asc-0.9rc2
@@ -19,7 +21,9 @@ UTF8 = 0
 
 # Length of history, in bits, -> log(size in lines) ~ bits */
 # 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
-HISTSIZEBITS = 12
+HISTSIZEBITS = 14
+
+#HISTSIZEBITS = 6
 
 # opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
 OPT_FLAG = -O2
@@ -47,12 +51,23 @@ CC = gcc
 ifdef UNDEF
 #endif
 
+// Silence my syntaxcheckerplugin
+#include <X11/XKBlib.h>
+#include <X11/Xatom.h>
+#include <X11/Xft/Xft.h>
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include <X11/cursorfont.h>
+#include <X11/keysym.h>
+
+// Config Option, C-Style Syntax below
+
 // font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
 // defaultfont 
 static char *font = "Monospace:pixelsize=13:Bold:antialias=true:autohint=true";
 //static int borderpx = 4;
 
-// borderwidth in percent of a char's width
+// The terminal's borderwidth in percent of a char's width
 int borderperc = 40;
 
 /*
