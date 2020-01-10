@@ -43,11 +43,9 @@ static unsigned int tripleclicktimeout = 600;
 int allowaltscreen = 1;
 
 /* frames per second st should at maximum draw to the screen */
-/* set to log(framerate) ->   log(128) = 7; log(64) = 6 */
-//static unsigned int xfps = 128;
+/* set to log(framerate) ->   log(128) = 7; log(64) = 6; log(32) = 5 */
 #define xfps_shift 7
 #define actionfps_shift 5
-//#define actionfps 32
 
 /*
  * blinking timeout (set to 0 to disable blinking) for the terminal blinking
@@ -137,10 +135,10 @@ static int ignoreselfg = 1;
 
 /*
  * Default shape of cursor
- * 2: Block ("█")
+ * 2: Block 
  * 4: Underline ("_")
  * 6: Bar ("|")
- * 7: Snowman ("☃")
+ * 7: Snowman ()
  */
 static unsigned int cursorshape = 4;
 
@@ -514,3 +512,4 @@ static char ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~";
+
