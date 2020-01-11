@@ -12,11 +12,11 @@ ___
     Stripped unicode support in favour of the 256 chars ASCII table
         utf8 is an optional compiletime switch now
         (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table only.
-        What is an interesting result. st has a quite good unicode handling.
-        But most software (bash,vi,..) seems to work flawless with the ASCII table, 
-        until yet I always needed to dive into the configurations for entering chars like ä,ö,ß ...)
+        E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
+        but until yet I always needed to dive into the configurations for 
+				entering chars like ä,ö,ß in unicode mode)
 
-    Colors are restricted to a 3*256 color palette
+    Colors are restricted to a 256 color palette 
         (Saving 6 Bytes per Glyph)
 
     Delayed allocation of the history buffer. 
@@ -28,7 +28,7 @@ ___
     Nicer cursor and configurable cursorcolor for unfocused windows.
     No scrollback "behind" the current history anymore.
 
-Please see [LOG.md](LOG.md) for more detailed info.
+Additional info is in [Patches](Patches.md) and [LOG.md](LOG.md)
 ___
 
 Applied Patches:
@@ -115,7 +115,7 @@ I'm always keeping more than 10 terminals open,
 so that sums up. What now has two meanings. 
 I have to look for what exactly blows that much.
 Every Glyph (char at the screen, with attributes and colors) now
-needs 4 Bytes. ( around 16Bytes before stripping unicode and rgb)
+needs 4 Bytes. ( 15 Bytes before stripping unicode and rgb)
 
 
 The smaller memory footprint also pays out in a more responsive
@@ -131,22 +131,19 @@ showing only enough chars to give the perception of a continous scrolling
 terminal. When confronted with, e.g., a `dd if=data bs=1000`;
 this cheat doesn't work anymore, dumping the data takes (depending on the size, etc)
 up to 20times longer. 
-So st seems to be the fastest terminal emulator available. 
+st seems to be the fastest terminal emulator available. 
 
 
 
-
-It's however a crude hack, much (unused) utf8 supporting code is left yet.
-Hopefully the compiler does it's job eliminating unneeded potions.
-
-The rgb color support is stripped.
+The (pseudo) rgb color support is stripped.
 Saving 6 Bytes per glyph.
-Oh. I see. There still is the option to
-have "rgb" colors via modifying the indexed 256 color palette.
+There still is the option to
+have "rgb" colors via modifying the indexed 256 color palette, 
+the default is the ("standardized") xterm 256 color palette.
 I just slimmed down the memory usage for the colors from 8 Bytes to 2 Bytes per glyph.
 
 
-;) To quote Bill, 256 colors might be enough for everyone.
+;) To quote Bill, 256 colors ought be enough for everyone.
 (Am I confusing something..?..)
 
 ![](images/colors.png?raw=true)
