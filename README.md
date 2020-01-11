@@ -12,7 +12,7 @@ ___
     Stripped unicode support
         utf8 is an optional compiletime switch now
 
-		Colors are restricted to a 3*256 color palette
+    Colors are restricted to a 3*256 color palette
         (Saving 6 Bytes per Glyph)
 
     Delayed allocation of the history buffer. 
