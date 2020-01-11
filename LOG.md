@@ -1,11 +1,128 @@
-.. 2020/01
+-- 2020/01/11
 
-scrolling - is this the job of the terminal emulator,
-or for a separate tool?
 
-not sure. 
-Ok. I try to break this down - 
-it's also the question, whether one likes to have (graphical) scrollbars.
+Copying the git log.
+To be exact, copying all log messages, 
+having a informative message.
+Going to need something doing this automatic.
+
+
+Date:   Sat Jan 11 2020 
+
+    tag this 0.9rc3. Seems to be stable.
+
+    Debugging switch in config.h.in.
+    
+    Enable (global) debugging now with the debug flag in config.h.in
+    Might be useful for reporting bugs.
+    (when encountering a bug, please compile with debugging
+    set to level 1, and save the output.
+    st-asc > log.txt
+
+    Optimization for non Utf8.
+    
+    Copy int32 at once, instead of byte for byte.
+    Could be further optimized; but I don't
+    want it too machine dependent.
+    (Now this depends on unsigned int being 32bit long.
+    And could be adapted easily.)
+    Byte for Byte, eye for eye. :) I guess,
+    this doesn]t work in English.
+
+Date:   Fri Jan 10 2020 
+
+    save compiler info in the binary
+
+    Edited the config "system".
+    
+    Now only one file, config.h.in, needs to be edited.
+
+    Dynamic allocation of the history buffer
+    
+    Made the allocation of the memory for the hist buf dynamic.
+    for, e.g., 16k lines of history, this results in around 6MB Memory
+    (depending on the terminal's width);
+    which are now allocated dynamically.
+
+Notes:
+    if utf8 is enabled, the saving is more than 30/40MB,
+    depending on the terminal's width and the history len.
+
+    configuration via one file only
+
+    v0.9rc2
+
+    cleanup
+
+Date:   Fri Jan 10 2020 
+
+    utf8 compileswitch seems to work
+
+    Optimizations. Option to build a shared version
+    
+    The optimizations finally start to give better results.
+    To name them: No temporary vars for swapping of values,
+    instead xor exchange
+    No division/modulo, replaced by bit operations
+
+Date:   Thu Jan 9 2020 
+
+    History scrollback limited to the history (Not the buf)
+
+    Compileswitch UTF8.
+    
+    After thinking about it, it's not so much code for utf8.
+    A cleaner codebase would be nicer.
+    But on the other hand, having the option to switch to utf8
+    might also be nice.
+    Has to be implemented as compile time switch.
+
+    Color option for the cursor in unfocused windows added
+
+    Added a nicer cursor for unfocused windows
+    
+    The default empty rect has been an annoyance to me,
+    since I met Linux the first time.
+
+Date:   Wed Jan 8 2020 
+
+    Replaced division by bitshift
+    
+    division is the most expensive operation.
+    Anyways. doesn't seem to be a big difference.
+    1E9 equals 1.000.000.000
+    2^30 might be close enough
+
+Date:   Tue Jan 7 2020 
+
+    ansicolor test added
+
+    utf8 file added for tests
+
+    vt102 ascii control char table
+
+    Ascii code tables added for reference
+
+    Added debug macros.
+    
+    "Debugged" the handling of German Umlauts.
+    Recognized, the problem has been with the shell (zsh)..
+    I'll keep the dbg macros. Might need them later again.
+
+    utf8. Compiler warnings silenced
+
+    Added compile time switch XRESOURCES
+    
+    needs to have the switch XRESOURCES defined at compile time
+    (somehow I don't have a good feeling with this patch
+
+    Patches applied. Set "Unicode" chars to 1 Byte. rgb stripped
+
+Date:   Sat Jan 4 2020 
+
+    Initial commit
+
+
 
 .. 2020/01/06
 
@@ -115,5 +232,14 @@ Oh. There's another example, showing this scientist being wrong.
 It's our capability to perceive the location of an audible source.
 What needs a perception and combination of both ears in the scale of microseconds.
 Maybe even nanoseconds. But 200ms is. Painful slow.
+
+.. 2020/01
+
+scrolling - is this the job of the terminal emulator,
+or for a separate tool?
+
+not sure. 
+Ok. I try to break this down - 
+it's also the question, whether one likes to have (graphical) scrollbars.
 
 
