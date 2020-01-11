@@ -49,11 +49,17 @@ Applied Patches:
 
 ### Install
 
-Edit config.h.in
+(optional) edit config.h.in
+
 ```
 make
 make install
 ```
+The default config might be save. 
+
+(no utf8, scrollback history 4096 lines, no XResources, installs into /usr/local/bin)
+
+If you'd like to change anything, please edit config.h.in.
 
 ---
 
