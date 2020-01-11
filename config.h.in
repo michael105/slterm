@@ -30,10 +30,10 @@ HISTSIZEBITS = 12
 #HISTSIZEBITS = 6
 
 # opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
-OPT_FLAG = -O0
+OPT_FLAG = -O2
 
 # Linker Flags
-LINKER_FLAG = -g
+LINKER_FLAG = -s
 
 # paths
 PREFIX = /usr/local
