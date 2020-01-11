@@ -35,7 +35,7 @@ shortcut below if you use a custom one.
 
     Shortcut shortcuts[] = {
         ...
-        { TERMMOD, XK_Escape, keyboard_select, { 0 } },
+        { TERMMOD, XK_s, keyboard_select, { 0 } },
     };
 
 #### Notes
