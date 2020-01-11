@@ -11,16 +11,16 @@ ___
 	Stripped unicode support and rgb colors.
 			utf8 is an optional compiletime switch now
 
-	Dynamic allocation of the history buffer. 
-			Saves up to tenth or even hundreds of MB, 
+	Delayed allocation of the history buffer. 
+			Saves up to tenths or even hundreds of MB, 
 			depending on the terminal's width and history size
 
-	Several minor optimizations.
+	A few minor optimizations.
 
 	Nicer cursor and configurable cursorcolor for unfocused windows.
 	No scrollback "behind" the current history anymore.
 
-Please see [LOG](LOG) for a more detailed list.
+Please see [LOG](LOG) for more detailed info.
 ___
 
 Applied Patches:
