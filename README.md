@@ -9,8 +9,11 @@ Slim version with performance and memory footprint related modifications.
  
 ___   
 
-    Stripped unicode support and rgb colors.
+    Stripped unicode support
         utf8 is an optional compiletime switch now
+
+		Colors are restricted to a 3*256 color palette
+        (Saving 6 Bytes per Glyph)
 
     Delayed allocation of the history buffer. 
         Saves up to tenths or even hundreds of MB, 
