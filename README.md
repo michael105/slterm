@@ -2,9 +2,10 @@
 
 
 
-##### Fork of the st terminal. (suckless.org)
+##### Clone of the st terminal. (suckless.org)
 
 Slim version with performance and memory footprint related modifications.
+
  
 ___   
 
