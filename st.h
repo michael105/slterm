@@ -40,9 +40,15 @@
 #define IS_TRUECOL(x) (1 << 24 & (x))
 
 #ifndef HISTSIZEBITS
-// Should be set in config.in
+// Should be set in config.h.in
 #define HISTSIZEBITS 11
 #endif
+
+#if (HISTSIZEBITS>20)
+#error You most possibly do not want a history with a length > 1.000.000 ?
+#error Either change HISTSIZEBITS accordingly, or edit the sources
+#endif
+
 
 #define HISTSIZE (1<<HISTSIZEBITS)
 

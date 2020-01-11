@@ -1877,15 +1877,23 @@ void config_init(void) {
 }
 #endif
 
+void printversion(){
+			printf( "st-asc version " VERSION "\n" );
+}
+
+void printhelp(){
+}
+
 void usage(void) {
-  die("usage: %s [-aiv] [-c class] [-f font] [-g geometry]"
+		printversion();
+  die("\nusage: %s [-aiv] [-c class] [-f font] [-g geometry]"
       " [-n name] [-o file]\n"
       "          [-T title] [-t title] [-w windowid]"
       " [[-e] command [args ...]]\n"
       "       %s [-aiv] [-c class] [-f font] [-g geometry]"
       " [-n name] [-o file]\n"
       "          [-T title] [-t title] [-w windowid] -l line"
-      " [stty_args ...] [-x] [-v]\n",
+      " [stty_args ...] [-x] [-v] [-V]\n",
       argv0, argv0);
 }
 
@@ -1944,16 +1952,20 @@ int main(int argc, char *argv[]) {
     opt_xresources = 1;
     break;
   case 'v':
-    printf( "st-asc version " VERSION "\n\n"
-			"Compiled " __COMPILEDATE__ "\n"
-			"on " __UNAME__ "\n\n"
+		printversion();
+    exit(0);
+  case 'V':
+		printversion();
+		printf( "\nCompiled " __COMPILEDATE__ "\n"
+			__UNAME__ "\n"
+			"CC: "__CC__" "__CC_VERSION__"\n\n"
 			"Compileflags:\n"
 			__OPT_FLAG__ "\n"
-			"UTF8: "__UTF8__"\n"
+			"DEBUGLEVEL: "__DEBUGLEVEL__"\n"
 			"XRESOURCES: "__XRESOURCES__"\n"
-			"%s\n", compilecommand );
+			"UTF8: "__UTF8__"\n"
+			__COMPILECOMMAND__ "\n" );
 		exit(0);
-    break;
   default:
     usage();
   }
