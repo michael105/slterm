@@ -9,17 +9,17 @@ Slim version with performance and memory footprint related modifications.
  
 ___   
 
-	Stripped unicode support and rgb colors.
-		utf8 is an optional compiletime switch now
+    Stripped unicode support and rgb colors.
+        utf8 is an optional compiletime switch now
 
-	Delayed allocation of the history buffer. 
-		Saves up to tenths or even hundreds of MB, 
-		depending on the terminal's width and history size
+    Delayed allocation of the history buffer. 
+        Saves up to tenths or even hundreds of MB, 
+        depending on the terminal's width and history size
 
-	A few minor optimizations.
+    A few minor optimizations.
 
-	Nicer cursor and configurable cursorcolor for unfocused windows.
-	No scrollback "behind" the current history anymore.
+    Nicer cursor and configurable cursorcolor for unfocused windows.
+    No scrollback "behind" the current history anymore.
 
 Please see [LOG.md](LOG.md) for more detailed info.
 ___
@@ -49,7 +49,6 @@ Applied Patches:
 
 ### Install
 
-Edit Makefile <br>
 Edit config.h.in
 ```
 make
