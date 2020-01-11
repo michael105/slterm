@@ -21,7 +21,7 @@ VERSION = asc-0.9rc2
 XRESOURCES = 0
 
 # compile with utf8-support
-UTF8 = 0
+UTF8 = 1
 
 # Length of history, in bits, -> log(size in lines) ~ bits */
 # 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
@@ -30,10 +30,10 @@ UTF8 = 0
 HISTSIZEBITS = 6
 
 # opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
-OPT_FLAG = -O2
+OPT_FLAG = -O0
 
 # Linker Flags
-LINKER_FLAG = -s
+LINKER_FLAG = -g
 
 # paths
 PREFIX = /usr/local
