@@ -217,6 +217,7 @@ typedef struct {
 /* Internal representation of the screen */
 typedef struct {
   Line hist[1][HISTSIZE]; /* history buffer */ // 
+	int guard;
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */
   TCursor c;                                /* cursor */
