@@ -9,8 +9,12 @@ Slim version with performance and memory footprint related modifications.
  
 ___   
 
-    Stripped unicode support
+    Stripped unicode support in favour of the 256 chars ASCII table
         utf8 is an optional compiletime switch now
+        (Most programs now handle German Umlauts, etc.pp out of the box.
+        What is an interesting result. st has a quite good unicode handling.
+        But most software (bash,vi,..) seems to work better with the
+        ASCII table, until yet I always did have problems with chars like ä,ö,ß ...)
 
     Colors are restricted to a 3*256 color palette
         (Saving 6 Bytes per Glyph)
