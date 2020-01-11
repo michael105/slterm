@@ -9,11 +9,11 @@ Slim version with performance and memory footprint related modifications.
 ___   
 
 	Stripped unicode support and rgb colors.
-			utf8 is an optional compiletime switch now
+		utf8 is an optional compiletime switch now
 
 	Delayed allocation of the history buffer. 
-			Saves up to tenths or even hundreds of MB, 
-			depending on the terminal's width and history size
+		Saves up to tenths or even hundreds of MB, 
+		depending on the terminal's width and history size
 
 	A few minor optimizations.
 
@@ -49,7 +49,7 @@ Applied Patches:
 ### Install
 
 Edit Makefile <br>
-Edit config.h
+Edit config.h.in
 ```
 make
 make install
