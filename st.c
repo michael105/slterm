@@ -24,8 +24,8 @@
 
 #define dbg(...) {}
 //#define dbg(...) printf(__VA_ARGS__)
-#define dbg2(...) dbg(__VA_ARGS__)
-//#define dbg2(...) printf(__VA_ARGS__)
+//#define dbg2(...) dbg(__VA_ARGS__)
+#define dbg2(...) printf(__VA_ARGS__)
 
 #if defined(__linux)
 #include <pty.h>
@@ -34,35 +34,6 @@
 #elif defined(__FreeBSD__) || defined(__DragonFly__)
 #include <libutil.h>
 #endif
-
-/* Arbitrary sizes */
-
-#define UTF_SIZ 4
-#define UTF_INVALID 0xFFFD
-//#define utfchar char
-
-// silence quirky cpp warnings
-#ifndef UTF8
-#undef UTF_INVALID
-#define UTF_INVALID 0xff
-#undef UTF_SIZ
-#define UTF_SIZ 1
-#undef utfchar
-#define utfchar unsigned char
-#endif
-
-#define ESC_BUF_SIZ (128 * UTF_SIZ)
-#define ESC_ARG_SIZ 16
-#define STR_BUF_SIZ ESC_BUF_SIZ
-#define STR_ARG_SIZ ESC_ARG_SIZ
-
-
-#ifndef HISTSIZEBITS
-// Should be set in config.in
-#define HISTSIZEBITS 11
-#endif
-
-#define HISTSIZE (1<<HISTSIZEBITS)
 
 /* macros */
 #define IS_SET(flag) ((term.mode & (flag)) != 0)
@@ -79,134 +50,12 @@
 
 #define TLINE(y)                                                               \
   ((y) < term.scr                                                              \
-       ? term.hist[(((y) + term.histi - term.scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]\
-       : term.line[(y)-term.scr])
+       ? term.hist[term.cthist][(((y) + term.histi - term.scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term.line[(y)-term.scr])
 
-#if (__SIZEOF_POINTER__==8)
-#define POINTER unsigned long
-#else
-#if (__SIZEOF_POINTER__==4)
-#define POINTER unsigned int
-#else
-#error
-#endif
-#endif
-
-#define SWAP(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
+#define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
 		      b = (void*)((POINTER)a ^ (POINTER)b);\
 		      a = (void*)((POINTER)a ^ (POINTER)b);}
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
-
-enum term_mode {
-  MODE_WRAP = 1 << 0,
-  MODE_INSERT = 1 << 1,
-  MODE_ALTSCREEN = 1 << 2,
-  MODE_CRLF = 1 << 3,
-  MODE_ECHO = 1 << 4,
-  MODE_PRINT = 1 << 5,
-  MODE_UTF8 = 1 << 6,
-  MODE_SIXEL = 1 << 7,
-};
-
-enum cursor_movement { CURSOR_SAVE, CURSOR_LOAD };
-
-enum cursor_state {
-  CURSOR_DEFAULT = 0,
-  CURSOR_WRAPNEXT = 1,
-  CURSOR_ORIGIN = 2
-};
-
-enum charset {
-  CS_GRAPHIC0,
-  CS_GRAPHIC1,
-  CS_UK,
-  CS_USA,
-  CS_MULTI,
-  CS_GER,
-  CS_FIN
-};
-
-enum escape_state {
-  ESC_START = 1,
-  ESC_CSI = 2,
-  ESC_STR = 4, /* OSC, PM, APC */
-  ESC_ALTCHARSET = 8,
-  ESC_STR_END = 16, /* a final string was encountered */
-  ESC_TEST = 32,    /* Enter in test mode */
-  ESC_UTF8 = 64,
-  ESC_DCS = 128,
-};
-
-typedef struct {
-  Glyph attr; /* current char attributes */
-  int x;
-  int y;
-  char state;
-} TCursor;
-
-typedef struct {
-  int mode;
-  int type;
-  int snap;
-  /*
-   * Selection variables:
-   * nb – normalized coordinates of the beginning of the selection
-   * ne – normalized coordinates of the end of the selection
-   * ob – original coordinates of the beginning of the selection
-   * oe – original coordinates of the end of the selection
-   */
-  struct {
-    int x, y;
-  } nb, ne, ob, oe;
-
-  int alt;
-} Selection;
-
-/* Internal representation of the screen */
-typedef struct {
-  Line hist[HISTSIZE]; /* history buffer */ // 
-  Line *line;                               /* screen */
-  Line *alt;                                /* alternate screen */
-  TCursor c;                                /* cursor */
-  int row;                                  /* nb row */
-  int col;                                  /* nb col */
-  int histi;                                /* history index */
-  int scr;                                  /* scroll back */
-  int *dirty;                               /* dirtyness of lines */
-  int ocx;                                  /* old cursor col */
-  int ocy;                                  /* old cursor row */
-  int top;                                  /* top    scroll limit */
-  int bot;                                  /* bottom scroll limit */
-  int mode;                                 /* terminal mode flags */
-  int esc;                                  /* escape state flags */
-  char trantbl[4];                          /* charset table translation */
-  int charset;                              /* current charset */
-  int icharset;                             /* selected charset for sequence */
-  int *tabs;
-	char circledhist;
-} Term;
-
-/* CSI Escape sequence structs */
-/* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
-typedef struct {
-  char buf[ESC_BUF_SIZ]; /* raw string */
-  size_t len;            /* raw string length */
-  char priv;
-  int arg[ESC_ARG_SIZ];
-  int narg; /* nb of args */
-  char mode[2];
-} CSIEscape;
-
-/* STR Escape sequence structs */
-/* ESC type [[ [<priv>] <arg> [;]] <mode>] ESC '\' */
-typedef struct {
-  char type;  /* ESC type ... */
-  char *buf;  /* allocated raw string */
-  size_t siz; /* allocation size */
-  size_t len; /* raw string length */
-  char *args[STR_ARG_SIZ];
-  int narg; /* nb of args */
-} STREscape;
 
 static void execsh(char *, char **);
 static void stty(char **);
@@ -1103,7 +952,7 @@ void tcursor(int mode) {
 void treset(void) {
   uint i;
 
-  term.c = (TCursor){{.mode = ATTR_NULL, .fg = defaultfg, .bg = defaultbg},
+  term.c = (TCursor){{.mode = ATTR_NULL, .fg = defaultfg, .bg = defaultbg,.u=' '},
                      .x = 0,
                      .y = 0,
                      .state = CURSOR_DEFAULT};
@@ -1139,7 +988,7 @@ void tnew(int col, int row) {
 int tisaltscr(void) { return IS_SET(MODE_ALTSCREEN); }
 
 void tswapscreen(void) {
-	SWAP( term.line, term.alt );
+	SWAPp( term.line, term.alt );
   term.mode ^= MODE_ALTSCREEN;
   tfulldirt();
 }
@@ -1193,14 +1042,14 @@ void tscrolldown(int orig, int n, int copyhist) {
   if (copyhist) {
     term.histi = ((term.histi - 1 ) ^ HISTSIZE) & (HISTSIZE-1); 
     //term.histi = (term.histi - 1 + HISTSIZE) % HISTSIZE; //??? uh. negative number, I guess
-		SWAP( term.hist[term.histi], term.line[term.bot] );
+		SWAPp( term.hist[term.cthist][term.histi], term.line[term.bot] );
   }
 
   tsetdirt(orig, term.bot - n);
   tclearregion(0, term.bot - n + 1, term.col - 1, term.bot);
 
   for (i = term.bot; i >= orig + n; i--) {
-    SWAP( term.line[i], term.line[i-n] );
+    SWAPp( term.line[i], term.line[i-n] );
   }
 
   selscroll(orig, n);
@@ -1219,14 +1068,14 @@ void tscrollup(int orig, int n, int copyhist) {
 		if ( term.histi == 0 )
 				term.circledhist=1;
 
-    if ( term.hist[term.histi] ){
-				SWAP( term.hist[term.histi], term.line[orig] );
+    if ( term.hist[term.cthist][term.histi] ){
+				SWAPp( term.hist[term.cthist][term.histi], term.line[orig] );
 		}	 else {
 				dbg2("New line, term.col: %d\n", term.col);
-				term.hist[term.histi] = term.line[orig];
+				term.hist[term.cthist][term.histi] = term.line[orig];
     		term.line[orig] = xmalloc( term.col * sizeof(Glyph));
 		}
-		// candidate for swap or, malloc hist here
+		// (candidate for swap or, malloc hist here) done.
     // "compression" might take place here, as well.
     // sort of count*glyph for adjacent equal glyphs.
     // Maybe another text attribute. Then, the next glyph
@@ -1242,7 +1091,7 @@ void tscrollup(int orig, int n, int copyhist) {
   tsetdirt(orig + n, term.bot);
 
   for (i = orig; i <= term.bot - n; i++) {
-			SWAP(term.line[i],term.line[i+n]);
+			SWAPp(term.line[i],term.line[i+n]);
   }
 
   selscroll(orig, -n);
@@ -1380,35 +1229,48 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
   term.line[y][x].u = u;
 }
 
+void memset32( int* i, int value, int count ){
+		for ( int a=0; a<count; a++ )
+				i[a] = value;
+}
+
 void tclearregion(int x1, int y1, int x2, int y2) {
-  int x, y;
-  Glyph *gp;
+		int x, y;
+		Glyph *gp;
 
-  if (x1 > x2) {
-			SWAPint(x1,x2);
-  }
-  if (y1 > y2) {
-			SWAPint(y1,y2);
-  }
+		if (x1 > x2) {
+				SWAPint(x1,x2);
+		}
+		if (y1 > y2) {
+				SWAPint(y1,y2);
+		}
 
-  LIMIT(x1, 0, term.col - 1);
-  LIMIT(x2, 0, term.col - 1);
-  LIMIT(y1, 0, term.row - 1);
-  LIMIT(y2, 0, term.row - 1);
+		LIMIT(x1, 0, term.col - 1);
+		LIMIT(x2, 0, term.col - 1);
+		LIMIT(y1, 0, term.row - 1);
+		LIMIT(y2, 0, term.row - 1);
 
-  for (y = y1; y <= y2; y++) {
-    term.dirty[y] = 1;
-    for (x = x1; x <= x2; x++) {
-      gp = &term.line[y][x];
-      if (selected(x, y)) {
-        selclear();
-      }
-      gp->fg = term.c.attr.fg;
-      gp->bg = term.c.attr.bg;
-      gp->mode = 0;
-      gp->u = ' ';
-    }
-  }
+		selclear(); // only call once.
+		//term.c.attr.u=' ';
+
+		for (y = y1; y <= y2; y++) { 
+				term.dirty[y] = 1;
+#ifndef UTF8
+				dbg("y: %d, x1: %d, x2: %d\n", y, x1, x2);
+				memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1)+1 );
+#else
+				for (x = x1; x <= x2; x++) {//misc copy longs (64bit)or,better: memset. mmx/sse?
+						//if (selected(x, y)) { // room for optimization. only ask once, when no selection
+						//		selclear();
+						//}
+						gp = &term.line[y][x];
+						gp->fg = term.c.attr.fg;
+						gp->bg = term.c.attr.bg;
+						gp->mode = 0;
+						gp->u = ' ';
+				}
+#endif
+		}
 }
 
 void tdeletechar(int n) {
@@ -2667,20 +2529,56 @@ void tresize(int col, int row) {
   term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
   term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
 
-	int t = term.histi;
-	if ( term.circledhist  )
-			t = HISTSIZE;
-			dbg2("t: %d\n",t);
-  	for (i = 0; i < t; i++) { // umm misc there's the memory going :/&
-    //			printf("umm");
-    term.hist[i] = xrealloc(term.hist[i], col * sizeof(Glyph));
-    for (j = mincol; j < col; j++) {
-      term.hist[i][j] = term.c.attr;
-      term.hist[i][j].u = ' '; // append empty chars, if more cols than before
-    }
-  }
+	int oldline = 0;
+	int newline = 0;
+	int oldcol = 0;
+	int newcol = 0;
+	int newhist = !(term.cthist);
+	int oldhist = term.cthist;
+	// delay here. Collect resize events
+	if ( term.circledhist  ){
+			oldline = (term.histi+1 > HISTSIZE ) ? 0 : (term.histi+1);
+	}
+	term.c.attr.u = ' '; 
+	dbg2("oldline: %d  term.histi: %d  term.col: %d col: %d\n",oldline,term.histi, term.col, col);
+#if 0
 
-  /* resize each row to new width, zero-pad if needed */
+	while (oldline!=term.histi) { // Reached the end of the old history
+			term.hist[(term.cthist)][oldline] = xrealloc(term.hist[term.cthist][oldline], col * sizeof(Glyph));
+			for (j = mincol; j < col; j++) {
+					term.hist[term.cthist][oldline][j].intG = term.c.attr.intG;
+					//term.hist[term.cthist][oldline][j].u = ' '; // append empty chars, if more cols than before
+			}
+
+			//for ( int a = 0; a<term.col; a++ ){ 
+					//if ( !term.hist[newhist][newline] = xmalloc(col * sizeof(Glyph));
+
+			//}
+					//term.hist[newhist][newline][newcol].intG = term.hist[oldhist][oldline][oldcol].intG;
+					//if ( term.hist[oldhist][oldline][oldcol].mode & ATTR_WRAP )
+					
+			oldline++;
+			oldline &= ((1<<HISTSIZEBITS)-1); // aka modulo
+	}
+
+#else
+	int t = term.histi;
+	if ( term.circledhist  ){
+			t = HISTSIZE;
+	}
+
+	for (i = 0; i < t; i++) { // 
+			term.hist[(term.cthist)][i] = xrealloc(term.hist[term.cthist][i], col * sizeof(Glyph));
+			for (j = mincol; j < col; j++) {
+					term.hist[term.cthist][i][j].intG = term.c.attr.intG;
+					//term.hist[term.cthist][i][j] = term.c.attr;
+					//term.hist[term.cthist][i][j].u = ' '; 
+					// append empty chars, if more cols than before
+			}
+	}
+#endif
+
+	/* resize each row to new width, zero-pad if needed */
   for (i = 0; i < minrow; i++) {
     term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
     term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
