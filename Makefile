@@ -66,7 +66,7 @@ endif
 
 
 SRC = st.c x.c
-HEADER = st.h config.h win.h arg.h
+HEADER = st.h win.h arg.h config.h.in
 
 all: st-asc
 
@@ -76,8 +76,6 @@ options:
 	@echo "LDFLAGS = $(STLDFLAGS)"
 	@echo "CC      = $(CC)"
 
-config.h:
-# cp config.def.h config.h # utterly useless and confusing
 
 with-utf8:
 	UTF8F=1 make st-asc
@@ -100,7 +98,7 @@ st-asc: $(SRC) $(HEADER)
 	
 #-DCOMPILECOMMAND='$(CC) -o st-asc $(SRC) $(STCFLAGS) $(STLDFLAGS)'
 	
-shared: $(SRC) $(HEADER) libst-asc.so
+shared: $(SRC) $(HEADER) libst-asc.so st-asc.c
 	gcc -o st-asc.shared st-asc.c -lst-asc $(OPT_FLAG) 
 
 libst-asc.so: $(SRC) $(HEADER) x.h
