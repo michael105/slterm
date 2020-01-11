@@ -7,7 +7,7 @@ Makefile syntax config below.
 endif
 
 # Set to 0
-SHOWCONFIGINFO = 0
+SHOWCONFIGINFO = 1
 
 # Dump debugging info
 # Values: 0 (off), 1 (all), 2 (only dbg2)
