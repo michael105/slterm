@@ -22,10 +22,17 @@
 #include "st.h"
 #include "win.h"
 
+#ifdef DBG
+#define dbg(...) printf(__VA_ARGS__)
+#else
 #define dbg(...) {}
-//#define dbg(...) printf(__VA_ARGS__)
-//#define dbg2(...) dbg(__VA_ARGS__)
+#endif
+
+#ifdef DBG2
 #define dbg2(...) printf(__VA_ARGS__)
+#else
+#define dbg2(...) dbg(__VA_ARGS__)
+#endif
 
 #if defined(__linux)
 #include <pty.h>
@@ -1225,12 +1232,12 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 #endif
 
   term.dirty[y] = 1;
-  term.line[y][x] = *attr;
+  term.line[y][x] = *attr; //misc optimize here
   term.line[y][x].u = u;
 }
 
-void memset32( int* i, int value, int count ){
-		for ( int a=0; a<count; a++ )
+void memset32( uint32_t* i, uint32_t value, size_t count ){
+		for ( size_t a=0; a<count; a++ )
 				i[a] = value;
 }
 
@@ -1257,7 +1264,7 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 				term.dirty[y] = 1;
 #ifndef UTF8
 				dbg("y: %d, x1: %d, x2: %d\n", y, x1, x2);
-				memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1)+1 );
+				memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1)+1 ); // memset64 or comp
 #else
 				for (x = x1; x <= x2; x++) {//misc copy longs (64bit)or,better: memset. mmx/sse?
 						//if (selected(x, y)) { // room for optimization. only ask once, when no selection
@@ -2377,7 +2384,7 @@ check_control_code:
 
   gp = &term.line[term.c.y][term.c.x];
   if (IS_SET(MODE_WRAP) && (term.c.state & CURSOR_WRAPNEXT)) {
-    gp->mode |= ATTR_WRAP;
+    gp->mode |= ATTR_WRAP; //misc wrapping here
     tnewline(1);
     gp = &term.line[term.c.y][term.c.x];
   }
@@ -2452,40 +2459,41 @@ void histputc(utfchar c){
 
 
 int twrite(const utfchar *buf, int buflen, int show_ctrl) {
-  int charsize;
-  Rune u;
-  int n;
+		int charsize;
+		Rune u;
+		int n;
 
-  dbg("twrite0 %d %c  %d\n", buflen, buf[0], show_ctrl);
-  for (n = 0; n < buflen; n += charsize) {
+		dbg("twrite0 buflen: %d buf[0]: %c  show_ctrl: %d\n", buflen, buf[0], show_ctrl);
 #ifdef UTF8
-    if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
-        // process a complete utf8 char
-        charsize = utf8decode(buf + n, &u, buflen - n);
-        if (charsize == 0)
-            break;
-    } else  {
+		for (n = 0; n < buflen; n += charsize) { // misc dfq
+				if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
+						// process a complete utf8 char
+						charsize = utf8decode(buf + n, &u, buflen - n);
+						if (charsize == 0)
+								break;
+				} else  {
+						u = buf[n] & 0xFF;
+						charsize = 1;
+				}
+#else
+		for (n = 0; n < buflen; n++ ) { // misc dfq
 #endif
-    u = buf[n] & 0xFF;
-    charsize = 1;
-#ifdef UTF8
-    }
-#endif
-    dbg("twrite1 %d %c\n", u, u);
-    if (show_ctrl && ISCONTROL(u)) {
-      dbg("twrite %d %c\n", u, u);
-      if (u & 0x80) {
-        u &= 0x7f;
-        tputc('^');
-        tputc('[');
-      } else if (u != '\n' && u != '\r' && u != '\t') {
-        u ^= 0x40;
-        tputc('^');
-      }
-    }
-    tputc(u);
-  }
-  return n;
+				u = buf[n];
+				dbg("twrite1 %d %c\n", u, u);
+				if (show_ctrl && ISCONTROL(u)) {
+						dbg("twrite ISCONTROL %d %c\n", u, u);
+						if (u & 0x80) {
+								u &= 0x7f;
+								tputc('^');
+								tputc('[');
+						} else if (u != '\n' && u != '\r' && u != '\t') {
+								u ^= 0x40;
+								tputc('^');
+						}
+				}
+				tputc(u);
+		}
+		return n;
 }
 
 void tresize(int col, int row) {

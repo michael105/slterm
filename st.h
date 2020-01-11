@@ -161,7 +161,7 @@ typedef struct {
 						// reorder. lowest byte is best
 						// to access
 				};
-				unsigned int intG;
+				uint32_t intG;
 		};
 #else
   uint32_t fg;      /* foreground  */
