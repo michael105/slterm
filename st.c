@@ -997,7 +997,7 @@ void tnew(int col, int row) {
 		dbg2("tnew\n");
   term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
 	term.hist[0][0] = xmalloc( col * sizeof(Glyph));
-	term.hist[1][0] = xmalloc( col * sizeof(Glyph));
+//	term.hist[1][0] = xmalloc( col * sizeof(Glyph));
 
 		term.guard=0xf0f0f0f0;
   tresize(col, row);
@@ -2491,8 +2491,8 @@ int twrite(const utfchar *buf, int buflen, int show_ctrl) {
 				}
 #else
 		for (n = 0; n < buflen; n++ ) { // misc dfq
-#endif
 				u = buf[n];
+#endif
 				dbg("twrite1 %d %c\n", u, u);
 				if (show_ctrl && ISCONTROL(u)) {
 						dbg("twrite ISCONTROL %d %c\n", u, u);

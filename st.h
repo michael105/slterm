@@ -170,10 +170,10 @@ typedef struct {
 				uint32_t intG;
 		};
 #else
-  uint32_t fg;      /* foreground  */
-  uint32_t bg;      /* background  */
   Rune u;             /* character code */
   ushort mode;      /* attribute flags */
+  uint32_t fg;      /* foreground  */
+  uint32_t bg;      /* background  */
 #endif
 } Glyph;
 
@@ -216,7 +216,7 @@ typedef struct {
 
 /* Internal representation of the screen */
 typedef struct {
-  Line hist[1][HISTSIZE]; /* history buffer */ // 
+  Line hist[1][HISTSIZE]; /* history buffer */ // NO. that's the bug. Oh for god's sake.
 	int guard;
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */
