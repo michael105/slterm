@@ -55,6 +55,10 @@ CC = gcc
 ifdef UNDEF
 #endif
 
+// config c header starts here 
+#ifndef CONFIG_IN
+#define CONFIG_IN
+
 // Silence my syntaxcheckerplugin
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
@@ -64,7 +68,7 @@ ifdef UNDEF
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 
-// Config Option, C-Style Syntax below
+// Config options, C-Style syntax below
 
 // font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
 // defaultfont 
@@ -578,7 +582,9 @@ static char ascii_printable[]
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~";
 
+
 #if 0
 endif
+#endif
 #endif
 

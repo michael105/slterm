@@ -2577,12 +2577,19 @@ void tresize(int col, int row) {
 
 	for (i = 0; i < t; i++) { // 
 			term.hist[(term.cthist)][i] = xrealloc(term.hist[term.cthist][i], col * sizeof(Glyph));
+#ifndef UTF8
+			memset32( &term.hist[term.cthist][i][mincol].intG, term.c.attr.intG, col-mincol );
+			//for (j = mincol; j < col; j++) {
+			//		term.hist[term.cthist][i][j].intG = term.c.attr.intG;
+			//}
+#else
 			for (j = mincol; j < col; j++) {
-					term.hist[term.cthist][i][j].intG = term.c.attr.intG;
-					//term.hist[term.cthist][i][j] = term.c.attr;
-					//term.hist[term.cthist][i][j].u = ' '; 
-					// append empty chars, if more cols than before
+					//term.hist[term.cthist][i][j].intG = term.c.attr.intG;
+					term.hist[term.cthist][i][j] = term.c.attr;
+					term.hist[term.cthist][i][j].u = ' '; 
+					//append empty chars, if more cols than before
 			}
+#endif
 	}
 #endif
 
