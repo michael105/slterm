@@ -20,7 +20,7 @@ ___
 	Nicer cursor and configurable cursorcolor for unfocused windows.
 	No scrollback "behind" the current history anymore.
 
-Please see [LOG](LOG) for more detailed info.
+Please see [LOG.md](LOG.md) for more detailed info.
 ___
 
 Applied Patches:
