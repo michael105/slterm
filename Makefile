@@ -106,8 +106,8 @@ libst-asc.so: $(SRC) $(HEADER) x.h
 
 manpage: st-asc.1
 
-st-asc.1: st-asc.rst
-	rst2man st-asc.rst > st-asc.1
+st-asc.1: st-asc.1.rst
+	rst2man st-asc.1.rst > st-asc.1
 
 clean:
 	rm -f st-asc $(OBJ) st-asc-$(VERSION).tar.gz
