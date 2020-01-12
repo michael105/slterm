@@ -31,20 +31,23 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-(s)imple (t)erminal \- ascii fork
+(s)imple (t)erminal \- (asc)ii fork
 .SH SYNOPSIS
 .sp
-\fBst\-asc\fP [\fB\-aivV\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
+\fBst\-asc\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
 [\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
 [\fB\-l\fP \fIline\fP] [\fB\-w\fP \fIwindowid\fP] [[\fB\-e\fP] \fIcommand\fP
 [\fIarguments\fP\&...]]
 .sp
-\fBst\-asc\fP [\fB\-aivV\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
+\fBst\-asc\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
 [\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
 [\fB\-w\fP \fIwindowid\fP] \-l \fIline\fP [\fIstty_args\fP\&...]
 .SH DESCRIPTION
 .sp
-\fBst\fP is a simple terminal emulator.
+\fBst\-asc\fP is a virtual terminal emulator for X
+It is a slimmed down clone of st (suckless.org),
+utf\-8 and rgb support stripped of for better performance,
+but with several additions and patches.
 .SH OPTIONS
 .INDENT 0.0
 .TP
