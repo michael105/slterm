@@ -28,7 +28,7 @@ ___
     Nicer cursor and configurable cursorcolor for unfocused windows.
     No scrollback "behind" the current history anymore.
 
-Further info is in [st-asc](st-asc.rst), [Patches](Patches.md) and [LOG.md](LOG.md)
+Further info is in [st-asc.1](st-asc.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
 ___
 
 Applied Patches:
