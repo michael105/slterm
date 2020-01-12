@@ -167,7 +167,7 @@ error and warning macros are not affected by the DEBUG switch.
 
 The debuglevel (-1..5) can be set differently for every source file, 
 either at runtime via dbg_filelevel = level,
-and/or once by '#define DBG_FILEVEL', before the includement of debug.h
+and/or once by '#define DEBUG_FILEVEL', before the includement of debug.h
 It's set to 5 per default, meaning, all dbg[1..5] calls will debug output.
 
 
@@ -234,7 +234,7 @@ extern "C" {
 #define AC_INVERSE   "\033[7m"
 #define AC_BLACK     "\033[0;30m"
 #define AC_RED       "\033[0;31m"
-#define AC_GREEN     "\033[32;0m"
+#define AC_GREEN     "\033[0;32m"
 #define AC_BROWN     "\033[0;33m"
 #define AC_BLUE      "\033[0;34m"
 #define AC_MAGENTA   "\033[0;35m"
@@ -302,6 +302,15 @@ extern "C" {
 
 #endif
 
+#ifdef FULLDEBUG
+#ifdef ENABLEDEBUG
+#undef ENABLEDEBUG
+#endif
+// set to 5 - everything
+#define ENABLEDEBUG 5
+#endif
+
+
 
 
 		// where the debug should go
@@ -318,11 +327,11 @@ extern "C" {
 		// Error and warning severity
 		//enum _severity { DEBUG, MINOR, UNUSUAL, WARNING, SEVERE, FATAL};
 		enum _severity { FATAL, SEVERE, WARNING, UNUSUAL, MINOR, DEBUG };
-#ifndef DBG_FILELEVEL
+#ifndef DEBUG_FILELEVEL
 		// local file debug level (everything by default );
 		static int dbg_filelevel = DEBUG;
 #else 
-		static int dbg_filelevel = DBG_FILELEVEL;
+		static int dbg_filelevel = DEBUG_FILELEVEL;
 #endif
 
 
@@ -341,13 +350,8 @@ extern "C" {
 #define fatalif(when,...) {if ( when ) fatal(__VA_ARGS__)}
 
 
-#ifdef FULLDEBUG
-#ifndef ENABLEDEBUG
-#define ENABLEDEBUG
-#endif
-#endif
-
-#ifdef ENABLEDEBUG
+#ifdef ENABLEDEBUG 
+#if ( ENABLEDEBUG>0 )
 
 #define _DBG_FULL_(level,...) _dbg_full( level,  dbg_filelevel,  __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__ )
 
@@ -395,6 +399,8 @@ extern "C" {
 
 #define dbgi(_int) {}
 
+
+#endif //enabledebug>0
 #endif //ENABLEDEBUG
 
 
@@ -476,7 +482,7 @@ void _error( enum _severity sev, const char* file, const int line, const char* f
 		}
 }
 void _dbg_full( int level, int filelevel, const char* file, const int line, const char* function, const char*fmt, ... ){
-		if ( level > filelevel )
+		if ( level < filelevel )
 				return;
 		init();
 		fprintf(target, "   %s   %d, in %s\n", file, line, function );
@@ -488,7 +494,7 @@ void _dbg_full( int level, int filelevel, const char* file, const int line, cons
 		fflush(target);
 }
 void _dbg( int level, int filelevel, const char*fmt, ... ){
-		if ( level > filelevel )
+		if ( level < filelevel )
 				return;
 		init();
 		va_list ap;

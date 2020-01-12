@@ -192,6 +192,7 @@ typedef struct {
 #endif
 } Glyph;
 
+
 typedef Glyph *Line;
 
 typedef union {
@@ -213,7 +214,8 @@ typedef struct {
 
 /* Internal representation of the screen */
 typedef struct {
-  Line hist[2][HISTSIZE]; /* history buffer */ // NO. that's the bug. Oh for god's sake.
+#warning memo to me
+  Line hist[1][HISTSIZE]; /* history buffer */ // NO. that's the bug. Oh for god's sake.
 	int guard;
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */

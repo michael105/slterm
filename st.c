@@ -4,6 +4,7 @@
 #include "st.h"
 #include "win.h"
 #include "selection.h"
+#define DEBUG_FILELEVEL 1
 #include "debug.h"
 
 #include "selection.c"
@@ -390,7 +391,7 @@ size_t ttyread(void) {
 		}
 		buflen += ret;
 
-		dbg("ttyread, ret: %d, buflen: %d, buf[0] %c\n", ret, buflen, buf[0]);
+		dbg("ttyread, ret: %d, buflen: %d, buf[0] %c", ret, buflen, buf[0]);
 
 		written = twrite(buf, buflen, 0);
 		buflen -= written;
@@ -408,7 +409,7 @@ void ttywrite(const utfchar *s, size_t n, int may_echo) {
 
 		kscrolldown(&arg);
 
-		dbg("ttywrite %d %x %c\n", n, s[0], s[0]);
+		dbg("ttywrite %d %x %c", n, s[0], s[0]);
 		if (may_echo && IS_SET(MODE_ECHO)) {
 				dbg("t1\n");
 				twrite(s, n, 1);
@@ -473,7 +474,7 @@ void ttywriteraw(const utfchar *s, size_t n) {
 						if ((r = write(cmdfd, s, (n < lim) ? n : lim)) < 0) {
 								goto write_error;
 						}
-						dbg("ttywriteraw  n: %d s[0]: %c lim: %d  r: %d\n", n, s[0], lim, r);
+						dbg("ttywriteraw  n: %d s[0]: %c lim: %d  r: %d", n, s[0], lim, r);
 						if (r < n) {
 								/*
 								 * We weren't able to write out everything.
@@ -603,7 +604,7 @@ void tnew(int col, int row) {
 		dbg2("tnew *******************************************************\n");
 		term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
 		term.hist[0][0] = xmalloc( col * sizeof(Glyph));
-		term.hist[1][0] = 0; //xmalloc( col * sizeof(Glyph));
+		term.hist[1][0] = xmalloc( col * sizeof(Glyph));
 
 		term.guard=0xf0f0f0f0;
 		tresize(col, row);
@@ -786,7 +787,12 @@ void tmoveto(int x, int y) {
 }
 
 void tsetchar(Rune u, Glyph *attr, int x, int y) {
-#ifdef UTF8
+#ifndef UTF8
+		term.dirty[y] = 1;
+		term.line[y][x] = *attr; 
+		term.line[y][x].u = u;
+		return;
+#else
 		static char *vt100_0[62] = {
 				/* 0x41 - 0x7e */
 				"↑", "↓", "→", "←", "█", "▚", "☃",      /* A - G */
@@ -817,11 +823,10 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 				term.line[y][x - 1].u = ' ';
 				term.line[y][x - 1].mode &= ~ATTR_WIDE;
 		}
-#endif
-
 		term.dirty[y] = 1;
 		term.line[y][x] = *attr; //misc optimize here
 		term.line[y][x].u = u;
+#endif
 }
 
 void memset32( uint32_t* i, uint32_t value, int count ){
@@ -2051,7 +2056,7 @@ int twrite(const utfchar *buf, int buflen, int show_ctrl) {
 		Rune u;
 		int n;
 
-		dbg("twrite0 buflen: %d buf[0]: %c  show_ctrl: %d\n", buflen, buf[0], show_ctrl);
+		dbg("twrite0 buflen: %d buf[0]: %c  show_ctrl: %d", buflen, buf[0], show_ctrl);
 
 #ifdef UTF8
 		for (n = 0; n < buflen; n += charsize) { // misc dfq
@@ -2068,9 +2073,9 @@ int twrite(const utfchar *buf, int buflen, int show_ctrl) {
 		for (n = 0; n < buflen; n++ ) { // misc dfq
 					u = buf[n];
 #endif
-				dbg("twrite1 %d %c\n", u, u);
+				dbg("twrite1 %d %c", u, u);
 				if (show_ctrl && ISCONTROL(u)) {
-						dbg("twrite ISCONTROL %d %c\n", u, u);
+						dbg("twrite ISCONTROL %d %c", u, u);
 						if (u & 0x80) {
 								u &= 0x7f;
 								tputc('^');
@@ -2137,7 +2142,7 @@ void tresize(int col, int row) {
 				oldline = (term.histi+1 > HISTSIZE ) ? 0 : (term.histi+1);
 		}
 		term.c.attr.u = ' '; 
-		dbg2("oldline: %d  term.histi: %d  term.col: %d col: %d\n",oldline,term.histi, term.col, col);
+		dbg2(AC_YELLOW "oldline: %d  term.histi: %d  term.col: %d col: %d" AC_NORM,oldline,term.histi, term.col, col);
 #if 0
 
 		if ( oldline != term.histi ){
@@ -2146,32 +2151,38 @@ void tresize(int col, int row) {
 		}
 
 		while (oldline!=term.histi) { // Didn't reach the end of the old history yet
-				dbg3( "oldhist: %d term.col %d newhist %d oldline: %d oldcol: %d newline: %d newcol: %d\n", oldhist, term.col,newhist, oldline, oldcol, newline, newcol );
-				while( oldcol < term.col && !( ( oldcol>0 ) && (term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
-						dbg3( "term.col: %d L2: oldline: %d oldcol: %d newline: %d newcol: %d\n",term.col, oldline, oldcol, newline, newcol );
+				dbg3( "oldhist: %d term.col %d newhist %d oldline: %d oldcol: %d newline: %d newcol: %d", oldhist, term.col,newhist, oldline, oldcol, newline, newcol );
+				while( (oldline!=term.histi) && (oldcol < term.col) ){ // && !( ( oldcol>0 ) && (term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
+						dbg3( "term.col: %d L2: oldline: %d oldcol: %d newline: %d newcol: %d",term.col, oldline, oldcol, newline, newcol );
 						//dbg3( "intG oldhist: %d - %d\n", term.hist[oldhist][oldline][oldcol].intG, term.hist[oldhist][oldline][oldcol].u );
 						if ( term.hist[oldhist][oldline][oldcol].mode & ATTR_WRAP ){
-								dbg2("WRAP\n");
+								dbg2("WRAP");
 						}
 						term.hist[newhist][newline][newcol].intG = term.hist[oldhist][oldline][oldcol].intG;
 						//term.hist[newhist][newline][newcol].mode
 						oldcol++;
 						newcol++;
-						if ( ( newcol == col) || ( term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP ) ){ // end of line
-								dbg3("Eol. newcol: %d  oldcol:%d\n",newcol,oldcol);
-								term.hist[newhist][newline][newcol-1].mode |= ATTR_WRAP;
+						if ( ( newcol == col) || ( (oldcol>0) && (term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){ // end of line
+								dbg3("Eol. newcol: %d  oldcol:%d",newcol,oldcol);
+								//term.hist[newhist][newline][newcol-1].mode |= ATTR_WRAP;
 								newline++;
 								newline &= ((1<<HISTSIZEBITS)-1);
 								newcol=0;
-								term.hist[newhist][newline] = xmalloc( col * sizeof(Glyph));
-								dbg3("newline: %d\n",newline);
+								if ( !term.hist[newhist][newline] ){ 
+										term.hist[newhist][newline] = xmalloc( col * sizeof(Glyph));
+										dbg3(AC_BLUE"malloc: hist %d, line %d, cols: %d"AC_NORM, newhist, newline, col );
+								} else {
+										dbg3(AC_GREEN"realloc: hist %d, line %d, cols: %d"AC_NORM, newhist, newline, col );
+										term.hist[newhist][newline] = xrealloc( 	term.hist[newhist][newline], col * sizeof(Glyph));
+								}
+								//dbg3("newline: %d",newline);
 								memset32( &term.hist[newhist][newline][mincol].intG, term.c.attr.intG, col-mincol );
 						}
-						if ( oldcol < term.col && !( ( oldcol>0 ) && (term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
-								dbg3( "YY: newline: %d newcol: %d\n", newline, newcol );
-								free( term.hist[oldhist][oldline] );
+						if ( oldcol == term.col ){// && !( ( oldcol>0 ) && (term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
+								dbg3( "YY: newline: %d newcol: %d", newline, newcol );
+								//free( term.hist[oldhist][oldline] );
 								oldcol = 0;
-								term.hist[oldhist][oldline] = 0;
+								//term.hist[oldhist][oldline] = 0;
 								oldline++;
 								oldline &= ((1<<HISTSIZEBITS)-1); // modulo
 
@@ -2180,7 +2191,7 @@ void tresize(int col, int row) {
 				}
 		}
 		term.cthist = newhist;
-		dbg2("copied hist. oldhist: %d  term.cthist: %d\n", oldhist, term.cthist );
+		dbg2("copied hist. oldhist: %d  term.cthist: %d", oldhist, term.cthist );
 #else
 		int t = term.histi;
 		if ( term.circledhist  ){

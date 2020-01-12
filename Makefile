@@ -8,12 +8,12 @@
 include config.h.in
 
 
-ifeq "$(strip $(DEBUGLEVEL))" "1"
-		DBGFLAG=-DDBG
-endif
+SRC = st.c  
+#SRC = st.c x.c utf8.c selection.c
+HEADER = st.h win.h arg.h config.h.in utf8.h selection.h includes.h
 
-ifeq "$(strip $(DEBUGLEVEL))" "2"
-		DBGFLAG=-DDBG2
+ifdef ENABLEDEBUG
+		DBGFLAG=-DENABLEDEBUG=$(ENABLEDEBUG) -DDEBUG_INCLUDESRC
 endif
 
 
@@ -64,11 +64,6 @@ endif
 
 
 
-
-SRC = st.c  
-#SRC = st.c x.c utf8.c selection.c
-HEADER = st.h win.h arg.h config.h.in utf8.h selection.h
-
 all: st-asc
 
 options:
@@ -103,7 +98,9 @@ st-asc: $(SRC) $(HEADER)
 #-DCOMPILECOMMAND='$(CC) -o st-asc $(SRC) $(STCFLAGS) $(STLDFLAGS)'
 	
 shared: $(SRC) $(HEADER) libst-asc.so st-asc.c
-	gcc -o st-asc.shared st-asc.c -lst-asc $(OPT_FLAG) 
+	gcc -o st-asc.shared st-asc.c -lst-asc -O3 
+	
+#gcc -o st-asc.shared st-asc.c -lst-asc $(OPT_FLAG) 
 
 libst-asc.so: $(SRC) $(HEADER) x.h
 	$(CC) -o libst-asc.so -shared -fpic $(SRC) $(STCFLAGS) $(STLDFLAGS) -Dshared
