@@ -7,11 +7,11 @@ Makefile syntax config below.
 endif
 
 # Set to 0
-SHOWCONFIGINFO = 0
+SHOWCONFIGINFO = 1
 
 # Dump debugging info
-# Values: 0 (off), 1 (all), 2 (only dbg2)
-DEBUGLEVEL = 0
+# Values: 0 (off), 1 (on)
+ENABLEDEBUG = 0
 
 # version
 VERSION = asc-0.9rc4
@@ -25,12 +25,12 @@ UTF8 = 0
 
 # Length of history, in bits, -> log(size in lines) ~ bits */
 # 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
-#HISTSIZEBITS = 12
-
-HISTSIZEBITS = 6
+HISTSIZEBITS = 12
+#HISTSIZEBITS = 6
 
 # opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
 OPT_FLAG = -O3 -fwhole-program
+#OPT_FLAG = -O0
 
 # Linker Flags
 LINKER_FLAG = -s
