@@ -65,8 +65,8 @@ endif
 
 
 
-SRC = st.c x.c
-HEADER = st.h win.h arg.h config.h.in
+SRC = st.c x.c utf8.c selection.c
+HEADER = st.h win.h arg.h config.h.in utf8.h selection.h
 
 all: st-asc
 

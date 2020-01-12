@@ -4,6 +4,10 @@
 
 #include <stdint.h>
 #include <sys/types.h>
+#include <X11/keysym.h>
+#include <X11/X.h>
+
+#include <wchar.h>
 
 /* macros */
 
@@ -12,6 +16,7 @@
 #else
 #define utfchar unsigned char
 #endif
+
 
 #if (__SIZEOF_POINTER__==8)
 #define POINTER unsigned long
@@ -36,8 +41,17 @@
   ((t1.tv_sec - t2.tv_sec) * 1000 + (t1.tv_nsec - t2.tv_nsec) / 1E6)
 #define MODBIT(x, set, bit) ((set) ? ((x) |= (bit)) : ((x) &= ~(bit)))
 
+#define TLINE(y)                                                               \
+  ((y) < term.scr                                                              \
+       ? term.hist[term.cthist][(((y) + term.histi - term.scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term.line[(y)-term.scr])
+
+
+#define ISDELIM(u) (u && wcschr(worddelimiters, u))
 #define TRUECOLOR(r, g, b) (1 << 24 | (r) << 16 | (g) << 8 | (b))
 #define IS_TRUECOL(x) (1 << 24 & (x))
+
+
+#define IS_SET(flag) ((term.mode & (flag)) != 0)
 
 #ifndef HISTSIZEBITS
 // Should be set in config.h.in
@@ -149,6 +163,7 @@ typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned short ushort;
+
 #ifdef UTF8
 typedef uint_least32_t Rune;
 #else
@@ -196,24 +211,6 @@ typedef struct {
   char state;
 } TCursor;
 
-typedef struct {
-  int mode;
-  int type;
-  int snap;
-  /*
-   * Selection variables:
-   * nb – normalized coordinates of the beginning of the selection
-   * ne – normalized coordinates of the end of the selection
-   * ob – original coordinates of the beginning of the selection
-   * oe – original coordinates of the end of the selection
-   */
-  struct {
-    int x, y;
-  } nb, ne, ob, oe;
-
-  int alt;
-} Selection;
-
 /* Internal representation of the screen */
 typedef struct {
   Line hist[2][HISTSIZE]; /* history buffer */ // NO. that's the bug. Oh for god's sake.
@@ -239,6 +236,8 @@ typedef struct {
   int *tabs;
 	char circledhist;
 } Term;
+
+extern Term term; // misc make local?
 
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
@@ -285,6 +284,11 @@ size_t ttyread(void);
 void ttyresize(int, int);
 void ttywrite(const utfchar *, size_t, int);
 
+void set_notifmode(int type, KeySym ksym);
+
+int tlinelen(int);
+
+void tsetdirt(int, int);
 void resettitle(void);
 
 void selclear(void);
@@ -295,10 +299,10 @@ int selected(int, int);
 char *getsel(void);
 
 size_t utf8encode(Rune, char *);
-
 void *xmalloc(size_t);
 void *xrealloc(void *, size_t);
 char *xstrdup(char *);
+
 int trt_kbdselect(KeySym, char *, int);
 
 /* config.h globals */
@@ -318,8 +322,11 @@ extern unsigned int defaultfg;
 extern unsigned int defaultbg;
 #endif
 
-int borderpx;
+extern int borderpx;
 extern int borderperc;
+
+
+void drawregion(int, int, int, int);
 
 #endif
 
