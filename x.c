@@ -86,6 +86,9 @@ void ttysend(const Arg *);
 #define XEMBED_FOCUS_OUT 5
 
 /* macros */
+#ifdef IS_SET
+#undef IS_SET
+#endif
 #define IS_SET(flag) ((win.mode & (flag)) != 0)
 #define TRUERED(x) (((x)&0xff0000) >> 8)
 #define TRUEGREEN(x) (((x)&0xff00))
