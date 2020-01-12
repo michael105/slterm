@@ -1,4 +1,6 @@
 /* See LICENSE for license details. */
+#ifndef WIN_H
+#define WIN_H
 
 enum win_mode {
     MODE_VISIBLE = 1 << 0,
@@ -40,3 +42,6 @@ int xstartdraw(void);
 void xximspot(int, int);
 void toggle_winmode(int);
 void keyboard_select(const Arg *);
+
+
+#endif
