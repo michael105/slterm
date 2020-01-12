@@ -216,7 +216,7 @@ typedef struct {
 
 /* Internal representation of the screen */
 typedef struct {
-  Line hist[1][HISTSIZE]; /* history buffer */ // NO. that's the bug. Oh for god's sake.
+  Line hist[2][HISTSIZE]; /* history buffer */ // NO. that's the bug. Oh for god's sake.
 	int guard;
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */
