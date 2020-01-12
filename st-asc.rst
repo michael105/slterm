@@ -2,24 +2,28 @@
  st-asc
 ========
 
-(s)imple (t)erminal - ascii fork
+(s)imple (t)erminal - (asc)ii fork
 
 SYNOPSIS
 ========
 
-**st-asc** [**-aivV**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
+**st-asc** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
 [**-l** *line*] [**-w** *windowid*] [[**-e**] *command*
 [*arguments*...]]
 
-**st-asc** [**-aivV**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
+**st-asc** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
 [**-w** *windowid*] -l *line* [*stty_args*...]
 
 DESCRIPTION
 ===========
 
-**st** is a simple terminal emulator.
+**st-asc** is a virtual terminal emulator for X
+It is a slimmed down clone of st (suckless.org),
+utf-8 and rgb support stripped of for better performance,
+but with several additions and patches.
+
 
 OPTIONS
 =======
@@ -138,7 +142,7 @@ When you run "keyboard\_select", you have 3 modes available:
 Shortcuts for move and select modes:
     
    
-:h, j, k, l:        move cursor left/down/up/right (also with arrow keys)
+:h, j, k, l:      move cursor left/down/up/right (also with arrow keys)
 :!, _, \*:        move cursor to the middle of the line/column/screen
 :Backspace, $:    move cursor to the beginning/end of the line
 :PgUp, PgDown:    move cursor to the beginning/end of the column
