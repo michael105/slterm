@@ -1,27 +1,15 @@
 /* See LICENSE for license details. */
-#include <X11/X.h>
-#include <X11/keysym.h>
-#include <ctype.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <limits.h>
-#include <pwd.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/ioctl.h>
-#include <sys/select.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <termios.h>
-#include <unistd.h>
+#include "includes.h"
 
 #include "st.h"
 #include "win.h"
 #include "selection.h"
 #include "debug.h"
+
+#include "selection.c"
+#include "x.c"
+#include "utf8.c"
+
 
 
 #if defined(__linux)
@@ -42,7 +30,8 @@
 //#define ISDELIM(u)    (utf8strchr(worddelimiters, u) != NULL)
 //#else
 //#endif
-
+#undef IS_SET
+#define IS_SET(flag) ((term.mode & (flag)) != 0)
 
 #define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
 		b = (void*)((POINTER)a ^ (POINTER)b);\

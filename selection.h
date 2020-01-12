@@ -1,3 +1,5 @@
+#ifndef selection_h
+#define selection_h
 
 typedef struct {
   int mode;
@@ -23,4 +25,4 @@ void selnormalize(void);
 void selscroll(int, int);
 void selsnap(int *, int *, int);
 
-
+#endif

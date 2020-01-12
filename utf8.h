@@ -1,4 +1,5 @@
-
+#ifndef utf8_h
+#define utf8_h
 
 #ifdef UTF8
 typedef uint_least32_t Rune;
@@ -13,4 +14,4 @@ size_t utf8validate(Rune *u, size_t i);
 char utf8encodebyte(Rune u, size_t i);
 Rune utf8decodebyte(char c, size_t *i);
 
-
+#endif

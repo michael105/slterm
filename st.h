@@ -170,7 +170,7 @@ typedef uint_least32_t Rune;
 typedef unsigned char Rune;
 #endif
 
-#define Glyph Glyph_
+#define Glyph _Glyph
 typedef struct {
 #ifndef UTF8
 		union {
