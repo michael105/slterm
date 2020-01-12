@@ -994,10 +994,10 @@ void treset(void) {
 }
 
 void tnew(int col, int row) {
-		dbg2("tnew\n");
+		dbg2("tnew *******************************************************\n");
   term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
 	term.hist[0][0] = xmalloc( col * sizeof(Glyph));
-//	term.hist[1][0] = xmalloc( col * sizeof(Glyph));
+	term.hist[1][0] = 0; //xmalloc( col * sizeof(Glyph));
 
 		term.guard=0xf0f0f0f0;
   tresize(col, row);
@@ -2567,34 +2567,42 @@ void tresize(int col, int row) {
 
 	if ( oldline != term.histi ){
 		term.hist[newhist][newline] = xmalloc( col * sizeof(Glyph));
-//	memset32( &term.hist[newhist][newline][mincol].intG, term.c.attr.intG, col-mincol );
+		memset32( &term.hist[newhist][newline][mincol].intG, term.c.attr.intG, col-mincol );
 	}
 
 	while (oldline!=term.histi) { // Didn't reach the end of the old history yet
 			dbg3( "oldhist: %d term.col %d newhist %d oldline: %d oldcol: %d newline: %d newcol: %d\n", oldhist, term.col,newhist, oldline, oldcol, newline, newcol );
-			while( oldcol < term.col ){
+			while( oldcol < term.col && !( ( oldcol>0 ) && (term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
 					dbg3( "term.col: %d L2: oldline: %d oldcol: %d newline: %d newcol: %d\n",term.col, oldline, oldcol, newline, newcol );
 					//dbg3( "intG oldhist: %d - %d\n", term.hist[oldhist][oldline][oldcol].intG, term.hist[oldhist][oldline][oldcol].u );
+					if ( term.hist[oldhist][oldline][oldcol].mode & ATTR_WRAP ){
+							dbg2("WRAP\n");
+					}
 					term.hist[newhist][newline][newcol].intG = term.hist[oldhist][oldline][oldcol].intG;
 					//term.hist[newhist][newline][newcol].mode
 					oldcol++;
 					newcol++;
-					if ( newcol == col ){ // end of line
+					if ( ( newcol == col) || ( term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP ) ){ // end of line
 							dbg3("Eol. newcol: %d  oldcol:%d\n",newcol,oldcol);
 							term.hist[newhist][newline][newcol-1].mode |= ATTR_WRAP;
 							newline++;
 							newline &= ((1<<HISTSIZEBITS)-1);
 							newcol=0;
 							term.hist[newhist][newline] = xmalloc( col * sizeof(Glyph));
-							dbg3("XX\n");
+							dbg3("newline: %d\n",newline);
 							memset32( &term.hist[newhist][newline][mincol].intG, term.c.attr.intG, col-mincol );
 					}
+			if ( oldcol < term.col && !( ( oldcol>0 ) && (term.hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
+					dbg3( "YY: newline: %d newcol: %d\n", newline, newcol );
+					free( term.hist[oldhist][oldline] );
+					oldcol = 0;
+					term.hist[oldhist][oldline] = 0;
+					oldline++;
+					oldline &= ((1<<HISTSIZEBITS)-1); // modulo
+
 			}
-			free( term.hist[oldhist][oldline] );
-			oldcol = 0;
-			term.hist[oldhist][oldline] = 0;
-			oldline++;
-			oldline &= ((1<<HISTSIZEBITS)-1); // aka modulo
+			
+			}
 	}
 	term.cthist = newhist;
 	dbg2("copied hist. oldhist: %d  term.cthist: %d\n", oldhist, term.cthist );
@@ -2624,9 +2632,9 @@ void tresize(int col, int row) {
 #endif
 	/* resize each row to new width, zero-pad if needed */
   for (i = 0; i < minrow; i++) {
-			dbg3("i: %d, %d", i, minrow );
+			//dbg3("i: %d, %d", i, minrow );
     term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
-			dbg3("i2\n");
+			//dbg3("i2\n");
     term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
   }
 
