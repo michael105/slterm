@@ -28,7 +28,7 @@ ___
     Nicer cursor and configurable cursorcolor for unfocused windows.
     No scrollback "behind" the current history anymore.
 
-Additional info is in [Patches](Patches.md) and [LOG.md](LOG.md)
+Further info is in [st-asc](st-asc.rst), [Patches](Patches.md) and [LOG.md](LOG.md)
 ___
 
 Applied Patches:
@@ -232,6 +232,6 @@ Based on Aurelien APTEL <aurelien dot aptel at gmail dot com> bt source code.
 
 Fetched from the suckless git repo (suckless.org) on 2020/01/01.
 
-All authors of the several patches.
+Please see for the authors of the patches [PATCHES](PATCHES.md)
 
 
