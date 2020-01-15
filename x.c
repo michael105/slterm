@@ -1947,10 +1947,11 @@ int main(int argc, char *argv[]) {
 			"CC: "__CC__" "__CC_VERSION__"\n\n"
 			"Compileflags:\n"
 			__OPT_FLAG__ "\n"
-			"DEBUGLEVEL: "__DEBUGLEVEL__"\n"
+			"HISTORY: %d\n"
+			"DEBUGLEVEL: "__ENABLEDEBUG__"\n"
 			"XRESOURCES: "__XRESOURCES__"\n"
 			"UTF8: "__UTF8__"\n"
-			__COMPILECOMMAND__ "\n" );
+			__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
 		exit(0);
   default:
     usage();

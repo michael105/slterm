@@ -88,7 +88,7 @@ st-asc: $(SRC) $(HEADER)
 	@echo -e '#define __UNAME__ "'`uname -m -o -r -s`\" >> compile.h
 	@echo -e '#define __OPT_FLAG__ "$(OPT_FLAG)"' >> compile.h
 	@echo -e '#define __UTF8__ "$(UTF8)"\n#define __XRESOURCES__  "$(XRESOURCES)"' >> compile.h
-	@echo -e '#define __DEBUGLEVEL__ "$(DEBUGLEVEL)"' >> compile.h
+	@echo -e '#define __ENABLEDEBUG__ "$(ENABLEDEBUG)"' >> compile.h
 	@echo -e '#define __CC_VERSION__ "'`$(CC) -dumpversion`'"' >> compile.h
 	@echo -e '#define __CC__ "$(CC)"' >> compile.h
 	$(CC) -o st-asc st.c $(STCFLAGS) $(STLDFLAGS) 
