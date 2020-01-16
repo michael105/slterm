@@ -3,8 +3,10 @@
 
 #include "st.h"
 #include "x.h"
+#include "system.h"
 #include "tty.h"
 #include "selection.h"
+
 #define DEBUG_FILELEVEL 1
 #include "debug.h"
 
@@ -12,6 +14,7 @@
 #include "base64.c"
 #include "selection.c"
 #include "x.c"
+#include "main.c"
 #include "system.c"
 #include "tty.c"
 #include "utf8.c"
@@ -73,7 +76,6 @@ static void tsetchar(Rune, Glyph *, int, int);
 static void tsetscroll(int, int);
 static void tswapscreen(void);
 static void tsetmode(int, int, int *, int);
-static int twrite(const utfchar *, int, int);
 static void tfulldirt(void);
 static void tcontrolcode(uchar);
 static void tdectest(utfchar);
@@ -88,9 +90,6 @@ static void tstrsequence(uchar);
 Term term; // misc make local?
 static CSIEscape csiescseq;
 static STREscape strescseq;
-static int iofd = 1; // this might bloat
-static int cmdfd;
-static pid_t pid;
 int borderpx;
 
 
@@ -106,14 +105,6 @@ int tlinelen(int y) {
 		}
 
 		return i;
-}
-void die(const char *errstr, ...) {
-		va_list ap;
-
-		va_start(ap, errstr);
-		vfprintf(stderr, errstr, ap);
-		va_end(ap);
-		exit(1);
 }
 
 void ttyresize(int tw, int th) {
@@ -434,6 +425,7 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 		term.line[y][x].u = u;
 #endif
 }
+
 void tclearregion(int x1, int y1, int x2, int y2) {
 		int x, y;
 		Glyph *gp;
@@ -1459,12 +1451,13 @@ void tputc(Rune u) {
 		Glyph *gp;
 
 		control = ISCONTROL(u);
-#ifdef UTF8
+#ifndef UTF8
+		c[0] = u;
+		width = len = 1;
+#else 
 		if (!IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
-#endif
 				c[0] = u;
 				width = len = 1;
-#ifdef UTF8
 		} else {
 				len = utf8encode(u, c);
 				if (!control && (width = wcwidth(u)) == -1) {
@@ -1807,7 +1800,6 @@ void tresize(int col, int row) {
 				//}
 #else
 				for (j = mincol; j < col; j++) {
-						//term.hist[term.cthist][i][j].intG = term.c.attr.intG;
 						term.hist[term.cthist][i][j] = term.c.attr;
 						term.hist[term.cthist][i][j].u = ' '; 
 						//append empty chars, if more cols than before
