@@ -27,12 +27,7 @@
 #define ISCONTROLC0(c) (BETWEEN(c, 0, 0x1f) || (c) == '\177')
 #define ISCONTROLC1(c) (BETWEEN(c, 0x80, 0x9f))
 #define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
-//#define ISCONTROL(c)		(ISCONTROLC0(c) || ISCONTROLC1(c)) // \177
-//equals 0xf7 misc
-//#ifdef UTF8
-//#define ISDELIM(u)    (utf8strchr(worddelimiters, u) != NULL)
-//#else
-//#endif
+
 #undef IS_SET
 #define IS_SET(flag) ((term.mode & (flag)) != 0)
 
