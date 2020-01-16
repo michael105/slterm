@@ -201,6 +201,7 @@ with Xorg programs.
 - strip ~~unicode~~ (done mostly)
 - ~~strip rgb colors~~
 - ~~add patches~~
+- Have the screen redrawn on resize events 
 - Compression of history buffer
 - wayland? postponed.
 - gain earth domination
