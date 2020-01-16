@@ -270,11 +270,7 @@ int ttynew(char *line, char *cmd, char *out, char **args) {
 }
 
 size_t ttyread(void) {
-#ifdef UTF8
-		static char buf[BUFSIZ];
-#else
-		static unsigned char buf[BUFSIZ];
-#endif
+		static utfchar buf[BUFSIZ];
 		static int buflen = 0;
 		int written;
 		int ret;
@@ -478,11 +474,7 @@ void treset(void) {
 		}
 		term.top = 0;
 		term.bot = term.row - 1;
-#ifdef UTF8
-		term.mode = MODE_WRAP | MODE_UTF8;
-#else
-		term.mode = MODE_WRAP; //|MODE_UTF8;
-#endif
+		term.mode = MODE_WRAP | MODE_UTF8; // not UTF8-> MODE_UTF8 eq 0
 		memset(term.trantbl, CS_USA, sizeof(term.trantbl));
 		term.charset = 0;
 
@@ -1508,10 +1500,10 @@ void tdefutf8(utfchar ascii) {
 		if (ascii == 'G')
 				term.mode |= MODE_UTF8;
 		else
-#endif
 				if (ascii == '@') {
 						term.mode &= ~MODE_UTF8;
 				}
+#endif
 }
 
 void tdeftran(utfchar ascii) {

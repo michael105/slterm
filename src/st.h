@@ -11,6 +11,8 @@
 
 /* macros */
 
+// ascii needs the whole 256 char table, 
+// therefore unsigned chars
 #ifdef UTF8
 #define utfchar char
 #else
@@ -119,7 +121,11 @@ enum term_mode {
   MODE_CRLF = 1 << 3,
   MODE_ECHO = 1 << 4,
   MODE_PRINT = 1 << 5,
+#ifdef UTF8
   MODE_UTF8 = 1 << 6,
+#else
+	MODE_UTF8 = 0,
+#endif
   MODE_SIXEL = 1 << 7,
 };
 
