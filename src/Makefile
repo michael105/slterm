@@ -8,7 +8,7 @@
 include config.h.in
 
 
-SRC = st.c  
+SRC = *.c  
 #SRC = st.c x.c utf8.c selection.c
 HEADER = st.h win.h arg.h config.h.in utf8.h selection.h includes.h
 
@@ -91,7 +91,7 @@ st-asc: $(SRC) $(HEADER)
 	@echo -e '#define __ENABLEDEBUG__ "$(ENABLEDEBUG)"' >> compile.h
 	@echo -e '#define __CC_VERSION__ "'`$(CC) -dumpversion`'"' >> compile.h
 	@echo -e '#define __CC__ "$(CC)"' >> compile.h
-	$(CC) -o st-asc st.c $(STCFLAGS) $(STLDFLAGS) 
+	$(CC) -o st-asc stsrc.c $(STCFLAGS) $(STLDFLAGS) 
 	
 #$(CC) -o st-asc $(SRC) $(STCFLAGS) $(STLDFLAGS) 
 	
