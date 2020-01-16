@@ -4,7 +4,7 @@
 static char *argv0;
 #include "arg.h"
 #include "st.h"
-#include "win.h"
+#include "x.h"
 #include "compile.h"
 #include "debug.h"
 
