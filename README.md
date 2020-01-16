@@ -9,7 +9,7 @@ Slim version with performance and memory footprint related modifications.
  
 ___   
 
-    Stripped unicode support in favour of the 256 chars ASCII table
+    Stripped unicode support in favour of the 256 chars (extended) ASCII table
         utf8 is an optional compiletime switch now
         (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table only.
         E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
