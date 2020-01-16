@@ -1,6 +1,8 @@
 #ifndef stX_H
 #define stX_H
 
+typedef Glyph;
+
 enum win_mode {
     MODE_VISIBLE = 1 << 0,
     MODE_FOCUSED = 1 << 1,

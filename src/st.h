@@ -270,7 +270,6 @@ typedef struct {
 } STREscape;
 
 
-void die(const char *, ...);
 void redraw(void);
 void draw(void);
 

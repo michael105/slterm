@@ -16,6 +16,13 @@ ___
         but until yet I always needed to dive into the configurations for 
 				entering chars like ä,ö,ß in unicode mode)
 
+				Besides, instead of having a history buffer, which needs 15 Bytes per Glyph 
+				(a Glyph is a char on the screen with text attributes and colors)
+				 - now each Glyph is 4 Bytes. What can be nicely optimized.
+				 I like having a responsive and resource saving terminal, 
+				 and I'm always keeping at least 10 terminals open at my development system,
+				 so that sums up.
+
     Colors are restricted to a 256 color palette 
         (Saving 6 Bytes per Glyph)
 
