@@ -6,6 +6,7 @@
 #include "mem.h"
 
 // Set glyphs (non utf8 - one glyph is one int32 )
+// misc - could be optimized ( either copy int64, or simd )
 void memset32( uint32_t* i, uint32_t value, int count ){
 		for ( int a=0; a<count; a++ )
 				i[a] = value;
@@ -27,7 +28,7 @@ ssize_t xwrite(int fd, const char *s, size_t len) {
 
 		return aux;
 }
-
+// opt - power of 8? -> memset32 -> memset64
 void *xmalloc(size_t len) {
 		void *p;
 
