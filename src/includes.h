@@ -13,6 +13,7 @@
 
 #include <ctype.h>
 #include <fcntl.h>
+#include <pty.h>
 #include <pwd.h>
 #include <stdarg.h>
 #include <stdio.h>

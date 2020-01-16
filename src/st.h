@@ -292,6 +292,9 @@ size_t ttyread(void);
 void ttyresize(int, int);
 void ttywrite(const utfchar *, size_t, int);
 
+
+int twrite(const utfchar *, int, int);
+
 void set_notifmode(int type, KeySym ksym);
 
 int tlinelen(int);
