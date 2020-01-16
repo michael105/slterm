@@ -2,7 +2,7 @@
 #include "includes.h"
 
 #include "st.h"
-#include "win.h"
+#include "x.h"
 #include "selection.h"
 #define DEBUG_FILELEVEL 1
 #include "debug.h"
