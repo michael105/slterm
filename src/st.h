@@ -245,7 +245,6 @@ typedef struct {
 	char circledhist;
 } Term;
 
-extern Term term; // misc make local?
 
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */

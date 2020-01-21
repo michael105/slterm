@@ -25,6 +25,7 @@
 #include <sys/wait.h>
 #include <termios.h>
 #include <unistd.h>
+#include <stdint.h>
 
 #include <errno.h>
 #include <libgen.h>
@@ -33,5 +34,7 @@
 #include <math.h>
 #include <signal.h>
 #include <time.h>
+
+#include "debug.h"
 
 #endif

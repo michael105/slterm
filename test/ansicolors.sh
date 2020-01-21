@@ -63,6 +63,17 @@ function col() {
 }
 
 
+function colbg() {
+		fi=$1; shift
+		fa=$[$1*36]; shift
+		for fb in $@; do
+				printf "\033[0;$fi""m\033[48;5;$[$fa+$fb]""m %03d"  $[$fa+$fb]
+		done
+}
+
+
+
+
 
 
 echo "\033[0;1;37;4m";
@@ -145,6 +156,54 @@ echo
 
 #col 0 0 {16..21}
 #col 0 1 {16..21}
+
+
+
+
+
+echo "\033[0;1;37;4m";
+echo Colors \#16-231 - gradient background
+echo -n "\033[0m";
+
+#for i in 2 0 1; do
+
+		i=2
+for a in {0..5}; do 
+		colbg $i $a {16..21}
+		colbg $i $a {27..22}
+		colbg $i $a {28..33}
+		colbg $i $a {39..34}
+		colbg $i $a {46..51}
+		colbg $i $a {45..41}
+		echo
+done
+
+
+i=0;
+for a in {5..0}; do 
+		colbg $i $a {16..21}
+		colbg $i $a {27..22}
+		colbg $i $a {28..33}
+		colbg $i $a {39..34}
+		colbg $i $a {46..51}
+		colbg $i $a {45..41}
+		echo
+done
+
+i=1
+
+for a in {0..5}; do 
+		colbg $i $a {16..21}
+		colbg $i $a {27..22}
+		colbg $i $a {28..33}
+		colbg $i $a {39..34}
+		colbg $i $a {46..51}
+		colbg $i $a {45..41}
+		echo
+done
+
+echo
+
 
 
 exit

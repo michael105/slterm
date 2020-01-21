@@ -2,9 +2,9 @@
 #define st_system_h
 
 // pid of shell 
-pid_t pid;
-int iofd; // set to 1 in main.c
-int cmdfd;
+extern pid_t pid;
+extern int iofd; // set to 1 in main.c
+extern int cmdfd;
 
 
 
