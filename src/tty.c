@@ -3,7 +3,9 @@
 //
 
 #include "includes.h"
-
+#include "system.h"
+#include "st.h"
+#include "tty.h"
 
 void ttyhangup() {
 		/* Send SIGHUP to shell */

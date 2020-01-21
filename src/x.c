@@ -1359,8 +1359,10 @@ void xdrawglyph(Glyph g, int x, int y) {
 		xdrawglyphfontspecs(&spec, g, numspecs, x, y);
 }
 
+
 void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 		Color drawcol;
+		static int focusinx, focusiny;
 
 		/* remove the old cursor */
 		if (selected(ox, oy))
@@ -1402,6 +1404,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 		/* draw text cursor */
 		if (IS_SET(MODE_FOCUSED)) {
+
 				switch (win.cursor) {
 						case 7: /* st extension: snowman (U+2603) */
 								// g.u = 0x2603;
@@ -1413,19 +1416,64 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 								break;
 						case 3: /* Blinking Underline */
 						case 4: /* Steady Underline */
-								XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-												win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
-												cursorthickness);
+								if ( focusinx == cx && focusiny == cy ) {
+										g.bg = 202;
+										g.fg = 0;
+										xdrawglyph(g, cx, cy);
+										drawcol = dc.col[1];
+
+										// a cross
+										//XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw + win.cw/2 ,
+										//				win.vborderpx + cy * win.ch+3, 1, win.ch-8);
+										//XftDrawRect(xw.draw, &drawcol, (win.hborderpx + cx * win.cw) + 2,
+										//				win.vborderpx + cy * win.ch + (win.ch/2)-1, win.cw - 2, 1);
+										//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+#if 0
+										// upper line
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+														win.vborderpx + cy * win.ch, win.cw - 1, 1);
+
+										// lines at sides
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+														win.vborderpx + cy * win.ch, 1, win.ch);
+										//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + (cx + 1) * win.cw - 1,
+														win.vborderpx + cy * win.ch, 1, win.ch);
+										//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+#endif
+#if 0
+										// lower cursor part
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+														(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + (cx + 1) * win.cw - 1,
+														win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+														win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
+#endif
+
+										// underline
+										drawcol = dc.col[defaultcs];
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+														win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
+														cursorthickness);
+
+								} else {
+										focusinx=focusiny=0;
+										drawcol = dc.col[defaultcs];
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+														win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
+														cursorthickness);
+								}
 								break;
 						case 5: /* Blinking bar */
 						case 6: /* Steady bar */
-								XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-												win.vborderpx + (cy+1) * win.ch, cursorthickness, win.ch);
+										XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+														win.vborderpx + (cy+1) * win.ch, cursorthickness, win.ch);
 								break;
 				}
 		} else { // window hasn't the focus. 
 				//g.fg = unfocusedrcs;
-				drawcol = dc.col[unfocusedrcs];
+						drawcol = dc.col[unfocusedrcs];
 				XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
 								win.vborderpx + cy * win.ch, win.cw - 1, 1);
 				XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
@@ -1440,6 +1488,8 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 								win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
 				XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
 								win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
+				focusinx = cx;
+				focusiny = cy;
 		}
 }
 
