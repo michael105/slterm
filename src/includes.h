@@ -35,6 +35,4 @@
 #include <signal.h>
 #include <time.h>
 
-#include "debug.h"
-
 #endif
