@@ -2,6 +2,11 @@
 // leaves more possibilities for optimization to the compiler.
 // 
 
+//#define DEBUG_FILELEVEL 5
+//#define FULLDEBUG
+#include "debug.h"
+
+
 
 #include "includes.h"
 
@@ -10,9 +15,6 @@
 #include "system.h"
 #include "tty.h"
 #include "selection.h"
-
-#define DEBUG_FILELEVEL 1
-#include "debug.h"
 
 #include "st.c"
 #include "mem.c"

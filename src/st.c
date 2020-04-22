@@ -68,7 +68,6 @@ static void tdeftran(utfchar);
 static void tstrsequence(uchar);
 
 
-
 /* Globals */
 Term term; // misc make local?
 static CSIEscape csiescseq;
@@ -774,6 +773,7 @@ void csihandle(void) {
 		char buf[40];
 		int len;
 
+		//printf("scseq.mode: %c\n", csiescseq.mode[0]);//DBG
 		switch (csiescseq.mode[0]) {
 				default:
 unknown:
@@ -1248,6 +1248,7 @@ void tstrsequence(uchar c) {
 }
 
 void tcontrolcode(uchar ascii) {
+		//printf("tcontrolcode: %c\n", ascii); //DBG
 		switch (ascii) {
 				case '\t': /* HT */
 						tputtab(1);
@@ -1346,6 +1347,7 @@ void tcontrolcode(uchar ascii) {
  * more characters for this sequence, otherwise 0
  */
 int eschandle(uchar ascii) {
+		//printf("eschandle: %c\n", ascii); //DBG
 		switch (ascii) {
 				case '[':
 						term.esc |= ESC_CSI;

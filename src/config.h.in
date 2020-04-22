@@ -6,7 +6,7 @@ Makefile syntax config below.
 
 endif
 
-# Set to 0
+# Set to 0 to disable the warning "unconfigured"
 SHOWCONFIGINFO = 1
 
 # Dump debugging info
@@ -14,7 +14,7 @@ SHOWCONFIGINFO = 1
 ENABLEDEBUG = 0
 
 # version
-VERSION = asc-0.9rc4
+VERSION = asc-0.9rc5
 
 # Set to 1 enable Xresource configuration
 # (in addition, st-asc has to be started with the option "-x on")
@@ -24,12 +24,13 @@ XRESOURCES = 0
 UTF8 = 0
 
 # Length of history, in bits, -> log(size in lines) ~ bits */
-# 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
-HISTSIZEBITS = 12
-#HISTSIZEBITS = 6
+# 8 equals 1<<8 = 256 lines, 
+#      9 = 512, 10 = 1024, 11 = 2048, 12 = 4096,
+#      13 = 8192, 14 = 16384, ...
+HISTSIZEBITS = 13
 
 # opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
-OPT_FLAG = -O3 -fwhole-program
+OPT_FLAG = -O2 -fwhole-program
 #OPT_FLAG = -O0
 
 # Linker Flags
@@ -154,6 +155,7 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* Terminal colors (16 first used in escape sequence) */
+// Here I defined the vars $GREEN $BLUE, .. in .profile
 static const char *colorname[] = {
     /* 8 normal colors */
     "black",
@@ -166,6 +168,7 @@ static const char *colorname[] = {
     "gray90",
 
     /* 8 bright colors */
+		// $LGREEN $LBLUE ..  in .profile
     "gray50",
     "red",
     "green",
@@ -291,6 +294,7 @@ static MouseShortcut mshortcuts[] = {
 
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
+// Modifiers : Ctrl+Shift
 #define TERMMOD (ControlMask|ShiftMask)
 
 static Shortcut shortcuts[] = {
@@ -307,8 +311,12 @@ static Shortcut shortcuts[] = {
     { TERMMOD, XK_Y, selpaste, {.i = 0} },
     { ShiftMask, XK_Insert, selpaste, {.i = 0} },
     { TERMMOD, XK_Num_Lock, numlock, {.i = 0} },
+		// Shift+PageUp/PageDown: Scroll Up/Down one Page
     { ShiftMask, XK_Page_Up, kscrollup, {.i = -1} },
     { ShiftMask, XK_Page_Down, kscrolldown, {.i = -1} },
+		// Shift+Up/Down: Scroll Up/Down 3 lines
+    { ShiftMask, XK_Up, kscrollup, {.i = 3} },
+    { ShiftMask, XK_Down, kscrolldown, {.i = 3} },
     { TERMMOD, XK_S, keyboard_select, { 0 } },
 };
 
