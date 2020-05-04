@@ -1,6 +1,6 @@
 #ifndef includes_h
 #define includes_h
-// all sysincludes
+// all system includes
 #include <X11/X.h>
 #include <X11/keysym.h>
 #include <X11/XKBlib.h>

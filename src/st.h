@@ -229,6 +229,7 @@ typedef struct {
 	int cthist; // current history, need 2cond buf for resizing
   int row;                                  /* nb row */
   int col;                                  /* nb col */
+	int colalloc; // allocated col. won't shrink, only enlarge. 
   int histi;                                /* history index */ // points to the bottom of the terminal
   int scr;                                  /* scroll back */
   int *dirty;                               /* dirtyness of lines */
