@@ -183,6 +183,7 @@ void tnew(int col, int row) {
 		dbg2("tnew *******************************************************\n");
 		term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
 		term.hist[0][0] = xmalloc( col * sizeof(Glyph));
+		term.colalloc=0;
 		//term.hist[1][0] = xmalloc( col * sizeof(Glyph));
 
 		term.guard=0xf0f0f0f0;
@@ -1794,19 +1795,42 @@ void tresize(int col, int row) {
 
 #endif
 		/* resize each row to new width, zero-pad if needed */
+		if ( 1|| (term.colalloc < col) ){
 		for (i = 0; i < minrow; i++) {
 				//dbg3("i: %d, %d", i, minrow );
 				term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
 				//dbg3("i2\n");
 				term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
 		}
+		} else {
+		for (i = 0; i < minrow; i++) {
+
+				term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
+				//dbg3("i: %d, %d", i, minrow );
+				//term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
+				//dbg3("i2\n");
+				//term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
+				//memset(term.alt[i], 0, col);
+		}
+		}
+	
+
 
 		dbg3("i4\n");
 		/* allocate any new rows */
-		for (/* i = minrow */; i < row; i++) {
+		for ( i = minrow ; i < row; i++) {
 				term.line[i] = xmalloc(col * sizeof(Glyph));
 				term.alt[i] = xmalloc(col * sizeof(Glyph));
 		}
+				/*if ( term.colalloc > col ){
+						if ( minrow < row )
+								term.colalloc = col;
+				} else {
+						if ( col > term.colalloc )
+								term.colalloc = col;
+				}*/
+
+	
 		if (col > term.col) {
 				bp = term.tabs + term.col;
 
