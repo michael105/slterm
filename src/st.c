@@ -161,8 +161,8 @@ void treset(void) {
 				.y = 0,
 				.state = CURSOR_DEFAULT};
 
-		memset(term.tabs, 0, term.col * sizeof(*term.tabs));
-		for (i = tabspaces; i < term.col; i += tabspaces) {
+		memset(term.tabs, 0, term.colalloc * sizeof(*term.tabs));
+		for (i = tabspaces; i < term.colalloc; i += tabspaces) {
 				term.tabs[i] = 1;
 		}
 		term.top = 0;
@@ -174,7 +174,7 @@ void treset(void) {
 		for (i = 0; i < 2; i++) {
 				tmoveto(0, 0);
 				tcursor(CURSOR_SAVE);
-				tclearregion(0, 0, term.col - 1, term.row - 1);
+				tclearregion(0, 0, term.colalloc - 1, term.row - 1);
 				tswapscreen();
 		}
 }
@@ -182,7 +182,9 @@ void treset(void) {
 void tnew(int col, int row) {
 		dbg2("tnew *******************************************************\n");
 		term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
-		term.hist[0][0] = xmalloc( col * sizeof(Glyph));
+		term.hist[0][0] = xmalloc( term.colalloc * sizeof(Glyph));
+		memset(term.hist[0][0],0, term.colalloc * sizeof(Glyph));
+
 		term.colalloc=0;
 		//term.hist[1][0] = xmalloc( col * sizeof(Glyph));
 
@@ -281,7 +283,8 @@ void tscrollup(int orig, int n, int copyhist) {
 				}	 else {
 						dbg2("New line, cthist %d, term.histi: %d, term.col: %d\n", term.cthist, term.histi, term.col);
 						term.hist[term.cthist][term.histi] = term.line[orig];
-						term.line[orig] = xmalloc( term.col * sizeof(Glyph));
+						term.line[orig] = xmalloc( term.colalloc * sizeof(Glyph));
+						memset(term.line[orig],0,term.colalloc * sizeof(Glyph));
 				}
 				// (candidate for swap or, malloc hist here) done.
 				// "compression" might take place here, as well.
@@ -295,7 +298,7 @@ void tscrollup(int orig, int n, int copyhist) {
 				term.scr = MIN(term.scr + n, HISTSIZE - 1);
 		}
 
-		tclearregion(0, orig, term.col - 1, orig + n - 1);
+		tclearregion(0, orig, term.colalloc - 1, orig + n - 1);
 		tsetdirt(orig + n, term.bot);
 
 		for (i = orig; i <= term.bot - n; i++) {
@@ -842,7 +845,7 @@ unknown:
 										term.tabs[term.c.x] = 0;
 										break;
 								case 3: /* clear all the tabs */
-										memset(term.tabs, 0, term.col * sizeof(*term.tabs));
+										memset(term.tabs, 0, term.colalloc * sizeof(*term.tabs));
 										break;
 								default:
 										goto unknown;
@@ -866,9 +869,9 @@ unknown:
 				case 'J': /* ED -- Clear screen */
 						switch (csiescseq.arg[0]) {
 								case 0: /* below */
-										tclearregion(term.c.x, term.c.y, term.col - 1, term.c.y);
+										tclearregion(term.c.x, term.c.y, term.colalloc - 1, term.c.y);
 										if (term.c.y < term.row - 1) {
-												tclearregion(0, term.c.y + 1, term.col - 1, term.row - 1);
+												tclearregion(0, term.c.y + 1, term.colalloc - 1, term.row - 1);
 										}
 										break;
 								case 1: /* above */
@@ -887,13 +890,13 @@ unknown:
 				case 'K': /* EL -- Clear line */
 						switch (csiescseq.arg[0]) {
 								case 0: /* right */
-										tclearregion(term.c.x, term.c.y, term.col - 1, term.c.y);
+										tclearregion(term.c.x, term.c.y, term.colalloc - 1, term.c.y);
 										break;
 								case 1: /* left */
 										tclearregion(0, term.c.y, term.c.x, term.c.y);
 										break;
 								case 2: /* all */
-										tclearregion(0, term.c.y, term.col - 1, term.c.y);
+										tclearregion(0, term.c.y, term.colalloc - 1, term.c.y);
 										break;
 						}
 						break;
@@ -1674,7 +1677,13 @@ void tresize(int col, int row) {
 		int minrow = MIN(row, term.row);
 		int mincol = MIN(col, term.col);
 		int *bp;
+		int enlarge = 0;
 		TCursor c;
+		if ( col > term.colalloc ){
+				term.colalloc = col;
+				enlarge = 1;
+		}
+
 
 		if (row < term.row || col < term.col) {
 				toggle_winmode(trt_kbdselect(XK_Escape, NULL, 0));
@@ -1708,7 +1717,7 @@ void tresize(int col, int row) {
 		term.line = xrealloc(term.line, row * sizeof(Line));
 		term.alt = xrealloc(term.alt, row * sizeof(Line));
 		term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
-		term.tabs = xrealloc(term.tabs, col * sizeof(*term.tabs));
+		term.tabs = xrealloc(term.tabs, term.colalloc * sizeof(*term.tabs));
 
 		int oldline = 0;
 		int newline = 0;
@@ -1777,15 +1786,17 @@ void tresize(int col, int row) {
 				t = HISTSIZE;
 		}
 
+		if ( enlarge )
 		for (i = 0; i < t; i++) { // 
-				term.hist[(term.cthist)][i] = xrealloc(term.hist[term.cthist][i], col * sizeof(Glyph));
+				term.hist[(term.cthist)][i] = xrealloc(term.hist[term.cthist][i], term.colalloc * sizeof(Glyph));
 #ifndef UTF8
-				memset32( &term.hist[term.cthist][i][mincol].intG, term.c.attr.intG, col-mincol );
+				memset32( &term.hist[term.cthist][i][0].intG, term.c.attr.intG, term.colalloc );
+				//memset32( &term.hist[term.cthist][i][mincol].intG, term.c.attr.intG, term.colalloc-mincol );
 				//for (j = mincol; j < col; j++) {
 				//		term.hist[term.cthist][i][j].intG = term.c.attr.intG;
 				//}
 #else
-				for (j = mincol; j < col; j++) {
+				for (j = mincol; j < term.colalloc; j++) {
 						term.hist[term.cthist][i][j] = term.c.attr;
 						term.hist[term.cthist][i][j].u = ' '; 
 						//append empty chars, if more cols than before
@@ -1795,17 +1806,17 @@ void tresize(int col, int row) {
 
 #endif
 		/* resize each row to new width, zero-pad if needed */
-		if ( 1|| (term.colalloc < col) ){
+		if ( enlarge ){
 		for (i = 0; i < minrow; i++) {
 				//dbg3("i: %d, %d", i, minrow );
-				term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
+				term.line[i] = xrealloc(term.line[i], term.colalloc * sizeof(Glyph));
 				//dbg3("i2\n");
-				term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
+				term.alt[i] = xrealloc(term.alt[i], term.colalloc * sizeof(Glyph));
 		}
 		} else {
 		for (i = 0; i < minrow; i++) {
 
-				term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
+				//term.alt[i] = xrealloc(term.alt[i], term.colalloc * sizeof(Glyph));
 				//dbg3("i: %d, %d", i, minrow );
 				//term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
 				//dbg3("i2\n");
@@ -1819,8 +1830,10 @@ void tresize(int col, int row) {
 		dbg3("i4\n");
 		/* allocate any new rows */
 		for ( i = minrow ; i < row; i++) {
-				term.line[i] = xmalloc(col * sizeof(Glyph));
-				term.alt[i] = xmalloc(col * sizeof(Glyph));
+				term.line[i] = xmalloc(term.colalloc * sizeof(Glyph));
+				memset(term.line[i], 0, sizeof(Glyph) * term.colalloc);
+				term.alt[i] = xmalloc(term.colalloc * sizeof(Glyph));
+				memset(term.alt[i], 0, sizeof(Glyph) * term.colalloc);
 		}
 				/*if ( term.colalloc > col ){
 						if ( minrow < row )
@@ -1830,15 +1843,15 @@ void tresize(int col, int row) {
 								term.colalloc = col;
 				}*/
 
-	
+		if ( enlarge )
 		if (col > term.col) {
 				bp = term.tabs + term.col;
 
-				memset(bp, 0, sizeof(*term.tabs) * (col - term.col));
+				memset(bp, 0, sizeof(*term.tabs) * (term.colalloc - term.col));
 				while (--bp > term.tabs && !*bp) {
 						/* nothing */
 				}
-				for (bp += tabspaces; bp < term.tabs + col; bp += tabspaces) {
+				for (bp += tabspaces; bp < term.tabs + term.colalloc; bp += tabspaces) {
 						*bp = 1;
 				}
 		}
@@ -1852,11 +1865,12 @@ void tresize(int col, int row) {
 		/* Clearing both screens (it makes dirty all lines) */
 		c = term.c;
 		for (i = 0; i < 2; i++) {
-				if (mincol < col && 0 < minrow) {
-						tclearregion(mincol, 0, col - 1, minrow - 1);
+				//if ( mincol < term.colalloc && !enlarge )
+				if (mincol < term.colalloc && 0 < minrow && enlarge) {
+						tclearregion(mincol, 0, term.colalloc - 1, minrow - 1);
 				}
 				if (0 < col && minrow < row) {
-						tclearregion(0, minrow, col - 1, row - 1);
+						tclearregion(0, minrow, term.colalloc - 1, row - 1);
 				}
 				tswapscreen();
 				tcursor(CURSOR_LOAD);
@@ -1920,10 +1934,10 @@ void set_notifmode(int type, KeySym ksym) {
 		if (ksym == -1) {
 				free(g);
 				col = term.col, bot = term.bot;
-				g = xmalloc(col * sizeof(Glyph));
-				memcpy(g, term.line[bot], col * sizeof(Glyph));
+				g = xmalloc(term.colalloc * sizeof(Glyph));
+				memcpy(g, term.line[bot], term.colalloc * sizeof(Glyph));
 		} else if (ksym == -2) {
-				memcpy(term.line[bot], g, col * sizeof(Glyph));
+				memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
 		}
 
 		if (type < 2) {
@@ -1934,7 +1948,7 @@ void set_notifmode(int type, KeySym ksym) {
 								deb->bg = defaultbg;
 				}
 		} else if (type < 5) {
-				memcpy(term.line[bot], g, col * sizeof(Glyph));
+				memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
 		} else {
 				for (deb = &term.line[bot][0], fin = &term.line[bot][col]; deb < fin;
 								deb++) {
