@@ -27,6 +27,7 @@ enum win_mode {
     MODE_MOUSE = MODE_MOUSEBTN|MODE_MOUSEMOTION|MODE_MOUSEX10 \
                  |MODE_MOUSEMANY,
     MODE_KBDSELECT = 1 << 18,
+		MODE_LESS = 1 << 19,
 };
 
 void xbell(void);
@@ -45,6 +46,7 @@ int xstartdraw(void);
 void xximspot(int, int);
 void toggle_winmode(int);
 void keyboard_select(const Arg *);
+void lessmode_toggle(const Arg*);
 
 #ifdef shared
 int stmain(int argc, char *argv[]);

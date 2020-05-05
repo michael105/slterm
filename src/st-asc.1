@@ -46,8 +46,56 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .sp
 \fBst\-asc\fP is a virtual terminal emulator for X
 It is a slimmed down clone of st (suckless.org),
-utf\-8 and rgb support stripped of for better performance,
+utf\-8 and rgb support stripped for better performance,
 but with several additions and patches.
+.SH KEYS
+.INDENT 0.0
+.TP
+.B \fBCtrl\-Shift\-c\fP
+Copy the selected text to the clipboard selection.
+.TP
+.B \fBCtrl\-Shift\-v\fP
+Paste from the clipboard selection.
+.TP
+.B \fBCtrl\-Shift\-y\fP
+Paste from primary selection (middle mouse button).
+.TP
+.B \fBCtrl+Shift+l\fP
+Toggle "less mode": when enabled, Cursor Up/Down and PageUp/PageDown
+will scroll up / down, without having hold Shift
+.TP
+.B \fBCtrl\-Shift\-s\fP
+Enter keyboard selection mode
+(Described below, with a different key mapping)
+.TP
+.B \fBShift\-PgUp/PgDown\fP
+Scroll Up/Down a Page
+.TP
+.B \fBShift\-Up/Down\fP
+Scroll Up/Down three lines
+.TP
+.B \fBBreak\fP
+Send a break in the serial line. Break key is obtained in PC
+keyboards pressing at the same time control and pause.
+.TP
+.B \fBCtrl\-Print Screen\fP
+Toggle if st should print to the \fIiofile.\fP
+.TP
+.B \fBShift\-Print Screen\fP
+Print the full screen to the \fIiofile.\fP
+.TP
+.B \fBPrint Screen\fP
+Print the selection to the \fIiofile.\fP
+.TP
+.B \fBCtrl\-Shift\-Page Up\fP
+Increase font size.
+.TP
+.B \fBCtrl\-Shift\-Page Down\fP
+Decrease font size.
+.TP
+.B \fBCtrl\-Shift\-Home\fP
+Reset to default font size.
+.UNINDENT
 .SH OPTIONS
 .INDENT 0.0
 .TP
@@ -112,43 +160,6 @@ arguments are used as a command even without it.
 .B \fB\-x\fP
 enable reading of the XResources database for the configuration
 st\-asc must have been compiled with the XRESOURCES flag in config.h.in set to 1
-.UNINDENT
-.SH SHORTCUTS
-.INDENT 0.0
-.TP
-.B \fBBreak\fP
-Send a break in the serial line. Break key is obtained in PC
-keyboards pressing at the same time control and pause.
-.TP
-.B \fBCtrl\-Print Screen\fP
-Toggle if st should print to the \fIiofile.\fP
-.TP
-.B \fBShift\-Print Screen\fP
-Print the full screen to the \fIiofile.\fP
-.TP
-.B \fBPrint Screen\fP
-Print the selection to the \fIiofile.\fP
-.TP
-.B \fBCtrl\-Shift\-Page Up\fP
-Increase font size.
-.TP
-.B \fBCtrl\-Shift\-Page Down\fP
-Decrease font size.
-.TP
-.B \fBCtrl\-Shift\-Home\fP
-Reset to default font size.
-.TP
-.B \fBCtrl\-Shift\-y\fP
-Paste from primary selection (middle mouse button).
-.TP
-.B \fBCtrl\-Shift\-c\fP
-Copy the selected text to the clipboard selection.
-.TP
-.B \fBCtrl\-Shift\-v\fP
-Paste from the clipboard selection.
-.TP
-.B \fBCtrl\-Shift\-s\fP
-Enter keyboard selection mode
 .UNINDENT
 .SH KEYBOARD SELECTION MODE
 .sp

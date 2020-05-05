@@ -123,7 +123,7 @@ shared: $(SRC) $(HEADER) libst-asc.so st-asc.c
 libst-asc.so: $(SRC) $(HEADER) x.h
 	$(CC) -o libst-asc.so -shared -fpic $(SRC) $(STCFLAGS) $(STLDFLAGS) -Dshared
 
-manpage: st-asc.1
+man: st-asc.1
 
 st-asc.1: st-asc.1.rst
 	rst2man st-asc.1.rst > st-asc.1

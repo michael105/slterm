@@ -1880,12 +1880,15 @@ void tresize(int col, int row) {
 
 void resettitle(void) { xsettitle(NULL); }
 
+
+
 void drawregion(int x1, int y1, int x2, int y2) {
 		int y;
 		for (y = y1; y < y2; y++) {
 				if (!term.dirty[y]) {
 						continue;
 				}
+				// statusline
 				term.dirty[y] = 0;
 				xdrawline(TLINE(y), x1, y, x2);
 		}
@@ -1927,7 +1930,7 @@ void redraw(void) {
 }
 
 void set_notifmode(int type, KeySym ksym) {
-		static char *lib[] = {" MOVE ", " SEL  "};
+		static char *lib[] = {" MOVE ", " SEL  "," LESS " };
 		static Glyph *g, *deb, *fin;
 		static int col, bot;
 
@@ -1940,7 +1943,7 @@ void set_notifmode(int type, KeySym ksym) {
 				memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
 		}
 
-		if (type < 2) {
+		if (type < 3) {
 				char *z = lib[type];
 				for (deb = &term.line[bot][col - 6], fin = &term.line[bot][col]; deb < fin;
 								z++, deb++) {
@@ -1949,6 +1952,7 @@ void set_notifmode(int type, KeySym ksym) {
 				}
 		} else if (type < 5) {
 				memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
+				//memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
 		} else {
 				for (deb = &term.line[bot][0], fin = &term.line[bot][col]; deb < fin;
 								deb++) {

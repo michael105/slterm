@@ -4,6 +4,7 @@
 
 (s)imple (t)erminal - (asc)ii fork
 
+
 SYNOPSIS
 ========
 
@@ -23,6 +24,55 @@ DESCRIPTION
 It is a slimmed down clone of st (suckless.org),
 utf-8 and rgb support stripped for better performance,
 but with several additions and patches.
+
+
+KEYS
+====
+
+**Ctrl-Shift-c**
+   Copy the selected text to the clipboard selection.
+
+**Ctrl-Shift-v**
+   Paste from the clipboard selection.
+
+**Ctrl-Shift-y**
+   Paste from primary selection (middle mouse button).
+
+**Ctrl+Shift+l**
+   Toggle "less mode": when enabled, Cursor Up/Down and PageUp/PageDown
+   will scroll up / down, without having hold Shift
+
+**Ctrl-Shift-s** 
+   Enter keyboard selection mode
+   (Described below, with a different key mapping)
+
+**Shift-PgUp/PgDown**
+   Scroll Up/Down a Page
+
+**Shift-Up/Down**
+   Scroll Up/Down three lines
+
+**Break**
+   Send a break in the serial line. Break key is obtained in PC
+   keyboards pressing at the same time control and pause.
+
+**Ctrl-Print Screen**
+   Toggle if st should print to the *iofile.*
+
+**Shift-Print Screen**
+   Print the full screen to the *iofile.*
+
+**Print Screen**
+   Print the selection to the *iofile.*
+
+**Ctrl-Shift-Page Up**
+   Increase font size.
+
+**Ctrl-Shift-Page Down**
+   Decrease font size.
+
+**Ctrl-Shift-Home**
+   Reset to default font size.
 
 
 OPTIONS
@@ -89,49 +139,6 @@ OPTIONS
 **-x**
    enable reading of the XResources database for the configuration
    st-asc must have been compiled with the XRESOURCES flag in config.h.in set to 1
-
-SHORTCUTS
-=========
-
-**Shift-PgUp/PgDown**
-   Scroll Up/Down a Page
-
-**Shift-Up/Down**
-   Scroll Up/Down three lines
-
-**Break**
-   Send a break in the serial line. Break key is obtained in PC
-   keyboards pressing at the same time control and pause.
-
-**Ctrl-Print Screen**
-   Toggle if st should print to the *iofile.*
-
-**Shift-Print Screen**
-   Print the full screen to the *iofile.*
-
-**Print Screen**
-   Print the selection to the *iofile.*
-
-**Ctrl-Shift-Page Up**
-   Increase font size.
-
-**Ctrl-Shift-Page Down**
-   Decrease font size.
-
-**Ctrl-Shift-Home**
-   Reset to default font size.
-
-**Ctrl-Shift-y**
-   Paste from primary selection (middle mouse button).
-
-**Ctrl-Shift-c**
-   Copy the selected text to the clipboard selection.
-
-**Ctrl-Shift-v**
-   Paste from the clipboard selection.
-
-**Ctrl-Shift-s** 
-   Enter keyboard selection mode
 
 
 Keyboard selection mode
