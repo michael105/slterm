@@ -15,6 +15,7 @@ typedef struct {
 		KeySym keysym;
 		void (*func)(const Arg *);
 		const Arg arg;
+		uint inputmode;
 } Shortcut;
 
 typedef struct {
@@ -249,6 +250,9 @@ char *opt_title = NULL;
 char opt_xresources;
 
 int oldbutton = 3; /* button event on startup: 3 = release */
+
+int inputmode = 1;
+
 
 void clipcopy(const Arg *dummy) {
 		Atom clipboard;
@@ -858,7 +862,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 		//f->width = DIVCEIL(extents.xOff,190 );
 #else
 		//f->width=8;
-		f->width = DIVCEIL(extents.xOff, 100);
+		f->width = DIVCEIL(extents.xOff, 95);
 		//f->width = DIVCEIL(extents.xOff, 96);
 #endif
 
@@ -1698,7 +1702,7 @@ void kpress(XEvent *ev) {
 
 		/* 1. shortcuts */
 		for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
-				if (ksym == bp->keysym && match(bp->mod, e->state)) {
+				if (ksym == bp->keysym && match(bp->mod, e->state) && (bp->inputmode & inputmode)) {
 						bp->func(&(bp->arg));
 						return;
 				}
@@ -1876,4 +1880,14 @@ void toggle_winmode(int flag) { win.mode ^= flag; }
 void keyboard_select(const Arg *dummy) {
 		win.mode ^= trt_kbdselect(-1, NULL, 0);
 }
+
+void lessmode_toggle(const Arg *dummy){
+		inputmode ^= MODE_LESS;
+		if ( inputmode & MODE_LESS )
+				set_notifmode( 2, -1 );
+		else 
+				set_notifmode( 4,-2 );
+}
+
+
 
