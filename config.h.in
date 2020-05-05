@@ -577,11 +577,21 @@ static uint selmasks[] = {
  * Printable characters in ASCII, used to estimate the advance width
  * of single wide characters.
  */
+#ifdef UTF8
 static char ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~";
-
+#else
+static char ascii_printable[]
+    = " !\"#$%&'()*+,-./0123456789:;<=>?"
+      "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
+      "`abcdefghijklmnopqrstuvwxyz{|}~"
+			"¡¢£¤¥¦§¨©ª«¬­®¯°±²³/µ¶·¸¹º»¼½¾¿À"
+			"ÁÂÃ}ÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕ{×ØÙÚÛ%İŞßà"
+			"áâã]åæçèéêëìíîï"
+			"ğñòóôõ[÷øùúû$ışÿ";
+#endif
 
 #if 0
 endif
