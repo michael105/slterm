@@ -313,6 +313,8 @@ static Shortcut shortcuts[] = {
     { TERMMOD, XK_Num_Lock, numlock, {.i = 0},ALLMODES },
     { ShiftMask, XK_Page_Up, kscrollup, {.i = -1},ALLMODES },
     { ShiftMask, XK_Page_Down, kscrolldown, {.i = -1},ALLMODES },
+    { ShiftMask, XK_End, scrolltobottom, { },ALLMODES },
+    { ShiftMask, XK_Home, scrolltotop, { },ALLMODES },
  // Shift+Up/Down: Scroll Up/Down 3 lines
 		{ ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
     { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
@@ -325,6 +327,8 @@ static Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS },
     { XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS },
     { XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS },
+    { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
+    { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
  
 };
 
@@ -599,6 +603,7 @@ static char ascii_printable[]
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~";
 #else
+// no utf8, but using cp1250 (extended ascii)
 static char ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"

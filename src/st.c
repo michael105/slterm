@@ -221,6 +221,23 @@ void kscrolldown(const Arg *a) {
 		}
 }
 
+void scrolltobottom(){
+		if ( term.scr ){
+				term.scr=0;
+				selscroll(0, 0);
+				tfulldirt();	
+		}
+}
+
+void scrolltotop(){
+		term.scr=HISTSIZE;
+		if ( (term.circledhist==0) && (term.scr>term.histi ) )
+				term.scr=term.histi;
+		selscroll(0, term.scr);
+		tfulldirt();
+}
+
+
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
@@ -1879,7 +1896,6 @@ void tresize(int col, int row) {
 }
 
 void resettitle(void) { xsettitle(NULL); }
-
 
 
 void drawregion(int x1, int y1, int x2, int y2) {

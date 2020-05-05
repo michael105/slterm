@@ -1883,10 +1883,12 @@ void keyboard_select(const Arg *dummy) {
 
 void lessmode_toggle(const Arg *dummy){
 		inputmode ^= MODE_LESS;
-		if ( inputmode & MODE_LESS )
-				set_notifmode( 2, -1 );
-		else 
-				set_notifmode( 4,-2 );
+		if ( inputmode & MODE_LESS ){ // enable
+				set_notifmode( 2, -1 ); // show message "less"
+		} else { // disable
+				set_notifmode( 4,-2 ); // hide message
+				scrolltobottom();
+		}
 }
 
 
