@@ -21,7 +21,7 @@ DESCRIPTION
 
 **st-asc** is a virtual terminal emulator for X
 It is a slimmed down clone of st (suckless.org),
-utf-8 and rgb support stripped of for better performance,
+utf-8 and rgb support stripped for better performance,
 but with several additions and patches.
 
 
@@ -92,6 +92,12 @@ OPTIONS
 
 SHORTCUTS
 =========
+
+**Shift-PgUp/PgDown**
+   Scroll Up/Down a Page
+
+**Shift-Up/Down**
+   Scroll Up/Down three lines
 
 **Break**
    Send a break in the serial line. Break key is obtained in PC

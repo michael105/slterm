@@ -1,3 +1,8 @@
+####   Tue May 5 16:43:14 2020 +0200
+(Michael Myer)
+
+    Added devlog. Extract log from git
+
 ####   Mon May 4 20:19:14 2020 +0200
 (Michael Myer)
 
