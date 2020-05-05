@@ -3,9 +3,9 @@
 .POSIX:
 
 # To edit the configuration,
-# please edit config.h.in
+# please edit config.in in the parent directory
 
-include config.h.in
+include config.make
 
 
 SRC = base64.c mem.c st-asc.c stsrc.c tty.c x.c main.c  selection.c st.c  system.c utf8.c
@@ -13,7 +13,7 @@ SRCO = base64 mem st-asc tty x main  selection st  system utf8
 
 
 #SRC = st.c x.c utf8.c selection.c
-HEADER = st.h win.h arg.h config.h.in utf8.h selection.h includes.h
+HEADER = st.h win.h arg.h config.h utf8.h selection.h includes.h
 
 ifdef ENABLEDEBUG
 		DBGFLAG=-DENABLEDEBUG=$(ENABLEDEBUG) -DDEBUG_INCLUDESRC
@@ -134,7 +134,7 @@ clean:
 dist: clean
 	mkdir -p st-$(VERSION)
 	cp -R FAQ LEGACY TODO LICENSE Makefile README \
-		config.h.in st.info st-asc.1 arg.h st.h win.h $(SRC)\
+		config.h config.make st.info st-asc.1 arg.h st.h win.h $(SRC)\
 		st-$(VERSION)
 	tar -cf - st-asc-$(VERSION) | gzip > st-asc-$(VERSION).tar.gz
 	rm -rf st-asc-$(VERSION)

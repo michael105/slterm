@@ -62,8 +62,8 @@ void zoomabs(const Arg *);
 void zoomreset(const Arg *);
 void ttysend(const Arg *);
 
-/* the configuration is in config.h.in */
-#include "config.h.in"
+/* the configuration is in config.h (generated from config.h.in) */
+#include "config.h"
 
 /* XEMBED messages */
 #define XEMBED_FOCUS_IN 4

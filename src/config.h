@@ -1,61 +1,11 @@
-#if 0
-ifdef UNDEF
-
-The file to edit the config
-Makefile syntax config below.
-
-endif
-
-# Set to 0
-SHOWCONFIGINFO = 1
-
-# Dump debugging info
-# Values: 0 (off), 1 (on)
-ENABLEDEBUG = 0
-
-# version
-VERSION = asc-0.9rc4
-
-# Set to 1 enable Xresource configuration
-# (in addition, st-asc has to be started with the option "-x on")
-XRESOURCES = 0
-
-# compile with utf8-support
-UTF8 = 0
-
-# Length of history, in bits, -> log(size in lines) ~ bits */
-# 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
-HISTSIZEBITS = 12
-#HISTSIZEBITS = 6
-
-# opt Flag. -O2 might be save, -O3 works here also (ArchLinux 64bit)
-OPT_FLAG = -O3 -fwhole-program
-#OPT_FLAG = -O0
-
-# Linker Flags
-LINKER_FLAG = -s
-
-# paths
-PREFIX = /usr/local
-MANPREFIX = $(PREFIX)/share/man
-
-X11INC = /usr/X11R6/include
-X11LIB = /usr/X11R6/lib
-
-# Executables
-
-# pkg-config
-PKG_CONFIG = pkg-config
-
-# compiler and linker
-CC = gcc
-
-
-#end of Makefile syntax options. C-Style options below
-ifdef UNDEF
-#endif
-
+//start config.h
+//
 // config c header starts here 
+// please edit config.h.in for modifications,
+// config.h will be overwritten
+//
+
+
 #ifndef CONFIG_IN
 #define CONFIG_IN
 
