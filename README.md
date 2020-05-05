@@ -4,14 +4,15 @@
 
 ##### Clone of the st terminal. (suckless.org)
 
-Slim version with performance and memory footprint related modifications.
+Slim patched version with performance and memory footprint related modifications.
 
+History is fixed. (No erases on resize events anymore)
  
 ___   
 
     Stripped unicode support in favour of the 256 chars (extended) ASCII table
         utf8 is an optional compiletime switch now
-        (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table only.
+        (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
         E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
         but until yet I always needed to dive into the configurations for 
         entering chars like ä,ö,ß in unicode mode)
@@ -30,10 +31,13 @@ ___
         Saves up to tenths or even hundreds of MB, 
         depending on the terminal's width and history size
 
+    Keep the history and terminal contents on resize events
+        (Doesn't erase wider lines, when shrinking)
+         No scrollback "behind" the current history anymore (Bugfix)
+
     A few minor optimizations.
 
     Nicer cursor and configurable cursorcolor for unfocused windows.
-    No scrollback "behind" the current history anymore.
 
 Further info is in [st-asc.1](src/st-asc.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
 ___
@@ -185,10 +189,6 @@ Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
 with Xorg programs. 
 
 
-(unconfirmed)
-* fix shift up/down (shift selection in emacs)
-* remove DEC test sequence when appropriate
-
 
 
 ---- snip ----
@@ -207,7 +207,6 @@ with Xorg programs.
 - gain earth domination
 - quench vogons
 - stifle laughter
-- stop being childish
 ___
 
 - ~~Store fonts in either the shared library,<br>
