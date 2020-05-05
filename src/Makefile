@@ -70,7 +70,7 @@ endif
 
 
 
-all: st-asc
+all: st-asc man
 
 options:
 	@echo  build options:
@@ -80,7 +80,7 @@ options:
 
 
 with-utf8:
-	UTF8F=1 make st-asc
+	UTF8=1 make st-asc
 
 #st: $(OBJ)
 # better go in one run. Gives way more room to the compiler for optimizations.
@@ -152,5 +152,10 @@ install: st-asc st-asc.1
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-asc
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/st-asc.1
+
+install-devel: st-asc
+	sudo mv /usr/local/bin/st /usr/local/bin/st.old
+	sudo cp st-asc /usr/local/bin/st
+
 
 .PHONY: all options clean dist install uninstall

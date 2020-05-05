@@ -17,6 +17,7 @@ SYNOPSIS
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
 [**-w** *windowid*] -l *line* [*stty_args*...]
 
+
 DESCRIPTION
 ===========
 
@@ -39,8 +40,8 @@ KEYS
    Paste from primary selection (middle mouse button).
 
 **Ctrl+Shift+l**
-   Toggle "less mode": when enabled, Cursor Up/Down and PageUp/PageDown
-   will scroll up / down, without having hold Shift
+   Toggle "less mode": when enabled, Cursor Up/Down, PageUp/PageDown, Home/End
+   will scroll up / down, without holding Shift
 
 **Ctrl-Shift-s** 
    Enter keyboard selection mode
@@ -51,6 +52,9 @@ KEYS
 
 **Shift-Up/Down**
    Scroll Up/Down three lines
+
+**Shift-Home/End**
+   Scroll to top / bottom
 
 **Break**
    Send a break in the serial line. Break key is obtained in PC
