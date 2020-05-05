@@ -837,8 +837,12 @@ int xloadfont(Font *f, FcPattern *pattern) {
 				}
 		}
 
+//		XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
+//						strlen(ascii_printable), &extents);
 		XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
-						strlen(ascii_printable), &extents);
+						sizeof(ascii_printable), &extents);
+
+
 
 		f->set = NULL;
 		f->pattern = configured;
@@ -849,7 +853,14 @@ int xloadfont(Font *f, FcPattern *pattern) {
 		f->rbearing = f->match->max_advance_width;
 
 		f->height = f->ascent + f->descent;
+#ifdef UTF8
 		f->width = DIVCEIL(extents.xOff, strlen(ascii_printable));
+		//f->width = DIVCEIL(extents.xOff,190 );
+#else
+		//f->width=8;
+		f->width = DIVCEIL(extents.xOff, 100);
+		//f->width = DIVCEIL(extents.xOff, 96);
+#endif
 
 		return 0;
 }
