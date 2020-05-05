@@ -1,3 +1,50 @@
+####   Tue May 5 17:06:02 2020 +0200
+(Michael Myer)
+
+    Tue May  5 17:06:02 CEST 2020
+
+Notes:
+
+    Tagging this 1.0.rc1
+    
+    Yet finally st runs solid stable,
+    also on frequent size resize events.
+    I have worked with st in this version for several months now,
+    at least at the systems I worked, I didn't experience severe bugs.
+    The most annoying has been st crashing on frequent resizes. (Using i3)
+    This I fixed finally by keeping the terminal`s and history`s width,
+    so they do not need to be reallocated on every resize event.
+    
+    I guess, this has nothing to do with st,
+    instead with the implementation of xmalloc
+    within the xserver.
+    
+    Anyways. I will test this for a while,
+    but I'm overall satisfied with my modifications.
+    
+    The only thing I'm still thinking about is a performance
+    related modification of the history's buffer.
+    Atm, the terminal and the history buffer are separated.
+    This is somehow not nice. Would be nice to blend the terminal buffer
+    directly into the history.
+    However, this is - more likely just a matter of programming art and style.
+    
+    I believe, I'm already able to claim the fastest terminal emulator for X.
+    Sparing the copies, and also avoiding some memory fragmentation,
+    might give some further performance gain.
+    But other things would be more interesting to me. e.g.,
+    having a graphical menu bar.
+    Or, a "scrollback" mode, where the cursor keys are
+    mapped to a less style scrolling mode.
+    The biggest problem I still do have is the untydiness of the code base.
+    I'm sorry to say that, but stuffing all the code into one single file - well.
+    Makes it hard to get into.
+    I separated the single source file into several source and header files.
+    But still some global vars and so on do make modifications hard.
+    
+    For now, I tag this 1.0.rc1.
+    Since it seems finally stable with my modicifactions.
+
 ####   Tue May 5 16:43:14 2020 +0200
 (Michael Myer)
 
