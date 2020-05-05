@@ -14,7 +14,7 @@ devlog:
 				s/Author: *(.*)/(\1)/;\
 				s/ *.misc.myer\@zoho.com. *// ;\
 				s/^Notes: */&\n/" \
-	> devlog.md
+	> DEVLOG.md
 
-devlog.html: devlog.md
-	pandoc -f markdown -t html devlog.md > devlog.html
+devlog.html: DEVLOG.md
+	pandoc -f markdown -t html DEVLOG.md > DEVLOG.html
