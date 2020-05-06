@@ -251,7 +251,11 @@ char opt_xresources;
 
 int oldbutton = 3; /* button event on startup: 3 = release */
 
+// inputmode. switchable via lessmode_toggle
 int inputmode = 1;
+
+// more/less font width spacing
+int fontspacing = 0;
 
 
 void clipcopy(const Arg *dummy) {
@@ -862,9 +866,13 @@ int xloadfont(Font *f, FcPattern *pattern) {
 		//f->width = DIVCEIL(extents.xOff,190 );
 #else
 		//f->width=8;
-		f->width = DIVCEIL(extents.xOff, 95);
+		f->width = DIVCEIL(extents.xOff, 96);
 		//f->width = DIVCEIL(extents.xOff, 96);
 #endif
+
+		f->width += fontspacing;
+		if ( f->width < 1 )
+				f->width=1;
 
 		return 0;
 }
@@ -1891,5 +1899,10 @@ void lessmode_toggle(const Arg *dummy){
 		}
 }
 
-
+void set_fontwidth( const Arg *a ){
+		fontspacing += a->i;
+		Arg larg;
+		larg.f = usedfontsize;
+		zoomabs(&larg);
+}
 

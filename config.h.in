@@ -319,6 +319,10 @@ static Shortcut shortcuts[] = {
     { TERMMOD, XK_Prior, zoom, {.f = +1},ALLMODES },
     { TERMMOD, XK_Next, zoom, {.f = -1},ALLMODES },
     { TERMMOD, XK_Home, zoomreset, {.f = 0},ALLMODES },
+
+    { TERMMOD, XK_Insert, set_fontwidth, {.i = -1},ALLMODES },
+    { TERMMOD, XK_Delete, set_fontwidth, {.i = 1},ALLMODES },
+
     { TERMMOD, XK_C, clipcopy, {.i = 0},ALLMODES },
     { TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES },
     { TERMMOD, XK_Y, selpaste, {.i = 0},ALLMODES },
