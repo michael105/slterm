@@ -181,9 +181,15 @@ void treset(void) {
 
 void tnew(int col, int row) {
 		dbg2("tnew *******************************************************\n");
+		dbg2("col: %d, row: %d\n",col,row);
 		term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
-		term.hist[0][0] = xmalloc( term.colalloc * sizeof(Glyph));
-		memset(term.hist[0][0],0, term.colalloc * sizeof(Glyph));
+		
+		// might be buggy. fix this!
+		// works flawless at arch.
+		// crashes at gentoo. quite seldom.
+		// guessing the problem is here.
+		term.hist[0][0] = xmalloc( col * sizeof(Glyph));
+		memset(term.hist[0][0],0, col * sizeof(Glyph));
 
 		term.colalloc=0;
 		//term.hist[1][0] = xmalloc( col * sizeof(Glyph));
@@ -261,6 +267,7 @@ void kscrollup(const Arg *a) {
 void tscrolldown(int orig, int n, int copyhist) {
 		int i;
 
+
 		dbg2("===== tscrolldown, orig, n, copyhist: %d %d %d\n",orig,n, copyhist);
 		LIMIT(n, 0, term.bot - orig + 1);
 
@@ -290,8 +297,15 @@ void tscrollup(int orig, int n, int copyhist) {
 				dbg2("term.histi: %d\n", term.histi);
 				term.histi = ((term.histi + 1) ^ HISTSIZE ) & (HISTSIZE-1);
 				dbg2("term.histi: %d, \n", term.histi);
-				if ( term.histi == 0 )
-						term.circledhist=1;
+				if ( term.histi == 0 ){
+						if ( term.circledhist == 0 ){
+								term.circledhist=1;
+								dbg("circledhist = 1");
+								// dirty bugfix below. didn't find the real problem
+								term.hist[0][0] = xmalloc( term.colalloc * sizeof(Glyph));
+								memset(term.hist[0][0],0,term.colalloc * sizeof(Glyph));
+						}
+				}
 
 
 				if ( term.hist[term.cthist][term.histi] ){
@@ -452,7 +466,9 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 				term.dirty[y] = 1;
 #ifndef UTF8
 				dbg("y: %d, x1: %d, x2: %d\n", y, x1, x2);
-				memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1)+1 ); // memset64 or comp
+				memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1) ); // memset64 or comp
+				//memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1)+1 ); // memset64 or comp
+				dbg("ok\n");
 #else
 				for (x = x1; x <= x2; x++) {//misc copy longs (64bit)or,better: memset. mmx/sse?
 						//if (selected(x, y)) { // room for optimization. only ask once, when no selection
@@ -1672,7 +1688,7 @@ int twrite(const utfchar *buf, int buflen, int show_ctrl) {
 		for (n = 0; n < buflen; n++ ) { // misc dfq
 					u = buf[n];
 #endif
-				dbg("twrite1 %d %c", u, u);
+				//dbg("twrite1 %d %c", u, u);
 				if (show_ctrl && ISCONTROL(u)) {
 						dbg("twrite ISCONTROL %d %c", u, u);
 						if (u & 0x80) {
@@ -1686,6 +1702,7 @@ int twrite(const utfchar *buf, int buflen, int show_ctrl) {
 				}
 				tputc(u);
 		}
+		dbg("ok\n");
 		return n;
 }
 
@@ -1822,6 +1839,7 @@ void tresize(int col, int row) {
 		}
 
 #endif
+		dbg("cp\n");
 		/* resize each row to new width, zero-pad if needed */
 		if ( enlarge ){
 		for (i = 0; i < minrow; i++) {

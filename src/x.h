@@ -1,9 +1,9 @@
 #ifndef stX_H
 #define stX_H
 
-typedef Glyph;
-typedef Line;
-typedef Arg;
+//typedef Glyph;
+//typedef Line;
+//typedef Arg;
 
 enum win_mode {
     MODE_VISIBLE = 1 << 0,
