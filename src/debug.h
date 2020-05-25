@@ -310,7 +310,7 @@ extern "C" {
 // set to 5 - everything
 #define ENABLEDEBUG 5
 #else
-#warning NOFU
+//#warning NOFU
 #endif
 
 
@@ -328,8 +328,8 @@ extern "C" {
 
 
 		// Error and warning severity
-		//enum _severity { DEBUG, MINOR, UNUSUAL, WARNING, SEVERE, FATAL};
-		enum _severity { FATAL, SEVERE, WARNING, UNUSUAL, MINOR, DEBUG };
+		enum _severity { DEBUG, MINOR, UNUSUAL, WARNING, SEVERE, FATAL};
+		//enum _severity { FATAL, SEVERE, WARNING, UNUSUAL, MINOR, DEBUG };
 #ifndef DEBUG_FILELEVEL
 		// local file debug level (everything by default );
 		int dbg_filelevel = DEBUG;
@@ -357,7 +357,6 @@ extern "C" {
 #ifdef ENABLEDEBUG 
 #if ( ENABLEDEBUG>0 )
 
-#warning ( ENABLEDEBUG>0 )
 #define _DBG_FULL_(level,...) _dbg_full( level,  dbg_filelevel,  __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__ )
 
 #define dbgf(...)  _DBG_FULL_( 0,  __VA_ARGS__ )
@@ -370,7 +369,6 @@ extern "C" {
 #define dbgi(arg) _dbg(1, dbg_filelevel, "DBG: L.%d, %s, int %s:   %d", __LINE__, __FILE__, #arg , arg )
 
 #ifdef FULLDEBUG
-#warning FULLDEBUG
 #define dbg(...)  _DBG_FULL_( 0, __VA_ARGS__ )
 #define dbg1(...) _DBG_FULL_( 1, __VA_ARGS__ )
 #define dbg2(...) _DBG_FULL_( 2, __VA_ARGS__ )
@@ -390,7 +388,7 @@ extern "C" {
 #endif //FULLDEBUG
 
 #else //ENABLEDEBUG not defined
-#warning ENABLEDEBUG not defined
+//#warning ENABLEDEBUG not defined
 #define dbg(...) {}
 #define dbgif(...) {}
 #define dbg1(...) {}
@@ -420,7 +418,6 @@ extern "C" {
 
 
 #ifdef DEBUG_INCLUDESRC
-#warning DEBUG_INCLUDESRC
 
 #include <stdio.h>
 #include <stdarg.h>

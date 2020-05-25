@@ -2,8 +2,8 @@
 // leaves more possibilities for optimization to the compiler.
 // 
 
-#define DEBUG_FILELEVEL 5
-#define FULLDEBUG 5
+//#define DEBUG_FILELEVEL 5
+//#define FULLDEBUG 5
 #include "debug.h"
 
 

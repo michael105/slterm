@@ -220,7 +220,7 @@ typedef struct {
 
 /* Internal representation of the screen */
 typedef struct {
-#warning memo to me
+//#warning memo to me
   Line hist[1][HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
 	int guard;
   Line *line;                               /* screen */

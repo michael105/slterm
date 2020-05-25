@@ -13,12 +13,16 @@ SRCO = base64 mem st-asc tty x main  selection st  system utf8
 
 
 #SRC = st.c x.c utf8.c selection.c
-HEADER = st.h win.h arg.h config.h utf8.h selection.h includes.h
+HEADER = st.h win.h arg.h config.h utf8.h selection.h includes.h debug.h x.h
+
 
 ifdef ENABLEDEBUG
 		DBGFLAG=-DENABLEDEBUG=$(ENABLEDEBUG) -DDEBUG_INCLUDESRC
 endif
 
+ifeq "$(strip $(FULLDEBUG))" "1"
+		DBGFLAG=-DENABLEDEBUG=$(ENABLEDEBUG) -DDEBUG_INCLUDESRC -DFULLDEBUG
+endif
 
 ifeq "$(strip $(XRESOURCES))" "1"
 		XRESOURCESFLAG=-DXRESOURCES
@@ -62,7 +66,9 @@ $(info After that run as usually)
 $(info 'make')
 $(info 'sudo make install')
 $(info The installation goes into /usr/local by default)
-$(info and might be neccessary for the installation of the terminfo file)
+$(info and might be neccessary for the installation of the terminfo file;)
+$(info or install only the terminfo file.)
+$(info 'tic -sx st-asc.info')
 $(info )
 
 endif
@@ -113,6 +119,15 @@ singleobjects:
 
 build/%.o: %.c
 	$(CC) $(STCFLAGS) $(STLDFLAGS) -c -o $@ $<
+
+
+config.h: ../config.h.in
+	sed -ne '/^..start config.h/,$$p' ../config.h.in > config.h
+ 
+config.make: ../config.h.in
+	sed -ne '/#makefilestart/,/#makefileend/p' ../config.h.in > config.make
+
+
 
 
 shared: $(SRC) $(HEADER) libst-asc.so st-asc.c
