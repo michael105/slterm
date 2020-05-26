@@ -466,8 +466,7 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 				term.dirty[y] = 1;
 #ifndef UTF8
 				dbg("y: %d, x1: %d, x2: %d\n", y, x1, x2);
-				memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1) ); // memset64 or comp
-				//memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1)+1 ); // memset64 or comp
+				memset32( &term.line[y][x1].intG, term.c.attr.intG, (x2-x1)+1 ); // memset64 or comp
 				dbg("ok\n");
 #else
 				for (x = x1; x <= x2; x++) {//misc copy longs (64bit)or,better: memset. mmx/sse?
