@@ -20,7 +20,7 @@ SHOWCONFIGINFO = 1
 ENABLEDEBUG = 0
 
 # Dump all available debug
-FULLDEBUG = 1
+FULLDEBUG = 0
 
 
 # version

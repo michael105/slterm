@@ -141,7 +141,7 @@ libst-asc.so: $(SRC) $(HEADER) x.h
 man: st-asc.1
 
 st-asc.1: st-asc.1.rst
-	rst2man st-asc.1.rst > st-asc.1
+	rst2man st-asc.1.rst > st-asc.1 || rst2man.py st-asc.1.rst > st-asc.1
 
 clean:
 	rm -f st-asc $(OBJ) st-asc-$(VERSION).tar.gz
