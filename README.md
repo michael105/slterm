@@ -6,8 +6,11 @@
 
 Slim patched version with performance and memory footprint related modifications.
 
-History is fixed. (No erases on resize events anymore)
- 
+Fixed history buffer. 
+
+"Modeless" Scrolling. (Ctrl+Shift+l -> Cursor keys, PageUp/Down scroll around)
+
+
 ___   
 
     Stripped unicode support in favour of the 256 chars (extended) ASCII table
@@ -20,9 +23,6 @@ ___
         Besides, instead of having a history buffer, which needs 15 Bytes per Glyph 
         (a Glyph is a char on the screen with text attributes and colors)
          - now each Glyph is 4 Bytes. What can be nicely optimized.
-         I like having a responsive and resource saving terminal, 
-         and I'm always keeping at least 10 terminals open at my development system,
-         so that sums up.
 
     Colors are restricted to a 256 color palette 
         (Saving 6 Bytes per Glyph)
@@ -191,45 +191,12 @@ with Xorg programs.
 
 
 
----- snip ----
-
-### roadmap
-
-
-<img align="right" src="images/noticket.jpg"> 
-
-- strip ~~unicode~~ (done mostly)
-- ~~strip rgb colors~~
-- ~~add patches~~
-- Have the screen redrawn on resize events 
-- Compression of history buffer
-- wayland? postponed.
-- gain earth domination
-- quench vogons
-- stifle laughter
-___
-
-- ~~Store fonts in either the shared library,<br>
-  or use the core Xorg interface / freetype2 ?~~
-	_(https://en.wikibooks.org/wiki/Guide_to_X11/Fonts)
-	uuuh. that's a whole bunch of wasps. Better leave 
-  the working system as it is. Resource saving might also be possible
-	by the separation into libstasc.so and st-asc
-	Probably with the drawback of having only one font available,
-	without having to dig to much into the internals of library loading_
-- ~~separation into a shared library and st-asc~~
-	Doesn't give much gain.
-	I leave the option for compiling st as shared library within the makefile
-	But you'd have to install the shared lib yourself (with ldconfig on linux)
-
-xxxx
-**---- SNIP -----**
-
-(misc 2020, misc.myer@zoho.com )
 
 
 ====================
 
+
+(misc 2020, misc.myer@zoho.com )
 
 
 Credits
