@@ -44,7 +44,7 @@ ___
 
 Applied Patches:
 
-<img align="right" src="images/vt-102-1984.jpg"> 
+<!-- <img align="right" src="images/vt-102-1984.jpg"> -->
 
 - anysize
 - clipboard
