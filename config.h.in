@@ -90,7 +90,14 @@ ifdef UNDEF
 
 // font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
 // defaultfont 
-static char *font = "Monospace:pixelsize=13:Bold:antialias=true:autohint=true";
+static char *font = "Monospace:pixelsize=12:Bold:antialias=true:autohint=true";
+
+// more/less font width spacing
+// here, with utf8 enabled, -1 looks much better.
+int fontspacing = 0;
+//int fontspacing = -1;
+
+
 //static int borderpx = 4;
 
 // The terminal's borderwidth in percent of a char's width
@@ -327,6 +334,7 @@ static Shortcut shortcuts[] = {
 
     { TERMMOD, XK_Insert, set_fontwidth, {.i = -1},ALLMODES },
     { TERMMOD, XK_Delete, set_fontwidth, {.i = 1},ALLMODES },
+    { TERMMOD, XK_End, set_fontwidth, {.i = -1},ALLMODES },
 
     { TERMMOD, XK_C, clipcopy, {.i = 0},ALLMODES },
     { TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES },
@@ -343,6 +351,8 @@ static Shortcut shortcuts[] = {
     { TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES },
 // "less mode"
     { TERMMOD, XK_L, lessmode_toggle, { 0 },ALLMODES },
+    { TERMMOD, XK_Up, lessmode_toggle, { 0 },ALLMODES },
+    { TERMMOD, XK_Down, lessmode_toggle, { 0 },ALLMODES },
     { XK_ANY_MOD, XK_Escape, lessmode_toggle, { 0 },MODE_LESS },
     { XK_ANY_MOD, XK_q, lessmode_toggle, { 0 },MODE_LESS },
 		{ XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },

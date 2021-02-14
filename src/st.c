@@ -3,6 +3,7 @@
 #include "st.h"
 #include "mem.h"
 #include "base64.h"
+#include "utf8.h"
 
 #if defined(__linux)
 #include <pty.h>
