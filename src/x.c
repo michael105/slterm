@@ -255,7 +255,7 @@ int oldbutton = 3; /* button event on startup: 3 = release */
 int inputmode = 1;
 
 // more/less font width spacing
-int fontspacing = 0;
+//int fontspacing = -1;
 
 
 void clipcopy(const Arg *dummy) {
