@@ -1889,8 +1889,14 @@ void keyboard_select(const Arg *dummy) {
 		win.mode ^= trt_kbdselect(-1, NULL, 0);
 }
 
-void lessmode_toggle(const Arg *dummy){
-		inputmode ^= MODE_LESS;
+void lessmode_toggle(const Arg *a){
+		if ( a->i == 1 ) // enable
+				inputmode |= MODE_LESS;
+		else 
+				if ( a->i == -1 ) //disable 
+						inputmode &= ~MODE_LESS;
+				else // toggle - i==0
+						inputmode ^= MODE_LESS;
 		if ( inputmode & MODE_LESS ){ // enable
 				set_notifmode( 2, -1 ); // show message "less"
 		} else { // disable
