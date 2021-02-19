@@ -128,7 +128,9 @@ void ttywrite(const utfchar *s, size_t n, int may_echo) {
 		const utfchar *next;
 		Arg arg = (Arg){.i = term.scr};
 
-		kscrolldown(&arg);
+		// don't scroll on new output, when in lessmode.
+		if ( !(inputmode & MODE_LESS) )
+				kscrolldown(&arg);
 
 		dbg("ttywrite %d %x %c", n, s[0], s[0]);
 		if (may_echo && IS_SET(MODE_ECHO)) {
