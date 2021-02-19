@@ -1890,13 +1890,16 @@ void keyboard_select(const Arg *dummy) {
 }
 
 void lessmode_toggle(const Arg *a){
-		if ( a->i == 1 ) // enable
+		if (abs(a->i) == 1 ){
 				inputmode |= MODE_LESS;
-		else 
-				if ( a->i == -1 ) //disable 
+				kscrollup(a);
+		} else {
+				if ( a->i == -3 ) //disable 
 						inputmode &= ~MODE_LESS;
 				else // toggle - i==0
 						inputmode ^= MODE_LESS;
+		}
+
 		if ( inputmode & MODE_LESS ){ // enable
 				set_notifmode( 2, -1 ); // show message "less"
 		} else { // disable
