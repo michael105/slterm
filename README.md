@@ -2,13 +2,19 @@
 
 
 
-##### Clone of the st terminal. (suckless.org)
+##### Fork of the st terminal. (suckless.org)
 
 Slim patched version with performance and memory footprint related modifications.
 
 Fixed history buffer. 
 
-"Modeless" Scrolling. (Ctrl+Shift+l -> Cursor keys, PageUp/Down scroll around)
+"Modeless" Scrolling. 
+
+ Hit Ctrl+Shift+PageUp/CursorUp,
+ afterwards in 'lessmode' Cursor keys and PageUp/Down scroll around.
+ Ctrl+Shift+PageDown/CursorDown do leave the lessmode.
+
+UTF8 support is an optional compile switch now.
 
 
 ___   
