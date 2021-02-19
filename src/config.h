@@ -247,6 +247,7 @@ static MouseShortcut mshortcuts[] = {
 };
 
 /* Internal keyboard shortcuts. */
+// masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 
@@ -254,19 +255,24 @@ static MouseShortcut mshortcuts[] = {
 #define MODE_DEFAULT 0x01
 #define MODE_LESS 0x02
 
+// Ctrl+Shift+Win
+#define SETFONTMASK TERMMOD|Mod4Mask
+
 static Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
     { XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES },
     { ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES },
     { ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES },
     { XK_ANY_MOD, XK_Print, printsel, {.i = 0},ALLMODES },
-    { TERMMOD, XK_Prior, zoom, {.f = +1},ALLMODES },
-    { TERMMOD, XK_Next, zoom, {.f = -1},ALLMODES },
-    { TERMMOD, XK_Home, zoomreset, {.f = 0},ALLMODES },
 
-    { TERMMOD, XK_Insert, set_fontwidth, {.i = -1},ALLMODES },
-    { TERMMOD, XK_Delete, set_fontwidth, {.i = 1},ALLMODES },
-    { TERMMOD, XK_End, set_fontwidth, {.i = -1},ALLMODES },
+		// set zoom
+    { SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES },
+    { SETFONTMASK, XK_Next, zoom, {.f = -1},ALLMODES },
+    { SETFONTMASK, XK_Home, zoomreset, {.f = 0},ALLMODES },
+
+    { SETFONTMASK, XK_Insert, set_fontwidth, {.i = -1},ALLMODES },
+    { SETFONTMASK, XK_Delete, set_fontwidth, {.i = 1},ALLMODES },
+    { SETFONTMASK, XK_End, set_fontwidth, {.i = -1},ALLMODES },
 
     { TERMMOD, XK_C, clipcopy, {.i = 0},ALLMODES },
     { TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES },
@@ -281,12 +287,18 @@ static Shortcut shortcuts[] = {
 		{ ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
     { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
     { TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES },
-// "less mode"
-    { TERMMOD, XK_L, lessmode_toggle, { 0 },ALLMODES },
-    { TERMMOD, XK_Up, lessmode_toggle, { 0 },ALLMODES },
-    { TERMMOD, XK_Down, lessmode_toggle, { 0 },ALLMODES },
-    { XK_ANY_MOD, XK_Escape, lessmode_toggle, { 0 },MODE_LESS },
-    { XK_ANY_MOD, XK_q, lessmode_toggle, { 0 },MODE_LESS },
+
+
+// "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
+// quit with q or Escape
+    { TERMMOD, XK_L, lessmode_toggle, { .i=0 },ALLMODES },
+    { TERMMOD, XK_Up, lessmode_toggle, { .i=1 },ALLMODES },
+    { TERMMOD, XK_Page_Up, lessmode_toggle, { .i=1 },ALLMODES },
+    { TERMMOD, XK_Down, lessmode_toggle, { .i=1 },ALLMODES },
+    { TERMMOD, XK_Page_Down, lessmode_toggle, { .i=1 },ALLMODES },
+    { XK_ANY_MOD, XK_Escape, lessmode_toggle, { .i=0 },MODE_LESS },
+    { XK_ANY_MOD, XK_q, lessmode_toggle, { .i=0 },MODE_LESS },
+    { XK_ANY_MOD, XK_Return, lessmode_toggle, { .i=0 },MODE_LESS },
 		{ XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },
     { XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS },
     { XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS },
