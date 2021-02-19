@@ -290,15 +290,23 @@ static Shortcut shortcuts[] = {
 
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
+//  Up and PageUp also scroll upwards
+// toggle with Ctrl+Shift + L / down
 // quit with q or Escape
-    { TERMMOD, XK_L, lessmode_toggle, { .i=0 },ALLMODES },
+// // switch on.
     { TERMMOD, XK_Up, lessmode_toggle, { .i=1 },ALLMODES },
-    { TERMMOD, XK_Page_Up, lessmode_toggle, { .i=1 },ALLMODES },
-    { TERMMOD, XK_Down, lessmode_toggle, { .i=1 },ALLMODES },
-    { TERMMOD, XK_Page_Down, lessmode_toggle, { .i=1 },ALLMODES },
-    { XK_ANY_MOD, XK_Escape, lessmode_toggle, { .i=0 },MODE_LESS },
-    { XK_ANY_MOD, XK_q, lessmode_toggle, { .i=0 },MODE_LESS },
-    { XK_ANY_MOD, XK_Return, lessmode_toggle, { .i=0 },MODE_LESS },
+    { TERMMOD, XK_Page_Up, lessmode_toggle, { .i=-1 },ALLMODES },
+    //{ TERMMOD, XK_Page_Down, lessmode_toggle, { .i=1 },ALLMODES },
+
+		// toggle
+    { TERMMOD, XK_Down, lessmode_toggle, { .i=0 },ALLMODES },
+    { TERMMOD, XK_L, lessmode_toggle, { .i=0 },ALLMODES },
+		// switchoff
+    { XK_ANY_MOD, XK_Escape, lessmode_toggle, { .i=-3 },MODE_LESS },
+    { XK_ANY_MOD, XK_q, lessmode_toggle, { .i=-3 },MODE_LESS },
+
+    //{ XK_ANY_MOD, XK_Return, lessmode_toggle, { .i=0 },MODE_LESS },
+		
 		{ XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },
     { XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS },
     { XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS },
