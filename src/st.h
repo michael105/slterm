@@ -127,6 +127,7 @@ enum term_mode {
 	MODE_UTF8 = 0,
 #endif
   MODE_SIXEL = 1 << 7,
+	MODE_HELP = 1 << 8,
 };
 
 enum cursor_movement { CURSOR_SAVE, CURSOR_LOAD };
@@ -225,6 +226,7 @@ typedef struct {
 	int guard;
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */
+  Line *helpscr;                                /* help screen */
   TCursor c;                                /* cursor */
 	int cthist; // current history, need 2cond buf for resizing
   int row;                                  /* nb row */

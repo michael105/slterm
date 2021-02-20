@@ -250,6 +250,9 @@ static MouseShortcut mshortcuts[] = {
 // masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
+#define SETBOOKMARKMASK ControlMask
+// CapsLock
+#define BOOKMARKMASK Mod3Mask
 
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
@@ -260,6 +263,7 @@ static MouseShortcut mshortcuts[] = {
 
 static Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
+    { XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
     { XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES },
     { ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES },
     { ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES },
@@ -288,6 +292,29 @@ static Shortcut shortcuts[] = {
     { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
     { TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES },
 
+// here Capslock (mapped with xmodmap)
+    { SETBOOKMARKMASK, XK_1, set_scrollmark, { .i=1 },ALLMODES },
+    { SETBOOKMARKMASK, XK_2, set_scrollmark, { .i=2 },ALLMODES },
+    { SETBOOKMARKMASK, XK_3, set_scrollmark, { .i=3 },ALLMODES },
+    { SETBOOKMARKMASK, XK_4, set_scrollmark, { .i=4 },ALLMODES },
+    { SETBOOKMARKMASK, XK_5, set_scrollmark, { .i=5 },ALLMODES },
+    { SETBOOKMARKMASK, XK_6, set_scrollmark, { .i=6 },ALLMODES },
+    { SETBOOKMARKMASK, XK_7, set_scrollmark, { .i=7 },ALLMODES },
+    { SETBOOKMARKMASK, XK_8, set_scrollmark, { .i=8 },ALLMODES },
+    { SETBOOKMARKMASK, XK_9, set_scrollmark, { .i=9 },ALLMODES },
+    { SETBOOKMARKMASK, XK_0, set_scrollmark, { .i=0 },ALLMODES },
+
+    { BOOKMARKMASK, XK_1, scrollmark, { .i=1 },ALLMODES },
+    { BOOKMARKMASK, XK_2, scrollmark, { .i=2 },ALLMODES },
+    { BOOKMARKMASK, XK_3, scrollmark, { .i=3 },ALLMODES },
+    { BOOKMARKMASK, XK_4, scrollmark, { .i=4 },ALLMODES },
+    { BOOKMARKMASK, XK_5, scrollmark, { .i=5 },ALLMODES },
+    { BOOKMARKMASK, XK_6, scrollmark, { .i=6 },ALLMODES },
+    { BOOKMARKMASK, XK_7, scrollmark, { .i=7 },ALLMODES },
+    { BOOKMARKMASK, XK_8, scrollmark, { .i=8 },ALLMODES },
+    { BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES },
+    { BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES },
+
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
@@ -314,6 +341,8 @@ static Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS },
     { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
     { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
+
+// Scrollmarks
  
 };
 
