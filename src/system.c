@@ -62,6 +62,9 @@ void execsh(char *cmd, char **args) {
 		signal(SIGALRM, SIG_DFL);
 
 		execvp(prog, args);
+		// didn't work. 
+		// try default, set in config.h.in
+		execvp(shell,args);
 		_exit(1);
 }
 
