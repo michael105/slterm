@@ -1890,7 +1890,7 @@ void keyboard_select(const Arg *dummy) {
 }
 
 void lessmode_toggle(const Arg *a){
-		if (abs(a->i) == 1 ){
+		if (abs(a->i) == 1 ){ // enable
 				inputmode |= MODE_LESS;
 				kscrollup(a);
 		} else {

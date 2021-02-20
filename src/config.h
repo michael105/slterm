@@ -292,7 +292,6 @@ static Shortcut shortcuts[] = {
     { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
     { TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES },
 
-// here Capslock (mapped with xmodmap)
     { SETBOOKMARKMASK, XK_1, set_scrollmark, { .i=1 },ALLMODES },
     { SETBOOKMARKMASK, XK_2, set_scrollmark, { .i=2 },ALLMODES },
     { SETBOOKMARKMASK, XK_3, set_scrollmark, { .i=3 },ALLMODES },
@@ -304,6 +303,7 @@ static Shortcut shortcuts[] = {
     { SETBOOKMARKMASK, XK_9, set_scrollmark, { .i=9 },ALLMODES },
     { SETBOOKMARKMASK, XK_0, set_scrollmark, { .i=0 },ALLMODES },
 
+// here Capslock (mapped with xmodmap)
     { BOOKMARKMASK, XK_1, scrollmark, { .i=1 },ALLMODES },
     { BOOKMARKMASK, XK_2, scrollmark, { .i=2 },ALLMODES },
     { BOOKMARKMASK, XK_3, scrollmark, { .i=3 },ALLMODES },
@@ -315,6 +315,7 @@ static Shortcut shortcuts[] = {
     { BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES },
     { BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES },
 
+    { SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES },
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
