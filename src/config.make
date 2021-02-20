@@ -3,7 +3,7 @@
 # Please edit config.h.in
 
 # Set to 0
-SHOWCONFIGINFO = 1
+SHOWCONFIGINFO = 0
 
 # Dump debugging info
 # Values: 0 (off), 1 (on)
