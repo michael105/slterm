@@ -74,6 +74,8 @@ Term term; // misc make local?
 static CSIEscape csiescseq;
 static STREscape strescseq;
 int borderpx;
+static int scrollmarks[12];
+
 
 
 int tlinelen(int y) {
@@ -208,6 +210,24 @@ void tswapscreen(void) {
 		tfulldirt();
 }
 
+// TODO: show help screen. Too many keys. misc.
+void showhelp(const Arg *a) {
+		printf("showhelp\n");
+		SWAPp( term.line, term.helpscr );
+		term.mode ^= MODE_HELP;
+		char *c = strdup("The help.: x\n");
+		if ( term.mode & MODE_HELP ){
+				for ( int a=0; a<40; a++ ){
+						twrite(c,13,1);
+				}
+
+		}
+
+
+		tfulldirt();
+}
+
+
 void kscrolldown(const Arg *a) {
 		int n = a->i;
 
@@ -265,6 +285,21 @@ void kscrollup(const Arg *a) {
 		}
 }
 
+
+void set_scrollmark(const Arg *a) {
+	scrollmarks[a->i] = term.histi;	
+	//printf("Setscrollmark: %d %d %d\n", a->i, term.histi, term.scr );
+
+}
+
+void scrollmark(const Arg *a){
+	//printf("Scrollmark: %d %d %d %d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
+	term.scr=term.histi-scrollmarks[a->i];
+	selscroll(0, term.scr);
+	tfulldirt();
+
+}
+
 void tscrolldown(int orig, int n, int copyhist) {
 		int i;
 
@@ -287,6 +322,8 @@ void tscrolldown(int orig, int n, int copyhist) {
 
 		selscroll(orig, n);
 }
+
+
 
 void tscrollup(int orig, int n, int copyhist) {
 		int i;
@@ -1736,20 +1773,24 @@ void tresize(int col, int row) {
 		for (i = 0; i <= term.c.y - row; i++) {
 				free(term.line[i]);
 				free(term.alt[i]);
+				free(term.helpscr[i]);
 		}
 		/* ensure that both src and dst are not NULL */
 		if (i > 0) {
 				memmove(term.line, term.line + i, row * sizeof(Line));
 				memmove(term.alt, term.alt + i, row * sizeof(Line));
+				memmove(term.helpscr,term.helpscr + i, row * sizeof(Line));
 		}
 		for (i += row; i < term.row; i++) {
 				free(term.line[i]);
 				free(term.alt[i]);
+				free(term.helpscr[i]);
 		}
 
 		/* resize to new height */
 		term.line = xrealloc(term.line, row * sizeof(Line));
 		term.alt = xrealloc(term.alt, row * sizeof(Line));
+		term.helpscr = xrealloc(term.helpscr, row * sizeof(Line));
 		term.dirty = xrealloc(term.dirty, row * sizeof(*term.dirty));
 		term.tabs = xrealloc(term.tabs, term.colalloc * sizeof(*term.tabs));
 
@@ -1847,6 +1888,7 @@ void tresize(int col, int row) {
 				term.line[i] = xrealloc(term.line[i], term.colalloc * sizeof(Glyph));
 				//dbg3("i2\n");
 				term.alt[i] = xrealloc(term.alt[i], term.colalloc * sizeof(Glyph));
+				term.helpscr[i] = xrealloc(term.helpscr[i], term.colalloc * sizeof(Glyph));
 		}
 		} else {
 		for (i = 0; i < minrow; i++) {
@@ -1868,7 +1910,9 @@ void tresize(int col, int row) {
 				term.line[i] = xmalloc(term.colalloc * sizeof(Glyph));
 				memset(term.line[i], 0, sizeof(Glyph) * term.colalloc);
 				term.alt[i] = xmalloc(term.colalloc * sizeof(Glyph));
+				term.helpscr[i] = xmalloc(term.colalloc * sizeof(Glyph));
 				memset(term.alt[i], 0, sizeof(Glyph) * term.colalloc);
+				memset(term.helpscr[i], 0, sizeof(Glyph) * term.colalloc);
 		}
 				/*if ( term.colalloc > col ){
 						if ( minrow < row )
