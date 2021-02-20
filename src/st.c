@@ -75,6 +75,7 @@ static CSIEscape csiescseq;
 static STREscape strescseq;
 int borderpx;
 static int scrollmarks[12];
+static int enterlessmode;
 
 
 
@@ -288,8 +289,7 @@ void kscrollup(const Arg *a) {
 
 void set_scrollmark(const Arg *a) {
 	scrollmarks[a->i] = term.histi;	
-	//printf("Setscrollmark: %d %d %d\n", a->i, term.histi, term.scr );
-
+	printf("Setscrollmark: %d %d %d\n", a->i, term.histi, term.scr );
 }
 
 void scrollmark(const Arg *a){
@@ -297,7 +297,14 @@ void scrollmark(const Arg *a){
 	term.scr=term.histi-scrollmarks[a->i];
 	selscroll(0, term.scr);
 	tfulldirt();
+}
 
+void enterscroll(const Arg *a){
+		printf("enterscroll\n");
+		//set_scrollmark( a );
+		scrollmarks[11] = term.histi+term.row-1;
+		enterlessmode = term.row;
+		ttywrite("\n",1,1);
 }
 
 void tscrolldown(int orig, int n, int copyhist) {
@@ -375,6 +382,17 @@ void tscrollup(int orig, int n, int copyhist) {
 		}
 
 		selscroll(orig, -n);
+		printf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[11], term.row);
+		if ( enterlessmode ){ // scroll down until next line.
+				if ( term.histi > scrollmarks[11]){
+						printf("Scroll\n");
+						term.scr=term.histi-scrollmarks[11];
+						selscroll(0, term.scr);
+						tfulldirt();
+						inputmode |= MODE_LESS;
+				}
+		}
+
 }
 void tnewline(int first_col) {
 		int y = term.c.y;

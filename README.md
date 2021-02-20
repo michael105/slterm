@@ -9,6 +9,7 @@ Slim patched version with performance and memory footprint related modifications
 Fixed history buffer. 
 
 "Modeless" Scrolling. 
+ Bookmarks within the history. ("Scrollmarks")
 
  Hit Ctrl+Shift+PageUp/CursorUp,
  afterwards in 'lessmode' Cursor keys and PageUp/Down scroll around.
