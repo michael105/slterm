@@ -303,15 +303,16 @@ void set_scrollmark(const Arg *a) {
 
 void scrollmark(const Arg *a){
 	//printf("Scrollmark: %d %d %d %d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
-	term.scr=term.histi-scrollmarks[a->i];
+	term.scr=term.histi-scrollmarks[a->i]+1;
 	selscroll(0, term.scr);
 	tfulldirt();
+	updatestatus();
 }
 
 void enterscroll(const Arg *a){
 		printf("enterscroll\n");
 		//set_scrollmark( a );
-		scrollmarks[10] = term.histi+term.row;
+		scrollmarks[0] = term.histi+term.row;
 		enterlessmode = term.row;
 		ttywrite("\n",1,1);
 }
@@ -395,11 +396,11 @@ void tscrollup(int orig, int n, int copyhist) {
 		}
 
 		selscroll(orig, -n);
-		dbgf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[10], term.row);
+		dbgf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[0], term.row);
 		if ( enterlessmode ){ // scroll down until next line.
-				if ( term.histi > scrollmarks[10]){
+				if ( term.histi > scrollmarks[0]){
 						printf("Scroll\n");
-						term.scr=term.histi-scrollmarks[10];
+						term.scr=term.histi-scrollmarks[0];
 						selscroll(0, term.scr);
 						tfulldirt();
 						Arg a = { .i=2 };
@@ -2055,10 +2056,12 @@ void updatestatus(){
 
 		if ( statusvisible ){
 				char buf[64];
-				sprintf(buf," -LESS-  %5d-%2d %5d %3d%%", 
+				sprintf(buf," -LESS-  %5d-%2d %5d %3d%% (%3d%%)", 
 						term.histi-term.scr,term.histi-term.scr+term.row, 
 						term.histi+term.row, 
-						((term.histi-term.scr+term.row)*100)/(term.histi+term.row) );
+						((term.histi-term.scr)*100)/(term.histi),
+						((term.histi-term.scr-scrollmarks[0]+1)*100)/((term.histi-scrollmarks[0]+1)?term.histi-scrollmarks[0]+1:1)
+						);
 
 				setstatus(buf);
 		}
