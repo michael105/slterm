@@ -316,6 +316,7 @@ static Shortcut shortcuts[] = {
     { BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES },
 
     { SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES },
+    { XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards

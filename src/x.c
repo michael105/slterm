@@ -1387,13 +1387,14 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 		Color drawcol;
 		static int focusinx, focusiny;
 
+		// hide cursor in lessmode
+		if (inputmode&MODE_LESS)
+				return;
+
 		/* remove the old cursor */
 		if (selected(ox, oy))
 				og.mode ^= ATTR_REVERSE;
 		xdrawglyph(og, ox, oy);
-
-		if (IS_SET(MODE_HIDE))
-				return;
 
 		/*
 		 * Select the right color for the right mode.
