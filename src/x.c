@@ -1890,20 +1890,29 @@ void keyboard_select(const Arg *dummy) {
 }
 
 void lessmode_toggle(const Arg *a){
-		if (abs(a->i) == 1 ){ // enable
+		if (abs(a->i) == 2 ){ // enable
 				inputmode |= MODE_LESS;
-				kscrollup(a);
+				//selscroll(0,0);
+				tfulldirt();
+				//set_notifmode( 2, -1 ); // show message "less"
 		} else {
-				if ( a->i == -3 ) //disable 
-						inputmode &= ~MODE_LESS;
-				else // toggle - i==0
-						inputmode ^= MODE_LESS;
+				if (abs(a->i) == 1 ){ // enable
+						inputmode |= MODE_LESS;
+						kscrollup(a);
+				} else {
+						if ( a->i == -3 ) //disable 
+								inputmode &= ~MODE_LESS;
+						else // toggle - i==0
+								inputmode ^= MODE_LESS;
+				}
 		}
 
 		if ( inputmode & MODE_LESS ){ // enable
-				set_notifmode( 2, -1 ); // show message "less"
+				//set_notifmode( 2, -1 ); // show message "less"
+				showstatus(1," -LESS- ");
 		} else { // disable
-				set_notifmode( 4,-2 ); // hide message
+				//set_notifmode( 4,-2 ); // hide message
+				showstatus(0,0);
 				scrolltobottom();
 		}
 }
