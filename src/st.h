@@ -114,6 +114,9 @@ enum glyph_attribute {
 #endif
 };
 
+// inputmode. switchable via lessmode_toggle
+//extern int inputmode;
+
 enum term_mode {
   MODE_WRAP = 1 << 0,
   MODE_INSERT = 1 << 1,

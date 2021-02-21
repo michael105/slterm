@@ -76,7 +76,8 @@ static STREscape strescseq;
 int borderpx;
 static int scrollmarks[12];
 static int enterlessmode;
-
+static int statusvisible;
+static Glyph *statusbar;
 
 
 int tlinelen(int y) {
@@ -302,7 +303,7 @@ void scrollmark(const Arg *a){
 void enterscroll(const Arg *a){
 		printf("enterscroll\n");
 		//set_scrollmark( a );
-		scrollmarks[11] = term.histi+term.row-1;
+		scrollmarks[11] = term.histi+term.row;
 		enterlessmode = term.row;
 		ttywrite("\n",1,1);
 }
@@ -389,7 +390,11 @@ void tscrollup(int orig, int n, int copyhist) {
 						term.scr=term.histi-scrollmarks[11];
 						selscroll(0, term.scr);
 						tfulldirt();
-						inputmode |= MODE_LESS;
+						Arg a = { .i=2 };
+					  lessmode_toggle(&a);
+						enterlessmode = 0;
+						//inputmode |= MODE_LESS;
+						//set_notifmode( 2, -1 ); // show message "less"
 				}
 		}
 
@@ -1988,6 +1993,10 @@ void drawregion(int x1, int y1, int x2, int y2) {
 				term.dirty[y] = 0;
 				xdrawline(TLINE(y), x1, y, x2);
 		}
+		if ( y==term.row && statusvisible ){
+
+				xdrawline(statusbar, x1, y-1, x2);
+		}
 }
 
 void draw(void) {
@@ -2025,18 +2034,83 @@ void redraw(void) {
 		draw();
 }
 
+void updatestatus(char* status){
+		static Glyph *deb, *fin;
+		static int col, bot;
+
+		free(statusbar);
+		col = term.col, bot = term.bot;
+		statusbar = xmalloc(term.colalloc * sizeof(Glyph));
+		char *z = status;
+
+		for (deb = statusbar,fin=&statusbar[col]; (deb < fin) && (*status);
+						status++, deb++) {
+				deb->mode = ATTR_REVERSE, deb->u = *status, deb->fg = defaultfg,
+						deb->bg = defaultbg;
+		}
+
+		for (; (deb < fin); deb++) {
+				deb->mode = ATTR_REVERSE, deb->u = ' ', deb->fg = defaultfg,
+						deb->bg = defaultbg;
+		}
+
+
+
+		term.dirty[bot] = 1;
+		drawregion(0, bot, col, bot + 1);
+}
+
+// todo. misc.
+void showstatus(int show, char *status){
+		if ( show ){
+			if ( !statusvisible ){
+					statusvisible = 1;
+					Arg a = { .i=1 };
+					kscrollup(&a);
+					updatestatus(status);
+					//tmoveto(0,term.row);
+					//twrite("LESS",4,1);
+					//tputc(
+
+					//tscrollup( 0,1,1 );
+					//ttyresize(term.col,term.row-1);
+					//twrite("\e[LESS",4,1);
+					//xdrawline(TLINE(term.row), 0, term.row, term.col );
+					redraw();
+					//TLINE(term.row) = "sdf";
+					//term.line[term.row] = "dfsd";
+
+					//term.row--;
+
+			}
+			// paint status
+
+		} else {
+			if ( statusvisible ){
+					statusvisible = 0;
+					//term.row++;
+					//tresize(term.col,term.row+1);
+			}
+		 // clear status
+		 // 
+		}
+}
+
+
 void set_notifmode(int type, KeySym ksym) {
 		static char *lib[] = {" MOVE ", " SEL  "," LESS " };
 		static Glyph *g, *deb, *fin;
 		static int col, bot;
 
-		if (ksym == -1) {
+		if (ksym == -1) { // show
 				free(g);
 				col = term.col, bot = term.bot;
 				g = xmalloc(term.colalloc * sizeof(Glyph));
 				memcpy(g, term.line[bot], term.colalloc * sizeof(Glyph));
-		} else if (ksym == -2) {
+				//tresize(term.col,term.row-1);
+		} else if (ksym == -2) { // hide
 				memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
+				//tresize(term.col,term.row+1);
 		}
 
 		if (type < 3) {
