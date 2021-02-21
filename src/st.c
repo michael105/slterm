@@ -1,6 +1,7 @@
 /* See LICENSE for license details. */
 
 #include "st.h"
+#include "x.h"
 #include "mem.h"
 #include "base64.h"
 #include "utf8.h"
@@ -303,8 +304,12 @@ void scrollmark(const Arg *a){
 void enterscroll(const Arg *a){
 		printf("enterscroll\n");
 		//set_scrollmark( a );
-		scrollmarks[11] = term.histi+term.row;
+		scrollmarks[10] = term.histi+term.row;
 		enterlessmode = term.row;
+		ttywrite("\n",1,1);
+}
+void leavescroll(const Arg *a){
+		enterlessmode = 0;
 		ttywrite("\n",1,1);
 }
 
@@ -385,9 +390,9 @@ void tscrollup(int orig, int n, int copyhist) {
 		selscroll(orig, -n);
 		printf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[11], term.row);
 		if ( enterlessmode ){ // scroll down until next line.
-				if ( term.histi > scrollmarks[11]){
+				if ( term.histi > scrollmarks[10]){
 						printf("Scroll\n");
-						term.scr=term.histi-scrollmarks[11];
+						term.scr=term.histi-scrollmarks[10];
 						selscroll(0, term.scr);
 						tfulldirt();
 						Arg a = { .i=2 };
@@ -1994,7 +1999,6 @@ void drawregion(int x1, int y1, int x2, int y2) {
 				xdrawline(TLINE(y), x1, y, x2);
 		}
 		if ( y==term.row && statusvisible ){
-
 				xdrawline(statusbar, x1, y-1, x2);
 		}
 }
@@ -2070,24 +2074,17 @@ void showstatus(int show, char *status){
 					updatestatus(status);
 					//tmoveto(0,term.row);
 					//twrite("LESS",4,1);
-					//tputc(
-
-					//tscrollup( 0,1,1 );
-					//ttyresize(term.col,term.row-1);
-					//twrite("\e[LESS",4,1);
-					//xdrawline(TLINE(term.row), 0, term.row, term.col );
+					//SET(MODE_HIDE);
 					redraw();
-					//TLINE(term.row) = "sdf";
-					//term.line[term.row] = "dfsd";
-
 					//term.row--;
-
 			}
 			// paint status
 
 		} else {
 			if ( statusvisible ){
 					statusvisible = 0;
+					term.dirty[term.bot] = 1;
+					drawregion(0, term.bot, term.col, term.bot + 1);
 					//term.row++;
 					//tresize(term.col,term.row+1);
 			}

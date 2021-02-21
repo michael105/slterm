@@ -5,6 +5,18 @@
 //typedef Line;
 //typedef Arg;
 
+/* macros */
+#ifdef IS_SET
+#undef IS_SET
+#endif
+// seems odd. ok. reverse logic
+#define IS_SET(flag) ((win.mode & (flag)) != 0)
+#define TRUERED(x) (((x)&0xff0000) >> 8)
+#define TRUEGREEN(x) (((x)&0xff00))
+#define TRUEBLUE(x) (((x)&0xff) << 8)
+
+void SET(int flag);
+
 enum win_mode {
     MODE_VISIBLE = 1 << 0,
     MODE_FOCUSED = 1 << 1,
@@ -13,7 +25,7 @@ enum win_mode {
     MODE_MOUSEMOTION = 1 << 4,
     MODE_REVERSE = 1 << 5,
     MODE_KBDLOCK = 1 << 6,
-    MODE_HIDE = 1 << 7,
+    MODE_HIDE = 1 << 7, // inactive cursor
     MODE_APPCURSOR = 1 << 8,
     MODE_MOUSESGR = 1 << 9,
     MODE_8BIT = 1 << 10,
