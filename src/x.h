@@ -9,7 +9,7 @@
 #ifdef IS_SET
 #undef IS_SET
 #endif
-// seems odd. ok. reverse logic
+// seems ok. is there a reason?
 #define IS_SET(flag) ((win.mode & (flag)) != 0)
 #define TRUERED(x) (((x)&0xff0000) >> 8)
 #define TRUEGREEN(x) (((x)&0xff00))
@@ -39,7 +39,7 @@ enum win_mode {
     MODE_MOUSE = MODE_MOUSEBTN|MODE_MOUSEMOTION|MODE_MOUSEX10 \
                  |MODE_MOUSEMANY,
     MODE_KBDSELECT = 1 << 18,
-		MODE_LESS = 1 << 19,
+		MODE_LESS = 1 << 19, // also hides cursor.
 };
 
 void xbell(void);

@@ -6,6 +6,8 @@ static char *argv0;
 #include "st.h"
 #include "x.h"
 #include "compile.h"
+
+#define ENABLE_DEBUG 5
 #include "debug.h"
 
 
@@ -1911,6 +1913,7 @@ void lessmode_toggle(const Arg *a){
 		if ( inputmode & MODE_LESS ){ // enable
 				//set_notifmode( 2, -1 ); // show message "less"
 				showstatus(1," -LESS- ");
+				updatestatus();
 		} else { // disable
 				//set_notifmode( 4,-2 ); // hide message
 				showstatus(0,0);

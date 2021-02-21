@@ -1,6 +1,8 @@
-// Including all sources into a single files
-// leaves more possibilities for optimization to the compiler.
-// 
+// Including all sources into a single file
+// leaves more possibilities for optimizations to the compiler.
+// Did try to split the huge st.c file,
+// but there are many globals left.
+// beware. it wasn't me.. ;misc 2021
 
 //#define DEBUG_FILELEVEL 5
 //#define FULLDEBUG 5

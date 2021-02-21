@@ -28,6 +28,8 @@
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
 
+static void updatestatus();
+static void setstatus(char* status);
 static void csidump(void);
 static void csihandle(void);
 static void csiparse(void);
@@ -248,6 +250,7 @@ void kscrolldown(const Arg *a) {
 				term.scr -= n;
 				selscroll(0, -n);
 				tfulldirt();
+				updatestatus();
 		}
 }
 
@@ -256,6 +259,7 @@ void scrolltobottom(){
 				term.scr=0;
 				selscroll(0, 0);
 				tfulldirt();	
+				updatestatus();
 		}
 }
 
@@ -265,13 +269,15 @@ void scrolltotop(){
 				term.scr=term.histi;
 		selscroll(0, term.scr);
 		tfulldirt();
+		updatestatus();
 }
 
 
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
-		dbg2("kscrollup, n: %d, term.histi: %d, term.row: %d \n",n, term.histi, term.row);
+		dbg2("kscrollup, n: %d, term.histi: %d, term.row: %d scr: %d\n",
+						n, term.histi, term.row, term.scr);
 		if (n < 0) {
 				n = term.row + n;
 		}
@@ -285,6 +291,7 @@ void kscrollup(const Arg *a) {
 
 				selscroll(0, n);
 				tfulldirt();
+				updatestatus();
 		}
 }
 
@@ -388,7 +395,7 @@ void tscrollup(int orig, int n, int copyhist) {
 		}
 
 		selscroll(orig, -n);
-		printf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[11], term.row);
+		dbgf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[10], term.row);
 		if ( enterlessmode ){ // scroll down until next line.
 				if ( term.histi > scrollmarks[10]){
 						printf("Scroll\n");
@@ -407,12 +414,14 @@ void tscrollup(int orig, int n, int copyhist) {
 void tnewline(int first_col) {
 		int y = term.c.y;
 
+		dbgf("tnewline: %d, term.scr: %d  histi: %d\n",first_col, term.scr,term.histi );
 		if (y == term.bot) {
 				tscrollup(term.top, 1, 1);
 		} else {
 				y++;
 		}
 		tmoveto(first_col ? 0 : term.c.x, y);
+		updatestatus();
 }
 
 void csiparse(void) {
@@ -2038,7 +2047,20 @@ void redraw(void) {
 		draw();
 }
 
-void updatestatus(char* status){
+void drawstatus(){
+		term.dirty[term.bot] = 1;
+		drawregion(0, term.bot, term.col, term.bot + 1);
+}
+void updatestatus(){
+
+		if ( statusvisible ){
+		char buf[32];
+		sprintf(buf," -LESS-  %5d-%2d %5d", term.histi-term.scr,term.histi-term.scr+term.row, term.histi+term.row );
+		setstatus(buf);
+		}
+}
+
+void setstatus(char* status){
 		static Glyph *deb, *fin;
 		static int col, bot;
 
@@ -2057,21 +2079,15 @@ void updatestatus(char* status){
 				deb->mode = ATTR_REVERSE, deb->u = ' ', deb->fg = defaultfg,
 						deb->bg = defaultbg;
 		}
-
-
-
-		term.dirty[bot] = 1;
-		drawregion(0, bot, col, bot + 1);
 }
 
-// todo. misc.
 void showstatus(int show, char *status){
 		if ( show ){
 			if ( !statusvisible ){
 					statusvisible = 1;
 					Arg a = { .i=1 };
 					kscrollup(&a);
-					updatestatus(status);
+					setstatus(status);
 					//tmoveto(0,term.row);
 					//twrite("LESS",4,1);
 					//SET(MODE_HIDE);
