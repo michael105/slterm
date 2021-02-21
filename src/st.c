@@ -2054,9 +2054,13 @@ void drawstatus(){
 void updatestatus(){
 
 		if ( statusvisible ){
-		char buf[32];
-		sprintf(buf," -LESS-  %5d-%2d %5d", term.histi-term.scr,term.histi-term.scr+term.row, term.histi+term.row );
-		setstatus(buf);
+				char buf[64];
+				sprintf(buf," -LESS-  %5d-%2d %5d %3d%%", 
+						term.histi-term.scr,term.histi-term.scr+term.row, 
+						term.histi+term.row, 
+						((term.histi-term.scr+term.row)*100)/(term.histi+term.row) );
+
+				setstatus(buf);
 		}
 }
 
