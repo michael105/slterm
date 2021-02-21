@@ -235,7 +235,7 @@ void showhelp(const Arg *a) {
 
 void kscrolldown(const Arg *a) {
 		int n = a->i;
-		printf("kscrolldown, histi: %d  scr: %d\n",term.histi,term.scr );
+		//printf("kscrolldown, histi: %d  scr: %d\n",term.histi,term.scr );
 
 		dbg2("kscrolldown, n: %d, guard: %x\n",n, term.guard);
 		if (n < 0) {
@@ -277,7 +277,7 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
-		printf("kscrollup, histi: %d  scr: %d\n",term.histi,term.scr );
+		//printf("kscrollup, histi: %d  scr: %d\n",term.histi,term.scr );
 		dbg2("kscrollup, n: %d, term.histi: %d, term.row: %d scr: %d\n",
 						n, term.histi, term.row, term.scr);
 		if (n < 0) {
@@ -301,11 +301,11 @@ void kscrollup(const Arg *a) {
 void set_scrollmark(const Arg *a) {
 	scrollmarks[a->i] = term.histi-term.scr;	
 	updatestatus();
-	printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
+	//printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
 }
 
 void scrollmark(const Arg *a){
-	printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
+	//printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
 //	if ( scrollmarks[a->i] ){
 	term.scr=term.histi-scrollmarks[a->i];
 	selscroll(0, term.scr);
@@ -315,7 +315,7 @@ void scrollmark(const Arg *a){
 }
 
 void enterscroll(const Arg *a){
-		printf("enterscroll\n");
+		//printf("enterscroll\n");
 		//set_scrollmark( a );
 		scrollmarks[0] = term.histi+term.row-1;
 		enterlessmode = term.row;
@@ -330,7 +330,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 		int i;
 
 
-		printf("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d\n",orig,n, term.histi, term.scr, copyhist);
+		//printf("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d\n",orig,n, term.histi, term.scr, copyhist);
 		LIMIT(n, 0, term.bot - orig + 1);
 
 		if (copyhist) {
@@ -354,7 +354,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 void tscrollup(int orig, int n, int copyhist) {
 		int i;
 
-		printf("===== tscrollup, orig:%d n:%d , histi: %d  scr: %d copyhist: %d \n",orig,n, term.histi, term.scr, copyhist);
+		//printf("===== tscrollup, orig:%d n:%d , histi: %d  scr: %d copyhist: %d \n",orig,n, term.histi, term.scr, copyhist);
 		LIMIT(n, 0, term.bot - orig + 1);
 
 		if (copyhist) {
@@ -404,7 +404,7 @@ void tscrollup(int orig, int n, int copyhist) {
 		dbgf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[0], term.row);
 		if ( enterlessmode ){ // scroll down until next line.
 				if ( term.histi >= scrollmarks[0]){
-						printf("Scroll\n");
+						//printf("Scroll\n");
 						term.scr=(term.histi)-scrollmarks[0];
 						selscroll(0, term.scr);
 						//tfulldirt();
