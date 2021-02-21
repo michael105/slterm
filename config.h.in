@@ -383,6 +383,18 @@ static Shortcut shortcuts[] = {
     { BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES },
     { BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES },
 
+    { XK_ANY_MOD, XK_1, scrollmark, { .i=1 },MODE_LESS },
+    { XK_ANY_MOD, XK_2, scrollmark, { .i=2 },MODE_LESS },
+    { XK_ANY_MOD, XK_3, scrollmark, { .i=3 },MODE_LESS },
+    { XK_ANY_MOD, XK_4, scrollmark, { .i=4 },MODE_LESS },
+    { XK_ANY_MOD, XK_5, scrollmark, { .i=5 },MODE_LESS },
+    { XK_ANY_MOD, XK_6, scrollmark, { .i=6 },MODE_LESS },
+    { XK_ANY_MOD, XK_7, scrollmark, { .i=7 },MODE_LESS },
+    { XK_ANY_MOD, XK_8, scrollmark, { .i=8 },MODE_LESS },
+    { XK_ANY_MOD, XK_9, scrollmark, { .i=9 },MODE_LESS },
+    { XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS },
+
+
     { SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES },
     { XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
 
