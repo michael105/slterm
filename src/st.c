@@ -299,7 +299,7 @@ void kscrollup(const Arg *a) {
 
 
 void set_scrollmark(const Arg *a) {
-	scrollmarks[a->i] = term.histi-term.scr;	
+	scrollmarks[a->i] = term.histi-term.scr+1;	
 	updatestatus();
 	//printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
 }
@@ -307,7 +307,7 @@ void set_scrollmark(const Arg *a) {
 void scrollmark(const Arg *a){
 	//printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
 //	if ( scrollmarks[a->i] ){
-	term.scr=term.histi-scrollmarks[a->i];
+	term.scr=term.histi-scrollmarks[a->i]+1;
 	selscroll(0, term.scr);
 	tfulldirt();
 	updatestatus();
@@ -317,7 +317,7 @@ void scrollmark(const Arg *a){
 void enterscroll(const Arg *a){
 		//printf("enterscroll\n");
 		//set_scrollmark( a );
-		scrollmarks[0] = term.histi+term.row-1;
+		scrollmarks[0] = term.histi+term.row;
 		enterlessmode = term.row;
 		ttywrite("\n",1,1);
 }
@@ -403,7 +403,7 @@ void tscrollup(int orig, int n, int copyhist) {
 		selscroll(orig, -n);
 		dbgf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[0], term.row);
 		if ( enterlessmode ){ // scroll down until next line.
-				if ( term.histi >= scrollmarks[0]){
+				if ( term.histi > scrollmarks[0]){
 						//printf("Scroll\n");
 						term.scr=(term.histi)-scrollmarks[0];
 						selscroll(0, term.scr);
