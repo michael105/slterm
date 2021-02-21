@@ -235,6 +235,7 @@ void showhelp(const Arg *a) {
 
 void kscrolldown(const Arg *a) {
 		int n = a->i;
+		printf("kscrolldown, histi: %d  scr: %d\n",term.histi,term.scr );
 
 		dbg2("kscrolldown, n: %d, guard: %x\n",n, term.guard);
 		if (n < 0) {
@@ -276,6 +277,7 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
+		printf("kscrollup, histi: %d  scr: %d\n",term.histi,term.scr );
 		dbg2("kscrollup, n: %d, term.histi: %d, term.row: %d scr: %d\n",
 						n, term.histi, term.row, term.scr);
 		if (n < 0) {
@@ -297,22 +299,25 @@ void kscrollup(const Arg *a) {
 
 
 void set_scrollmark(const Arg *a) {
-	scrollmarks[a->i] = term.histi;	
-	printf("Setscrollmark: %d %d %d\n", a->i, term.histi, term.scr );
+	scrollmarks[a->i] = term.histi-term.scr;	
+	updatestatus();
+	printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
 }
 
 void scrollmark(const Arg *a){
-	//printf("Scrollmark: %d %d %d %d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
-	term.scr=term.histi-scrollmarks[a->i]+1;
+	printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
+//	if ( scrollmarks[a->i] ){
+	term.scr=term.histi-scrollmarks[a->i];
 	selscroll(0, term.scr);
 	tfulldirt();
 	updatestatus();
+//	}
 }
 
 void enterscroll(const Arg *a){
 		printf("enterscroll\n");
 		//set_scrollmark( a );
-		scrollmarks[0] = term.histi+term.row;
+		scrollmarks[0] = term.histi+term.row-1;
 		enterlessmode = term.row;
 		ttywrite("\n",1,1);
 }
@@ -325,7 +330,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 		int i;
 
 
-		dbg2("===== tscrolldown, orig, n, copyhist: %d %d %d\n",orig,n, copyhist);
+		printf("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d\n",orig,n, term.histi, term.scr, copyhist);
 		LIMIT(n, 0, term.bot - orig + 1);
 
 		if (copyhist) {
@@ -349,7 +354,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 void tscrollup(int orig, int n, int copyhist) {
 		int i;
 
-		dbg2("==== tscrollup, guard: %x orig %d, n %d, copyhist: %d\n",term.guard, orig,n, copyhist);
+		printf("===== tscrollup, orig:%d n:%d , histi: %d  scr: %d copyhist: %d \n",orig,n, term.histi, term.scr, copyhist);
 		LIMIT(n, 0, term.bot - orig + 1);
 
 		if (copyhist) {
@@ -398,14 +403,18 @@ void tscrollup(int orig, int n, int copyhist) {
 		selscroll(orig, -n);
 		dbgf("scrd: %d %d %d %d %d %d\n", orig, n, term.histi, term.scr, scrollmarks[0], term.row);
 		if ( enterlessmode ){ // scroll down until next line.
-				if ( term.histi > scrollmarks[0]){
+				if ( term.histi >= scrollmarks[0]){
 						printf("Scroll\n");
-						term.scr=term.histi-scrollmarks[0];
+						term.scr=(term.histi)-scrollmarks[0];
 						selscroll(0, term.scr);
-						tfulldirt();
-						Arg a = { .i=2 };
+						//tfulldirt();
+						Arg a; 
+						 a.i=2;
 					  lessmode_toggle(&a);
 						enterlessmode = 0;
+						//a.i=0;
+						//scrollmark(&a);
+
 						//inputmode |= MODE_LESS;
 						//set_notifmode( 2, -1 ); // show message "less"
 				}
@@ -2055,13 +2064,25 @@ void drawstatus(){
 void updatestatus(){
 
 		if ( statusvisible ){
-				char buf[64];
-				sprintf(buf," -LESS-  %5d-%2d %5d %3d%% (%3d%%)", 
+				char buf[256];
+				int p = sprintf(buf," -LESS-  %5d-%2d %5d %3d%% (%3d%%)", 
 						term.histi-term.scr,term.histi-term.scr+term.row, 
 						term.histi+term.row, 
 						((term.histi-term.scr)*100)/(term.histi),
 						((term.histi-term.scr-scrollmarks[0]+1)*100)/((term.histi-scrollmarks[0]+1)?term.histi-scrollmarks[0]+1:1)
 						);
+				buf[p]=' ';
+
+				for ( int a=1; a<10; a++ ){
+						if ( scrollmarks[a] )
+										buf[a+p] = a+'0';
+								else
+										buf[a+p] = ' ';
+				}
+				if ( scrollmarks[0] )
+						buf[p+10] = 'R';
+				else 
+						buf[p+10] = ' ';
 
 				setstatus(buf);
 		}

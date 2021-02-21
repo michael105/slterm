@@ -4,16 +4,25 @@
 
 ##### Fork of the st terminal. (suckless.org)
 
-Slim patched version with performance and memory footprint related modifications.
-
-Fixed history buffer. 
+Slim patched version with performance and memory footprint related modifications,
+several additions:
 
 "Modeless" Scrolling. 
- Bookmarks within the history. ("Scrollmarks")
 
- Hit Ctrl+Shift+PageUp/CursorUp,
- afterwards in 'lessmode' Cursor keys and PageUp/Down scroll around.
- Ctrl+Shift+PageDown/CursorDown do leave the lessmode.
+	 Hit Ctrl+Shift+PageUp/CursorUp to enter "lessmode".
+ 	 Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
+	 Ctrl+Shift+PageDown/CursorDown, 'q' or Escape leave the lessmode.
+  
+	 Bookmarks within the history. ("Scrollmarks")
+	   set:  Ctrl+n (n=0..9)
+     goto: Mod4+n
+
+		 in lessmode: 'n' (number without modifier)
+
+	Hit Ctrl+Return to execute a command in the shell and enter lessmode,
+	if more than one screen is written by the command.
+   
+
 
 UTF8 support is an optional compile switch now.
 
