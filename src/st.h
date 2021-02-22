@@ -251,6 +251,7 @@ typedef struct {
 	char circledhist;
 } Term;
 
+extern Term term; 
 
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
@@ -274,6 +275,8 @@ typedef struct {
   int narg; /* nb of args */
 } STREscape;
 
+
+extern int scrollmarks[12];
 
 void redraw(void);
 void draw(void);

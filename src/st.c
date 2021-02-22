@@ -5,6 +5,7 @@
 #include "mem.h"
 #include "base64.h"
 #include "utf8.h"
+#include "statusbar.h"
 
 #if defined(__linux)
 #include <pty.h>
@@ -28,8 +29,6 @@
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
 
-static void updatestatus();
-static void setstatus(char* status);
 static void csidump(void);
 static void csihandle(void);
 static void csiparse(void);
@@ -77,11 +76,8 @@ Term term; // misc make local?
 static CSIEscape csiescseq;
 static STREscape strescseq;
 int borderpx;
-static int scrollmarks[12];
+int scrollmarks[12];
 static int enterlessmode;
-static int statusvisible;
-static Glyph *statusbar;
-
 
 int tlinelen(int y) {
 		int i = term.col;
@@ -1930,25 +1926,25 @@ void tresize(int col, int row) {
 		dbg("cp\n");
 		/* resize each row to new width, zero-pad if needed */
 		if ( enlarge ){
-		for (i = 0; i < minrow; i++) {
-				//dbg3("i: %d, %d", i, minrow );
-				term.line[i] = xrealloc(term.line[i], term.colalloc * sizeof(Glyph));
-				//dbg3("i2\n");
-				term.alt[i] = xrealloc(term.alt[i], term.colalloc * sizeof(Glyph));
-				term.helpscr[i] = xrealloc(term.helpscr[i], term.colalloc * sizeof(Glyph));
-		}
+				for (i = 0; i < minrow; i++) {
+						//dbg3("i: %d, %d", i, minrow );
+						term.line[i] = xrealloc(term.line[i], term.colalloc * sizeof(Glyph));
+						//dbg3("i2\n");
+						term.alt[i] = xrealloc(term.alt[i], term.colalloc * sizeof(Glyph));
+						term.helpscr[i] = xrealloc(term.helpscr[i], term.colalloc * sizeof(Glyph));
+				}
 		} else {
-		for (i = 0; i < minrow; i++) {
+				for (i = 0; i < minrow; i++) {
 
-				//term.alt[i] = xrealloc(term.alt[i], term.colalloc * sizeof(Glyph));
-				//dbg3("i: %d, %d", i, minrow );
-				//term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
-				//dbg3("i2\n");
-				//term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
-				//memset(term.alt[i], 0, col);
+						//term.alt[i] = xrealloc(term.alt[i], term.colalloc * sizeof(Glyph));
+						//dbg3("i: %d, %d", i, minrow );
+						//term.line[i] = xrealloc(term.line[i], col * sizeof(Glyph));
+						//dbg3("i2\n");
+						//term.alt[i] = xrealloc(term.alt[i], col * sizeof(Glyph));
+						//memset(term.alt[i], 0, col);
+				}
 		}
-		}
-	
+
 
 
 		dbg3("i4\n");
@@ -2055,130 +2051,5 @@ void draw(void) {
 void redraw(void) {
 		tfulldirt();
 		draw();
-}
-
-void drawstatus(){
-		term.dirty[term.bot] = 1;
-		drawregion(0, term.bot, term.col, term.bot + 1);
-}
-
-
-
-
-// uodates the statusbar with current line, etc., when visible.
-void updatestatus(){
-
-		if ( statusvisible ){
-				char buf[256];
-				int p = sprintf(buf," -LESS-  %5d-%2d %5d %3d%% (%3d%%)", 
-						term.histi-term.scr,term.histi-term.scr+term.row, 
-						term.histi+term.row, 
-						((term.histi-term.scr)*100)/(term.histi),
-						((term.histi-term.scr-scrollmarks[0]+1)*100)/((term.histi-scrollmarks[0]+1)?term.histi-scrollmarks[0]+1:1)
-						);
-				buf[p]=' ';
-
-				for ( int a=1; a<10; a++ ){
-						if ( scrollmarks[a] )
-										buf[a+p] = a+'0';
-								else
-										buf[a+p] = ' ';
-				}
-				if ( scrollmarks[0] )
-						buf[p+10] = '0';
-				else 
-						buf[p+10] = ' ';
-
-				setstatus(buf);
-		}
-}
-
-void setstatus(char* status){
-		static Glyph *deb, *fin;
-		static int col, bot;
-
-		free(statusbar);
-		col = term.col, bot = term.bot;
-		statusbar = xmalloc(term.colalloc * sizeof(Glyph));
-		char *z = status;
-
-		for (deb = statusbar,fin=&statusbar[col]; (deb < fin) && (*status);
-						status++, deb++) {
-				deb->mode = ATTR_REVERSE, deb->u = *status, deb->fg = defaultfg,
-						deb->bg = defaultbg;
-		}
-
-		for (; (deb < fin); deb++) {
-				deb->mode = ATTR_REVERSE, deb->u = ' ', deb->fg = defaultfg,
-						deb->bg = defaultbg;
-		}
-}
-
-void showstatus(int show, char *status){
-		if ( show ){
-			if ( !statusvisible ){
-					statusvisible = 1;
-					Arg a = { .i=1 };
-					kscrollup(&a);
-					setstatus(status);
-					//tmoveto(0,term.row);
-					//twrite("LESS",4,1);
-					//SET(MODE_HIDE);
-					redraw();
-					//term.row--;
-			}
-			// paint status
-
-		} else {
-			if ( statusvisible ){
-					statusvisible = 0;
-					term.dirty[term.bot] = 1;
-					drawregion(0, term.bot, term.col, term.bot + 1);
-					//term.row++;
-					//tresize(term.col,term.row+1);
-			}
-		 // clear status
-		 // 
-		}
-}
-
-
-void set_notifmode(int type, KeySym ksym) {
-		static char *lib[] = {" MOVE ", " SEL  "," LESS " };
-		static Glyph *g, *deb, *fin;
-		static int col, bot;
-
-		if (ksym == -1) { // show
-				free(g);
-				col = term.col, bot = term.bot;
-				g = xmalloc(term.colalloc * sizeof(Glyph));
-				memcpy(g, term.line[bot], term.colalloc * sizeof(Glyph));
-				//tresize(term.col,term.row-1);
-		} else if (ksym == -2) { // hide
-				memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
-				//tresize(term.col,term.row+1);
-		}
-
-		if (type < 3) {
-				char *z = lib[type];
-				for (deb = &term.line[bot][col - 6], fin = &term.line[bot][col]; deb < fin;
-								z++, deb++) {
-						deb->mode = ATTR_REVERSE, deb->u = *z, deb->fg = defaultfg,
-								deb->bg = defaultbg;
-				}
-		} else if (type < 5) {
-				memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
-				//memcpy(term.line[bot], g, term.colalloc * sizeof(Glyph));
-		} else {
-				for (deb = &term.line[bot][0], fin = &term.line[bot][col]; deb < fin;
-								deb++) {
-						deb->mode = ATTR_REVERSE, deb->u = ' ', deb->fg = defaultfg,
-								deb->bg = defaultbg;
-				}
-				term.line[bot][0].u = ksym;
-		}
-
-		term.dirty[bot] = 1;
-		drawregion(0, bot, col, bot + 1);
 }
 

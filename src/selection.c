@@ -14,6 +14,26 @@
 
 Selection sel;
 
+
+
+void setsel(char *str, Time t) {
+		if (!str)
+				return;
+
+		free(xsel.primary);
+		xsel.primary = str;
+
+		XSetSelectionOwner(xw.dpy, XA_PRIMARY, xw.win, t);
+		if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
+				selclear();
+
+		clipcopy(NULL);
+}
+
+
+void xsetsel(char *str) { setsel(str, CurrentTime); }
+
+
 void selstart(int col, int row, int snap) {
   selclear();
   sel.mode = SEL_EMPTY;

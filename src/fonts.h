@@ -29,6 +29,12 @@ typedef struct {
 		Rune unicodep;
 } Fontcache;
 
+// callbacks
+void set_fontwidth( const Arg *a );
+void zoom(const Arg *);
+void zoomabs(const Arg *);
+void zoomreset(const Arg *);
+
 
 
 int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);

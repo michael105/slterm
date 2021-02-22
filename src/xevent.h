@@ -98,14 +98,9 @@ void propnotify(XEvent *);
 void clipcopy(const Arg *);
 void clippaste(const Arg *);
 void selpaste(const Arg *);
-void zoom(const Arg *);
-void zoomabs(const Arg *);
-void zoomreset(const Arg *);
 void ttysend(const Arg *);
 void keyboard_select(const Arg *);
 void lessmode_toggle(const Arg*);
-void set_fontwidth( const Arg *a );
-
 
 
 
