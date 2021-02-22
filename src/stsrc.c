@@ -17,7 +17,7 @@
 #include "system.h"
 #include "tty.h"
 #include "selection.h"
-#include "input.h"
+#include "xevent.h"
 #include "fonts.h"
 
 #include "st.c"
@@ -26,7 +26,7 @@
 #include "base64.c"
 #include "selection.c"
 #include "x.c"
-#include "input.c"
+#include "xevent.c"
 #include "main.c"
 #include "system.c"
 #include "tty.c"

@@ -5,7 +5,7 @@ static char *argv0;
 #include "arg.h"
 #include "st.h"
 #include "x.h"
-#include "input.h"
+#include "xevent.h"
 #include "compile.h"
 
 //#define ENABLE_DEBUG 5

@@ -2,7 +2,7 @@
 //
 //
 
-#include "input.h"
+#include "xevent.h"
 
 /* the configuration is in config.h (generated from config.h.in) */
 #include "config.h"
