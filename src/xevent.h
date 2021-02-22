@@ -48,9 +48,12 @@ typedef struct {
 #define XK_SWITCH_MOD (1 << 13)
 
 
+int evcol(XEvent *);
+int evrow(XEvent *);
+
+
 int match(uint mask, uint state);
 char *kmap(KeySym k, uint state);
-void kpress(XEvent *ev);
 
 // callbacks
 void numlock(const Arg *);
@@ -65,16 +68,33 @@ typedef struct {
 		int altscrn; /* 0: don't care,  -1: not alt screen,  1: alt screen */
 } MouseShortcut;
 
-// callbacks
+// event handling
+void kpress(XEvent *ev);
+
 int mouseaction(XEvent *, uint);
 void brelease(XEvent *);
 void bpress(XEvent *);
 void bmotion(XEvent *);
-
+void mousesel(XEvent *, int);
 void mousereport(XEvent *);
 
-/* function definitions used in config.h */
+//clipboard events
+void selnotify(XEvent *);
+void selclear_(XEvent *);
+void selrequest(XEvent *);
 
+// xwindow related
+void expose(XEvent *);
+void visibility(XEvent *);
+void unmap(XEvent *);
+void cmessage(XEvent *);
+void resize(XEvent *);
+void focus(XEvent *);
+void propnotify(XEvent *);
+
+
+
+// callbacks . Used in config.h
 void clipcopy(const Arg *);
 void clippaste(const Arg *);
 void selpaste(const Arg *);
@@ -82,6 +102,10 @@ void zoom(const Arg *);
 void zoomabs(const Arg *);
 void zoomreset(const Arg *);
 void ttysend(const Arg *);
+void keyboard_select(const Arg *);
+void lessmode_toggle(const Arg*);
+void set_fontwidth( const Arg *a );
+
 
 
 

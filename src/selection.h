@@ -25,11 +25,7 @@ void selnormalize(void);
 void selscroll(int, int);
 void selsnap(int *, int *, int);
 
-void selnotify(XEvent *);
-void selclear_(XEvent *);
-void selrequest(XEvent *);
 void setsel(char *, Time);
-void mousesel(XEvent *, int);
 
 
 #endif
