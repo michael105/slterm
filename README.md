@@ -5,9 +5,15 @@
 ##### Fork of the st terminal. (suckless.org)
 
 Slim patched version with performance and memory footprint related modifications,
-several additions:
+I'd like to name "Slim Terminal".
 
-"Modeless" Scrolling. 
+The binary comes with 100kB, resident memory usage starts with 200kB and
+grows dynamically with a growing history. (4Bytes per Glyph) 
+
+
+Additions in this fork:
+
+   "Modeless" Scrolling. 
 
 	 Hit Ctrl+Shift+PageUp/CursorUp to enter "lessmode".
  	 Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
@@ -19,18 +25,24 @@ several additions:
 
 		 in lessmode: 'n' (number without modifier)
 
-	Hit Ctrl+Return to execute a command in the shell and enter lessmode,
-	if more than one screen is written by the command.
+	      Hit Ctrl+Return to execute a command in the shell and enter lessmode,
+       	if more than one screen is written by the command.
    
+
+    Delayed allocation of the history buffer. 
+        Saves up to tenths or even hundreds of MB, 
+        depending on the terminal's width and history size
+
 
 
 UTF8 support is an optional compile switch now.
 
+Several patches applied.
 
 ___   
 
     Stripped unicode support in favour of the 256 chars (extended) ASCII table
-        utf8 is an optional compiletime switch now
+        utf8 is an optional compiletime switch now.
         (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
         E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
         but until yet I always needed to dive into the configurations for 
@@ -42,10 +54,6 @@ ___
 
     Colors are restricted to a 256 color palette 
         (Saving 6 Bytes per Glyph)
-
-    Delayed allocation of the history buffer. 
-        Saves up to tenths or even hundreds of MB, 
-        depending on the terminal's width and history size
 
     Keep the history and terminal contents on resize events
         (Doesn't erase wider lines, when shrinking)
@@ -89,9 +97,9 @@ Applied Patches:
 make
 make install
 ```
-The default config might be save. 
+The default configuration might be save. 
 
-(no utf8, scrollback history 4096 lines, no XResources, installs into /usr/local/bin)
+(no utf8, scrollback history 16384 lines, no XResources, installs into /usr/local/bin)
 
 If you'd like to change anything, please edit config.h.in.
 
@@ -204,7 +212,7 @@ https://danluu.com/input-lag/
 Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
 with Xorg programs. 
 
-
+The history ringbuffer could get problematic in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines)
 
 
 

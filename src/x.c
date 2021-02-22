@@ -21,15 +21,6 @@ typedef struct {
 		void *dst;
 } ResourcePref;
 #endif
-/* function definitions used in config.h */
-
-void clipcopy(const Arg *);
-void clippaste(const Arg *);
-void selpaste(const Arg *);
-void zoom(const Arg *);
-void zoomabs(const Arg *);
-void zoomreset(const Arg *);
-void ttysend(const Arg *);
 
 /* the configuration is in config.h (generated from config.h.in) */
 #include "config.h"
@@ -47,66 +38,7 @@ void ttysend(const Arg *);
 #define TRUEGREEN(x) (((x)&0xff00))
 #define TRUEBLUE(x) (((x)&0xff) << 8)
 
-typedef XftDraw *Draw;
-typedef XftColor Color;
-typedef XftGlyphFontSpec GlyphFontSpec;
-
-/* Purely graphic info */
-typedef struct {
-		int tw, th; /* tty width and height */
-		int w, h;   /* window width and height */
-		int hborderpx, vborderpx;
-		int ch;     /* char height */
-		int cw;     /* char width  */
-		int mode;   /* window state/mode flags */
-		int cursor; /* cursor style */
-} TermWindow;
-
-typedef struct {
-		Display *dpy;
-		Colormap cmap;
-		Window win;
-		Drawable buf;
-		GlyphFontSpec *specbuf; /* font spec buffer used for rendering */
-		Atom xembed, wmdeletewin, netwmname, netwmpid;
-		XIM xim;
-		XIC xic;
-		Draw draw;
-		Visual *vis;
-		XSetWindowAttributes attrs;
-		int scr;
-		int isfixed; /* is fixed geometry? */
-		int l, t;    /* left and top offset */
-		int gm;      /* geometry mask */
-} XWindow;
-
-/* Font structure */
-#define Font Font_
-typedef struct {
-		int height;
-		int width;
-		int ascent;
-		int descent;
-		int badslant;
-		int badweight;
-		short lbearing;
-		short rbearing;
-		XftFont *match;
-		FcFontSet *set;
-		FcPattern *pattern;
-} Font;
-
-/* Drawing Context */
-typedef struct {
-		Color *col;
-		size_t collen;
-		Font font, bfont, ifont, ibfont;
-		GC gc;
-} DC;
-
 inline ushort sixd_to_16bit(int);
-int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int,
-				int);
 void xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int);
 void xdrawglyph(Glyph, int, int);
 void xclear(int, int, int, int);
@@ -119,10 +51,6 @@ void cresize(int, int);
 void xresize(int, int);
 void xhints(void);
 int xloadcolor(int, const char *, Color *);
-int xloadfont(Font *, FcPattern *);
-void xloadfonts(char *, double);
-void xunloadfont(Font *);
-void xunloadfonts(void);
 void xsetenv(void);
 void xseturgency(int);
 int evcol(XEvent *);
@@ -135,11 +63,6 @@ void cmessage(XEvent *);
 void resize(XEvent *);
 void focus(XEvent *);
 void propnotify(XEvent *);
-void selnotify(XEvent *);
-void selclear_(XEvent *);
-void selrequest(XEvent *);
-void setsel(char *, Time);
-void mousesel(XEvent *, int);
 
 void run(void);
 void usage(void);
@@ -150,23 +73,6 @@ void statusbar_kpress( KeySym *ks, char *buf );
 DC dc;
 XWindow xw;
 TermWindow win;
-
-/* Font Ring Cache */
-enum { FRC_NORMAL, FRC_ITALIC, FRC_BOLD, FRC_ITALICBOLD };
-
-typedef struct {
-		XftFont *font;
-		int flags;
-		Rune unicodep;
-} Fontcache;
-
-/* Fontcache is an array now. A new font will be appended to the array. */
-Fontcache *frc = NULL;
-int frclen = 0;
-int frccap = 0;
-char *usedfont = NULL;
-double usedfontsize = 0;
-double defaultfontsize = 0;
 
 char *opt_class = NULL;
 char **opt_cmd = NULL;
@@ -181,33 +87,6 @@ char opt_xresources;
 
 // more/less font width spacing
 //int fontspacing = -1;
-
-void zoom(const Arg *arg) {
-		Arg larg;
-
-		larg.f = usedfontsize + arg->f;
-		zoomabs(&larg);
-}
-
-void zoomabs(const Arg *arg) {
-		xunloadfonts();
-		xloadfonts(usedfont, arg->f);
-		cresize(0, 0);
-		redraw();
-		xhints();
-}
-
-void zoomreset(const Arg *arg) {
-		Arg larg;
-
-		if (defaultfontsize > 0) {
-				larg.f = defaultfontsize;
-				zoomabs(&larg);
-		}
-}
-
-void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
-
 int evcol(XEvent *e) {
 		int x = e->xbutton.x - win.hborderpx;
 		LIMIT(x, 0, win.tw - 1);
@@ -230,87 +109,6 @@ void propnotify(XEvent *e) {
 		}
 }
 
-void selnotify(XEvent *e) {
-		ulong nitems, ofs, rem;
-		int format;
-		uchar *data, *last, *repl;
-		Atom type, incratom, property = None;
-
-		incratom = XInternAtom(xw.dpy, "INCR", 0);
-
-		ofs = 0;
-		if (e->type == SelectionNotify)
-				property = e->xselection.property;
-		else if (e->type == PropertyNotify)
-				property = e->xproperty.atom;
-
-		if (property == None)
-				return;
-
-		do {
-				if (XGetWindowProperty(xw.dpy, xw.win, property, ofs, BUFSIZ / 4, False,
-										AnyPropertyType, &type, &format, &nitems, &rem,
-										&data)) {
-						fprintf(stderr, "Clipboard allocation failed\n");
-						return;
-				}
-
-				if (e->type == PropertyNotify && nitems == 0 && rem == 0) {
-						/*
-						 * If there is some PropertyNotify with no data, then
-						 * this is the signal of the selection owner that all
-						 * data has been transferred. We won't need to receive
-						 * PropertyNotify events anymore.
-						 */
-						MODBIT(xw.attrs.event_mask, 0, PropertyChangeMask);
-						XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
-				}
-
-				if (type == incratom) {
-						/*
-						 * Activate the PropertyNotify events so we receive
-						 * when the selection owner does send us the next
-						 * chunk of data.
-						 */
-						MODBIT(xw.attrs.event_mask, 1, PropertyChangeMask);
-						XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
-
-						/*
-						 * Deleting the property is the transfer start signal.
-						 */
-						XDeleteProperty(xw.dpy, xw.win, (int)property);
-						continue;
-				}
-
-				/*
-				 * As seen in getsel:
-				 * Line endings are inconsistent in the terminal and GUI world
-				 * copy and pasting. When receiving some selection data,
-				 * replace all '\n' with '\r'.
-				 * FIXME: Fix the computer world.
-				 */
-				repl = data;
-				last = data + nitems * format / 8;
-				while ((repl = memchr(repl, '\n', last - repl))) {
-						*repl++ = '\r';
-				}
-
-				if (IS_SET(MODE_BRCKTPASTE) && ofs == 0)
-						ttywrite("\033[200~", 6, 0);
-				ttywrite((char *)data, nitems * format / 8, 1);
-				if (IS_SET(MODE_BRCKTPASTE) && rem == 0)
-						ttywrite("\033[201~", 6, 0);
-				XFree(data);
-				/* number of 32-bit chunks returned */
-				ofs += nitems * format / 32;
-		} while (rem > 0);
-
-		/*
-		 * Deleting the property again tells the selection owner to send the
-		 * next data chunk in the property.
-		 */
-		XDeleteProperty(xw.dpy, xw.win, (int)property);
-}
 void brelease(XEvent *e) {
 		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
 				mousereport(e);
@@ -489,181 +287,6 @@ int xgeommasktogravity(int mask) {
 
 		return SouthEastGravity;
 }
-
-int xloadfont(Font *f, FcPattern *pattern) {
-		FcPattern *configured;
-		FcPattern *match;
-		FcResult result;
-		XGlyphInfo extents;
-		int wantattr, haveattr;
-
-		/*
-		 * Manually configure instead of calling XftMatchFont
-		 * so that we can use the configured pattern for
-		 * "missing glyph" lookups.
-		 */
-		configured = FcPatternDuplicate(pattern);
-		if (!configured)
-				return 1;
-
-		FcConfigSubstitute(NULL, configured, FcMatchPattern);
-		XftDefaultSubstitute(xw.dpy, xw.scr, configured);
-
-		match = FcFontMatch(NULL, configured, &result);
-		if (!match) {
-				FcPatternDestroy(configured);
-				return 1;
-		}
-
-		if (!(f->match = XftFontOpenPattern(xw.dpy, match))) {
-				FcPatternDestroy(configured);
-				FcPatternDestroy(match);
-				return 1;
-		}
-
-		if ((XftPatternGetInteger(pattern, "slant", 0, &wantattr) ==
-								XftResultMatch)) {
-				/*
-				 * Check if xft was unable to find a font with the appropriate
-				 * slant but gave us one anyway. Try to mitigate.
-				 */
-				if ((XftPatternGetInteger(f->match->pattern, "slant", 0, &haveattr) !=
-										XftResultMatch) ||
-								haveattr < wantattr) {
-						f->badslant = 1;
-						fputs("font slant does not match\n", stderr);
-				}
-		}
-
-		if ((XftPatternGetInteger(pattern, "weight", 0, &wantattr) ==
-								XftResultMatch)) {
-				if ((XftPatternGetInteger(f->match->pattern, "weight", 0, &haveattr) !=
-										XftResultMatch) ||
-								haveattr != wantattr) {
-						f->badweight = 1;
-						fputs("font weight does not match\n", stderr);
-				}
-		}
-
-//		XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
-//						strlen(ascii_printable), &extents);
-		XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
-						sizeof(ascii_printable), &extents);
-
-
-
-		f->set = NULL;
-		f->pattern = configured;
-
-		f->ascent = f->match->ascent;
-		f->descent = f->match->descent;
-		f->lbearing = 0;
-		f->rbearing = f->match->max_advance_width;
-
-		f->height = f->ascent + f->descent;
-#ifdef UTF8
-		f->width = DIVCEIL(extents.xOff, strlen(ascii_printable));
-		//f->width = DIVCEIL(extents.xOff,190 );
-#else
-		//f->width=8;
-		f->width = DIVCEIL(extents.xOff, 96);
-		//f->width = DIVCEIL(extents.xOff, 96);
-#endif
-
-		f->width += fontspacing;
-		if ( f->width < 1 )
-				f->width=1;
-
-		return 0;
-}
-
-void xloadfonts(char *fontstr, double fontsize) {
-		FcPattern *pattern;
-		double fontval;
-
-		if (fontstr[0] == '-')
-				pattern = XftXlfdParse(fontstr, False, False);
-		else
-				pattern = FcNameParse((FcChar8 *)fontstr);
-
-		if (!pattern)
-				die("can't open font %s\n", fontstr);
-
-		if (fontsize > 1) {
-				FcPatternDel(pattern, FC_PIXEL_SIZE);
-				FcPatternDel(pattern, FC_SIZE);
-				FcPatternAddDouble(pattern, FC_PIXEL_SIZE, (double)fontsize);
-				usedfontsize = fontsize;
-		} else {
-				if (FcPatternGetDouble(pattern, FC_PIXEL_SIZE, 0, &fontval) ==
-								FcResultMatch) {
-						usedfontsize = fontval;
-				} else if (FcPatternGetDouble(pattern, FC_SIZE, 0, &fontval) ==
-								FcResultMatch) {
-						usedfontsize = -1;
-				} else {
-						/*
-						 * Default font size is 12, if none given. This is to
-						 * have a known usedfontsize value.
-						 */
-						FcPatternAddDouble(pattern, FC_PIXEL_SIZE, 12);
-						usedfontsize = 12;
-				}
-				defaultfontsize = usedfontsize;
-		}
-
-		if (xloadfont(&dc.font, pattern))
-				die("can't open font %s\n", fontstr);
-
-		if (usedfontsize < 0) {
-				FcPatternGetDouble(dc.font.match->pattern, FC_PIXEL_SIZE, 0, &fontval);
-				usedfontsize = fontval;
-				if (fontsize == 0)
-						defaultfontsize = fontval;
-		}
-
-		/* Setting character width and height. */
-		win.cw = ceilf(dc.font.width * cwscale);
-		win.ch = ceilf(dc.font.height * chscale);
-
-		borderpx = ceilf(((float)borderperc / 100) * win.cw);
-
-		FcPatternDel(pattern, FC_SLANT);
-		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
-		if (xloadfont(&dc.ifont, pattern))
-				die("can't open font %s\n", fontstr);
-
-		FcPatternDel(pattern, FC_WEIGHT);
-		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
-		if (xloadfont(&dc.ibfont, pattern))
-				die("can't open font %s\n", fontstr);
-
-		FcPatternDel(pattern, FC_SLANT);
-		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
-		if (xloadfont(&dc.bfont, pattern))
-				die("can't open font %s\n", fontstr);
-
-		FcPatternDestroy(pattern);
-}
-
-void xunloadfont(Font *f) {
-		XftFontClose(xw.dpy, f->match);
-		FcPatternDestroy(f->pattern);
-		if (f->set)
-				FcFontSetDestroy(f->set);
-}
-
-void xunloadfonts(void) {
-		/* Free the loaded fonts in the font cache.  */
-		while (frclen > 0)
-				XftFontClose(xw.dpy, frc[--frclen].font);
-
-		xunloadfont(&dc.font);
-		xunloadfont(&dc.bfont);
-		xunloadfont(&dc.ifont);
-		xunloadfont(&dc.ibfont);
-}
-
 void ximopen(Display *dpy) {
 		XIMCallback destroy = {.client_data = NULL, .callback = ximdestroy};
 
@@ -804,138 +427,6 @@ void xinit(int cols, int rows) {
 		xsel.xtarget = XInternAtom(xw.dpy, "UTF8_STRING", 0);
 		if (xsel.xtarget == None)
 				xsel.xtarget = XA_STRING;
-}
-
-int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
-				int x, int y) {
-		float winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
-		xp, yp;
-		ushort mode, prevmode = USHRT_MAX;
-		Font *font = &dc.font;
-		int frcflags = FRC_NORMAL;
-		float runewidth = win.cw;
-		Rune rune;
-		FT_UInt glyphidx;
-		FcResult fcres;
-		FcPattern *fcpattern, *fontpattern;
-		FcFontSet *fcsets[] = {NULL};
-		FcCharSet *fccharset;
-		int i, f, numspecs = 0;
-
-		for (i = 0, xp = winx, yp = winy + font->ascent; i < len; ++i) {
-				/* Fetch rune and mode for current glyph. */
-				rune = glyphs[i].u;
-				mode = glyphs[i].mode;
-
-#ifdef UTF8
-				/* Skip dummy wide-character spacing. */
-				if (mode == ATTR_WDUMMY)
-						continue;
-#endif
-
-				/* Determine font for glyph if different from previous glyph. */
-				if (prevmode != mode) {
-						prevmode = mode;
-						font = &dc.font;
-						frcflags = FRC_NORMAL;
-#ifdef UTF8
-						runewidth = win.cw * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
-#else
-						runewidth = win.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
-#endif
-						if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD)) {
-								font = &dc.ibfont;
-								frcflags = FRC_ITALICBOLD;
-						} else if (mode & ATTR_ITALIC) {
-								font = &dc.ifont;
-								frcflags = FRC_ITALIC;
-						} else if (mode & ATTR_BOLD) {
-								font = &dc.bfont;
-								frcflags = FRC_BOLD;
-						}
-						yp = winy + font->ascent;
-				}
-
-				/* Lookup character index with default font. */
-				glyphidx = XftCharIndex(xw.dpy, font->match, rune);
-				if (glyphidx) {
-						specs[numspecs].font = font->match;
-						specs[numspecs].glyph = glyphidx;
-						specs[numspecs].x = (short)xp;
-						specs[numspecs].y = (short)yp;
-						xp += runewidth;
-						numspecs++;
-						continue;
-				}
-
-				/* Fallback on font cache, search the font cache for match. */
-				for (f = 0; f < frclen; f++) {
-						glyphidx = XftCharIndex(xw.dpy, frc[f].font, rune);
-						/* Everything correct. */
-						if (glyphidx && frc[f].flags == frcflags)
-								break;
-						/* We got a default font for a not found glyph. */
-						if (!glyphidx && frc[f].flags == frcflags && frc[f].unicodep == rune) {
-								break;
-						}
-				}
-
-				/* Nothing was found. Use fontconfig to find matching font. */
-				if (f >= frclen) {
-						if (!font->set)
-								font->set = FcFontSort(0, font->pattern, 1, 0, &fcres);
-						fcsets[0] = font->set;
-
-						/*
-						 * Nothing was found in the cache. Now use
-						 * some dozen of Fontconfig calls to get the
-						 * font for one single character.
-						 *
-						 * Xft and fontconfig are design failures.
-						 */
-						fcpattern = FcPatternDuplicate(font->pattern);
-						fccharset = FcCharSetCreate();
-
-						FcCharSetAddChar(fccharset, rune);
-						FcPatternAddCharSet(fcpattern, FC_CHARSET, fccharset);
-						FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
-
-						FcConfigSubstitute(0, fcpattern, FcMatchPattern);
-						FcDefaultSubstitute(fcpattern);
-
-						fontpattern = FcFontSetMatch(0, fcsets, 1, fcpattern, &fcres);
-
-						/* Allocate memory for the new cache entry. */
-						if (frclen >= frccap) {
-								frccap += 16;
-								frc = xrealloc(frc, frccap * sizeof(Fontcache));
-						}
-
-						frc[frclen].font = XftFontOpenPattern(xw.dpy, fontpattern);
-						if (!frc[frclen].font)
-								die("XftFontOpenPattern failed seeking fallback font: %s\n",
-												strerror(errno));
-						frc[frclen].flags = frcflags;
-						frc[frclen].unicodep = rune;
-
-						glyphidx = XftCharIndex(xw.dpy, frc[frclen].font, rune);
-
-						f = frclen;
-						frclen++;
-
-						FcPatternDestroy(fcpattern);
-						FcCharSetDestroy(fccharset);
-				}
-
-				specs[numspecs].font = frc[f].font;
-				specs[numspecs].glyph = glyphidx;
-				specs[numspecs].x = (short)xp;
-				specs[numspecs].y = (short)yp;
-				xp += runewidth;
-				numspecs++;
-		}
-
-		return numspecs;
 }
 
 void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,

@@ -73,6 +73,17 @@ void bmotion(XEvent *);
 
 void mousereport(XEvent *);
 
+/* function definitions used in config.h */
+
+void clipcopy(const Arg *);
+void clippaste(const Arg *);
+void selpaste(const Arg *);
+void zoom(const Arg *);
+void zoomabs(const Arg *);
+void zoomreset(const Arg *);
+void ttysend(const Arg *);
+
+
 
 #endif
 

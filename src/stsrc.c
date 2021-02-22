@@ -18,8 +18,10 @@
 #include "tty.h"
 #include "selection.h"
 #include "input.h"
+#include "fonts.h"
 
 #include "st.c"
+#include "fonts.c"
 #include "mem.c"
 #include "base64.c"
 #include "selection.c"

@@ -4,6 +4,8 @@
 //typedef Glyph;
 //typedef Line;
 //typedef Arg;
+#include "fonts.h"
+
 
 /* macros */
 #ifdef IS_SET
@@ -42,6 +44,57 @@ enum win_mode {
 		MODE_LESS = 1 << 19, // also hides cursor.
 		MODE_ENTERSTRING = 1 << 20,
 };
+
+
+typedef XftDraw *Draw;
+typedef XftColor Color;
+
+/* Purely graphic info */
+typedef struct {
+		int tw, th; /* tty width and height */
+		int w, h;   /* window width and height */
+		int hborderpx, vborderpx;
+		int ch;     /* char height */
+		int cw;     /* char width  */
+		int mode;   /* window state/mode flags */
+		int cursor; /* cursor style */
+} TermWindow;
+
+/* Drawing Context */
+typedef struct {
+		Color *col;
+		size_t collen;
+		Font font, bfont, ifont, ibfont;
+		GC gc;
+} DC;
+
+typedef struct {
+		Display *dpy;
+		Colormap cmap;
+		Window win;
+		Drawable buf;
+		GlyphFontSpec *specbuf; /* font spec buffer used for rendering */
+		Atom xembed, wmdeletewin, netwmname, netwmpid;
+		XIM xim;
+		XIC xic;
+		Draw draw;
+		Visual *vis;
+		XSetWindowAttributes attrs;
+		int scr;
+		int isfixed; /* is fixed geometry? */
+		int l, t;    /* left and top offset */
+		int gm;      /* geometry mask */
+} XWindow;
+
+
+
+extern XWindow xw;
+extern DC dc;
+extern XWindow xw;
+extern TermWindow win;
+
+
+
 
 void xbell(void);
 void xclipcopy(void);
