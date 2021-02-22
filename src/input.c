@@ -44,6 +44,33 @@ void (*handler[LASTEvent])(XEvent *) = {
 };
 
 
+void zoom(const Arg *arg) {
+		Arg larg;
+
+		larg.f = usedfontsize + arg->f;
+		zoomabs(&larg);
+}
+
+void zoomabs(const Arg *arg) {
+		xunloadfonts();
+		xloadfonts(usedfont, arg->f);
+		cresize(0, 0);
+		redraw();
+		xhints();
+}
+
+void zoomreset(const Arg *arg) {
+		Arg larg;
+
+		if (defaultfontsize > 0) {
+				larg.f = defaultfontsize;
+				zoomabs(&larg);
+		}
+}
+
+void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
+
+
 
 
 int match(uint mask, uint state) {
