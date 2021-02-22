@@ -26,6 +26,6 @@ void selscroll(int, int);
 void selsnap(int *, int *, int);
 
 void setsel(char *, Time);
-
+void xsetsel(char *);
 
 #endif

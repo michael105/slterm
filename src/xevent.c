@@ -43,31 +43,6 @@ void (*handler[LASTEvent])(XEvent *) = {
 		[SelectionRequest] = selrequest,
 };
 
-
-void zoom(const Arg *arg) {
-		Arg larg;
-
-		larg.f = usedfontsize + arg->f;
-		zoomabs(&larg);
-}
-
-void zoomabs(const Arg *arg) {
-		xunloadfonts();
-		xloadfonts(usedfont, arg->f);
-		cresize(0, 0);
-		redraw();
-		xhints();
-}
-
-void zoomreset(const Arg *arg) {
-		Arg larg;
-
-		if (defaultfontsize > 0) {
-				larg.f = defaultfontsize;
-				zoomabs(&larg);
-		}
-}
-
 void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
 
 
@@ -397,22 +372,6 @@ void selrequest(XEvent *e) {
 				fprintf(stderr, "Error sending SelectionNotify event\n");
 }
 
-void setsel(char *str, Time t) {
-		if (!str)
-				return;
-
-		free(xsel.primary);
-		xsel.primary = str;
-
-		XSetSelectionOwner(xw.dpy, XA_PRIMARY, xw.win, t);
-		if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
-				selclear();
-
-		clipcopy(NULL);
-}
-
-void xsetsel(char *str) { setsel(str, CurrentTime); }
-
 
 // mouse handling
 void mousereport(XEvent *e) {
@@ -611,14 +570,6 @@ void selnotify(XEvent *e) {
 void statusbar_kpress( KeySym *ks, char *buf ){
 
 }
-
-void set_fontwidth( const Arg *a ){
-		fontspacing += a->i;
-		Arg larg;
-		larg.f = usedfontsize;
-		zoomabs(&larg);
-}
-
 void lessmode_toggle(const Arg *a){
 		if (abs(a->i) == 2 ){ // enable
 				inputmode |= MODE_LESS;

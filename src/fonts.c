@@ -19,6 +19,40 @@ int frclen = 0;
 int frccap = 0;
 
 
+// callbacks
+void set_fontwidth( const Arg *a ){
+		fontspacing += a->i;
+		Arg larg;
+		larg.f = usedfontsize;
+		zoomabs(&larg);
+}
+
+
+void zoom(const Arg *arg) {
+		Arg larg;
+
+		larg.f = usedfontsize + arg->f;
+		zoomabs(&larg);
+}
+
+void zoomabs(const Arg *arg) {
+		xunloadfonts();
+		xloadfonts(usedfont, arg->f);
+		cresize(0, 0);
+		redraw();
+		xhints();
+}
+
+void zoomreset(const Arg *arg) {
+		Arg larg;
+
+		if (defaultfontsize > 0) {
+				larg.f = defaultfontsize;
+				zoomabs(&larg);
+		}
+}
+
+
 
 int xloadfont(Font *f, FcPattern *pattern) {
 		FcPattern *configured;

@@ -19,7 +19,10 @@
 #include "selection.h"
 #include "xevent.h"
 #include "fonts.h"
+#include "statusbar.h"
 
+
+#include "statusbar.c"
 #include "st.c"
 #include "fonts.c"
 #include "mem.c"

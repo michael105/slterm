@@ -95,6 +95,8 @@ extern TermWindow win;
 
 
 
+void cresize(int, int);
+void xhints(void);
 
 void xbell(void);
 void xclipcopy(void);
@@ -107,7 +109,6 @@ void xsettitle(char *);
 int xsetcursor(int);
 void xsetmode(int, unsigned int);
 void xsetpointermotion(int);
-void xsetsel(char *);
 int xstartdraw(void);
 void xximspot(int, int);
 void toggle_winmode(int);
