@@ -302,6 +302,8 @@ static Shortcut shortcuts[] = {
     { SETBOOKMARKMASK, XK_8, set_scrollmark, { .i=8 },ALLMODES },
     { SETBOOKMARKMASK, XK_9, set_scrollmark, { .i=9 },ALLMODES },
     { SETBOOKMARKMASK, XK_0, set_scrollmark, { .i=0 },ALLMODES },
+		// set scrollmark 0 on Return
+    //{ XK_ANY_MOD, XK_Return, set_scrollmark, { .i=0 },ALLMODES },
 
 // here Capslock (mapped with xmodmap)
     { BOOKMARKMASK, XK_1, scrollmark, { .i=1 },ALLMODES },

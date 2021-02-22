@@ -2061,6 +2061,11 @@ void drawstatus(){
 		term.dirty[term.bot] = 1;
 		drawregion(0, term.bot, term.col, term.bot + 1);
 }
+
+
+
+
+// uodates the statusbar with current line, etc., when visible.
 void updatestatus(){
 
 		if ( statusvisible ){
@@ -2080,7 +2085,7 @@ void updatestatus(){
 										buf[a+p] = ' ';
 				}
 				if ( scrollmarks[0] )
-						buf[p+10] = 'R';
+						buf[p+10] = '0';
 				else 
 						buf[p+10] = ' ';
 

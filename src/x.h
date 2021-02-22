@@ -40,6 +40,7 @@ enum win_mode {
                  |MODE_MOUSEMANY,
     MODE_KBDSELECT = 1 << 18,
 		MODE_LESS = 1 << 19, // also hides cursor.
+		MODE_ENTERSTRING = 1 << 20,
 };
 
 void xbell(void);
