@@ -53,16 +53,6 @@ void xhints(void);
 int xloadcolor(int, const char *, Color *);
 void xsetenv(void);
 void xseturgency(int);
-int evcol(XEvent *);
-int evrow(XEvent *);
-
-void expose(XEvent *);
-void visibility(XEvent *);
-void unmap(XEvent *);
-void cmessage(XEvent *);
-void resize(XEvent *);
-void focus(XEvent *);
-void propnotify(XEvent *);
 
 void run(void);
 void usage(void);
@@ -84,54 +74,6 @@ char *opt_name = NULL;
 char *opt_title = NULL;
 char opt_xresources;
 
-
-// more/less font width spacing
-//int fontspacing = -1;
-int evcol(XEvent *e) {
-		int x = e->xbutton.x - win.hborderpx;
-		LIMIT(x, 0, win.tw - 1);
-		return x / win.cw;
-}
-
-int evrow(XEvent *e) {
-		int y = e->xbutton.y - win.vborderpx;
-		LIMIT(y, 0, win.th - 1);
-		return y / win.ch;
-}
-void propnotify(XEvent *e) {
-		XPropertyEvent *xpev;
-		Atom clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
-
-		xpev = &e->xproperty;
-		if (xpev->state == PropertyNewValue &&
-						(xpev->atom == XA_PRIMARY || xpev->atom == clipboard)) {
-				selnotify(e);
-		}
-}
-
-void brelease(XEvent *e) {
-		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
-				mousereport(e);
-				return;
-		}
-
-		//	if (mouseaction(e, 1))
-		//		return;
-
-		if (e->xbutton.button == Button2)
-				clippaste(NULL);
-		else if (e->xbutton.button == Button1)
-				mousesel(e, 1);
-}
-
-void bmotion(XEvent *e) {
-		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
-				mousereport(e);
-				return;
-		}
-
-		mousesel(e, 0);
-}
 
 void cresize(int width, int height) {
 		int col, row;
@@ -772,16 +714,6 @@ void xximspot(int x, int y) {
 		XFree(attr);
 }
 
-void expose(XEvent *ev) { redraw(); }
-
-void visibility(XEvent *ev) {
-		XVisibilityEvent *e = &ev->xvisibility;
-
-		MODBIT(win.mode, e->state != VisibilityFullyObscured, MODE_VISIBLE);
-}
-
-void unmap(XEvent *ev) { win.mode &= ~MODE_VISIBLE; }
-
 void xsetpointermotion(int set) {
 		MODBIT(xw.attrs.event_mask, set, PointerMotionMask);
 		XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
@@ -815,51 +747,6 @@ void xbell(void) {
 				xseturgency(1);
 		if (bellvolume)
 				XkbBell(xw.dpy, xw.win, bellvolume, (Atom)NULL);
-}
-
-void focus(XEvent *ev) {
-		XFocusChangeEvent *e = &ev->xfocus;
-
-		if (e->mode == NotifyGrab)
-				return;
-
-		if (ev->type == FocusIn) {
-				XSetICFocus(xw.xic);
-				win.mode |= MODE_FOCUSED;
-				xseturgency(0);
-				if (IS_SET(MODE_FOCUS))
-						ttywrite("\033[I", 3, 0);
-		} else {
-				XUnsetICFocus(xw.xic);
-				win.mode &= ~MODE_FOCUSED;
-				if (IS_SET(MODE_FOCUS))
-						ttywrite("\033[O", 3, 0);
-		}
-}
-
-void cmessage(XEvent *e) {
-		/*
-		 * See xembed specs
-		 *  http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html
-		 */
-		if (e->xclient.message_type == xw.xembed && e->xclient.format == 32) {
-				if (e->xclient.data.l[1] == XEMBED_FOCUS_IN) {
-						win.mode |= MODE_FOCUSED;
-						xseturgency(0);
-				} else if (e->xclient.data.l[1] == XEMBED_FOCUS_OUT) {
-						win.mode &= ~MODE_FOCUSED;
-				}
-		} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
-				ttyhangup();
-				exit(0);
-		}
-}
-
-void resize(XEvent *e) {
-		if (e->xconfigure.width == win.w && e->xconfigure.height == win.h)
-				return;
-
-		cresize(e->xconfigure.width, e->xconfigure.height);
 }
 
 void run(void) {
@@ -978,44 +865,4 @@ void run(void) {
 		}
 }
 void toggle_winmode(int flag) { win.mode ^= flag; }
-
-void lessmode_toggle(const Arg *a){
-		if (abs(a->i) == 2 ){ // enable
-				inputmode |= MODE_LESS;
-				//selscroll(0,0);
-				tfulldirt();
-				//set_notifmode( 2, -1 ); // show message "less"
-		} else {
-				if (abs(a->i) == 1 ){ // enable
-						inputmode |= MODE_LESS;
-						kscrollup(a);
-				} else {
-						if ( a->i == -3 ) //disable 
-								inputmode &= ~MODE_LESS;
-						else // toggle - i==0
-								inputmode ^= MODE_LESS;
-				}
-		}
-
-		if ( inputmode & MODE_LESS ){ // enable
-				//set_notifmode( 2, -1 ); // show message "less"
-				showstatus(1," -LESS- ");
-				updatestatus();
-		} else { // disable
-				//set_notifmode( 4,-2 ); // hide message
-				showstatus(0,0);
-				scrolltobottom();
-		}
-}
-
-void statusbar_kpress( KeySym *ks, char *buf ){
-
-}
-
-void set_fontwidth( const Arg *a ){
-		fontspacing += a->i;
-		Arg larg;
-		larg.f = usedfontsize;
-		zoomabs(&larg);
-}
 

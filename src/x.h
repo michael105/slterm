@@ -111,10 +111,6 @@ void xsetsel(char *);
 int xstartdraw(void);
 void xximspot(int, int);
 void toggle_winmode(int);
-void keyboard_select(const Arg *);
-void lessmode_toggle(const Arg*);
-void set_fontwidth( const Arg *a );
-
 #ifdef shared
 int stmain(int argc, char *argv[]);
 #endif

@@ -71,7 +71,112 @@ void zoomreset(const Arg *arg) {
 void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
 
 
+void resize(XEvent *e) {
+		if (e->xconfigure.width == win.w && e->xconfigure.height == win.h)
+				return;
 
+		cresize(e->xconfigure.width, e->xconfigure.height);
+}
+
+void cmessage(XEvent *e) {
+		/*
+		 * See xembed specs
+		 *  http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html
+		 */
+		if (e->xclient.message_type == xw.xembed && e->xclient.format == 32) {
+				if (e->xclient.data.l[1] == XEMBED_FOCUS_IN) {
+						win.mode |= MODE_FOCUSED;
+						xseturgency(0);
+				} else if (e->xclient.data.l[1] == XEMBED_FOCUS_OUT) {
+						win.mode &= ~MODE_FOCUSED;
+				}
+		} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
+				ttyhangup();
+				exit(0);
+		}
+}
+
+void focus(XEvent *ev) {
+		XFocusChangeEvent *e = &ev->xfocus;
+
+		if (e->mode == NotifyGrab)
+				return;
+
+		if (ev->type == FocusIn) {
+				XSetICFocus(xw.xic);
+				win.mode |= MODE_FOCUSED;
+				xseturgency(0);
+				if (IS_SET(MODE_FOCUS))
+						ttywrite("\033[I", 3, 0);
+		} else {
+				XUnsetICFocus(xw.xic);
+				win.mode &= ~MODE_FOCUSED;
+				if (IS_SET(MODE_FOCUS))
+						ttywrite("\033[O", 3, 0);
+		}
+}
+
+
+void expose(XEvent *ev) { redraw(); }
+
+void visibility(XEvent *ev) {
+		XVisibilityEvent *e = &ev->xvisibility;
+
+		MODBIT(win.mode, e->state != VisibilityFullyObscured, MODE_VISIBLE);
+}
+
+void unmap(XEvent *ev) { win.mode &= ~MODE_VISIBLE; }
+
+
+
+int evcol(XEvent *e) {
+		int x = e->xbutton.x - win.hborderpx;
+		LIMIT(x, 0, win.tw - 1);
+		return x / win.cw;
+}
+
+int evrow(XEvent *e) {
+		int y = e->xbutton.y - win.vborderpx;
+		LIMIT(y, 0, win.th - 1);
+		return y / win.ch;
+}
+void propnotify(XEvent *e) {
+		XPropertyEvent *xpev;
+		Atom clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+
+		xpev = &e->xproperty;
+		if (xpev->state == PropertyNewValue &&
+						(xpev->atom == XA_PRIMARY || xpev->atom == clipboard)) {
+				selnotify(e);
+		}
+}
+
+void brelease(XEvent *e) {
+		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
+				mousereport(e);
+				return;
+		}
+
+		//	if (mouseaction(e, 1))
+		//		return;
+
+		if (e->xbutton.button == Button2)
+				clippaste(NULL);
+		else if (e->xbutton.button == Button1)
+				mousesel(e, 1);
+}
+
+void bmotion(XEvent *e) {
+		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
+				mousereport(e);
+				return;
+		}
+
+		mousesel(e, 0);
+}
+
+
+// keyboard handling
 
 int match(uint mask, uint state) {
 		return mask == XK_ANY_MOD || mask == (state & ~ignoremod);
@@ -418,4 +523,128 @@ void bpress(XEvent *e) {
 }
 
 
+
+void selnotify(XEvent *e) {
+		ulong nitems, ofs, rem;
+		int format;
+		uchar *data, *last, *repl;
+		Atom type, incratom, property = None;
+
+		incratom = XInternAtom(xw.dpy, "INCR", 0);
+
+		ofs = 0;
+		if (e->type == SelectionNotify)
+				property = e->xselection.property;
+		else if (e->type == PropertyNotify)
+				property = e->xproperty.atom;
+
+		if (property == None)
+				return;
+
+		do {
+				if (XGetWindowProperty(xw.dpy, xw.win, property, ofs, BUFSIZ / 4, False,
+										AnyPropertyType, &type, &format, &nitems, &rem,
+										&data)) {
+						fprintf(stderr, "Clipboard allocation failed\n");
+						return;
+				}
+
+				if (e->type == PropertyNotify && nitems == 0 && rem == 0) {
+						/*
+						 * If there is some PropertyNotify with no data, then
+						 * this is the signal of the selection owner that all
+						 * data has been transferred. We won't need to receive
+						 * PropertyNotify events anymore.
+						 */
+						MODBIT(xw.attrs.event_mask, 0, PropertyChangeMask);
+						XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
+				}
+
+				if (type == incratom) {
+						/*
+						 * Activate the PropertyNotify events so we receive
+						 * when the selection owner does send us the next
+						 * chunk of data.
+						 */
+						MODBIT(xw.attrs.event_mask, 1, PropertyChangeMask);
+						XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
+
+						/*
+						 * Deleting the property is the transfer start signal.
+						 */
+						XDeleteProperty(xw.dpy, xw.win, (int)property);
+						continue;
+				}
+
+				/*
+				 * As seen in getsel:
+				 * Line endings are inconsistent in the terminal and GUI world
+				 * copy and pasting. When receiving some selection data,
+				 * replace all '\n' with '\r'.
+				 * FIXME: Fix the computer world.
+				 */
+				repl = data;
+				last = data + nitems * format / 8;
+				while ((repl = memchr(repl, '\n', last - repl))) {
+						*repl++ = '\r';
+				}
+
+				if (IS_SET(MODE_BRCKTPASTE) && ofs == 0)
+						ttywrite("\033[200~", 6, 0);
+				ttywrite((char *)data, nitems * format / 8, 1);
+				if (IS_SET(MODE_BRCKTPASTE) && rem == 0)
+						ttywrite("\033[201~", 6, 0);
+				XFree(data);
+				/* number of 32-bit chunks returned */
+				ofs += nitems * format / 32;
+		} while (rem > 0);
+
+		/*
+		 * Deleting the property again tells the selection owner to send the
+		 * next data chunk in the property.
+		 */
+		XDeleteProperty(xw.dpy, xw.win, (int)property);
+}
+
+
+
+void statusbar_kpress( KeySym *ks, char *buf ){
+
+}
+
+void set_fontwidth( const Arg *a ){
+		fontspacing += a->i;
+		Arg larg;
+		larg.f = usedfontsize;
+		zoomabs(&larg);
+}
+
+void lessmode_toggle(const Arg *a){
+		if (abs(a->i) == 2 ){ // enable
+				inputmode |= MODE_LESS;
+				//selscroll(0,0);
+				tfulldirt();
+				//set_notifmode( 2, -1 ); // show message "less"
+		} else {
+				if (abs(a->i) == 1 ){ // enable
+						inputmode |= MODE_LESS;
+						kscrollup(a);
+				} else {
+						if ( a->i == -3 ) //disable 
+								inputmode &= ~MODE_LESS;
+						else // toggle - i==0
+								inputmode ^= MODE_LESS;
+				}
+		}
+
+		if ( inputmode & MODE_LESS ){ // enable
+				//set_notifmode( 2, -1 ); // show message "less"
+				showstatus(1," -LESS- ");
+				updatestatus();
+		} else { // disable
+				//set_notifmode( 4,-2 ); // hide message
+				showstatus(0,0);
+				scrolltobottom();
+		}
+}
 
