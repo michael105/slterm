@@ -28,4 +28,14 @@ void selsnap(int *, int *, int);
 void setsel(char *, Time);
 void xsetsel(char *);
 
+void selclear(void);
+void selinit(void);
+void selstart(int, int, int);
+void selextend(int, int, int, int);
+int selected(int, int);
+char *getsel(void);
+
+int trt_kbdselect(KeySym, char *, int);
+
+
 #endif

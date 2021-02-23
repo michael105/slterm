@@ -25,9 +25,6 @@ typedef struct {
 /* the configuration is in config.h (generated from config.h.in) */
 #include "config.h"
 
-/* XEMBED messages */
-#define XEMBED_FOCUS_IN 4
-#define XEMBED_FOCUS_OUT 5
 
 /* macros */
 #ifdef IS_SET
@@ -56,7 +53,6 @@ void run(void);
 void usage(void);
 
 
-void statusbar_kpress( KeySym *ks, char *buf );
 /* Globals */
 DC dc;
 XWindow xw;
@@ -572,16 +568,17 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 						case 3: /* Blinking Underline */
 						case 4: /* Steady Underline */
 								if ( focusinx == cx && focusiny == cy ) {
-										g.bg = 202;
-										g.fg = 0;
+										g.bg = 208;
+										g.fg = 4;
 										xdrawglyph(g, cx, cy);
 										drawcol = dc.col[1];
+										//printf("c\n");
 
 										// a cross
 										//XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw + win.cw/2 ,
-										//				win.vborderpx + cy * win.ch+3, 1, win.ch-8);
+														//win.vborderpx + cy * win.ch+3, 1, win.ch-8);
 										//XftDrawRect(xw.draw, &drawcol, (win.hborderpx + cx * win.cw) + 2,
-										//				win.vborderpx + cy * win.ch + (win.ch/2)-1, win.cw - 2, 1);
+														//win.vborderpx + cy * win.ch + (win.ch/2)-1, win.cw - 2, 1);
 										//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
 #if 0
 										// upper line

@@ -309,19 +309,8 @@ int tlinelen(int);
 void tsetdirt(int, int);
 void resettitle(void);
 
-void selclear(void);
-void selinit(void);
-void selstart(int, int, int);
-void selextend(int, int, int, int);
-int selected(int, int);
-char *getsel(void);
-
 size_t utf8encode(Rune, char *);
-void *xmalloc(size_t);
-void *xrealloc(void *, size_t);
-char *xstrdup(char *);
 
-int trt_kbdselect(KeySym, char *, int);
 
 /* config.h globals */
 extern char *utmp;

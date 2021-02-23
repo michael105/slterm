@@ -1,6 +1,7 @@
 
 #include "statusbar.h"
 #include "st.h"
+#include "mem.h"
 
 
 int statusvisible;
@@ -69,25 +70,22 @@ void showstatus(int show, char *status){
 			if ( !statusvisible ){
 					statusvisible = 1;
 					Arg a = { .i=1 };
-					kscrollup(&a);
+					kscrollup(&a); // scroll up one line
 					setstatus(status);
-					//tmoveto(0,term.row);
-					//twrite("LESS",4,1);
-					//SET(MODE_HIDE);
+				// paint status
 					redraw();
 					//term.row--;
 			}
-			// paint status
 
 		} else {
 			if ( statusvisible ){
 					statusvisible = 0;
+		 		// clear status
 					term.dirty[term.bot] = 1;
 					drawregion(0, term.bot, term.col, term.bot + 1);
 					//term.row++;
 					//tresize(term.col,term.row+1);
 			}
-		 // clear status
 		 // 
 		}
 }

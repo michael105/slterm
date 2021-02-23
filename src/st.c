@@ -481,6 +481,7 @@ void tmoveto(int x, int y) {
 		term.c.y = LIMIT(y, miny, maxy);
 }
 
+// put a char onto screen
 void tsetchar(Rune u, Glyph *attr, int x, int y) {
 #ifndef UTF8
 		term.dirty[y] = 1;
