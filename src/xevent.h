@@ -47,6 +47,10 @@ typedef struct {
 #define XK_NO_MOD 0
 #define XK_SWITCH_MOD (1 << 13)
 
+/* XEMBED messages */
+#define XEMBED_FOCUS_IN 4
+#define XEMBED_FOCUS_OUT 5
+
 
 int evcol(XEvent *);
 int evrow(XEvent *);

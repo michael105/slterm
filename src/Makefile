@@ -8,12 +8,12 @@
 include config.make
 
 
-SRC = base64.c mem.c st-asc.c stsrc.c tty.c x.c main.c  selection.c st.c  system.c utf8.c xevent.c fonts.c
+SRC = base64.c mem.c st-asc.c stsrc.c tty.c x.c main.c  selection.c st.c  system.c utf8.c xevent.c fonts.c statusbar.c
 SRCO = base64 mem st-asc tty x main  selection st  system utf8
 
 
 #SRC = st.c x.c utf8.c selection.c
-HEADER = st.h win.h arg.h config.h utf8.h selection.h includes.h debug.h x.h fonts.h xevent.h
+HEADER = st.h win.h arg.h config.h utf8.h selection.h includes.h debug.h x.h fonts.h xevent.h statusbar.h
 
 
 ifdef ENABLEDEBUG

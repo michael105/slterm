@@ -4,6 +4,7 @@
 
 extern int statusvisible;
 
+void statusbar_kpress( KeySym *ks, char *buf );
 void updatestatus();
 void setstatus(char* status);
 
