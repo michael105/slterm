@@ -7,6 +7,7 @@
 #include "base64.h"
 #include "utf8.h"
 #include "statusbar.h"
+#include "termdraw.h"
 
 #if defined(__linux)
 #include <pty.h>
