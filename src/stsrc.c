@@ -20,6 +20,7 @@
 #include "xevent.h"
 #include "fonts.h"
 #include "statusbar.h"
+#include "scroll.h"
 
 
 #include "statusbar.c"
@@ -34,6 +35,7 @@
 #include "system.c"
 #include "tty.c"
 #include "utf8.c"
+#include "scroll.c"
 
 
 
