@@ -13,10 +13,7 @@ void drawstatus(){
 		drawregion(0, term.bot, term.col, term.bot + 1);
 }
 
-
-
-
-// uodates the statusbar with current line, etc., when visible.
+// updates the statusbar with current line, etc., when visible.
 void updatestatus(){
 
 		if ( statusvisible ){
@@ -90,7 +87,7 @@ void showstatus(int show, char *status){
 		}
 }
 
-
+// shows a small message at the bottom right corner
 void set_notifmode(int type, KeySym ksym) {
 		static char *lib[] = {" MOVE ", " SEL  "," LESS " };
 		static Glyph *g, *deb, *fin;
