@@ -84,7 +84,6 @@ void propnotify(XEvent *);
 
 // callbacks . Used in config.h
 void ttysend(const Arg *);
-void lessmode_toggle(const Arg*);
 
 
 

@@ -5,8 +5,6 @@
 int scrollmarks[12];
 
 
-
-
 void tsetscroll(int t, int b) {
 		LIMIT(t, 0, term.row - 1);
 		LIMIT(b, 0, term.row - 1);
@@ -100,18 +98,6 @@ void scrollmark(const Arg *a){
 	tfulldirt();
 	updatestatus();
 //	}
-}
-
-void enterscroll(const Arg *a){
-		//printf("enterscroll\n");
-		//set_scrollmark( a );
-		scrollmarks[0] = term.histi+term.row;
-		enterlessmode = term.row;
-		ttywrite("\n",1,1);
-}
-void leavescroll(const Arg *a){
-		enterlessmode = 0;
-		ttywrite("\n",1,1);
 }
 
 void tscrolldown(int orig, int n, int copyhist) {
@@ -209,6 +195,7 @@ void tscrollup(int orig, int n, int copyhist) {
 		}
 
 }
+
 void tnewline(int first_col) {
 		int y = term.c.y;
 
@@ -222,4 +209,46 @@ void tnewline(int first_col) {
 		updatestatus();
 }
 
+void enterscroll(const Arg *a){
+		//printf("enterscroll\n");
+		//set_scrollmark( a );
+		scrollmarks[0] = term.histi+term.row;
+		enterlessmode = term.row;
+		ttywrite("\n",1,1);
+}
+
+void leavescroll(const Arg *a){
+		enterlessmode = 0;
+		ttywrite("\n",1,1);
+}
+
+
+void lessmode_toggle(const Arg *a){
+		if (abs(a->i) == 2 ){ // enable
+				inputmode |= MODE_LESS;
+				//selscroll(0,0);
+				tfulldirt();
+				//set_notifmode( 2, -1 ); // show message "less"
+		} else {
+				if (abs(a->i) == 1 ){ // enable
+						inputmode |= MODE_LESS;
+						kscrollup(a);
+				} else {
+						if ( a->i == -3 ) //disable 
+								inputmode &= ~MODE_LESS;
+						else // toggle - i==0
+								inputmode ^= MODE_LESS;
+				}
+		}
+
+		if ( inputmode & MODE_LESS ){ // enable
+				//set_notifmode( 2, -1 ); // show message "less"
+				showstatus(1," -LESS- ");
+				updatestatus();
+		} else { // disable
+				//set_notifmode( 4,-2 ); // hide message
+				showstatus(0,0);
+				scrolltobottom();
+		}
+}
 

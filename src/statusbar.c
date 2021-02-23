@@ -5,7 +5,7 @@
 
 
 int statusvisible;
-static Glyph *statusbar;
+Glyph *statusbar;
 
 
 void drawstatus(){
