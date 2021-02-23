@@ -127,3 +127,9 @@ void set_notifmode(int type, KeySym ksym) {
 		drawregion(0, bot, col, bot + 1);
 }
 
+
+void statusbar_kpress( KeySym *ks, char *buf ){
+
+}
+
+

@@ -20,7 +20,34 @@ typedef struct {
 } Selection;
 
 
+// clipboard
+typedef struct {
+		Atom xtarget;
+		char *primary, *clipboard;
+		struct timespec tclick1;
+		struct timespec tclick2;
+} XSelection;
+
+
+// selction
+extern XSelection xsel;
+
 extern Selection sel;
+
+
+//clipboard events
+void selnotify(XEvent *);
+void selclear_(XEvent *);
+void selrequest(XEvent *);
+void mousesel(XEvent *, int);
+
+// clipboard callbacks
+void clipcopy(const Arg *);
+void clippaste(const Arg *);
+void selpaste(const Arg *);
+void keyboard_select(const Arg *);
+
+
 void selnormalize(void);
 void selscroll(int, int);
 void selsnap(int *, int *, int);
