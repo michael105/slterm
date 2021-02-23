@@ -2,19 +2,8 @@
 #define input_h
 
 
-// clipboard
-typedef struct {
-		Atom xtarget;
-		char *primary, *clipboard;
-		struct timespec tclick1;
-		struct timespec tclick2;
-} XSelection;
-
-
 // save different inputmodes
 extern int inputmode;
-// selction
-extern XSelection xsel;
 
 extern void (*handler[LASTEvent])(XEvent *); 
 
@@ -79,13 +68,8 @@ int mouseaction(XEvent *, uint);
 void brelease(XEvent *);
 void bpress(XEvent *);
 void bmotion(XEvent *);
-void mousesel(XEvent *, int);
 void mousereport(XEvent *);
 
-//clipboard events
-void selnotify(XEvent *);
-void selclear_(XEvent *);
-void selrequest(XEvent *);
 
 // xwindow related
 void expose(XEvent *);
@@ -99,11 +83,7 @@ void propnotify(XEvent *);
 
 
 // callbacks . Used in config.h
-void clipcopy(const Arg *);
-void clippaste(const Arg *);
-void selpaste(const Arg *);
 void ttysend(const Arg *);
-void keyboard_select(const Arg *);
 void lessmode_toggle(const Arg*);
 
 

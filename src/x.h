@@ -5,6 +5,7 @@
 //typedef Line;
 //typedef Arg;
 #include "fonts.h"
+#include "xdraw.h"
 
 
 /* macros */
@@ -46,8 +47,6 @@ enum win_mode {
 };
 
 
-typedef XftDraw *Draw;
-typedef XftColor Color;
 
 /* Purely graphic info */
 typedef struct {
@@ -59,14 +58,6 @@ typedef struct {
 		int mode;   /* window state/mode flags */
 		int cursor; /* cursor style */
 } TermWindow;
-
-/* Drawing Context */
-typedef struct {
-		Color *col;
-		size_t collen;
-		Font font, bfont, ifont, ibfont;
-		GC gc;
-} DC;
 
 typedef struct {
 		Display *dpy;
@@ -89,8 +80,6 @@ typedef struct {
 
 
 extern XWindow xw;
-extern DC dc;
-extern XWindow xw;
 extern TermWindow win;
 
 
@@ -100,16 +89,12 @@ void xhints(void);
 
 void xbell(void);
 void xclipcopy(void);
-void xdrawcursor(int, int, Glyph, int, int, Glyph);
-void xdrawline(Line, int, int, int);
-void xfinishdraw(void);
 void xloadcols(void);
 int xsetcolorname(int, const char *);
 void xsettitle(char *);
 int xsetcursor(int);
 void xsetmode(int, unsigned int);
 void xsetpointermotion(int);
-int xstartdraw(void);
 void xximspot(int, int);
 void toggle_winmode(int);
 #ifdef shared
