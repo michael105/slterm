@@ -52,7 +52,6 @@ static void tinsertblank(int);
 static void tinsertblankline(int);
 static void tmoveto(int, int);
 static void tmoveato(int, int);
-static void tnewline(int);
 static void tputtab(int);
 static void tputc(Rune);
 static void treset(void);
