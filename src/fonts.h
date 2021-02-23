@@ -1,6 +1,12 @@
 #ifndef fonts_h
 #define fonts_h
 
+
+#include <X11/Xft/Xft.h>
+
+#include "xevent.h"
+#include "st.h"
+
 typedef XftGlyphFontSpec GlyphFontSpec;
 
 
@@ -28,6 +34,10 @@ typedef struct {
 		int flags;
 		Rune unicodep;
 } Fontcache;
+
+
+extern char *usedfont;
+
 
 // callbacks
 void set_fontwidth( const Arg *a );

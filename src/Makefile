@@ -117,7 +117,7 @@ st-asc: $(SRC) $(HEADER)
 
 singleobjects:
 	echo single
-	@$(foreach var, $(SRCO), $(shell RECURSE=1 make build/$(var).o) )
+	@$(foreach var, $(SRC), $(shell echo $var; RECURSE=1 make build/`basename $(var) .c`.o) )
 	#gcc -o st build/*.o
 
 

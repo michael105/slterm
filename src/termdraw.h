@@ -21,5 +21,14 @@ void tclearregion(int, int, int, int);
 void tfulldirt(void);
 
 
+
+void tputtab(int);
+void tputc(Rune);
+void tsetattr(int *, int);
+void tsetchar(Rune, Glyph *, int, int);
+
+
+
+
 #endif
 

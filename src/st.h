@@ -9,6 +9,8 @@
 
 #include <wchar.h>
 
+#include "xevent.h"
+
 /* macros */
 
 // ascii needs the whole 256 char table, 
@@ -205,14 +207,6 @@ typedef struct {
 
 typedef Glyph *Line;
 
-typedef union {
-  int i;
-  uint ui;
-  float f;
-  const void *v;
-  const char *s;
-} Arg;
-
 typedef struct {
   Glyph attr; /* current char attributes */ //the rune is set to ' ' (empty)
 	// Possibly there should be a difference between space ' ' and empty?
@@ -283,6 +277,7 @@ void printscreen(const Arg *);
 void printsel(const Arg *);
 void sendbreak(const Arg *);
 void toggleprinter(const Arg *);
+void showhelp(const Arg *);
 
 int tisaltscr(void);
 void tnew(int, int);
