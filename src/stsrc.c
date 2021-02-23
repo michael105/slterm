@@ -22,6 +22,7 @@
 #include "statusbar.h"
 #include "scroll.h"
 #include "xdraw.h"
+#include "termdraw.h"
 
 
 #include "statusbar.c"
@@ -38,6 +39,7 @@
 #include "utf8.c"
 #include "scroll.c"
 #include "xdraw.c"
+#include "termdraw.c"
 
 
 

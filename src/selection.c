@@ -705,3 +705,15 @@ void selnotify(XEvent *e) {
 }
 
 
+void printsel(const Arg *arg) { tdumpsel(); }
+
+void tdumpsel(void) {
+		char *ptr;
+
+		if ((ptr = getsel())) {
+				tprinter(ptr, strlen(ptr));
+				free(ptr);
+		}
+}
+
+

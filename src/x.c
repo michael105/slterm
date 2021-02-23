@@ -64,6 +64,7 @@ char *opt_name = NULL;
 char *opt_title = NULL;
 char opt_xresources;
 
+void resettitle(void) { xsettitle(NULL); }
 
 void cresize(int width, int height) {
 		int col, row;
