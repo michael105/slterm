@@ -64,5 +64,6 @@ char *getsel(void);
 
 int trt_kbdselect(KeySym, char *, int);
 
+static void tdumpsel(void);
 
 #endif
