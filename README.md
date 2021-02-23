@@ -1,72 +1,64 @@
-## st-asc
+## st - slim terminal
 
 
 
 ##### Fork of the st terminal. (suckless.org)
 
-Slim patched version with performance and memory footprint related modifications,
-I'd like to name "Slim Terminal".
+	Slim patched version with performance and memory footprint related modifications,
+	the "slim terminal".
 
-The binary comes with 100kB, resident memory usage starts with 200kB and
-grows dynamically with a growing history. (4Bytes per Glyph) 
+	The binary comes with 100kB, resident memory usage starts with 200kB and
+	grows dynamically with a growing history. (4Bytes per Glyph) 
+
+---
+
+##### Additions in this fork:
 
 
-Additions in this fork:
+	Lessmode
 
-   "Modeless" Scrolling. 
+		Hit Ctrl+Shift+PageUp/CursorUp to enter "lessmode".
+		Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
+		Ctrl+Shift+PageDown/CursorDown, 'q' or Escape leave the lessmode.
 
-	 Hit Ctrl+Shift+PageUp/CursorUp to enter "lessmode".
- 	 Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
-	 Ctrl+Shift+PageDown/CursorDown, 'q' or Escape leave the lessmode.
-  
-	 Bookmarks within the history. ("Scrollmarks")
-	   set:  Ctrl+n (n=0..9)
-     goto: Mod4+n
-
-		 in lessmode: 'n' (number without modifier)
-
-	      Hit Ctrl+Return to execute a command in the shell and enter lessmode,
+ 		Hit Ctrl+Return to execute a command in the shell and automatically enter lessmode,
        	if more than one screen is written by the command.
    
+	 
+	Scrollmarks: Bookmarks within the history.
 
-    Delayed allocation of the history buffer. 
-        Saves up to tenths or even hundreds of MB, 
-        depending on the terminal's width and history size
+		set:  Ctrl+n (n=0..9)
+		goto: Mod4+n
+		in lessmode: 'n' (number without modifier)
 
 
+	Delayed allocation of the history buffer. 
 
-UTF8 support is an optional compile switch now.
+		Saves up to tenths or even hundreds of MB, 
+		depending on the terminal's width and history size
 
-Several patches applied.
+   
+	Cursor and configurable cursorcolor for unfocused windows,
+	cursor gets highlighted on focus in
 
-___   
 
-    Stripped unicode support in favour of the 256 chars (extended) ASCII table
-        utf8 is an optional compiletime switch now.
-        (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
-        E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
-        but until yet I always needed to dive into the configurations for 
-        entering chars like ä,ö,ß in unicode mode)
+##### Slim resource usage:
 
-        Besides, instead of having a history buffer, which needs 15 Bytes per Glyph 
-        (a Glyph is a char on the screen with text attributes and colors)
-         - now each Glyph is 4 Bytes. What can be nicely optimized.
+	UTF8 support is an optional compile switch now.
+	  
 
-    Colors are restricted to a 256 color palette 
+  Colors restricted to a 256 color palette 
         (Saving 6 Bytes per Glyph)
 
-    Keep the history and terminal contents on resize events
-        (Doesn't erase wider lines, when shrinking)
-         No scrollback "behind" the current history anymore (Bugfix)
+	Keep the history and terminal contents on resize events
+		(Doesn't erase wider lines, when shrinking)
+		No scrollback "behind" the current history anymore (Bugfix)
 
-    A few minor optimizations.
 
-    Nicer cursor and configurable cursorcolor for unfocused windows.
 
-Further info is in [st-asc.1](src/st-asc.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
 ___
 
-Applied Patches:
+Applied 'official' patches:
 
 <!-- <img align="right" src="images/vt-102-1984.jpg"> -->
 
@@ -83,6 +75,10 @@ Applied Patches:
 		compile time switch "XRESOURCES"
 
 
+Further info is in [st-asc.1](src/st-asc.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
+
+---
+
 ### Requirements
 
 - Xlib headers
@@ -91,7 +87,7 @@ Applied Patches:
 
 ### Install
 
-(optional) edit config.h.in
+edit config.h.in (optionally)
 
 ```
 make
@@ -112,6 +108,17 @@ If you'd like to change anything, please edit config.h.in.
 
 ![screenshot](images/st-asc_with_i3.png)
 
+
+    Stripped unicode support in favour of the 256 chars (extended) ASCII table
+        utf8 is an optional compiletime switch now.
+        (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
+        E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
+        but until yet I always needed to dive into the configurations for 
+        entering chars like ä,ö,ß in unicode mode)
+
+        Besides, instead of having a history buffer, which needs 15 Bytes per Glyph 
+        (a Glyph is a char on the screen with text attributes and colors)
+         - now each Glyph is 4 Bytes. What can be nicely optimized.
 
 Unicode encoding needs 4 Bytes per char within st,
 and I nearly never need unicode chars in the terminal.
@@ -142,13 +149,12 @@ Murphy's law will strike, anyways. That's the law..)
 So, in my quest to slim down all programs I'm using,
 I'm about to strip unicode and utf8 support.
 
-Yet I managed to get a memory footprint of around 8MB.
+Yet I managed to get a virtual memory footprint of around 8MB.
 Ok. Added all patches, and with the current history of 10k lines,
 it's at 12MB.
 (>20MB before)
 I'm always keeping more than 10 terminals open,
-so that sums up. What now has two meanings. 
-I have to look for what exactly blows that much.
+so that sums up. 
 Every Glyph (char at the screen, with attributes and colors) now
 needs 4 Bytes. ( 15 Bytes before stripping unicode and rgb)
 
@@ -191,20 +197,31 @@ The scripts for creating the output are within ./test
 
 ### Links
 
-About utf8 
-http://doc.cat-v.org/bell_labs/utf-8_history
 
-A comparison on latency, speed and memory consumption of
-different terminal emulators. st and urxvt standing out.
-So my feelings on st being suitable as base for a slimmed down terminal emulator
-have been right.
-https://anarc.at/blog/2018-05-04-terminal-emulators-2/
+		
+* About utf8 
 
-Latency. https://danluu.com/term-latency/
+ 	<http://doc.cat-v.org/bell_labs/utf-8_history>
 
-Latency, comparing old (1980) and nowadays systems.
-https://danluu.com/input-lag/
 
+	
+* A comparison on latency, speed and memory consumption of
+	different terminal emulators. st and urxvt standing out.
+
+  <https://anarc.at/blog/2018-05-04-terminal-emulators-2/>
+
+
+	
+* Latency. 
+
+	<https://danluu.com/term-latency/>
+
+
+ 	
+* Latency, comparing old (1980) and nowadays systems.
+
+	<https://danluu.com/input-lag/>
+	
 
 
 ### Bugs
