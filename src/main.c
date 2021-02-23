@@ -5,6 +5,7 @@
 
 #include "x.h"
 #include "includes.h"
+#include "config.h"
 
 #ifdef XRESOURCES
 int resource_load(XrmDatabase db, char *name, enum resource_type rtype,

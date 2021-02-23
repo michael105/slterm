@@ -4,8 +4,13 @@
 
 #include "includes.h"
 #include "system.h"
+#include "scroll.h"
 #include "st.h"
 #include "tty.h"
+#include "debug.h"
+#include "termdraw.h"
+#include "xevent.h"
+#include "x.h"
 
 void ttyhangup() {
 		/* Send SIGHUP to shell */

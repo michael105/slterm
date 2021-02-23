@@ -8,28 +8,37 @@ extern int inputmode;
 extern void (*handler[LASTEvent])(XEvent *); 
 
 
+// callback argument
+typedef union {
+  int i;
+  unsigned int ui;
+  float f;
+  const void *v;
+  const char *s;
+} Arg;
+
+
 
 // keyboard input handling.
 
 /* types used in config.h */
 typedef struct {
-		uint mod;
+		unsigned int mod;
 		KeySym keysym;
 		void (*func)(const Arg *);
 		const Arg arg;
-		uint inputmode;
+		unsigned int inputmode;
 } Shortcut;
 
 
 typedef struct {
 		KeySym k;
-		uint mask;
+		unsigned int mask;
 		char *s;
 		/* three-valued logic variables: 0 indifferent, 1 on, -1 off */
 		signed char appkey;    /* application keypad */
 		signed char appcursor; /* application cursor */
 } Key;
-
 
 /* X modifiers */
 #define XK_ANY_MOD UINT_MAX
@@ -45,26 +54,26 @@ int evcol(XEvent *);
 int evrow(XEvent *);
 
 
-int match(uint mask, uint state);
-char *kmap(KeySym k, uint state);
+int match(unsigned int mask, unsigned int state);
+char *kmap(KeySym k, unsigned int state);
 
 // callbacks
 void numlock(const Arg *);
 
 // mouse events handling
 typedef struct {
-		uint mod;
-		uint button;
+		unsigned int mod;
+		unsigned int button;
 		void (*func)(const Arg *);
 		const Arg arg;
-		uint release;
+		unsigned int release;
 		int altscrn; /* 0: don't care,  -1: not alt screen,  1: alt screen */
 } MouseShortcut;
 
 // event handling
 void kpress(XEvent *ev);
 
-int mouseaction(XEvent *, uint);
+int mouseaction(XEvent *, unsigned int);
 void brelease(XEvent *);
 void bpress(XEvent *);
 void bmotion(XEvent *);

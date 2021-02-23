@@ -5,6 +5,10 @@ static char *argv0;
 #include "arg.h"
 #include "st.h"
 #include "x.h"
+#include "fonts.h"
+#include "mem.h"
+#include "scroll.h"
+#include "selection.h"
 #include "xevent.h"
 #include "compile.h"
 

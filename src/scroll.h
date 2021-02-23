@@ -1,6 +1,7 @@
 #ifndef scroll_h
 #define scroll_h
 
+#include "xevent.h"
 
 
 extern int scrollmarks[12];
