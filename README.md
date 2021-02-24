@@ -195,6 +195,13 @@ The scripts for creating the output are within ./test
 ![](images/ascii.png)
 
 
+.. Did split the sourcefile (one big file with several thousand lines)
+into smaller pieces. Hopefully hacking st is in the future a little bit more conveniant. 
+Honestly, there still are many globals spread over the
+different source files. I'm about to clean this up further.
+
+
+
 ### Links
 
 
