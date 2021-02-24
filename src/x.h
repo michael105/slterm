@@ -81,11 +81,14 @@ typedef struct {
 
 extern XWindow xw;
 extern TermWindow win;
-
+extern char* argv0;
 
 
 void cresize(int, int);
 void xhints(void);
+
+void xinit(int cols, int rows);
+void xsetenv(void);
 
 void xbell(void);
 void xclipcopy(void);

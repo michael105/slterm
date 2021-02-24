@@ -1,7 +1,7 @@
 /* See LICENSE for license details. */
 #include "includes.h"
 
-static char *argv0;
+
 #include "arg.h"
 #include "st.h"
 #include "x.h"
@@ -10,6 +10,8 @@ static char *argv0;
 #include "scroll.h"
 #include "selection.h"
 #include "xevent.h"
+#include "tty.h"
+#include "system.h"
 #include "compile.h"
 
 //#define ENABLE_DEBUG 5
@@ -50,7 +52,6 @@ int xloadcolor(int, const char *, Color *);
 void xsetenv(void);
 void xseturgency(int);
 
-void run(void);
 void usage(void);
 
 
@@ -58,15 +59,7 @@ void usage(void);
 XWindow xw;
 TermWindow win;
 
-char *opt_class = NULL;
-char **opt_cmd = NULL;
-char *opt_embed = NULL;
-char *opt_font = NULL;
-char *opt_io = NULL;
-char *opt_line = NULL;
-char *opt_name = NULL;
-char *opt_title = NULL;
-char opt_xresources;
+
 
 void resettitle(void) { xsettitle(NULL); }
 

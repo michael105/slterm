@@ -1,5 +1,6 @@
 #include "xdraw.h"
 
+#include "x.h"
 
 
 DC dc;
@@ -12,6 +13,37 @@ void xclear(int x1, int y1, int x2, int y2) {
 						x1, y1, x2 - x1, y2 - y1);
 }
 
+
+void xdrawline(Line line, int x1, int y1, int x2) {
+		int i, x, ox, numspecs;
+		Glyph base, new;
+		XftGlyphFontSpec *specs = xw.specbuf;
+
+		numspecs = xmakeglyphfontspecs(specs, &line[x1], x2 - x1, x1, y1);
+		i = ox = 0;
+		for (x = x1; x < x2 && i < numspecs; x++) {
+				new = line[x];
+#ifdef UTF8
+				if (new.mode == ATTR_WDUMMY)
+						continue;
+#endif
+				if (selected(x, y1))
+						new.mode ^= ATTR_REVERSE;
+				if (i > 0 && ATTRCMP(base, new)) {
+						xdrawglyphfontspecs(specs, base, i, ox, y1);
+						specs += i;
+						numspecs -= i;
+						i = 0;
+				}
+				if (i == 0) {
+						ox = x;
+						base = new;
+				}
+				i++;
+		}
+		if (i > 0)
+				xdrawglyphfontspecs(specs, base, i, ox, y1);
+}
 
 
 void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
@@ -295,37 +327,6 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 }
 
 int xstartdraw(void) { return IS_SET(MODE_VISIBLE); }
-
-void xdrawline(Line line, int x1, int y1, int x2) {
-		int i, x, ox, numspecs;
-		Glyph base, new;
-		XftGlyphFontSpec *specs = xw.specbuf;
-
-		numspecs = xmakeglyphfontspecs(specs, &line[x1], x2 - x1, x1, y1);
-		i = ox = 0;
-		for (x = x1; x < x2 && i < numspecs; x++) {
-				new = line[x];
-#ifdef UTF8
-				if (new.mode == ATTR_WDUMMY)
-						continue;
-#endif
-				if (selected(x, y1))
-						new.mode ^= ATTR_REVERSE;
-				if (i > 0 && ATTRCMP(base, new)) {
-						xdrawglyphfontspecs(specs, base, i, ox, y1);
-						specs += i;
-						numspecs -= i;
-						i = 0;
-				}
-				if (i == 0) {
-						ox = x;
-						base = new;
-				}
-				i++;
-		}
-		if (i > 0)
-				xdrawglyphfontspecs(specs, base, i, ox, y1);
-}
 
 void xfinishdraw(void) {
 		XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w, win.h, 0, 0);

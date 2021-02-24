@@ -1,5 +1,11 @@
 #include "termdraw.h"
+#include "utf8.h"
+#include "st.h"
 
+#include "includes.h"
+
+// exclusively in drawregion the real drawing( line per line, with xdrawline ) 
+// of the terminal (buffer) contents (without cursor) is done.
 void drawregion(int x1, int y1, int x2, int y2) {
 		int y;
 		for (y = y1; y < y2; y++) {
@@ -14,6 +20,7 @@ void drawregion(int x1, int y1, int x2, int y2) {
 				xdrawline(statusbar, x1, y-1, x2);
 		}
 }
+
 
 void draw(void) {
 		int cx = term.c.x;

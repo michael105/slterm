@@ -14,10 +14,36 @@ int inputmode = 1;
 
 int oldbutton = 3; /* button event on startup: 3 = release */
 
+// The callbacks for the different Events are egistered here.
+void (*handler[LASTEvent])(XEvent *) = {
+		[KeyPress] = kpress,
+		[ClientMessage] = cmessage,
+		[ConfigureNotify] = resize,
+		[VisibilityNotify] = visibility,
+		[UnmapNotify] = unmap,
+		[Expose] = expose,
+		[FocusIn] = focus,
+		[FocusOut] = focus,
+		[MotionNotify] = bmotion,
+		[ButtonPress] = bpress,
+		[ButtonRelease] = brelease,
+		/*
+		 * Uncomment if you want the selection to disappear when you select
+		 * something different in another window.
+		 */
+		/*	[SelectionClear] = selclear_, */
+		[SelectionNotify] = selnotify,
+		/*
+		 * PropertyNotify is only turned on when there is some INCR transfer
+		 * happening for the selection retrieval.
+		 */
+		[PropertyNotify] = propnotify,
+		[SelectionRequest] = selrequest,
+};
 
 
 // the main event loop
-void run(void) {
+void run() {
 		XEvent ev;
 		int w = win.w, h = win.h;
 		fd_set rfd;
@@ -135,32 +161,6 @@ void run(void) {
 void toggle_winmode(int flag) { win.mode ^= flag; }
 
 
-void (*handler[LASTEvent])(XEvent *) = {
-		[KeyPress] = kpress,
-		[ClientMessage] = cmessage,
-		[ConfigureNotify] = resize,
-		[VisibilityNotify] = visibility,
-		[UnmapNotify] = unmap,
-		[Expose] = expose,
-		[FocusIn] = focus,
-		[FocusOut] = focus,
-		[MotionNotify] = bmotion,
-		[ButtonPress] = bpress,
-		[ButtonRelease] = brelease,
-		/*
-		 * Uncomment if you want the selection to disappear when you select
-		 * something different in another window.
-		 */
-		/*	[SelectionClear] = selclear_, */
-		[SelectionNotify] = selnotify,
-		/*
-		 * PropertyNotify is only turned on when there is some INCR transfer
-		 * happening for the selection retrieval.
-		 */
-		[PropertyNotify] = propnotify,
-		[SelectionRequest] = selrequest,
-};
-
 void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
 
 
@@ -222,17 +222,6 @@ void unmap(XEvent *ev) { win.mode &= ~MODE_VISIBLE; }
 
 
 
-int evcol(XEvent *e) {
-		int x = e->xbutton.x - win.hborderpx;
-		LIMIT(x, 0, win.tw - 1);
-		return x / win.cw;
-}
-
-int evrow(XEvent *e) {
-		int y = e->xbutton.y - win.vborderpx;
-		LIMIT(y, 0, win.th - 1);
-		return y / win.ch;
-}
 void propnotify(XEvent *e) {
 		XPropertyEvent *xpev;
 		Atom clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
@@ -244,29 +233,6 @@ void propnotify(XEvent *e) {
 		}
 }
 
-void brelease(XEvent *e) {
-		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
-				mousereport(e);
-				return;
-		}
-
-		//	if (mouseaction(e, 1))
-		//		return;
-
-		if (e->xbutton.button == Button2)
-				clippaste(NULL);
-		else if (e->xbutton.button == Button1)
-				mousesel(e, 1);
-}
-
-void bmotion(XEvent *e) {
-		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
-				mousereport(e);
-				return;
-		}
-
-		mousesel(e, 0);
-}
 
 
 // keyboard handling
@@ -495,3 +461,39 @@ void bpress(XEvent *e) {
 		}
 }
 
+void brelease(XEvent *e) {
+		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
+				mousereport(e);
+				return;
+		}
+
+		//	if (mouseaction(e, 1))
+		//		return;
+
+		if (e->xbutton.button == Button2)
+				clippaste(NULL);
+		else if (e->xbutton.button == Button1)
+				mousesel(e, 1);
+}
+
+void bmotion(XEvent *e) {
+		if (IS_SET(MODE_MOUSE) && !(e->xbutton.state & forcemousemod)) {
+				mousereport(e);
+				return;
+		}
+
+		mousesel(e, 0);
+}
+
+
+int evcol(XEvent *e) {
+		int x = e->xbutton.x - win.hborderpx;
+		LIMIT(x, 0, win.tw - 1);
+		return x / win.cw;
+}
+
+int evrow(XEvent *e) {
+		int y = e->xbutton.y - win.vborderpx;
+		LIMIT(y, 0, win.th - 1);
+		return y / win.ch;
+}

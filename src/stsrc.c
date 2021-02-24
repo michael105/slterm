@@ -11,7 +11,7 @@
 
 
 #include "includes.h"
-
+#include "arg.h"
 #include "st.h"
 #include "x.h"
 #include "system.h"
@@ -26,6 +26,7 @@
 
 
 #include "statusbar.c"
+#include "arg.c"
 #include "st.c"
 #include "fonts.c"
 #include "mem.c"
