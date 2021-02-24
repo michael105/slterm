@@ -42,7 +42,6 @@ static void strhandle(void);
 static void strparse(void);
 static void strreset(void);
 
-static void tprinter(char *, size_t);
 static void tcursor(int);
 static void tmoveto(int, int);
 static void tmoveato(int, int);
