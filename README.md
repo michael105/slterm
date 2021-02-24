@@ -79,11 +79,11 @@ Further info is in [st-asc.1](src/st-asc.1.rst), [Patches](PATCHES.md) and [LOG.
 
 ---
 
-### Requirements
+### Requirements for compiling
 
 - Xlib headers
 - Xft headers
-
+- pkgconf (pkgconfig)
 
 ### Install
 
@@ -197,8 +197,8 @@ The scripts for creating the output are within ./test
 
 .. Did split the sourcefile (one big file with several thousand lines)
 into smaller pieces. Hopefully hacking st is in the future a little bit more conveniant. 
-Honestly, there still are many globals spread over the
-different source files. I'm about to clean this up further.
+There still are many globals spread over the
+different source files. I'm about to tidy this up further.
 
 
 

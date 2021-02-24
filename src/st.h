@@ -285,7 +285,6 @@ void tresize(int, int);
 void ttyhangup(void);
 int ttynew(char *, char *, char *, char **);
 size_t ttyread(void);
-void ttyresize(int, int);
 void set_notifmode(int type, KeySym ksym);
 
 int tlinelen(int);

@@ -17,7 +17,17 @@ void ttyhangup() {
 		kill(pid, SIGHUP);
 }
 
+void ttyresize(int tw, int th) {
+		struct winsize w;
 
+		w.ws_row = term.row;
+		w.ws_col = term.col;
+		w.ws_xpixel = tw;
+		w.ws_ypixel = th;
+		if (ioctl(cmdfd, TIOCSWINSZ, &w) < 0) {
+				fprintf(stderr, "Couldn't set window size: %s\n", strerror(errno));
+		}
+}
 
 void stty(char **args) {
 		char cmd[_POSIX_ARG_MAX], **p, *q, *s;

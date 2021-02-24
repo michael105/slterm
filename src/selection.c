@@ -1,12 +1,18 @@
 // selection.c
 
+#include "x.h"
+
+#include "st.h"
+
+
 #include <X11/X.h>
 #include <X11/keysym.h>
 
-#include "st.h"
+
 #include "utf8.h"
 #include "selection.h"
-
+#include "termdraw.h"
+#include "mem.h"
 
 #include "debug.h"
 

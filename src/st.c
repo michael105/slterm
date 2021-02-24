@@ -2,6 +2,7 @@
 
 #include "st.h"
 #include "x.h"
+#include "selection.h"
 #include "scroll.h"
 #include "mem.h"
 #include "base64.h"
@@ -61,7 +62,29 @@ Term term; // misc make local?
 static CSIEscape csiescseq;
 static STREscape strescseq;
 int borderpx;
-static int enterlessmode;
+int enterlessmode;
+
+// initiate new terminal window and buffers
+void tnew(int col, int row) {
+		dbg2("tnew *******************************************************\n");
+		dbg2("col: %d, row: %d\n",col,row);
+		term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
+		
+		// might be buggy. fix this!
+		// works flawless at arch.
+		// crashes at gentoo. quite seldom.
+		// guessing the problem is here.
+		term.hist[0][0] = xmalloc( col * sizeof(Glyph));
+		memset(term.hist[0][0],0, col * sizeof(Glyph));
+
+		term.colalloc=0;
+		//term.hist[1][0] = xmalloc( col * sizeof(Glyph));
+
+		term.guard=0xf0f0f0f0;
+		tresize(col, row);
+		treset();
+}
+
 
 int tlinelen(int y) {
 		int i = term.col;
@@ -77,17 +100,7 @@ int tlinelen(int y) {
 		return i;
 }
 
-void ttyresize(int tw, int th) {
-		struct winsize w;
 
-		w.ws_row = term.row;
-		w.ws_col = term.col;
-		w.ws_xpixel = tw;
-		w.ws_ypixel = th;
-		if (ioctl(cmdfd, TIOCSWINSZ, &w) < 0) {
-				fprintf(stderr, "Couldn't set window size: %s\n", strerror(errno));
-		}
-}
 void tcursor(int mode) {
 		static TCursor c[2];
 		int alt = IS_SET(MODE_ALTSCREEN);
@@ -126,25 +139,6 @@ void treset(void) {
 		}
 }
 
-void tnew(int col, int row) {
-		dbg2("tnew *******************************************************\n");
-		dbg2("col: %d, row: %d\n",col,row);
-		term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
-		
-		// might be buggy. fix this!
-		// works flawless at arch.
-		// crashes at gentoo. quite seldom.
-		// guessing the problem is here.
-		term.hist[0][0] = xmalloc( col * sizeof(Glyph));
-		memset(term.hist[0][0],0, col * sizeof(Glyph));
-
-		term.colalloc=0;
-		//term.hist[1][0] = xmalloc( col * sizeof(Glyph));
-
-		term.guard=0xf0f0f0f0;
-		tresize(col, row);
-		treset();
-}
 
 int tisaltscr(void) { return IS_SET(MODE_ALTSCREEN); }
 

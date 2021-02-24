@@ -7,6 +7,15 @@
 #define ARG_H__
 
 extern char *argv0;
+extern char *opt_class;
+extern char **opt_cmd;
+extern char *opt_embed;
+extern char *opt_font;
+extern char *opt_io;
+extern char *opt_line;
+extern char *opt_name;
+extern char *opt_title;
+extern char opt_xresources;
 
 /* use main(int argc, char *argv[]) */
 #define ARGBEGIN    for (argv0 = *argv, argv++, argc--; \

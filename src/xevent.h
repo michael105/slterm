@@ -1,5 +1,6 @@
 #ifndef input_h
 #define input_h
+#include <X11/Xlib.h>
 
 
 // save different inputmodes
@@ -57,6 +58,9 @@ int evrow(XEvent *);
 int match(unsigned int mask, unsigned int state);
 char *kmap(KeySym k, unsigned int state);
 
+// the main event loop
+void run();
+
 // callbacks
 void numlock(const Arg *);
 
@@ -69,6 +73,8 @@ typedef struct {
 		unsigned int release;
 		int altscrn; /* 0: don't care,  -1: not alt screen,  1: alt screen */
 } MouseShortcut;
+
+
 
 // event handling
 void kpress(XEvent *ev);

@@ -1,6 +1,9 @@
 #ifndef selection_h
 #define selection_h
 
+#include "includes.h"
+#include <stddef.h>
+
 typedef struct {
   int mode;
   int type;

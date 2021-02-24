@@ -4,7 +4,13 @@
 //
 
 #include "x.h"
+#include "xevent.h"
 #include "includes.h"
+#include "scroll.h"
+#include "selection.h"
+#include "system.h"
+#include "arg.h"
+#include "compile.h"
 #include "config.h"
 
 #ifdef XRESOURCES
