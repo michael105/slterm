@@ -15,7 +15,7 @@ SRCO = base64 mem st-asc tty x main  selection st  system utf8
 
 
 #SRC = st.c x.c utf8.c selection.c
-HEADER = st.h win.h arg.h config.h utf8.h selection.h\
+HEADER = st.h arg.h config.h utf8.h selection.h\
 				 includes.h debug.h x.h fonts.h xevent.h statusbar.h\
 				 xdraw.h termdraw.h
 
@@ -153,7 +153,7 @@ clean:
 dist: clean
 	mkdir -p st-$(VERSION)
 	cp -R FAQ LEGACY TODO LICENSE Makefile README \
-		config.h config.make st.info st-asc.1 arg.h st.h win.h $(SRC)\
+		config.h config.make st.info st-asc.1 arg.h st.h $(SRC)\
 		st-$(VERSION)
 	tar -cf - st-asc-$(VERSION) | gzip > st-asc-$(VERSION).tar.gz
 	rm -rf st-asc-$(VERSION)

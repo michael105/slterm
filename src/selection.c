@@ -4,7 +4,6 @@
 #include <X11/keysym.h>
 
 #include "st.h"
-#include "win.h"
 #include "utf8.h"
 #include "selection.h"
 
