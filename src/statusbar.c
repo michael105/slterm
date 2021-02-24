@@ -21,7 +21,7 @@ void updatestatus(){
 				int p = sprintf(buf," -LESS-  %5d-%2d %5d %3d%% (%3d%%)", 
 						term.histi-term.scr,term.histi-term.scr+term.row, 
 						term.histi+term.row, 
-						((term.histi-term.scr)*100)/(term.histi),
+						((term.histi-term.scr)*100)/((term.histi)?term.histi:1),
 						((term.histi-term.scr-scrollmarks[0]+1)*100)/((term.histi-scrollmarks[0]+1)?term.histi-scrollmarks[0]+1:1)
 						);
 				buf[p]=' ';
