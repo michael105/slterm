@@ -1,8 +1,9 @@
+#include "includes.h"
+
 #include "termdraw.h"
 #include "utf8.h"
 #include "st.h"
 
-#include "includes.h"
 
 // exclusively in drawregion the real drawing( line per line, with xdrawline ) 
 // of the terminal (buffer) contents (without cursor) is done.

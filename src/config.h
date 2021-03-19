@@ -22,7 +22,7 @@
 
 // font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
 // defaultfont 
-static char *font = "Monospace:pixelsize=12:Bold:antialias=true:autohint=true";
+static char *font = "Monospace:pixelsize=14:Bold:antialias=true:autohint=true";
 
 // more/less font width spacing
 // here, with utf8 enabled, -1 looks much better.
