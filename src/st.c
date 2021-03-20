@@ -494,6 +494,7 @@ unknown:
 						break;
 				case 'P': /* DCH -- Delete <n> char */
 						DEFAULT(csiescseq.arg[0], 1);
+						printf("Delc\n");
 						tdeletechar(csiescseq.arg[0]);
 						break;
 				case 'Z': /* CBT -- Cursor Backward Tabulation <n> tab stops */

@@ -82,7 +82,7 @@ int twrite(const utfchar *buf, int buflen, int show_ctrl) {
 		for (n = 0; n < buflen; n++ ) { // misc dfq
 					u = buf[n];
 #endif
-				//dbg("twrite1 %d %c", u, u);
+				dbg("twrite1 %d %c", u, u);
 				if (show_ctrl && ISCONTROL(u)) {
 						dbg("twrite ISCONTROL %d %c", u, u);
 						if (u & 0x80) {
