@@ -5,7 +5,7 @@
 // beware. it wasn't me.. ;misc 2021
 
 //#define DEBUG_FILELEVEL 5
-#define FULLDEBUG 5
+//#define FULLDEBUG 5
 #include "debug.h"
 
 
