@@ -28,6 +28,11 @@
 #include "statusbar.c"
 #include "arg.c"
 #include "st.c"
+// termdraw needs to go after st.c .?
+// otherweise delete and cursor keys do make trouble.
+// Not looking for the source now.
+#include "termdraw.c"
+
 #include "fonts.c"
 #include "mem.c"
 #include "base64.c"
@@ -40,7 +45,6 @@
 #include "utf8.c"
 #include "scroll.c"
 #include "xdraw.c"
-#include "termdraw.c"
 
 
 
