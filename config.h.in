@@ -70,7 +70,7 @@ ifdef UNDEF
 //
 // config c header starts here 
 // please edit config.h.in for modifications,
-// config.h will be overwritten
+// config.h will be silently overwritten
 //
 
 
@@ -316,6 +316,7 @@ static MouseShortcut mshortcuts[] = {
 
 /* Internal keyboard shortcuts. */
 // masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
+// mod1 = alt, mod2 = win 
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 #define SETBOOKMARKMASK ControlMask
