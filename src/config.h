@@ -22,7 +22,7 @@
 
 // font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
 // defaultfont 
-static char *font = "Monospace:pixelsize=14:Bold:antialias=true:autohint=true";
+static char *font = "Monospace:pixelsize=13:Bold:antialias=true:autohint=true";
 
 // more/less font width spacing
 // here, with utf8 enabled, -1 looks much better.
@@ -259,7 +259,7 @@ static MouseShortcut mshortcuts[] = {
 #define MODE_LESS 0x02
 
 // Ctrl+Shift+Win
-#define SETFONTMASK TERMMOD|Mod4Mask
+#define SETFONTMASK ShiftMask|Mod1Mask
 
 static Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
@@ -270,8 +270,10 @@ static Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_Print, printsel, {.i = 0},ALLMODES },
 
 		// set zoom
-    { SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES },
-    { SETFONTMASK, XK_Next, zoom, {.f = -1},ALLMODES },
+    { SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES },
+    //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES },
+    { SETFONTMASK, XK_Page_Down, zoom, {.f = +1},ALLMODES },
+    //{ SETFONTMASK, XK_Next, zoom, {.f = -1},ALLMODES },
     { SETFONTMASK, XK_Home, zoomreset, {.f = 0},ALLMODES },
 
     { SETFONTMASK, XK_Insert, set_fontwidth, {.i = -1},ALLMODES },
