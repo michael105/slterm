@@ -10,7 +10,7 @@ include config.make
 
 SRC = base64.c mem.c st-asc.c stsrc.c tty.c x.c main.c\
 			selection.c st.c  system.c utf8.c xevent.c fonts.c\
-			statusbar.c xdraw.c termdraw.c arg.c
+			statusbar.c xdraw.c termdraw.c arg.c scroll.c
 SRCO = base64 mem st-asc tty x main  selection st  system utf8
 
 

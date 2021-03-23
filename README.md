@@ -4,8 +4,8 @@
 
 ##### Fork of the st terminal. (suckless.org)
 
-	Slim patched version with performance and memory footprint related modifications,
-	the "slim terminal".
+	lim patched version with performance and memory footprint related modifications,
+	the "slim terminal" for X11.
 
 	The binary comes with 100kB, resident memory usage starts with 200kB and
 	grows dynamically with a growing history. (4Bytes per Glyph) 

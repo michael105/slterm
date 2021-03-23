@@ -87,11 +87,11 @@ void kscrollup(const Arg *a) {
 void set_scrollmark(const Arg *a) {
 	scrollmarks[a->i] = term.histi-term.scr+1;	
 	updatestatus();
-	//printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
+	printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
 }
 
 void scrollmark(const Arg *a){
-	//printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
+	printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
 //	if ( scrollmarks[a->i] ){
 	term.scr=term.histi-scrollmarks[a->i]+1;
 	selscroll(0, term.scr);
