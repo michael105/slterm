@@ -2,7 +2,7 @@
 //
 // config c header starts here 
 // please edit config.h.in for modifications,
-// config.h will be overwritten
+// config.h will be silently overwritten
 //
 
 
@@ -248,11 +248,13 @@ static MouseShortcut mshortcuts[] = {
 
 /* Internal keyboard shortcuts. */
 // masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
+// mod1 = alt, mod2 = win, mod3 = Capslock (here)
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 #define SETBOOKMARKMASK ControlMask
 // CapsLock
-#define BOOKMARKMASK Mod3Mask
+#define BOOKMARKMASK ShiftMask|Mod1Mask
+//#define BOOKMARKMASK Mod3Mask
 
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
@@ -318,6 +320,7 @@ static Shortcut shortcuts[] = {
     { BOOKMARKMASK, XK_8, scrollmark, { .i=8 },ALLMODES },
     { BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES },
     { BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES },
+    { ShiftMask, XK_BackSpace, scrollmark, { .i=0 },ALLMODES },
 
     { XK_ANY_MOD, XK_1, scrollmark, { .i=1 },MODE_LESS },
     { XK_ANY_MOD, XK_2, scrollmark, { .i=2 },MODE_LESS },
@@ -331,7 +334,8 @@ static Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS },
 
 
-    { SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES },
+    { ControlMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
+    { ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
     { XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
@@ -345,6 +349,8 @@ static Shortcut shortcuts[] = {
 		// toggle
     { TERMMOD, XK_Down, lessmode_toggle, { .i=0 },ALLMODES },
     { TERMMOD, XK_L, lessmode_toggle, { .i=0 },ALLMODES },
+    { BOOKMARKMASK, XK_L, lessmode_toggle, { .i=0 },ALLMODES },
+    { XK_ANY_MOD, XK_Scroll_Lock, lessmode_toggle, { .i=0 },ALLMODES },
 		// switchoff
     { XK_ANY_MOD, XK_Escape, lessmode_toggle, { .i=-3 },MODE_LESS },
     { XK_ANY_MOD, XK_q, lessmode_toggle, { .i=-3 },MODE_LESS },

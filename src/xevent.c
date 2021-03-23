@@ -313,6 +313,17 @@ void kpress(XEvent *ev) {
 				return;
 		}
 
+		printf("key: %x, keycode: %x, state: %x\n",ksym, e->keycode, e->state );
+		// handle return, set scrollmark 0
+		if ( ( ksym == XK_Return ) ){
+//if ( (!IS_SET(MODE_ALTSCREEN)) && ( ksym == XK_Return ) ){
+				printf("set 10\n");
+				Arg a;
+				a.i=0;
+				set_scrollmark(&a);
+		}
+
+
 		/* 1. shortcuts */
 		for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
 				if (ksym == bp->keysym && match(bp->mod, e->state) && (bp->inputmode & inputmode)) {
@@ -320,6 +331,7 @@ void kpress(XEvent *ev) {
 						return;
 				}
 		}
+
 
 		/* 2. custom keys from config.h */
 		if ((customkey = kmap(ksym, e->state))) {
