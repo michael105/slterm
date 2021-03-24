@@ -317,10 +317,7 @@ void kpress(XEvent *ev) {
 		// handle return, set scrollmark 0
 		if ( ( ksym == XK_Return ) ){
 //if ( (!IS_SET(MODE_ALTSCREEN)) && ( ksym == XK_Return ) ){
-				printf("set 10\n");
-				Arg a;
-				a.i=0;
-				set_scrollmark(&a);
+				set_retmark();
 		}
 
 
