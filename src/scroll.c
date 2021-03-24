@@ -3,6 +3,10 @@
 
 
 int scrollmarks[12];
+int retmarks[10];
+static int cret=0;
+static int circledret=0;
+static int pret=0;
 
 
 void tsetscroll(int t, int b) {
@@ -63,7 +67,7 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
-		//printf("kscrollup, histi: %d  scr: %d\n",term.histi,term.scr );
+		printf("kscrollup, histi: %d  scr: %d\n",term.histi,term.scr );
 		dbg2("kscrollup, n: %d, term.histi: %d, term.row: %d scr: %d\n",
 						n, term.histi, term.row, term.scr);
 		if (n < 0) {
@@ -87,11 +91,39 @@ void kscrollup(const Arg *a) {
 void set_scrollmark(const Arg *a) {
 	scrollmarks[a->i] = term.histi-term.scr+1;	
 	updatestatus();
-	printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
+	//printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term.histi, term.scr );
 }
 
+void set_retmark() {
+	retmarks[0] = term.histi;//-term.scr;	
+	//updatestatus();
+	printf("Setretmark: n:%d histi:%d scr:%d\n", 0, term.histi, term.scr );
+}
+
+void retmark(const Arg* a){
+	printf("Retmark: n:%d scrm:%d histi:%d scr:%d\n", term.row, retmarks[0],term.histi, term.scr );
+//	if ( scrollmarks[a->i] ){
+	if ( term.histi<term.row){
+			scrolltotop();
+			return;
+	}
+
+	term.scr=(term.histi-retmarks[0])-term.row+1;
+	printf("scr: %d\n", term.scr );
+	if ( term.scr<0 ){
+			// TODO: circledhist
+			term.scr=0;
+	};
+	selscroll(0, term.scr);
+	tfulldirt();
+	updatestatus();
+//	}
+}
+
+
+
 void scrollmark(const Arg *a){
-	printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
+	//printf("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, scrollmarks[a->i],term.histi, term.scr );
 //	if ( scrollmarks[a->i] ){
 	term.scr=term.histi-scrollmarks[a->i]+1;
 	selscroll(0, term.scr);
