@@ -21,14 +21,17 @@
 		Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
 		Ctrl+Shift+PageDown/CursorDown, 'q' or Escape leave the lessmode.
 
- 		Hit Ctrl+Return to execute a command in the shell and automatically enter lessmode,
+ 		Hit Ctrl/Shift+Return to execute a command in the shell and automatically enter lessmode,
        	if more than one screen is written by the command.
+
+
+	Shift+Backspace Scrolls back to the place, the last command has been entered.
    
 	 
 	Scrollmarks: Bookmarks within the history.
 
-		set:  Ctrl+n (n=0..9)
-		goto: Mod4+n
+		set:  Ctrl+Alt+n (n=0..9)
+		goto: Ctrl+n
 		in lessmode: 'n' (number without modifier)
 
 

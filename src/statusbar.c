@@ -66,8 +66,8 @@ void showstatus(int show, char *status){
 		if ( show ){
 			if ( !statusvisible ){
 					statusvisible = 1;
-					Arg a = { .i=1 };
-					kscrolldown(&a); // scroll up one line
+					Arg a = { .i=0 };
+					kscrollup(&a); // (clears the statusbar). I know. But works.
 					setstatus(status);
 				// paint status
 					redraw();

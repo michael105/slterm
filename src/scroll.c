@@ -103,20 +103,23 @@ void set_retmark() {
 void retmark(const Arg* a){
 	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d\n", term.row, retmarks[0],term.histi, term.scr );
 //	if ( scrollmarks[a->i] ){
+	Arg d = { .i=1 };	
 	if ( term.histi<term.row){
 			scrolltotop();
+			lessmode_toggle(&d);
 			return;
 	}
 
 	term.scr=(term.histi-retmarks[0])-term.row+1;
-	printf("scr: %d\n", term.scr );
+	//printf("scr: %d\n", term.scr );
 	if ( term.scr<0 ){
 			// TODO: circledhist
 			term.scr=0;
 	};
 	selscroll(0, term.scr);
 	tfulldirt();
-	updatestatus();
+	//updatestatus();
+	lessmode_toggle(&d);
 //	}
 }
 
@@ -264,8 +267,8 @@ void lessmode_toggle(const Arg *a){
 		} else {
 				if (abs(a->i) == 1 ){ // enable
 						inputmode |= MODE_LESS;
-						Arg d = { .i=0 };
-						kscrolldown(&d);
+						//Arg d = { .i=1 };
+						//kscrollup(&d);
 				} else {
 						if ( a->i == -3 ) //disable 
 								inputmode &= ~MODE_LESS;
