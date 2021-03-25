@@ -67,7 +67,7 @@ void showstatus(int show, char *status){
 			if ( !statusvisible ){
 					statusvisible = 1;
 					Arg a = { .i=1 };
-					kscrollup(&a); // scroll up one line
+					kscrolldown(&a); // scroll up one line
 					setstatus(status);
 				// paint status
 					redraw();

@@ -254,9 +254,9 @@ static MouseShortcut mshortcuts[] = {
 // mod1 = alt, mod2 = win , mod3 = Capslock (here)
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
-#define SETBOOKMARKMASK ControlMask
+#define SETBOOKMARKMASK (ControlMask|Mod1Mask)
 // CapsLock
-#define BOOKMARKMASK Mod3Mask
+#define BOOKMARKMASK ControlMask
 
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
@@ -267,7 +267,7 @@ static MouseShortcut mshortcuts[] = {
 
 static Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
-    { XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
+    //{ XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
     { XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES },
     { ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES },
     { ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES },
@@ -337,6 +337,7 @@ static Shortcut shortcuts[] = {
 
     { SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES },
     { ControlMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
+    { ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
     { XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
 
 

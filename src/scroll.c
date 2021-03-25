@@ -67,7 +67,7 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
-		printf("kscrollup, histi: %d  scr: %d\n",term.histi,term.scr );
+		//printf("kscrollup, histi: %d  scr: %d\n",term.histi,term.scr );
 		dbg2("kscrollup, n: %d, term.histi: %d, term.row: %d scr: %d\n",
 						n, term.histi, term.row, term.scr);
 		if (n < 0) {
@@ -97,11 +97,11 @@ void set_scrollmark(const Arg *a) {
 void set_retmark() {
 	retmarks[0] = term.histi;//-term.scr;	
 	//updatestatus();
-	printf("Setretmark: n:%d histi:%d scr:%d\n", 0, term.histi, term.scr );
+	//printf("Setretmark: n:%d histi:%d scr:%d\n", 0, term.histi, term.scr );
 }
 
 void retmark(const Arg* a){
-	printf("Retmark: n:%d scrm:%d histi:%d scr:%d\n", term.row, retmarks[0],term.histi, term.scr );
+	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d\n", term.row, retmarks[0],term.histi, term.scr );
 //	if ( scrollmarks[a->i] ){
 	if ( term.histi<term.row){
 			scrolltotop();
@@ -264,7 +264,8 @@ void lessmode_toggle(const Arg *a){
 		} else {
 				if (abs(a->i) == 1 ){ // enable
 						inputmode |= MODE_LESS;
-						kscrollup(a);
+						Arg d = { .i=0 };
+						kscrolldown(&d);
 				} else {
 						if ( a->i == -3 ) //disable 
 								inputmode &= ~MODE_LESS;

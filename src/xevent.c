@@ -286,7 +286,7 @@ void keyboard_select(const Arg *dummy) {
 		win.mode ^= trt_kbdselect(-1, NULL, 0);
 }
 
-
+// Keystrokes are handled here.
 void kpress(XEvent *ev) {
 		XKeyEvent *e = &ev->xkey;
 		KeySym ksym;
@@ -313,7 +313,8 @@ void kpress(XEvent *ev) {
 				return;
 		}
 
-		printf("key: %x, keycode: %x, state: %x\n",ksym, e->keycode, e->state );
+		dbg("key: %x, keycode: %x, state: %x\n",ksym, e->keycode, e->state );
+
 		// handle return, set scrollmark 0
 		if ( ( ksym == XK_Return ) ){
 //if ( (!IS_SET(MODE_ALTSCREEN)) && ( ksym == XK_Return ) ){
