@@ -4,7 +4,7 @@
 
 ##### Fork of the st terminal. (suckless.org)
 
-	lim patched version with performance and memory footprint related modifications,
+	Slim patched version with performance and memory footprint related modifications,
 	the "slim terminal" for X11.
 
 	The binary comes with 100kB, resident memory usage starts with 200kB and
@@ -24,8 +24,7 @@
  		Hit Ctrl/Shift+Return to execute a command in the shell and automatically enter lessmode,
        	if more than one screen is written by the command.
 
-
-	Shift+Backspace Scrolls back to the place, the last command has been entered.
+		Shift+Backspace: Enter lessmode and scroll back to the place, the last command has been entered.
    
 	 
 	Scrollmarks: Bookmarks within the history.
@@ -239,7 +238,7 @@ different source files. I'm about to tidy this up further.
 Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
 with Xorg programs. 
 
-The history ringbuffer could get problematic in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines)
+The history ringbuffer could get problematic in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so it's not at the top of the todo list)
 
 
 
@@ -247,7 +246,7 @@ The history ringbuffer could get problematic in conjunction with the scrollmarks
 ====================
 
 
-(misc 2020, misc.myer@zoho.com )
+(misc 2020,2021 - misc.myer@zoho.com )
 
 
 Credits
