@@ -265,7 +265,7 @@ static MouseShortcut mshortcuts[] = {
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
 #define MODE_LESS 0x02
-#define MODE_HELP 0x04
+#define IMODE_HELP 0x04
 
 // Ctrl+Shift+Win
 #define SETFONTMASK ShiftMask|Mod1Mask
@@ -275,6 +275,8 @@ static MouseShortcut mshortcuts[] = {
 static Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
     { XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
+    { XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP },
+    { XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP },
     { XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES },
     { ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES },
     { ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES },
@@ -291,6 +293,26 @@ static Shortcut shortcuts[] = {
     { SETFONTMASK, XK_Delete, set_fontwidth, {.i = 1},ALLMODES },
     { SETFONTMASK, XK_End, set_fontwidth, {.i = -1},ALLMODES },
 
+		// Scrolling
+    { ShiftMask, XK_Page_Up, kscrollup, {.i = -1},ALLMODES },
+    { ShiftMask, XK_Page_Down, kscrolldown, {.i = -1},ALLMODES },
+    { ShiftMask, XK_End, scrolltobottom, { },ALLMODES },
+    { ShiftMask, XK_Home, scrolltotop, { },ALLMODES },
+ 		// Shift+Up/Down: Scroll Up/Down 3 lines
+		{ ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
+    { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
+
+		{ XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },
+    { XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS },
+    { XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS },
+    { XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS },
+    { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
+    { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
+
+		// abort precessing when in the help view. -1 matches every key.
+		{ XK_ANY_MOD, -1, dummy, {}, IMODE_HELP },
+
+
 		// clipboard
     { TERMMOD, XK_C, clipcopy, {.i = 0},ALLMODES },
     { TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES },
@@ -300,14 +322,6 @@ static Shortcut shortcuts[] = {
 
     { TERMMOD, XK_Num_Lock, numlock, {.i = 0},ALLMODES },
 
-		// Scrolling
-    { ShiftMask, XK_Page_Up, kscrollup, {.i = -1},ALLMODES },
-    { ShiftMask, XK_Page_Down, kscrolldown, {.i = -1},ALLMODES },
-    { ShiftMask, XK_End, scrolltobottom, { },ALLMODES },
-    { ShiftMask, XK_Home, scrolltotop, { },ALLMODES },
- 		// Shift+Up/Down: Scroll Up/Down 3 lines
-		{ ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
-    { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
 
 		// scrollmarks
     { SETBOOKMARKMASK, XK_1, set_scrollmark, { .i=1 },ALLMODES },
@@ -375,13 +389,6 @@ static Shortcut shortcuts[] = {
 
     //{ XK_ANY_MOD, XK_Return, lessmode_toggle, { .i=0 },MODE_LESS },
 		
-		{ XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },
-    { XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS },
-    { XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS },
-    { XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS },
-    { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
-    { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
-
  
 };
 

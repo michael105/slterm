@@ -155,7 +155,7 @@ void tswapscreen(void) {
 
 // TODO: show help screen. Too many keys to remember. misc.
 void showhelp(const Arg *a) {
-		printf("showhelp\n");
+		//printf("showhelp\n");
 		
 		if ( p_help != term ){ // help is not visible now
 				p_term = term;
@@ -166,7 +166,7 @@ void showhelp(const Arg *a) {
 				} else {
 						term = p_help;
 				}
-				inputmode = inputmode | MODE_LESS;
+				inputmode = inputmode | MODE_LESS | IMODE_HELP;
 				term->mode = term->mode | TMODE_HELP;
 				Arg a = { .i=1 };
 				lessmode_toggle( &a );
@@ -176,7 +176,7 @@ void showhelp(const Arg *a) {
 				scrolltotop();
 
 		} else { //help is visible. toggle back to term.
-				inputmode = inputmode & ~(MODE_LESS);
+				inputmode = inputmode & ~(MODE_LESS | IMODE_HELP);
 				showstatus(0,0);
 				term = p_term;
 				Arg a = { .i=-3 };

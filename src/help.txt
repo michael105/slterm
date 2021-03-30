@@ -1,6 +1,7 @@
 
 $CYAN     slt - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
 
+
 $YELLOW Short help reference $NORM
 
 slt (slim terminal emulator for X) is a fork of st (suckless terminal,
@@ -13,25 +14,45 @@ a longer manual is shown on Ctrl+Shift+F1.
 
 $YELLOW Keystrokes $NORM
 
-Termmod (named TM below)  = Ctrl+Shift
 
-Scrolling:
- Shift + Up/Down/PageUp/Pagedown: Scroll up/down
- Shift + Home/End: Scroll to top/bottom
+$BOLD${UL}Scrolling:$N
 
-Clipboard:
- Shift + Insert / Ctrl+Shift+y: Paste
- Ctrl+Shift+c: Copy 
+  Shift + Up/Down/PageUp/Pagedown: Scroll up/down
+  Shift + Home/End: Scroll to top/bottom
 
-TM + Up/PageUp/l: Enter lessmode. Scroll around with cursor keys.
-	exit with q/ESC
 
-Set font width/size:
-  Alt+Shift +
-    Insert/Delete:   Enlarge/Shrink width
-    PageUp/PageDown: Zoom in / out
+$BOLD${UL}Clipboard:$N
 
-Scrollmarks:
+  Shift + Insert / Ctrl+Shift+y: Paste
+  Ctrl+Shift+c: Copy 
+
+
+$BOLD${UL}Selection Mode:$N
+
+  Ctrl+Shift+S: Enter selection mode
+
+
+$BOLD${UL}Lessmode:$N
+
+  Ctrl+Shift + Up/PageUp/l: Enter lessmode. 
+  Scroll around with cursor keys, Home, End.
+  Exit with q/ESC
+
+  Shift+Backspace: Scroll to the location of the last entered command,
+    enter lessmode
+
+  Ctrl+Enter: Execute command, enter lessmode when more than
+    one screen is displayed by the command.
+
+
+$BOLD${UL}Set font width/size:$N
+
+  Alt+Shift + Insert/Delete:   Enlarge/Shrink width
+  Alt+Shift + PageUp/PageDown: Zoom in / out
+
+
+$BOLD${UL}Scrollmarks:$N
+
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
   Ctrl + [0..9]:     Scroll to mark 0 - 9
 

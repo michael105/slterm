@@ -99,7 +99,7 @@ void propnotify(XEvent *);
 
 // callbacks . Used in config.h
 void ttysend(const Arg *);
-
+void dummy( const Arg *a);
 
 
 #endif

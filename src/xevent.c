@@ -220,6 +220,9 @@ void visibility(XEvent *ev) {
 
 void unmap(XEvent *ev) { win.mode &= ~MODE_VISIBLE; }
 
+// does nothing. Aborts shortcut scanning and key processing
+void dummy( const Arg *a){
+}
 
 
 void propnotify(XEvent *e) {
@@ -324,7 +327,7 @@ void kpress(XEvent *ev) {
 
 		/* 1. shortcuts */
 		for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
-				if (ksym == bp->keysym && match(bp->mod, e->state) && (bp->inputmode & inputmode)) {
+				if ( (( ksym == bp->keysym ) || ( bp->keysym == -1 )) && match(bp->mod, e->state) && (bp->inputmode & inputmode)) {
 						bp->func(&(bp->arg));
 						return;
 				}
