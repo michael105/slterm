@@ -4,12 +4,9 @@ $CYAN     slt - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $
 
 $YELLOW Short help reference $NORM
 
-slt (slim terminal emulator for X) is a fork of st (suckless terminal,
-before slim terminal)
-http://github.com/michael105/slt
 
-Below is a short ref of the keystrokes, 
-a longer manual is shown on Ctrl+Shift+F1.
+slt (slim terminal emulator for X) is a fork of st (suckless terminal)
+Homepage: http://github.com/michael105/slt
 
 
 $YELLOW Keystrokes $NORM
@@ -57,3 +54,8 @@ $BOLD${UL}Scrollmarks:$N
   Ctrl + [0..9]:     Scroll to mark 0 - 9
 
 
+
+$YELLOW Configuration $N
+
+Configuration is done mainly by editing the file config.h.in, 
+and compiling slt again.

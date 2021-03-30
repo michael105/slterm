@@ -16,7 +16,7 @@ FULLDEBUG = 0
 
 
 # version
-VERSION = v0.94
+VERSION = 0.94
 
 # Set to 1 enable Xresource configuration
 # (in addition, st-asc has to be started with the option "-x on")
