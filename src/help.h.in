@@ -1,0 +1,7 @@
+// the help content.
+// It's shown on F1, and compiled into st.
+// I guess, it's better to have a help screen always there,
+// when to load it (hopefully, when nothing did fuck up).
+// Especially, it's maybe 1/100 of the memory usage,
+// and furthermore quite possible shared anyways.
+static char* helpcontents = "\

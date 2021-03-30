@@ -1,0 +1,38 @@
+
+$CYAN     slt - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
+
+$YELLOW Short help reference $NORM
+
+slt (slim terminal emulator for X) is a fork of st (suckless terminal,
+before slim terminal)
+http://github.com/michael105/slt
+
+Below is a short ref of the keystrokes, 
+a longer manual is shown on Ctrl+Shift+F1.
+
+
+$YELLOW Keystrokes $NORM
+
+Termmod (named TM below)  = Ctrl+Shift
+
+Scrolling:
+ Shift + Up/Down/PageUp/Pagedown: Scroll up/down
+ Shift + Home/End: Scroll to top/bottom
+
+Clipboard:
+ Shift + Insert / Ctrl+Shift+y: Paste
+ Ctrl+Shift+c: Copy 
+
+TM + Up/PageUp/l: Enter lessmode. Scroll around with cursor keys.
+	exit with q/ESC
+
+Set font width/size:
+  Alt+Shift +
+    Insert/Delete:   Enlarge/Shrink width
+    PageUp/PageDown: Zoom in / out
+
+Scrollmarks:
+  Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
+  Ctrl + [0..9]:     Scroll to mark 0 - 9
+
+

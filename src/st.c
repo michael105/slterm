@@ -10,6 +10,8 @@
 #include "statusbar.h"
 #include "termdraw.h"
 
+#include "help.h"
+
 #if defined(__linux)
 #include <pty.h>
 #elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__APPLE__)
@@ -151,22 +153,35 @@ void tswapscreen(void) {
 		tfulldirt();
 }
 
-// TODO: show help screen. Too many keys. misc.
+// TODO: show help screen. Too many keys to remember. misc.
 void showhelp(const Arg *a) {
 		printf("showhelp\n");
-		//SWAPp( term->line, term->helpscr );
-		//term->mode ^= MODE_HELP;
-		//char *c = strdup("The help.: x\n");
-		//if ( term->mode & MODE_HELP ){
-		//		for ( int a=0; a<40; a++ ){
-		//				twrite(c,13,1);
-		//		}
-		//}
 		
-		if ( p_help != term ){
+		if ( p_help != term ){ // help is not visible now
 				p_term = term;
-		}
+				if ( !p_help ){ // displayed first time
+						tnew(term->col, term->row);
+						p_help = term;
+						twrite( helpcontents, strlen(helpcontents), 0 );
+				} else {
+						term = p_help;
+				}
+				inputmode = inputmode | MODE_LESS;
+				term->mode = term->mode | TMODE_HELP;
+				Arg a = { .i=1 };
+				lessmode_toggle( &a );
+				//enterscroll(&a);
+				showstatus(1," -HELP- ( q to exit ) ");
 
+				scrolltotop();
+
+		} else { //help is visible. toggle back to term.
+				inputmode = inputmode & ~(MODE_LESS);
+				showstatus(0,0);
+				term = p_term;
+				Arg a = { .i=-3 };
+				lessmode_toggle( &a );
+		}
 
 		tfulldirt();
 }

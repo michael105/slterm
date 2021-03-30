@@ -1,8 +1,11 @@
 //start config.h
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 // config c header starts here 
 // please edit config.h.in for modifications,
 // config.h will be silently overwritten
+//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //
 
 
@@ -258,22 +261,26 @@ static MouseShortcut mshortcuts[] = {
 // CapsLock
 #define BOOKMARKMASK ControlMask
 
+// inputmodes
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
 #define MODE_LESS 0x02
+#define MODE_HELP 0x04
 
 // Ctrl+Shift+Win
 #define SETFONTMASK ShiftMask|Mod1Mask
 
+// all comments, starting with //K are parsed into the keystroke shortref
+
 static Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
-    //{ XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
+    { XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
     { XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES },
     { ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES },
     { ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES },
     { XK_ANY_MOD, XK_Print, printsel, {.i = 0},ALLMODES },
 
-		// set zoom
+		// Change font size/width
     { SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES },
     //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES },
     { SETFONTMASK, XK_Page_Down, zoom, {.f = +1},ALLMODES },
@@ -284,20 +291,25 @@ static Shortcut shortcuts[] = {
     { SETFONTMASK, XK_Delete, set_fontwidth, {.i = 1},ALLMODES },
     { SETFONTMASK, XK_End, set_fontwidth, {.i = -1},ALLMODES },
 
+		// clipboard
     { TERMMOD, XK_C, clipcopy, {.i = 0},ALLMODES },
     { TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES },
     { TERMMOD, XK_Y, selpaste, {.i = 0},ALLMODES },
     { ShiftMask, XK_Insert, selpaste, {.i = 0},ALLMODES },
+    { TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES },
+
     { TERMMOD, XK_Num_Lock, numlock, {.i = 0},ALLMODES },
+
+		// Scrolling
     { ShiftMask, XK_Page_Up, kscrollup, {.i = -1},ALLMODES },
     { ShiftMask, XK_Page_Down, kscrolldown, {.i = -1},ALLMODES },
     { ShiftMask, XK_End, scrolltobottom, { },ALLMODES },
     { ShiftMask, XK_Home, scrolltotop, { },ALLMODES },
- // Shift+Up/Down: Scroll Up/Down 3 lines
+ 		// Shift+Up/Down: Scroll Up/Down 3 lines
 		{ ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
     { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
-    { TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES },
 
+		// scrollmarks
     { SETBOOKMARKMASK, XK_1, set_scrollmark, { .i=1 },ALLMODES },
     { SETBOOKMARKMASK, XK_2, set_scrollmark, { .i=2 },ALLMODES },
     { SETBOOKMARKMASK, XK_3, set_scrollmark, { .i=3 },ALLMODES },
@@ -342,6 +354,7 @@ static Shortcut shortcuts[] = {
 
 
     { ShiftMask, XK_BackSpace, retmark , { },ALLMODES },
+
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
 // toggle with Ctrl+Shift + L / down
@@ -369,7 +382,6 @@ static Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
     { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
 
-// Scrollmarks
  
 };
 
@@ -382,7 +394,7 @@ static Shortcut shortcuts[] = {
  * appkey value:
  * * 0: no value
  * * > 0: keypad application mode enabled
- * *   = 2: term->numlock = 1
+ * *   = 2: term.numlock = 1
  * * < 0: keypad application mode disabled
  * appcursor value:
  * * 0: no value
