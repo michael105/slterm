@@ -91,6 +91,8 @@
 #define STR_BUF_SIZ ESC_BUF_SIZ
 #define STR_ARG_SIZ ESC_ARG_SIZ
 
+#define IMODE_HELP 0x04
+
 enum glyph_attribute {
   ATTR_NULL = 0,
   ATTR_BOLD = 1 << 0,

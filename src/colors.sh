@@ -25,10 +25,12 @@ export BGWHITE=""$'\033[47m'""
 export LGRAY=""$'\033[37m'""
 
 export NORM=""$'\033[0;0m'""
+export N=$NORM
 export BOLD=""$'\033[1m'""
 export FAINT=""$'\033[2m'""
 export CURSIVE=""$'\033[3m'""
 export UNDERLINE=""$'\033[4m'""
+export UL=$UNDERLINE
 export BLINK=""$'\033[5m'""
 export INVERTED=""$'\033[7m'""
 export INVERSE=""$'\033[7m'""
