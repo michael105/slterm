@@ -46,8 +46,8 @@
 #define MODBIT(x, set, bit) ((set) ? ((x) |= (bit)) : ((x) &= ~(bit)))
 
 #define TLINE(y)                                                               \
-  ((y) < term.scr                                                              \
-       ? term.hist[term.cthist][(((y) + term.histi - term.scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term.line[(y)-term.scr])
+  ((y) < term->scr                                                              \
+       ? term->hist[term->cthist][(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
 
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
@@ -55,7 +55,7 @@
 #define IS_TRUECOL(x) (1 << 24 & (x))
 
 
-#define IS_SET(flag) ((term.mode & (flag)) != 0)
+#define IS_SET(flag) ((term->mode & (flag)) != 0)
 
 #ifndef HISTSIZEBITS
 // Should be set in config.h.in
@@ -223,7 +223,7 @@ typedef struct {
 	int guard;
   Line *line;                               /* screen */
   Line *alt;                                /* alternate screen */
-  Line *helpscr;                                /* help screen */
+  //Line *helpscr;                                /* help screen */
   TCursor c;                                /* cursor */
 	int cthist; // current history, need 2cond buf for resizing
   int row;                                  /* nb row */
@@ -245,7 +245,9 @@ typedef struct {
 	char circledhist;
 } Term;
 
-extern Term term; 
+extern Term *term; 
+extern Term *p_help; 
+extern Term *p_term; 
 
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */

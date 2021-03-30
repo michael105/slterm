@@ -382,7 +382,7 @@ static Shortcut shortcuts[] = {
  * appkey value:
  * * 0: no value
  * * > 0: keypad application mode enabled
- * *   = 2: term.numlock = 1
+ * *   = 2: term->numlock = 1
  * * < 0: keypad application mode disabled
  * appcursor value:
  * * 0: no value
