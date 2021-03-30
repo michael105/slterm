@@ -20,8 +20,8 @@ void ttyhangup() {
 void ttyresize(int tw, int th) {
 		struct winsize w;
 
-		w.ws_row = term.row;
-		w.ws_col = term.col;
+		w.ws_row = term->row;
+		w.ws_col = term->col;
 		w.ws_xpixel = tw;
 		w.ws_ypixel = th;
 		if (ioctl(cmdfd, TIOCSWINSZ, &w) < 0) {
@@ -58,7 +58,7 @@ int ttynew(char *line, char *cmd, char *out, char **args) {
 		int m, s;
 
 		if (out) {
-				term.mode |= MODE_PRINT;
+				term->mode |= MODE_PRINT;
 				iofd = (!strcmp(out, "-")) ? 1 : open(out, O_WRONLY | O_CREAT, 0666);
 				if (iofd < 0) {
 						fprintf(stderr, "Error opening %s:%s\n", out, strerror(errno));
@@ -141,7 +141,7 @@ size_t ttyread(void) {
 
 void ttywrite(const utfchar *s, size_t n, int may_echo) {
 		const utfchar *next;
-		Arg arg = (Arg){.i = term.scr};
+		Arg arg = (Arg){.i = term->scr};
 
 		// don't scroll on new output, when in lessmode.
 		if ( !(inputmode & MODE_LESS) )
