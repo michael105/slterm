@@ -132,7 +132,7 @@ enum term_mode {
 	MODE_UTF8 = 0,
 #endif
   MODE_SIXEL = 1 << 7,
-	MODE_HELP = 1 << 8,
+	TMODE_HELP = 1 << 8,
 };
 
 enum cursor_movement { CURSOR_SAVE, CURSOR_LOAD };

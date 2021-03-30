@@ -330,6 +330,9 @@ void kpress(XEvent *ev) {
 				}
 		}
 
+		if ( term->mode & TMODE_HELP )
+		//if ( inputmode & MODE_HELP )
+				return;
 
 		/* 2. custom keys from config.h */
 		if ((customkey = kmap(ksym, e->state))) {
