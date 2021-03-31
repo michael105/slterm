@@ -25,7 +25,6 @@ void tsetscroll(int t, int b) {
 
 void kscrolldown(const Arg *a) {
 		int n = a->i;
-		//printf("kscrolldown, histi: %d  scr: %d\n",term->histi,term->scr );
 
 		dbg2("kscrolldown, n: %d, guard: %x\n",n, term->guard);
 		if (n < 0) {
@@ -67,7 +66,6 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
-		//printf("kscrollup, histi: %d  scr: %d\n",term->histi,term->scr );
 		dbg2("kscrollup, n: %d, term->histi: %d, term->row: %d scr: %d\n",
 						n, term->histi, term->row, term->scr);
 		if (n < 0) {
@@ -279,7 +277,7 @@ void lessmode_toggle(const Arg *a){
 
 		if ( inputmode & MODE_LESS ){ // enable
 				//set_notifmode( 2, -1 ); // show message "less"
-				showstatus(1," -LESS- ");
+				showstatus(1,"-LESS-");
 				updatestatus();
 		} else { // disable
 				//set_notifmode( 4,-2 ); // hide message
