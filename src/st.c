@@ -153,6 +153,11 @@ void tswapscreen(void) {
 		tfulldirt();
 }
 
+void inverse_screen(){
+		win.mode ^= MODE_REVERSE;
+		redraw();
+}
+
 // TODO: show help screen. Too many keys to remember. misc.
 void showhelp(const Arg *a) {
 		//printf("showhelp\n");

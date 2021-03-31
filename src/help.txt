@@ -21,6 +21,8 @@ $N
 
 $UL${LGREEN}Regular mode:$N
 
+  Ctrl+Shift + I: Inverse colors
+
 
 $BOLD${UL}Scrolling:$N
 

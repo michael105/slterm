@@ -282,6 +282,7 @@ void printsel(const Arg *);
 void sendbreak(const Arg *);
 void toggleprinter(const Arg *);
 void showhelp(const Arg *);
+void inverse_screen();
 
 int tisaltscr(void);
 void tnew(int, int);

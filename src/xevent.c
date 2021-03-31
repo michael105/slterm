@@ -105,7 +105,7 @@ void run() {
 				dodraw = 0;
 				if (blinktimeout && TIMEDIFF(now, lastblink) > blinktimeout) {
 						tsetdirtattr(ATTR_BLINK);
-						win.mode ^= MODE_BLINK;
+						win.mode ^= MODE_BLINK; // read in xdraw.
 						lastblink = now;
 						dodraw = 1;
 				}

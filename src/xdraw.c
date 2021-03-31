@@ -220,11 +220,11 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				g.mode |= ATTR_REVERSE;
 				g.bg = defaultfg;
 				if (selected(cx, cy)) {
-						drawcol = dc.col[defaultcs];
-						g.fg = defaultrcs;
+						drawcol = dc.col[defaultrcs];
+						g.fg = defaultbg;
 				} else {
 						drawcol = dc.col[defaultrcs];
-						g.fg = defaultcs;
+						g.fg = defaultbg;
 				}
 		} else {
 				if (selected(cx, cy)) {
