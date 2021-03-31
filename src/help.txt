@@ -11,6 +11,13 @@ Homepage: http://github.com/michael105/slt
 
 $YELLOW Keystrokes $NORM
 
+${GRAY}There are 3 different modes in slt;
+regular mode, lessmode and selection mode.
+slt is started in the regular mode.
+$N
+
+$UL${LGREEN}Regular mode:$N
+
 
 $BOLD${UL}Scrolling:$N
 
@@ -20,26 +27,8 @@ $BOLD${UL}Scrolling:$N
 
 $BOLD${UL}Clipboard:$N
 
-  Shift + Insert / Ctrl+Shift+y: Paste
-  Ctrl+Shift+c: Copy 
-
-
-$BOLD${UL}Selection Mode:$N
-
-  Ctrl+Shift+S: Enter selection mode
-
-
-$BOLD${UL}Lessmode:$N
-
-  Ctrl+Shift + Up/PageUp/l: Enter lessmode. 
-  Scroll around with cursor keys, Home, End.
-  Exit with q/ESC
-
-  Shift+Backspace: Scroll to the location of the last entered command,
-    enter lessmode
-
-  Ctrl+Enter: Execute command, enter lessmode when more than
-    one screen is displayed by the command.
+  Shift + Insert / Ctrl+Shift + y: Paste
+  Ctrl+Shift + c: Copy 
 
 
 $BOLD${UL}Set font width/size:$N
@@ -55,7 +44,53 @@ $BOLD${UL}Scrollmarks:$N
 
 
 
-$YELLOW Configuration $N
+$BOLD${UL}${LGREEN}Lessmode:$N
 
-Configuration is done mainly by editing the file config.h.in, 
-and compiling slt again.
+  Ctrl+Shift + Up/PageUp/l: Enter lessmode. 
+  Scroll around with cursor keys, Home, End.
+  Exit with q/ESC
+
+  Shift+Backspace: Scroll to the location of the last entered command,
+    enter lessmode
+
+  Ctrl+Enter: Execute command, enter lessmode when more than
+    one screen is displayed by the command.
+
+
+
+$BOLD${UL}${LGREEN}Selection Mode:$N
+
+  Ctrl+Shift + S: Enter selection mode
+
+  There are 3 submodes in selection mode:
+    - move mode : to set the start of the selection;
+    - select mode : to activate and set the end of the selection;
+    - input mode : to enter the search criteria.
+	
+
+  Shortcuts for move and select modes :
+ 
+ h, j, k, l:    move cursor left/down/up/right (also with arrow keys)
+ !, _, *:       move cursor to the middle of the line/column/screen
+ Backspace, $:  move cursor to the beginning/end of the line
+ PgUp, PgDown:  move cursor to the beginning/end of the column
+ Home, End:     move cursor to the top/bottom left corner of the screen
+ /, ?:          activate input mode and search up/down
+ n, N:          repeat last search, up/down
+ s:             toggle move/selection mode
+ t:             toggle regular/rectangular selection type
+ Return:        quit keyboard_select, keeping the highlight of the selection
+ Escape:        quit keyboard_select
+ 
+ With h,j,k,l (also with arrow keys), you can use a quantifier.
+ Enter a number before hitting the appropriate key.
+ 
+
+  Shortcuts for input mode :
+ 
+ Return:       Return to the previous mode
+ 
+ 
+
+
+

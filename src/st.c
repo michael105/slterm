@@ -171,7 +171,7 @@ void showhelp(const Arg *a) {
 				Arg a = { .i=1 };
 				lessmode_toggle( &a );
 				//enterscroll(&a);
-				showstatus(1," -HELP- ( q to exit ) ");
+				showstatus(1,"-HELP- ( q to exit )");
 
 				scrolltotop();
 
