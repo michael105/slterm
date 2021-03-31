@@ -55,7 +55,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #endif
 		int winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
 				width = charlen * win.cw;
-		Color *fg, *bg, revfg, revbg, truefg, truebg;
+		Color *fg, *bg, revfg, revbg, truefg, truebg, *cltmp;
 		XRenderColor colfg, colbg;
 		XRectangle r;
 
@@ -128,9 +128,12 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		}
 
 		if (base.mode & ATTR_REVERSE) {
-				bg = &dc.col[selectionbg];
+				/* bg = &dc.col[selectionbg];
 				if (!ignoreselfg)
-						fg = &dc.col[selectionfg];
+						fg = &dc.col[selectionfg]; */
+				cltmp = bg;
+				bg = fg;
+				fg = cltmp;
 		}
 
 		if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
