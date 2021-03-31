@@ -19,30 +19,33 @@ regular mode, lessmode and selection mode.
 slt is started in the regular mode.
 $N
 
-$UL${LGREEN}Regular mode:$N
+$UL${LGREEN}All modes:$N
 
   Ctrl+Shift + I: Inverse colors
+  (Anymod)+F1:    Show this help
 
 
-$BOLD${UL}Scrolling:$N
-
-  Shift + Up/Down/PageUp/Pagedown: Scroll up/down
-  Shift + Home/End: Scroll to top/bottom
-
-
-$BOLD${UL}Clipboard:$N
-
-  Shift + Insert / Ctrl+Shift + y: Paste
-  Ctrl+Shift + c: Copy 
-
-
-$BOLD${UL}Set font width/size:$N
+${BOLD}Set font width/size:$N
 
   Alt+Shift + Insert/Delete:   Enlarge/Shrink width
   Alt+Shift + PageUp/PageDown: Zoom in / out
 
 
-$BOLD${UL}Scrollmarks:$N
+$BOLD${UL}${LGREEN}Regular mode:$N
+
+${BOLD}Scrolling:$N
+
+  Shift + Up/Down/PageUp/Pagedown: Scroll up/down
+  Shift + Home/End: Scroll to top/bottom
+
+
+${BOLD}Clipboard:$N
+
+  Shift + Insert / Ctrl+Shift + y: Paste
+  Ctrl+Shift + c: Copy 
+
+
+${BOLD}Scrollmarks:$N
 
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
   Ctrl + [0..9]:     Scroll to mark 0 - 9
@@ -60,6 +63,9 @@ $BOLD${UL}${LGREEN}Lessmode:$N
 
   Ctrl+Enter: Execute command, enter lessmode when more than
     one screen is displayed by the command.
+
+  Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
+             [0..9]: Goto Scrollmark 0 - 9
 
 
 
