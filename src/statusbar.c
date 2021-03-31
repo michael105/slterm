@@ -2,11 +2,13 @@
 #include "statusbar.h"
 #include "st.h"
 #include "mem.h"
+#include "config.h"
 
 
 int statusvisible;
-Glyph *statusbar;
+Glyph *statusbar = NULL;
 char* p_status = NULL;
+static int statuswidth = 0;
 
 
 void drawstatus(){
@@ -38,30 +40,41 @@ void updatestatus(){
 						buf[p+10] = '0';
 				else 
 						buf[p+10] = ' ';
+				buf[p+11] = 0;
+
 
 				setstatus(buf);
 		}
 }
 
+
 void setstatus(char* status){
-		static Glyph *deb, *fin;
-		static int col, bot;
+		Glyph *deb, *fin;
 
-		free(statusbar);
-		col = term->col, bot = term->bot;
-		statusbar = xmalloc(term->colalloc * sizeof(Glyph));
-		char *z = status;
-
-		for (deb = statusbar,fin=&statusbar[col]; (deb < fin) && (*status);
-						status++, deb++) {
-				deb->mode = ATTR_REVERSE, deb->u = *status, deb->fg = defaultfg,
-						deb->bg = defaultbg;
+		if ( term->colalloc != statuswidth ){
+				free(statusbar);
+				statusbar = xmalloc(term->colalloc * sizeof(Glyph));
+				statuswidth = term->colalloc;
 		}
 
-		for (; (deb < fin); deb++) {
-				deb->mode = ATTR_REVERSE, deb->u = ' ', deb->fg = defaultfg,
-						deb->bg = defaultbg;
+#ifndef UTF8
+		Glyph g = { .fg = statusfg, .bg = statusbg, .mode = statusattr, .u = ' ' };
+#endif
+
+		for (deb = statusbar,fin=&statusbar[statuswidth]; (deb < fin);	deb++) {
+#ifdef UTF8
+				deb->mode = statusattr;
+				deb->fg = statusfg;
+				deb->bg = statusbg;
+#else
+				deb->intG = g.intG;
+#endif
+				if ( *status ){
+						deb->u = *status;
+						status++;
+				}
 		}
+
 }
 
 void showstatus(int show, char *status){
