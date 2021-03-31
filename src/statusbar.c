@@ -42,7 +42,6 @@ void updatestatus(){
 						buf[p+10] = ' ';
 				buf[p+11] = 0;
 
-
 				setstatus(buf);
 		}
 }
@@ -54,6 +53,7 @@ void setstatus(char* status){
 		if ( term->colalloc != statuswidth ){
 				free(statusbar);
 				statusbar = xmalloc(term->colalloc * sizeof(Glyph));
+				//statusbar = xrealloc(statusbar, term->colalloc * sizeof(Glyph));
 				statuswidth = term->colalloc;
 		}
 
