@@ -5,8 +5,11 @@ $CYAN     slt - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $
 $YELLOW Short help reference $NORM
 
 
-slt (slim terminal emulator for X) is a fork of st (suckless terminal)
+slt (slim terminal emulator for X) is a fork of st (suckless terminal),
 Homepage: http://github.com/michael105/slt
+
+This is a short reference of keystrokes,
+a longer manual might be accessible with 'man slt'.
 
 
 $YELLOW Keystrokes $NORM
