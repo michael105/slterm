@@ -66,6 +66,7 @@ static CSIEscape csiescseq;
 static STREscape strescseq;
 int borderpx;
 int enterlessmode;
+static int tresize_rec = 0;
 
 // initiate new terminal window and buffers
 void tnew(int col, int row) {
@@ -73,6 +74,8 @@ void tnew(int col, int row) {
 		dbg2("col: %d, row: %d\n",col,row);
 		//term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
 		term = xmalloc(sizeof(Term));
+		if ( !p_term )
+				p_term = term;
 		term->c = (TCursor){.attr = {.fg = defaultfg, .bg = defaultbg}};
 		
 		// might be buggy. fix this!
@@ -974,6 +977,7 @@ void tresize(int col, int row) {
 		int *bp;
 		int enlarge = 0;
 		TCursor c;
+		int oldwidth = term->colalloc;
 		if ( col > term->colalloc ){
 				term->colalloc = col;
 				enlarge = 1;
@@ -1089,7 +1093,7 @@ void tresize(int col, int row) {
 		for (i = 0; i < t; i++) { // 
 				term->hist[(term->cthist)][i] = xrealloc(term->hist[term->cthist][i], term->colalloc * sizeof(Glyph));
 #ifndef UTF8
-				memset32( &term->hist[term->cthist][i][0].intG, term->c.attr.intG, term->colalloc );
+				memset32( &term->hist[term->cthist][i][oldwidth].intG, term->c.attr.intG, term->colalloc-oldwidth );
 				//memset32( &term->hist[term->cthist][i][mincol].intG, term->c.attr.intG, term->colalloc-mincol );
 				//for (j = mincol; j < col; j++) {
 				//		term->hist[term->cthist][i][j].intG = term->c.attr.intG;
@@ -1179,6 +1183,26 @@ void tresize(int col, int row) {
 				tcursor(CURSOR_LOAD);
 		}
 		term->c = c;
+
+		if ( p_help && ( tresize_rec == 0 ) ){ // need to resize the not displayed term as well
+				tresize_rec = 1;
+
+				if ( term==p_term )
+						term = p_help;
+				else
+						term = p_term;
+
+				tresize(col,row);
+				tresize_rec = 0;
+
+				if ( term==p_term )
+						term = p_help;
+				else
+						term = p_term;
+		}
+
+
+
 }
 
 
