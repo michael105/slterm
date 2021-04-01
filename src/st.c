@@ -166,13 +166,30 @@ void showhelp(const Arg *a) {
 		//printf("showhelp\n");
 		
 		if ( p_help != term ){ // help is not visible now
-				p_term = term;
+				//p_term = term;
 				if ( !p_help ){ // displayed first time
 						tnew(term->col, term->row);
 						p_help = term;
 						twrite( helpcontents, strlen(helpcontents), 0 );
 				} else {
 						term = p_help;
+						if ( ( p_term->row != term->row ) || ( p_term->col != term->col )){
+								tresize( p_term->col, p_term->row );
+								//free(term);	// buggy. There might be some memory leaks.
+								// to fix it, I guess it would be best rewriting all this unlucky
+								// screen buffer stuff. Separating screen buffer and history clearly 
+								// isn't a good idea. It works now. Should have rewritten it from the beginning.
+								// Would have been less work, than fiddling around with really hard to get lines of code
+								// and bugs.
+								// Oh. And just now I realize - could be uclibc (I'm working with) or gcc related
+								// as well. I did have already other bugs, obviously compiler or standard libc related.
+								// But, well. im going outside, 
+								//  sun is shining.
+								//
+								//tnew(term->col, term->row);
+								//p_help = term;
+								//twrite( helpcontents, strlen(helpcontents), 0 );
+						}
 				}
 				inputmode = inputmode | MODE_LESS | IMODE_HELP;
 				term->mode = term->mode | TMODE_HELP;
@@ -189,6 +206,8 @@ void showhelp(const Arg *a) {
 				term = p_term;
 				Arg a = { .i=-3 };
 				lessmode_toggle( &a );
+				if ( ( p_help->row != term->row ) || ( p_help->col != term->col ))
+						tresize( p_help->col, p_help->row );
 		}
 
 		tfulldirt();
@@ -1184,6 +1203,7 @@ void tresize(int col, int row) {
 		}
 		term->c = c;
 
+#if 0
 		if ( p_help && ( tresize_rec == 0 ) ){ // need to resize the not displayed term as well
 				tresize_rec = 1;
 
@@ -1201,7 +1221,20 @@ void tresize(int col, int row) {
 						term = p_term;
 		}
 
+		if ( p_help && ( tresize_rec == 0 ) ){
+				if ( p_help!=term ){ // not displayed
+						free(p_help);
+						p_help = 0;
+				} else {
+						tresize_rec = 1;
+						term = p_term;
+						tresize(col,row);
+						tresize_rec = 0;
+						term = p_help;
+				}
+		}
 
+#endif
 
 }
 
