@@ -374,6 +374,7 @@ static Shortcut shortcuts[] = {
 
 
     { ShiftMask, XK_BackSpace, retmark , { },ALLMODES },
+    { XK_ANY_MOD, XK_BackSpace, retmark , { },MODE_LESS },
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
