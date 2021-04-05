@@ -233,9 +233,9 @@ static unsigned char defaultrcs = 202;
 static unsigned char unfocusedrcs = 46; //118;//226; 
 
 // colors and attribute for the statusbar
-unsigned char statusfg = 82; //21;
+unsigned char statusfg = 75; //21;
 unsigned char statusbg = 21; //82;
-unsigned char statusattr = 0; // ATTR_REVERSE
+unsigned char statusattr = ATTR_BOLD; // ATTR_REVERSE
 
 /* Colors used for selection */
 unsigned int selectionbg = 19;
