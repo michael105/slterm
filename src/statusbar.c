@@ -9,12 +9,42 @@ int statusvisible;
 Glyph *statusbar = NULL;
 char* p_status = NULL;
 static int statuswidth = 0;
+static int focusdraw = 1;
 
 
 void drawstatus(){
-		term->dirty[term->bot] = 1;
-		drawregion(0, term->bot, term->col, term->bot + 1);
+	term->dirty[term->bot] = 1;
+	drawregion(0, term->bot, term->col, term->bot + 1);
 }
+
+void statusbar_focusin(){
+	if ( !focusdraw && statusvisible && statusbar ){
+		focusdraw = 1;
+		for ( Glyph *g = statusbar; g < &statusbar[statuswidth]; g++) {
+			g->mode = statusattr;
+			g->fg = statusfg;
+			g->bg = statusbg;
+
+		}
+		drawstatus();
+	}
+}
+
+
+void statusbar_focusout(){
+	if ( focusdraw && statusvisible && statusbar ){
+		focusdraw = 0;
+		for ( Glyph *g = statusbar; g < &statusbar[statuswidth]; g++) {
+			g->mode = ATTR_REVERSE; 
+			g->fg = defaultfg,
+			g->bg = defaultbg;
+		}
+		drawstatus();
+	}
+}
+
+
+
 
 // updates the statusbar with current line, etc., when visible.
 void updatestatus(){

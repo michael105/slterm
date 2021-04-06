@@ -49,6 +49,7 @@ ${BOLD}Scrollmarks:$N
 
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
   Ctrl + [0..9]:     Scroll to mark 0 - 9
+  Shift + Backspace: Scroll to the last entered command (in shell)
 
 
 

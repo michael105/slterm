@@ -201,11 +201,14 @@ void focus(XEvent *ev) {
 				xseturgency(0);
 				if (IS_SET(MODE_FOCUS))
 						ttywrite("\033[I", 3, 0);
-		} else {
+				statusbar_focusin();
+		} else { // focus out
 				XUnsetICFocus(xw.xic);
 				win.mode &= ~MODE_FOCUSED;
 				if (IS_SET(MODE_FOCUS))
 						ttywrite("\033[O", 3, 0);
+				statusbar_focusout();
+				
 		}
 }
 
