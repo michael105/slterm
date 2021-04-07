@@ -189,25 +189,41 @@ void cmessage(XEvent *e) {
 		}
 }
 
+#define FCB 4
 void focus(XEvent *ev) {
 		XFocusChangeEvent *e = &ev->xfocus;
 
 		if (e->mode == NotifyGrab)
 				return;
+		static int colorsaved = 0;
+		static Color tmp;
+		if ( !colorsaved ){
+			tmp = dc.col[FCB];
+			colorsaved = 1;
+		}
 
 		if (ev->type == FocusIn) {
 				XSetICFocus(xw.xic);
-				win.mode |= MODE_FOCUSED;
 				xseturgency(0);
+			if ( !( win.mode & MODE_FOCUSED) ){
+				win.mode |= MODE_FOCUSED;
 				if (IS_SET(MODE_FOCUS))
 						ttywrite("\033[I", 3, 0);
 				statusbar_focusin();
+				dc.col[FCB] = tmp;
+				redraw();
+			}
+
 		} else { // focus out
 				XUnsetICFocus(xw.xic);
+			if ( ( win.mode & MODE_FOCUSED) ){
 				win.mode &= ~MODE_FOCUSED;
 				if (IS_SET(MODE_FOCUS))
 						ttywrite("\033[O", 3, 0);
 				statusbar_focusout();
+				dc.col[FCB] = dc.col[7];
+				redraw();
+			}
 				
 		}
 }

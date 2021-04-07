@@ -118,7 +118,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				}
 		}
 
-		if ((base.mode & ATTR_BOLD_FAINT) == ATTR_FAINT) {
+		if ( (base.mode & ATTR_BOLD_FAINT) == ATTR_FAINT )  {
 				colfg.red = fg->color.red / 2;
 				colfg.green = fg->color.green / 2;
 				colfg.blue = fg->color.blue / 2;
@@ -126,6 +126,52 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
 				fg = &revfg;
 		}
+
+#define CLFA 24000
+		// Change colors on focusout
+		if ( !(win.mode & MODE_FOCUSED) ){
+			//printf("rgb: %d %d %d\n",fg->color.red, fg->color.green, fg->color.blue );
+				/*colfg.red = fg->color.red / 2;
+				colfg.green = fg->color.green / 4 * 3;
+				colfg.blue = fg->color.blue / 4 * 3;*/
+			if ( (fg->color.blue > CLFA) && (fg->color.red < CLFA) && (fg->color.green < CLFA) ){
+				colfg.red = fg->color.red +13000;
+				colfg.green = fg->color.green +13000;
+				colfg.blue = fg->color.blue;
+				colfg.alpha = fg->color.alpha;
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				fg = &revfg;
+			}
+			if ( (bg->color.blue > CLFA) && (bg->color.red < CLFA) && (bg->color.green < CLFA) ){
+				colbg.red = bg->color.red +CLFA;
+				colbg.green = bg->color.green +CLFA;
+				colbg.blue = bg->color.blue;
+				colbg.alpha = bg->color.alpha;
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+				bg = &revbg;
+			}
+#if 0
+			if ( (fg->color.blue > CLFA) && (fg->color.red < CLFA) ){
+				colfg.red = fg->color.red +CLFA;
+				colfg.green = fg->color.green;// +CLFA;
+				colfg.blue = fg->color.blue;
+				colfg.alpha = fg->color.alpha;
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				fg = &revfg;
+			}
+			if ( (fg->color.blue > CLFA) && (fg->color.green < CLFA) ){
+				colfg.red = fg->color.red;// +CLFA;
+				colfg.green = fg->color.green +CLFA;
+				colfg.blue = fg->color.blue;
+				colfg.alpha = fg->color.alpha;
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				fg = &revfg;
+			}
+#endif
+
+
+		}
+
 
 		if (base.mode & ATTR_REVERSE) {
 				/* bg = &dc.col[selectionbg];
