@@ -203,10 +203,10 @@ void focus(XEvent *ev) {
 		}
 
 		if (ev->type == FocusIn) {
-				XSetICFocus(xw.xic);
-				xseturgency(0);
 			if ( !( win.mode & MODE_FOCUSED) ){
 				win.mode |= MODE_FOCUSED;
+				XSetICFocus(xw.xic);
+				xseturgency(0);
 				if (IS_SET(MODE_FOCUS))
 						ttywrite("\033[I", 3, 0);
 				statusbar_focusin();
@@ -215,9 +215,9 @@ void focus(XEvent *ev) {
 			}
 
 		} else { // focus out
-				XUnsetICFocus(xw.xic);
 			if ( ( win.mode & MODE_FOCUSED) ){
 				win.mode &= ~MODE_FOCUSED;
+				XUnsetICFocus(xw.xic);
 				if (IS_SET(MODE_FOCUS))
 						ttywrite("\033[O", 3, 0);
 				statusbar_focusout();
