@@ -130,11 +130,11 @@ build/%.o: %.c
 	$(CC) $(STCFLAGS) $(STLDFLAGS) -c -o $@ $<
 
 
-config.h: ../config.h.in
-	sed -ne '/^..start config.h/,$$p' ../config.h.in > config.h
+config.h: ../config.in
+	sed -ne '/^..start config.h/,$$p' ../config.in > config.h
  
-config.make: ../config.h.in
-	sed -ne '/#makefilestart/,/#makefileend/p' ../config.h.in > config.make
+config.make: ../config.in
+	sed -ne '/#makefilestart/,/#makefileend/p' ../config.in > config.make
 
 
 
