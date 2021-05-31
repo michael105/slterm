@@ -1,14 +1,12 @@
-## st - slim terminal
+## slterm - slim terminal
 
 
 
-##### Fork of the st terminal. (suckless.org)
+##### Fork of the st terminal.
 
-	Slim patched version with performance and memory footprint related modifications,
-	the "slim terminal" for X11.
+	Slim (100kB) and fast terminal emulator for X11.
 
-	The binary comes with 100kB, resident memory usage starts with 200kB and
-	grows dynamically with a growing history. (4Bytes per Glyph) 
+	Based on a patched version of st (suckless terminal).
 
 ---
 
