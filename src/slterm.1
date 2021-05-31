@@ -1,0 +1,246 @@
+.\" Man page generated from reStructuredText.
+.
+.TH ST-ASC  "" "" ""
+.SH NAME
+st-asc \- 
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.sp
+(s)imple (t)erminal \- (asc)ii fork
+.SH SYNOPSIS
+.sp
+\fBst\-asc\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
+[\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
+[\fB\-l\fP \fIline\fP] [\fB\-w\fP \fIwindowid\fP] [[\fB\-e\fP] \fIcommand\fP
+[\fIarguments\fP\&...]]
+.sp
+\fBst\-asc\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
+[\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
+[\fB\-w\fP \fIwindowid\fP] \-l \fIline\fP [\fIstty_args\fP\&...]
+.SH DESCRIPTION
+.sp
+\fBst\-asc\fP is a virtual terminal emulator for X
+It is a slimmed down clone of st (suckless.org),
+utf\-8 and rgb support stripped for better performance,
+but with several additions and patches.
+.SH KEYS
+.INDENT 0.0
+.TP
+.B \fBCtrl\-Shift\-c\fP
+Copy the selected text to the clipboard selection.
+.TP
+.B \fBCtrl\-Shift\-v\fP
+Paste from the clipboard selection.
+.TP
+.B \fBCtrl\-Shift\-y\fP
+Paste from primary selection (middle mouse button).
+.TP
+.B \fBCtrl+Shift+l\fP
+Toggle "less mode": when enabled, Cursor Up/Down, PageUp/PageDown, Home/End
+will scroll up / down, without holding Shift
+.TP
+.B \fBCtrl\-Shift\-s\fP
+Enter keyboard selection mode
+(Described below, with a different key mapping)
+.TP
+.B \fBShift\-PgUp/PgDown\fP
+Scroll Up/Down a Page
+.TP
+.B \fBShift\-Up/Down\fP
+Scroll Up/Down three lines
+.TP
+.B \fBShift\-Home/End\fP
+Scroll to top / bottom
+.TP
+.B \fBBreak\fP
+Send a break in the serial line. Break key is obtained in PC
+keyboards pressing at the same time control and pause.
+.TP
+.B \fBCtrl\-Print Screen\fP
+Toggle if st should print to the \fIiofile.\fP
+.TP
+.B \fBShift\-Print Screen\fP
+Print the full screen to the \fIiofile.\fP
+.TP
+.B \fBPrint Screen\fP
+Print the selection to the \fIiofile.\fP
+.TP
+.B \fBCtrl\-Shift\-Page Up\fP
+Increase font size.
+.TP
+.B \fBCtrl\-Shift\-Page Down\fP
+Decrease font size.
+.TP
+.B \fBCtrl\-Shift\-Home\fP
+Reset to default font size.
+.UNINDENT
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \fB\-a\fP
+disable alternate screens in terminal
+.TP
+.B \fB\-c\fP \fIclass\fP
+defines the window class (default $TERM).
+.TP
+.B \fB\-f\fP \fIfont\fP
+defines the \fIfont\fP to use when st is run.
+.TP
+.B \fB\-g\fP \fIgeometry\fP
+defines the X11 geometry string. The form is
+[=][<cols>{xX}<rows>][{+\-}<xoffset>{+\-}<yoffset>]. See
+\fBXParseGeometry\fP (3) for further details.
+.TP
+.B \fB\-i\fP
+will fixate the position given with the \-g option.
+.TP
+.B \fB\-n\fP \fIname\fP
+defines the window instance name (default $TERM).
+.TP
+.B \fB\-o\fP \fIiofile\fP
+writes all the I/O to \fIiofile.\fP This feature is useful when recording
+st sessions. A value of "\-" means standard output.
+.TP
+.B \fB\-T\fP \fItitle\fP
+defines the window title (default \(aqst\(aq).
+.TP
+.B \fB\-t\fP \fItitle\fP
+defines the window title (default \(aqst\(aq).
+.TP
+.B \fB\-w\fP \fIwindowid\fP
+embeds st within the window identified by \fIwindowid\fP
+.TP
+.B \fB\-l\fP \fIline\fP
+use a tty \fIline\fP instead of a pseudo terminal. \fIline\fP should be a
+(pseudo\-)serial device (e.g. /dev/ttyS0 on Linux for serial port 0).
+When this flag is given remaining arguments are used as flags for
+\fBstty(1).\fP By default st initializes the serial line to 8 bits, no
+parity, 1 stop bit and a 38400 baud rate. The speed is set by
+appending it as last argument (e.g. \(aqst \-l /dev/ttyS0 115200\(aq).
+Arguments before the last one are \fBstty(1)\fP flags. If you want to
+set odd parity on 115200 baud use for example \(aqst \-l /dev/ttyS0
+parenb parodd 115200\(aq. Set the number of bits by using for example
+\(aqst \-l /dev/ttyS0 cs7 115200\(aq. See \fBstty(1)\fP for more arguments and
+cases.
+.TP
+.B \fB\-v\fP
+prints version information, then exits.
+.TP
+.B \fB\-V\fP
+prints version and compile information, then exits
+.TP
+.B \fB\-e\fP \fIcommand\fP \fB[\fP \fIarguments\fP \fB\&... ]\fP
+st executes \fIcommand\fP instead of the shell. If this is used it \fBmust
+be the last option\fP on the command line, as in xterm / rxvt. This
+option is only intended for compatibility, and all the remaining
+arguments are used as a command even without it.
+.TP
+.B \fB\-x\fP
+enable reading of the XResources database for the configuration
+st\-asc must have been compiled with the XRESOURCES flag in config.h.in set to 1
+.UNINDENT
+.SH KEYBOARD SELECTION MODE
+.sp
+(Patch by Tonton Couillon \- la dot luge at free dot fr)
+.sp
+When you run "keyboard_select", you have 3 modes available:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+move mode:    to set the start of the selection;
+.IP \(bu 2
+select mode:  to activate and set the end of the selection;
+.IP \(bu 2
+input mode:   to enter the search criteria.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Shortcuts for move and select modes:
+.INDENT 0.0
+.TP
+.B h, j, k, l
+move cursor left/down/up/right (also with arrow keys)
+.TP
+.B !, _, *
+move cursor to the middle of the line/column/screen
+.TP
+.B Backspace, $
+move cursor to the beginning/end of the line
+.TP
+.B PgUp, PgDown
+move cursor to the beginning/end of the column
+.TP
+.B Home, End
+move cursor to the top/bottom left corner of the screen
+.TP
+.B /, ?
+activate input mode and search up/down
+.TP
+.B n, N
+repeat last search, up/down
+.TP
+.B s
+toggle move/selection mode
+.TP
+.B t
+toggle regular/rectangular selection type
+.TP
+.B Return
+quit keyboard_select, keeping the highlight of the selection
+.TP
+.B Escape
+quit keyboard_select
+.UNINDENT
+.sp
+With h,j,k,l (also with arrow keys), you can use a quantifier. Enter a
+number before hitting the appropriate key.
+.sp
+Shortcuts for input mode:
+.sp
+Return:       Return to the previous mode
+.SH CUSTOMIZATION
+.sp
+\fBst\-asc\fP can be customized by editing config.h.in and (re)compiling
+the source code, or by editing the Xresources init files and
+compiling st\-asc with Xresources enabled.
+.SH AUTHORS
+.sp
+See README and PATCHES for the authors.
+.SH LICENSE
+.sp
+See the LICENSE file for the terms of redistribution.
+.SH SEE ALSO
+.sp
+\fBtabbed\fP(1), \fButmp\fP(1), \fBstty\fP(1)
+.SH BUGS
+.sp
+See the README in the distribution.
+.\" Generated by docutils manpage writer.
+.
