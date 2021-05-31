@@ -1,4 +1,4 @@
-# st-asc - simple terminal
+# slterm - simple terminal
 # See LICENSE file for copyright and license details.
 .POSIX:
 
@@ -6,12 +6,12 @@
 all: man
 	cd src && $(MAKE)
 
-man: st-asc.1
+man: slterm.1
 
-st-asc.1: st-asc.1.rst
-	rst2man st-asc.1.rst > st-asc.1 || rst2man.py st-asc.1.rst > st-asc.1
+slterm.1: slterm.1.rst
+	rst2man slterm.1.rst > slterm.1 || rst2man.py slterm.1.rst > slterm.1
 
-install: src/st-asc st-asc.1
+install: src/slterm slterm.1
 
 .PHONY: all install
 

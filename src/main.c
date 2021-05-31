@@ -68,7 +68,7 @@ void config_init(void) {
 #endif
 
 void printversion(){
-		printf( "st-asc version " VERSION "\n" );
+		printf( "slterm version " VERSION "\n" );
 }
 
 void printhelp(){
