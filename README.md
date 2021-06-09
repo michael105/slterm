@@ -2,15 +2,33 @@
 
 
 
-##### Fork of the st terminal.
-
 	Slim (100kB) and fast terminal emulator for X11.
 
 	Based on a patched version of st (suckless terminal).
 
+	Addons and modifications: 
+
+
+       * Lessmode: scroll around with less like keybindings
+	    * Hit shift+backspace: enter 'lessmode', and scroll
+ 	      back to the line the last command has been entered in the shell
+       * Scrollmarks: Set bookmarks to scroll back and forward
+		 * Hotkeys for changing font size and spacing
+		 * Inline help (reference of the bound keys) 
+		 * Several performance and memory related modifications;
+		   I claim slterm being the fastest available terminal emulator for X
+
+		
+
+	Since I did split the single big source file into several smaller units,
+	and made quite extensive modifications, I guess it would (sadly) neither be easy
+	nor senseful at all trying to push the changes upstream again.
+	The addons like lessmode also somehow do not fit to the suckless philosphy anymore,
+	(Albite I'm questioning the idea to have a single source file with 2700 lines anyways..)
+
 ---
 
-##### Additions in this fork:
+##### Additions:
 
 
 	Lessmode
@@ -75,7 +93,7 @@ Applied 'official' patches:
 		compile time switch "XRESOURCES"
 
 
-Further info is in [st-asc.1](src/st-asc.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
+Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
 
 ---
 
@@ -104,7 +122,7 @@ If you'd like to change anything, please edit config.h.in.
 ### About
 
 
-(A screenshot of i3 and 3 instances of st-asc)
+(A screenshot of i3 and 3 instances of slterm)
 
 ![screenshot](images/st-asc_with_i3.png)
 
@@ -189,7 +207,7 @@ I just slimmed down the memory usage for the colors from 8 Bytes to 2 Bytes per 
 
 ![](images/colors.png?raw=true)
 
-"256" colors (with attributes faint, normal, bold) and the ascii table without control characters as displayed by st-asc.<br>
+"256" colors (with attributes faint, normal, bold) and the ascii table without control characters as displayed by slterm.<br>
 The scripts for creating the output are within ./test
 
 ![](images/ascii.png)
