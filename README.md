@@ -2,11 +2,12 @@
 
 
 
-	Slim (94kB) and fast terminal emulator for X11.
+	Slim (94kB) and fast terminal emulator for X11,
+	with minimal external dependencies (Xlib and Xft).
    Based on a patched version of st (suckless terminal).
 
 
-#####Addons and modifications:
+##### Addons and modifications:
 
    * Lessmode: scroll around with less like keybindings
    * Hit shift+backspace: enter 'lessmode', and scroll
@@ -18,29 +19,75 @@
      I claim slterm being the fastest available terminal emulator for X
 
 
-
 ---
 
-### Requirements for compiling
 
-- Xlib headers
-- Xft headers
-- pkgconf (pkgconfig)
+#### Additions in detail:
 
-### Install
 
-edit config.h.in (optionally)
+	Lessmode
 
-    make
-    make install
+		Hit Ctrl+Shift+PageUp/CursorUp to enter "lessmode".
+		Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
+		Ctrl+Shift+PageDown/CursorDown, 'q' or Escape leave the lessmode.
 
-The default configuration might be save. 
+ 		Hit Ctrl/Shift+Return to execute a command in the shell and automatically enter lessmode,
+       	if more than one screen is written by the command.
 
-(no utf8, scrollback history 16384 lines, no XResources, installs into /usr/local/bin)
+		Shift+Backspace: Enter lessmode and scroll back to the place, the last command has been entered.
+   
+<img align="right" src="images/vt-102-1984.jpg">
+	 
+	Scrollmarks: Bookmarks within the history.
 
-If you'd like to change anything, please edit config.in.
+		set:  Ctrl+Alt+n (n=0..9)
+		goto: Ctrl+n
+		in lessmode: 'n' (number without modifier)
 
----
+   
+	Cursor and configurable cursorcolor for unfocused windows,
+	cursor gets highlighted on focus in
+
+
+#### Slim resource usage:
+
+
+	UTF8 support is an optional compile switch now.
+	  
+
+  Colors restricted to a 256 color palette 
+        (Saving 6 Bytes per Glyph)
+
+	Keep the history and terminal contents on resize events
+		(Doesn't erase wider lines, when shrinking)
+		No scrollback "behind" the current history anymore (Bugfix)
+
+	Delayed allocation of the history buffer. 
+
+		Saves up to tenths or even hundreds of MB, 
+		depending on the terminal's width and history size
+
+
+___
+
+Applied 'official' patches:
+
+
+- anysize
+- clipboard
+- keyboard_select
+- relative_border
+- scrollback
+- scrollback-mouse
+- scrollback-mouse-increment
+- selectioncolors
+- xresources <br>
+		added commandline switch -x to enable reading the xresources,<br>
+		compile time switch "XRESOURCES"
+
+
+Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
+
 
 ### About
 
@@ -143,74 +190,26 @@ There still are many globals spread over the
 different source files. I'm about to tidy this up further.
 
 
+---
 
-#### Additions in detail:
+### Requirements for compiling
 
+- Xlib headers
+- Xft headers
+- pkgconf (pkgconfig)
 
+### Install
 
-	Lessmode
+edit config.h.in (optionally)
 
-		Hit Ctrl+Shift+PageUp/CursorUp to enter "lessmode".
-		Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
-		Ctrl+Shift+PageDown/CursorDown, 'q' or Escape leave the lessmode.
+    make
+    make install
 
- 		Hit Ctrl/Shift+Return to execute a command in the shell and automatically enter lessmode,
-       	if more than one screen is written by the command.
+The default configuration might be save. 
 
-		Shift+Backspace: Enter lessmode and scroll back to the place, the last command has been entered.
-   
-	 
-	Scrollmarks: Bookmarks within the history.
+(no utf8, scrollback history 16384 lines, no XResources, installs into /usr/local/bin)
 
-		set:  Ctrl+Alt+n (n=0..9)
-		goto: Ctrl+n
-		in lessmode: 'n' (number without modifier)
-
-
-   
-	Cursor and configurable cursorcolor for unfocused windows,
-	cursor gets highlighted on focus in
-
-
-#### Slim resource usage:
-
-<img align="right" src="images/vt-102-1984.jpg">
-
-	UTF8 support is an optional compile switch now.
-	  
-
-  Colors restricted to a 256 color palette 
-        (Saving 6 Bytes per Glyph)
-
-	Keep the history and terminal contents on resize events
-		(Doesn't erase wider lines, when shrinking)
-		No scrollback "behind" the current history anymore (Bugfix)
-
-	Delayed allocation of the history buffer. 
-
-		Saves up to tenths or even hundreds of MB, 
-		depending on the terminal's width and history size
-
-
-___
-
-Applied 'official' patches:
-
-
-- anysize
-- clipboard
-- keyboard_select
-- relative_border
-- scrollback
-- scrollback-mouse
-- scrollback-mouse-increment
-- selectioncolors
-- xresources <br>
-		added commandline switch -x to enable reading the xresources,<br>
-		compile time switch "XRESOURCES"
-
-
-Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
+If you'd like to change anything, please edit config.in.
 
 
 
