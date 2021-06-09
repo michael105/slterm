@@ -29,7 +29,7 @@
 
   * Hit `Ctrl+Shift+l/PageUp/CursorUp` to enter "lessmode".
 		
-		Afterwards in "lessmode" Cursor keys and PageUp/Down scroll around.
+	Afterwards in "lessmode" Cursor keys and PageUp/Down scroll around.
 
   * `Ctrl+Shift+PageDown/CursorDown`, `q` or `Escape` leave lessmode.
 
@@ -43,9 +43,9 @@
 	 
 ##### Scrollmarks: Bookmarks within the history.
 
-		set mark:   Ctrl+Alt+n (n=0..9)
-		goto mark:  Ctrl+n
-		(lessmode): 'n' (number without modifier)
+	set mark:   Ctrl+Alt+n (n=0..9)
+	goto mark:  Ctrl+n
+	(lessmode): 'n' (number without modifier)
 
 
 ##### Hotkeys for font sizes and colors:
