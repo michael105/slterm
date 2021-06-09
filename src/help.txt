@@ -1,5 +1,5 @@
 
-$CYAN     slt - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
+$CYAN     slterm - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
 
 
 $YELLOW Short help reference $NORM

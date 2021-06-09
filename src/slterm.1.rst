@@ -1,19 +1,19 @@
 ========
- st-asc
+ slterm
 ========
 
-(s)imple (t)erminal - (asc)ii fork
+The 'slim terminal'
 
 
 SYNOPSIS
 ========
 
-**st-asc** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
+**slterm** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
 [**-l** *line*] [**-w** *windowid*] [[**-e**] *command*
 [*arguments*...]]
 
-**st-asc** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
+**slterm** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
 [**-w** *windowid*] -l *line* [*stty_args*...]
 
@@ -21,61 +21,85 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-**st-asc** is a virtual terminal emulator for X
-It is a slimmed down clone of st (suckless.org),
+**slterm** is a virtual terminal emulator for X.
+It is originally based on st (suckless.org),
 utf-8 and rgb support stripped for better performance,
-but with several additions and patches.
+with several additions and patches.
 
 
 KEYS
 ====
 
-**Ctrl-Shift-c**
+
+**(Anymod)+F1**  
+   Show the reference of keybindings
+   'Anymod' can be any combination of modification keys (Ctrl, Alt,..)
+   Added to show the internal help, also when F1 has been bound to
+   e.g. the window manager
+
+**Ctrl+Shift+c**
    Copy the selected text to the clipboard selection.
 
-**Ctrl-Shift-v**
+**Ctrl+Shift+v**
    Paste from the clipboard selection.
 
-**Ctrl-Shift-y**
+**Ctrl+Shift+y**
    Paste from primary selection (middle mouse button).
 
 **Ctrl+Shift+l**
    Toggle "less mode": when enabled, Cursor Up/Down, PageUp/PageDown, Home/End
    will scroll up / down, without holding Shift
 
-**Ctrl-Shift-s** 
+**Shift+Backspace**
+   Enable lessmode and scroll back to the line, 
+   the last command has been entered in the shell
+
+**Ctrl+Enter** 
+   Execute command, enter lessmode when more than
+   one screen is displayed by the command.
+
+**Ctrl+Alt + [0..9]** 
+   Set Scrollmark 0 - 9
+
+**Ctrl + [0..9]**     
+   Scroll to mark 0 - 9
+
+**Ctrl+Shift+s** 
    Enter keyboard selection mode
    (Described below, with a different key mapping)
 
-**Shift-PgUp/PgDown**
+**Shift+PgUp/PgDown**
    Scroll Up/Down a Page
 
-**Shift-Up/Down**
+**Shift+Up/Down**
    Scroll Up/Down three lines
 
-**Shift-Home/End**
+**Shift+Home/End**
    Scroll to top / bottom
 
 **Break**
    Send a break in the serial line. Break key is obtained in PC
    keyboards pressing at the same time control and pause.
 
-**Ctrl-Print Screen**
+**Ctrl+Print Screen**
    Toggle if st should print to the *iofile.*
 
-**Shift-Print Screen**
+**Shift+Print Screen**
    Print the full screen to the *iofile.*
 
 **Print Screen**
    Print the selection to the *iofile.*
 
-**Ctrl-Shift-Page Up**
-   Increase font size.
+**Alt+Shift + Insert/Delete**   
+   Enlarge/Shrink width
 
-**Ctrl-Shift-Page Down**
-   Decrease font size.
+**Alt+Shift + PageUp/PageDown** 
+   Zoom in / out
 
-**Ctrl-Shift-Home**
+**Ctrl+Shift + I** 
+   Inverse colors
+
+**Ctrl+Shift+Home**
    Reset to default font size.
 
 
@@ -142,7 +166,7 @@ OPTIONS
 
 **-x**
    enable reading of the XResources database for the configuration
-   st-asc must have been compiled with the XRESOURCES flag in config.h.in set to 1
+   slterm must have been compiled with the XRESOURCES flag in config.h.in set to 1
 
 
 Keyboard selection mode
@@ -185,26 +209,88 @@ Return:       Return to the previous mode
 CUSTOMIZATION
 =============
 
-**st-asc** can be customized by editing config.h.in and (re)compiling
+**slterm** can be customized by editing config.in and (re)compiling
 the source code, or by editing the Xresources init files and 
-compiling st-asc with Xresources enabled.
+compiling slterm with Xresources enabled.
+
 
 AUTHORS
 =======
 
-See README and PATCHES for the authors.
+Based on Aurelien APTEL <aurelien dot aptel at gmail dot com> bt source code.
+
+The code has been hosted and maintained by the suckless project.
+
+Applied patches are written by:
+
+  - Tonton Couillon - \<la dot luge at free dot fr\>
+  - Jochen Sprickerhof - <st@jochen.sprickerhof.de>
+  - M Farkas-Dyck - <strake888@gmail.com>
+  - Ivan Tham - <pickfire@riseup.net> (mouse scrolling)
+  - Ori Bernstein - <ori@eigenstate.org> (fix memory bug)
+  - Matthias Schoth - <mschoth@gmail.com> (auto altscreen scrolling)
+  - Laslo Hunhold - <dev@frign.de> (unscrambling, git port)
+  - Paride Legovini - <pl@ninthfloor.org> (don't require the Shift
+    modifier when using the auto altscreen scrolling)
+  - Lorenzo Bracco - <devtry@riseup.net> (update base patch, use static
+    variable for config)
+  - Kamil Kleban - <funmaker95@gmail.com> (fix altscreen detection)
+  - Avi Halachmi - <avihpit@yahoo.com> (mouse + altscreen rewrite after
+    `a2c479c`)
+  - Jacob Prosser - <geriatricjacob@cumallover.me>
+  - Augusto Born de Oliveira - <augustoborn@gmail.com>
+  - Kai Hendry - <hendry@iki.fi>
+  - Laslo Hunhold - <dev@frign.de> (git port)
+  - Matthew Parnell - <matt@parnmatt.co.uk> (0.7, git ports)
+  - Doug Whiteley - <dougwhiteley@gmail.com>
+  - Aleksandrs Stier
+  - @dcat on [Github](https://github.com/dcat/st-xresources)
+  - Devin J. Pohly - <djpohly@gmail.com> (git port)
+  - Sai Praneeth Reddy - <spr.mora04@gmail.com> (read borderpx from
+    xresources)
+
+
+All other additions, performance optimizations, 
+and the reorganization of the source files
+has done Michael (misc) Myer. 
+(2020,21 / misc.myer@zoho.com / https://github.com/michael105)
+
+(My apologies for not pushing the work back to suckless,
+but the heavy changes and the not so simple additions
+let me seem this neither easy nor following the suckless philosophy;
+and it wouldn't be possible to submit "patches" anymore)
+
 
 LICENSE
 =======
 
-See the LICENSE file for the terms of redistribution.
+MIT License
 
-SEE ALSO
-========
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-**tabbed**\ (1), **utmp**\ (1), **stty**\ (1)
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
 BUGS
 ====
 
-See the README in the distribution.
+Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
+with Xorg programs. 
+
+The history ringbuffer could get problematic in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so it's not at the top of the todo list)
+
+
