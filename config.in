@@ -9,7 +9,7 @@ ifdef UNDEF
 The file to edit the configuration of st
 It's split into two parts,
 the first is a makefile which gets extracted into config.make,
-the second is a c header file and gets to src/config.h
+the second is a c header file and becomes to src/config.h
 ===============================================================
 
 
