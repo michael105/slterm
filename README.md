@@ -33,35 +33,35 @@
 
   * `Ctrl+Shift+PageDown/CursorDown`, `q` or `Escape` leave lessmode.
 
-  * Hit Ctrl/Shift+Return to execute a command in the shell and automatically enter lessmode,
+  * Hit `Ctrl/Shift+Return` to execute a command in the shell and automatically enter lessmode,
        	if more than one screen is written by the command.
 
-		Shift+Backspace: Enable lessmode and scroll back to the place, 
+  * `Shift+Backspace`: Enable lessmode and scroll back to the place, 
 		   the last command has been entered.
    
 <img align="right" src="images/vt-102-1984.jpg">
 	 
- - Scrollmarks: Bookmarks within the history.
+##### Scrollmarks: Bookmarks within the history.
 
-		set:  Ctrl+Alt+n (n=0..9)
-		goto: Ctrl+n
-		in lessmode: 'n' (number without modifier)
+		set mark:   Ctrl+Alt+n (n=0..9)
+		goto mark:  Ctrl+n
+		(lessmode): 'n' (number without modifier)
+
 
 ##### Hotkeys for font sizes and colors:
   
- - *Alt+Shift + Insert/Delete*  Enlarge/Shrink font width
- - `Alt+Shift + PageUp/PageDown` 
-       Zoom font in / out
-     *Alt+Shift+Home*
-       Reset to default font size.
-    *Ctrl+Shift + I* 
-       Inverse colors
+ - `Alt+Shift+Insert/Delete`   Enlarge/Shrink font width
+ - `Alt+Shift+PageUp/PageDown` Zoom font in / out
+ - `Alt+Shift+Home`            Reset to default font size.
+ - `Ctrl+Shift+I`            Inverse colors
    
 
- Inline help: *(Anymod)+F1*
+##### Inline help
+
+`(Anymod)+F1`
    
     Show the reference of keybindings
-    'Anymod' can be any combination of modification keys (Ctrl, Alt,..)
+    `Anymod` can be any combination of modification keys (Ctrl, Alt,..)
     Added to show the internal help, also when e.g. F1 has been
 	 bound to the window manager
 
@@ -222,7 +222,7 @@ different source files. I'm about to tidy this up further.
 
 ### Install
 
-edit config.h.in (optionally)
+edit [config.in](config.in) (optionally) 
 
     make
     make install
