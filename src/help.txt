@@ -1,22 +1,19 @@
 
 $CYAN     slterm - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
 
+(Homepage: http://github.com/michael105/slterm)
 
-$YELLOW Short help reference $NORM
 
-
-slt (slim terminal emulator for X) is a fork of st (suckless terminal),
-Homepage: http://github.com/michael105/slt
+$YELLOW Keybinding reference $NORM
 
 This is a short reference of keystrokes,
-a longer manual might be accessible with 'man slt'.
-
+a longer manual should be accessible via 'man slterm'.
 
 $YELLOW Keystrokes $NORM
 
-${GRAY}There are 3 different modes in slt;
+${GRAY}There are 3 different modes in slterm;
 regular mode, lessmode and selection mode.
-slt is started in the regular mode.
+slterm is started in the regular mode.
 $N
 
 $UL${LGREEN}All modes:$N
