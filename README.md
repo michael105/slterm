@@ -29,7 +29,7 @@
 
   * Hit `Ctrl+Shift+l/PageUp/CursorUp` to enter "lessmode".
 		
-		Afterwards in "lessmode" Cursor keys and PageUp/Down scroll around.
+	Afterwards in "lessmode" Cursor keys and PageUp/Down scroll around.
 
   * `Ctrl+Shift+PageDown/CursorDown`, `q` or `Escape` leave lessmode.
 
