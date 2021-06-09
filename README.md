@@ -25,25 +25,47 @@
 #### Additions in detail:
 
 
-	Lessmode
+##### Lessmode
 
-		Hit Ctrl+Shift+PageUp/CursorUp to enter "lessmode".
-		Afterwards in the 'lessmode' Cursor keys and PageUp/Down scroll around.
-		Ctrl+Shift+PageDown/CursorDown, 'q' or Escape leave the lessmode.
+  * Hit `Ctrl+Shift+l/PageUp/CursorUp` to enter "lessmode".
+		
+		Afterwards in "lessmode" Cursor keys and PageUp/Down scroll around.
 
- 		Hit Ctrl/Shift+Return to execute a command in the shell and automatically enter lessmode,
+  * `Ctrl+Shift+PageDown/CursorDown`, `q` or `Escape` leave lessmode.
+
+  * Hit Ctrl/Shift+Return to execute a command in the shell and automatically enter lessmode,
        	if more than one screen is written by the command.
 
-		Shift+Backspace: Enter lessmode and scroll back to the place, the last command has been entered.
+		Shift+Backspace: Enable lessmode and scroll back to the place, 
+		   the last command has been entered.
    
 <img align="right" src="images/vt-102-1984.jpg">
 	 
-	Scrollmarks: Bookmarks within the history.
+ - Scrollmarks: Bookmarks within the history.
 
 		set:  Ctrl+Alt+n (n=0..9)
 		goto: Ctrl+n
 		in lessmode: 'n' (number without modifier)
 
+##### Hotkeys for font sizes and colors:
+  
+ - *Alt+Shift + Insert/Delete*  Enlarge/Shrink font width
+ - `Alt+Shift + PageUp/PageDown` 
+       Zoom font in / out
+     *Alt+Shift+Home*
+       Reset to default font size.
+    *Ctrl+Shift + I* 
+       Inverse colors
+   
+
+ Inline help: *(Anymod)+F1*
+   
+    Show the reference of keybindings
+    'Anymod' can be any combination of modification keys (Ctrl, Alt,..)
+    Added to show the internal help, also when e.g. F1 has been
+	 bound to the window manager
+
+  
    
 	Cursor and configurable cursorcolor for unfocused windows,
 	cursor gets highlighted on focus in

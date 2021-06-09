@@ -91,7 +91,7 @@ KEYS
    Print the selection to the *iofile.*
 
 **Alt+Shift + Insert/Delete**   
-   Enlarge/Shrink width
+   Enlarge/Shrink font width
 
 **Alt+Shift + PageUp/PageDown** 
    Zoom in / out
