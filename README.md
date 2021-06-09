@@ -43,9 +43,9 @@
 	 
 ##### Scrollmarks: Bookmarks within the history.
 
-		set mark:   Ctrl+Alt+n (n=0..9)
-		goto mark:  Ctrl+n
-		(lessmode): 'n' (number without modifier)
+	set mark:   Ctrl+Alt+n (n=0..9)
+	goto mark:  Ctrl+n
+	(lessmode): 'n' (number without modifier)
 
 
 ##### Hotkeys for font sizes and colors:
