@@ -37,7 +37,7 @@ OPT_FLAG := -Os
 
 # Linker Flags
 #LINKER_FLAG = -g
-LINKER_FLAG := -s 
+LINKER_FLAG := -s -static
 
 # paths
 PREFIX := /usr/local
