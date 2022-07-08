@@ -523,7 +523,9 @@ int32_t tdefcolor(int *attr, int *npar, int l) {
 						if (!BETWEEN(attr[*npar], 0, 255)) {
 								fprintf(stderr, "erresc: bad fgcolor %d\n", attr[*npar]);
 						} else {
+						//	fprintf(stderr,"color: %d\n",attr[*npar]); //D
 								idx = attr[*npar];
+						//		printf("idx: %x\n",idx); //D
 						}
 						break;
 				case 0: /* implemented defined (only foreground) */

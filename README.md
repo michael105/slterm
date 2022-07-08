@@ -4,7 +4,7 @@
 
 	Slim (94kB) and fast terminal emulator for X11,
 	with minimal external dependencies (Xlib and Xft).
-   Based on a patched version of st (suckless terminal).
+   Fork of st (suckless terminal), modified extensively.
 
 
 ##### Addons and modifications:
@@ -88,6 +88,13 @@
 
 		Saves up to tenths or even hundreds of MB, 
 		depending on the terminal's width and history size
+
+
+___
+
+
+The sourcecode is heavily modified, partly rewritten, and split into 
+smaller parts. (Original it has been one single file with several thousand lines).
 
 
 ___
@@ -192,7 +199,7 @@ Saving 6 Bytes per glyph.
 There still is the option to
 have "rgb" colors via modifying the indexed 256 color palette, 
 the default is the ("standardized") xterm 256 color palette.
-I just slimmed down the memory usage for the colors from 8 Bytes to 2 Bytes per glyph.
+This slims down the memory usage of the colors from 8 Bytes to 2 Bytes per glyph.
 
 
 ;) To quote Bill, 256 colors ought be enough for everyone.
