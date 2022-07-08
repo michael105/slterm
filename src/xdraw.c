@@ -68,6 +68,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				base.fg = defaultattr;
 		}
 
+//					fprintf(stderr,"SET\n");//D
 		if (IS_TRUECOL(base.fg)) {
 				colfg.alpha = 0xffff;
 				colfg.red = TRUERED(base.fg);
@@ -89,43 +90,85 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		} else {
 				bg = &dc.col[base.bg];
 		}
+#define AS(c) colfg.c = fg->color.c
+#define ASB(c) colbg.c = bg->color.c
+		//AS(red);AS(green);AS(blue);AS(alpha);
+		//ASB(red);ASB(green);ASB(blue);ASB(alpha);
+#undef AS
+#undef ASB
+
 
 		/* Change basic system colors [0-7] to bright system colors [8-15] */
 		if ((base.mode & ATTR_BOLD_FAINT) == ATTR_BOLD && BETWEEN(base.fg, 0, 7))
 				fg = &dc.col[base.fg + 8];
 
+//#define cbold(c) colfg.c = fg->color.c + (fg->color.c/2)
+#define boldf 0xfff
+//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
+#define cbold(c) colfg.c = ((fg->color.c + fg->color.c/2) | fg->color.c ) & 0xffff
+//#define cbold(c) colfg.c = fg->color.c > 250?  : fg->color.c+ 5;
+//#define cfaint(c) colfg.c = fg->color.c - (fg->color.c/2)
+//#define cfaint(c) colfg.c = fg->color.c - 33;
+#define cfaint(c) colfg.c = fg->color.c - fg->color.c/4;
+		if ( (base.mode & ATTR_FAINT) == ATTR_FAINT && !BETWEEN(base.fg,0,15) )  {
+//				printf("faint: rgb %x %x %x %x\n",fg->color.red,fg->color.green,fg->color.blue,fg->color.alpha); //D
+				cfaint(red); //= fg->color.red * 2;
+				cfaint(green); //= fg->color.green * 2;
+				cfaint(blue); //= fg->color.blue +  2;
+				//colfg.red = fg->color.red;
+				//colfg.green = fg->color.green;
+				//colfg.blue = fg->color.blue;
+				colfg.alpha = fg->color.alpha;//2;
+//				printf("faint: rgb %x %x %x %x\n",colfg.red,colfg.green,colfg.blue,colfg.alpha); //D
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				fg = &revfg;
+		}
+
+		if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  {
+//			printf("bold: rgb %x %x %x %x\n",fg->color.red,fg->color.green,fg->color.blue,fg->color.alpha); //D
+				cbold(red); //= fg->color.red * 2;
+				cbold(green); //= fg->color.green * 2;
+				cbold(blue); //= fg->color.blue +  2;
+				colfg.alpha = fg->color.alpha;
+//				printf("BOLD: rgb %x %x %x %x\n",colfg.red,colfg.green,colfg.blue,colfg.alpha); //D
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				fg = &revfg;
+		}
+
+
 		if (IS_SET(MODE_REVERSE)) {
 				if (fg == &dc.col[defaultfg]) {
 						fg = &dc.col[defaultbg];
 				} else {
-						colfg.red = ~fg->color.red;
-						colfg.green = ~fg->color.green;
-						colfg.blue = ~fg->color.blue;
-						colfg.alpha = fg->color.alpha;
+//						colfg.red = ~fg->color.red;
+//						colfg.green = ~fg->color.green;
+//						colfg.blue = ~fg->color.blue;
+//						colfg.alpha = fg->color.alpha;
+#define AS(c) colfg.c = ~colfg.c
+		AS(red);AS(green);AS(blue);
+#undef AS
+
+	
 						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
 						fg = &revfg;
 				}
 
-				if (bg == &dc.col[defaultbg]) {
+				if ( bg == &dc.col[defaultbg]) {
 						bg = &dc.col[defaultfg];
 				} else {
-						colbg.red = ~bg->color.red;
-						colbg.green = ~bg->color.green;
-						colbg.blue = ~bg->color.blue;
-						colbg.alpha = bg->color.alpha;
+//					fprintf(stderr,"inv\n");//D
+						//colbg.red = ~bg->color.red;
+						//colbg.green = ~bg->color.green;
+						//colbg.blue = ~bg->color.blue;
+						//colbg.alpha = bg->color.alpha;
+#define ASB(c) colbg.c = ~bg->color.c
+		ASB(red);ASB(green);ASB(blue);
+#undef ASB
 						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
 						bg = &revbg;
 				}
 		}
 
-		if ( (base.mode & ATTR_BOLD_FAINT) == ATTR_FAINT )  {
-				colfg.red = fg->color.red / 2;
-				colfg.green = fg->color.green / 2;
-				colfg.blue = fg->color.blue / 2;
-				colfg.alpha = fg->color.alpha;
-				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-				fg = &revfg;
-		}
 
 #define CLFA 24000
 		// Change colors on focusout
@@ -174,12 +217,18 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 
 		if (base.mode & ATTR_REVERSE) {
+					//fprintf(stderr,"attrinv\n");//D
 				/* bg = &dc.col[selectionbg];
 				if (!ignoreselfg)
 						fg = &dc.col[selectionfg]; */
-				cltmp = bg;
-				bg = fg;
-				fg = cltmp;
+				//cltmp = bg;
+				//bg = fg;
+				//fg = cltmp;
+#define AS(c) {int tc = colfg.c; colfg.c=colbg.c;colbg.c = tc;}
+				AS(red);AS(green);AS(blue);
+#undef AS
+				fg = &revfg;
+				bg = &revbg;
 		}
 
 		if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)

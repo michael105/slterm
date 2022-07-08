@@ -2,7 +2,7 @@
 
 
 
-use Data::Dumper::Simple;
+#use Data::Dumper::Simple;
 
 
 my @a;
@@ -68,9 +68,17 @@ for( my $b = 51; $b<=231;$b+=36 ){
 }
 
 
-if ( 1 ){
+if ( 0 ){
 foreach my $row(@a){
 	foreach my $c( @{$row} ){
+		#printf("\033[38;5;$c"."m%03d ",$c);
+		print("\033[0;0m");
+		printf("\033[38;5;$c"."m%03d ",$c);
+		print("\033[0;0m");
+		print("\033[0;1m");
+		printf("\033[38;5;$c"."m%03d ",$c);
+		print("\033[0;0m");
+		print("\033[0;2m");
 		printf("\033[38;5;$c"."m%03d ",$c);
 	}
 	print "\n";
@@ -79,48 +87,56 @@ foreach my $row(@a){
 exit;
 }
 
+my $i = 38;
+#my $i = 38; # 48 = invert - background
+
+my $split = 1;
 
 if ( 1 ){
+	#	print "xx\n";
 foreach my $row(@a){
 	my @ap = [];
 	foreach my $c( (@{$row}) ){
-		if ( $c >=16 && $c <= 51 ){
+		if ( $split && ($c >=16 && $c <= 51) ){
 			push @ap,$c;
-			printf("\033[0;2m\033[38;5;$c"."m%03d ",$c);
-			printf("\033[0;0m\033[38;5;$c"."m%03d ",$c);
-			printf("\033[0;1m\033[38;5;$c"."m%03d ",$c);
+			printf("\033[0;0m\033[0;1m\033[$i;5;$c"."m%03d ",$c);
+			printf("\033[0;0m\033[0;0m\033[$i;5;$c"."m%03d ",$c);
+			printf("\033[0;0m\033[0;2m\033[$i;5;$c"."m%03d ",$c);
 
 			next;
 		}
 
-		printf("\033[0;1m\033[38;5;$c"."m%03d ",$c);
+		printf("\033[0;0m");
+		printf("\033[0;2m\033[$i;5;$c"."m%03d ",$c);
 	}
 
 	foreach my $c( reverse(@{$row}) ){
-		if ( $c >=16 && $c <= 51 ){
+		if ( $split && ($c >=16 && $c <= 51) ){
 			push @ap,$c;
 			next;
 		}
 
-		printf("\033[0;0m\033[38;5;$c"."m%03d ",$c);
+		printf("\033[0;0m");
+		printf("\033[0;0m\033[$i;5;$c"."m%03d ",$c);
 	}
 	foreach my $c( (@{$row}) ){
-		if ( $c >=16 && $c <= 51 ){
+		if ( $split && ($c >=16 && $c <= 51) ){
 			push @ap,$c;
-			#printf("\033[0;0m\033[38;5;$c"."m%03d ",$c);
-		#printf("\033[0;1m\033[38;5;$c"."m%03d ",$c);
-		#printf("\033[0;2m\033[38;5;$c"."m%03d ",$c);
+			#printf("\033[0;0m\033[$i;5;$c"."m%03d ",$c);
+		#printf("\033[0;1m\033[$i;5;$c"."m%03d ",$c);
+		#printf("\033[0;2m\033[$i;5;$c"."m%03d ",$c);
 
 
 			next;
 		}
-		printf("\033[0;2m\033[38;5;$c"."m%03d ",$c);
+		printf("\033[0;0m");
+		printf("\033[0;1m\033[$i;5;$c"."m%03d ",$c);
 	}
 
 	#	foreach my $c( @{$row} ){
 	#	printf("\033[0;2m\033[38;5;$c"."m%03d ",$c);
 	#}
-	print "\n";
+	print "\033[40;m\n";
 }
 exit;
 }
