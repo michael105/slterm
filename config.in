@@ -433,9 +433,9 @@ static Shortcut shortcuts[] = {
 
 
     { SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES },
-    { ControlMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
+    //{ ControlMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
     { ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
-    { XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
+    //{ XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
 
 
     { ShiftMask, XK_BackSpace, retmark , { },ALLMODES },
