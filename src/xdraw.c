@@ -217,18 +217,18 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 
 		if (base.mode & ATTR_REVERSE) {
-					//fprintf(stderr,"attrinv\n");//D
-				/* bg = &dc.col[selectionbg];
+					fprintf(stderr,"attrinv\n");//D
+				bg = &dc.col[selectionbg];
 				if (!ignoreselfg)
-						fg = &dc.col[selectionfg]; */
+						fg = &dc.col[selectionfg];
 				//cltmp = bg;
 				//bg = fg;
 				//fg = cltmp;
 #define AS(c) {int tc = colfg.c; colfg.c=colbg.c;colbg.c = tc;}
-				AS(red);AS(green);AS(blue);
+//				AS(red);AS(green);AS(blue);
 #undef AS
-				fg = &revfg;
-				bg = &revbg;
+//				fg = &revfg;
+//				bg = &revbg;
 		}
 
 		if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
