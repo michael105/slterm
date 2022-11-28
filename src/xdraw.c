@@ -217,7 +217,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 
 		if (base.mode & ATTR_REVERSE) {
-					fprintf(stderr,"attrinv\n");//D
+				//	fprintf(stderr,"attrinv\n");//D
 				bg = &dc.col[selectionbg];
 				if (!ignoreselfg)
 						fg = &dc.col[selectionfg];
