@@ -288,8 +288,8 @@ If you'd like to change anything, please edit config.in.
 
 ### Bugs
 
-Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
-with Xorg programs. 
+Clipboard copy/paste of characters > 127 doesn't convert the encodings.
+(Use iconv to do the conversion)
 
 The history ringbuffer could get problematic and scroll to wrong locations in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so this is not at the top of the todo list)
 
