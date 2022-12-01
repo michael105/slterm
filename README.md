@@ -58,12 +58,17 @@
 
 ##### Different charmaps, assigned to hotkeys
  
- per default CP1252 ( ANSI, ISO 8859-1, DEC-MCS(nearly) ) is used.
+ per default CP1252 ( ANSI, ISO 8859-1, DEC-MCS(nearly) ) is used,
+ and only the first page. (0x0-0xff), "extended ascii", ansi.
+
  CP437 (IBM-PC1, et al., with those signs to draw borders and boxes),
  cp850, cp1250, cp1251, cp1253 are compiled in, 
  and can be selected by Ctrl+Win+[0..5]
  Other codepages would be possible, by adding them to charmap.h
  and changing config.in
+
+ All tables are used with 8bit ascii, for performance reasons.
+ There still is the possibility to enable UTF-8 at compiletime.
 
 
 ##### Inline help
