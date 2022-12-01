@@ -293,7 +293,14 @@ Clipboard copy/paste of characters > 127 doesn't convert the encodings.
 
 The history ringbuffer could get problematic and scroll to wrong locations in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so this is not at the top of the todo list)
 
-
+Currently with my local xmodmap and Xorg, it is not possible,
+to map the chars 0x80-0x9f. What is - annoying. 
+There is the euro, and upper and lower quotation marks.
+I changed the mapping of vi, to enter those signs.
+But this is - not perfect. Originally, with DEC vt100,
+this area of chars had been control characters.
+Sometimes crazy, that's been mor than 40 years before, 
+ancient, in terms of it, but still the trouble is there.
 
 
 ====================
