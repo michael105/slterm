@@ -23,11 +23,13 @@
 #include "scroll.h"
 #include "xdraw.h"
 #include "termdraw.h"
+#include "charmaps.h"
 
 
 #include "statusbar.c"
 #include "arg.c"
 #include "st.c"
+#include "charmaps.c"
 // termdraw needs to go after st.c .?
 // otherweise delete and cursor keys do make trouble.
 // Not looking for the source now.

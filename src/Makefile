@@ -10,14 +10,14 @@ include config.make
 
 SRC = base64.c mem.c slterm.c stsrc.c tty.c x.c main.c\
 			selection.c st.c  system.c utf8.c xevent.c fonts.c\
-			statusbar.c xdraw.c termdraw.c arg.c scroll.c
+			statusbar.c xdraw.c termdraw.c arg.c scroll.c charmaps.c
 SRCO = base64 mem slterm tty x main  selection st  system utf8
 
 
 #SRC = st.c x.c utf8.c selection.c
 HEADER = st.h arg.h config.h utf8.h selection.h\
 				 includes.h debug.h x.h fonts.h xevent.h statusbar.h\
-				 xdraw.h termdraw.h
+				 xdraw.h termdraw.h charmaps.h
 
 
 ifdef ENABLEDEBUG

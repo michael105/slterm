@@ -56,6 +56,16 @@
  - `Ctrl+Shift+I`            Inverse colors
    
 
+##### Different charmaps, assigned to hotkeys
+ 
+ per default CP1252 ( ANSI, ISO 8859-1, DEC-MCS(nearly) ) is used.
+ CP437 (IBM-PC1, et al., with those signs to draw borders and boxes),
+ cp850, cp1250, cp1251, cp1253 are compiled in, 
+ and can be selected by Ctrl+Win+[0..5]
+ Other codepages would be possible, by adding them to charmap.h
+ and changing config.in
+
+
 ##### Inline help
 
 `(Anymod)+F1`
