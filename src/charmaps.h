@@ -10,6 +10,12 @@ void set_charmap(const Arg *a);
 // mappings of the codetables to unicode 
 // enable or disable them in config.in
 // only used tables will be compiled into the binary
+// Other codepages can be found e.g. at 
+// https://www.haible.de/bruno/charsets/conversion-tables/
+// Currently, only the chars 0x80 - 0xff are mapped.
+// This could be changed with the function convert in charmaps.c,
+// and the macros "ISCONTROL" in termdraw would eventually
+// need to changed (e.g. look for the current charmap, and return accordingly)
 
 static const unsigned short cp437[] = {
 	0x00c7, 0x00fc, 0x00e9, 0x00e2, 0x00e4, 0x00e0, 0x00e5, 0x00e7,
