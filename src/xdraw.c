@@ -264,6 +264,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		r.width = width;
 		XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
 
+		//printf("spec %x\n",specs->glyph);
 		/* Render the glyphs. */
 		XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
 

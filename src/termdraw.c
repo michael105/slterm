@@ -4,6 +4,18 @@
 #include "utf8.h"
 #include "st.h"
 
+/* macros */
+#define ISCONTROLC0(c) (BETWEEN(c, 0, 0x1f) || (c) == '\177')
+//#define ISCONTROLC1(c) (BETWEEN(c, 0x80, 0x9f))
+//#define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
+
+
+#define ISCONTROL(c) ((c <= 0x1f) || (c==0x7f))
+
+#define ISCONTROLC1(c) (0)
+//#define ISCONTROL(c) (0)
+
+
 
 // exclusively in drawregion the real drawing( line per line, with xdrawline ) 
 // of the terminal (buffer) contents (without cursor) is done.
@@ -125,6 +137,9 @@ void tputc(Rune u) {
 		int control;
 		int width, len;
 		Glyph *gp;
+//	if ( u>=0x80 )
+//		printf("r: %x\n",u);
+
 
 		control = ISCONTROL(u);
 #ifndef UTF8
@@ -206,6 +221,9 @@ check_control_code:
 		 * they must not cause conflicts with sequences.
 		 */
 		if (control) {
+//	if ( u>=0x80 )
+//		printf("cont r: %x\n",u);
+
 				tcontrolcode(u);
 				/*
 				 * control codes are not shown ever
@@ -259,6 +277,10 @@ check_control_code:
 				tnewline(1);
 				gp = &term->line[term->c.y][term->c.x];
 		}
+
+//	if ( u>=0x80 )
+//		printf("set r: %x\n",u);
+
 
 		tsetchar(u, &term->c.attr, term->c.x, term->c.y);
 
@@ -324,6 +346,8 @@ void histputc(utfchar c){
 // put a char onto screen
 void tsetchar(Rune u, Glyph *attr, int x, int y) {
 #ifndef UTF8
+	//if ( u>=0x80 )
+	//	printf("r: %x\n",u);
 		term->dirty[y] = 1;
 		term->line[y][x] = *attr; 
 		term->line[y][x].u = u;
