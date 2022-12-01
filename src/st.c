@@ -20,11 +20,6 @@
 #include <libutil.h>
 #endif
 
-/* macros */
-#define ISCONTROLC0(c) (BETWEEN(c, 0, 0x1f) || (c) == '\177')
-#define ISCONTROLC1(c) (BETWEEN(c, 0x80, 0x9f))
-#define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
-
 #undef IS_SET
 #define IS_SET(flag) ((term->mode & (flag)) != 0)
 
@@ -543,7 +538,7 @@ unknown:
 						break;
 				case 'P': /* DCH -- Delete <n> char */
 						DEFAULT(csiescseq.arg[0], 1);
-						printf("Delc\n");
+						//printf("Delc\n");
 						tdeletechar(csiescseq.arg[0]);
 						break;
 				case 'Z': /* CBT -- Cursor Backward Tabulation <n> tab stops */
