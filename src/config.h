@@ -257,6 +257,7 @@ static MouseShortcut mshortcuts[] = {
 /* Internal keyboard shortcuts. */
 // masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
 // mod1 = alt, mod2 = win , mod3 = Capslock (here)
+// mod4 = win (!) 
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 #define SETBOOKMARKMASK (ControlMask|Mod1Mask)
@@ -393,6 +394,19 @@ static Shortcut shortcuts[] = {
 
     //{ XK_ANY_MOD, XK_Return, lessmode_toggle, { .i=0 },MODE_LESS },
 		
+	// select charmap
+    { ControlMask|Mod4Mask, XK_1, set_charmap, { .i=1 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_2, set_charmap, { .i=2 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_3, set_charmap, { .i=3 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_4, set_charmap, { .i=4 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_5, set_charmap, { .i=5 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_6, set_charmap, { .i=6 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_7, set_charmap, { .i=7 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_8, set_charmap, { .i=8 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_9, set_charmap, { .i=9 },ALLMODES },
+    { ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES },
+
+
  
 };
 
@@ -676,6 +690,32 @@ static char ascii_printable[]
 			"ÁÂÃ}ÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕ{×ØÙÚÛ%İŞßà"
 			"áâã]åæçèéêëìíîï"
 			"ğñòóôõ[÷øùúû$ışÿ";
+
+
+// select codepages
+// can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,cp1256,cp1257,cp1258
+// other codepages could be added in charmaps.h
+// the default codepage is at the first place (cp1252)
+// and assigned to Ctrl+Win+0
+// use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
+//
+// cp1252 is at the same time the DEC-MCS, ANSI, and Windows1252 default codepage.
+//
+// cp437 is the old ibm codepage, with those signs to draw borders and boxes.
+// (cp437 is uncomplete here, the "graphics mode" signs 0..0x1f are missing.
+// it's the old issue of the IBM PC1. Reinvented.)
+//
+// Me, I'm happy with CP1252, it has got umlauts, and yet every application
+// was able to work with the ansi code table. I'm only sometimes more happy,
+// when a console app does draw real borders and frames with cp437.
+// But, there is kyrillic, (cp1251), e.g., as well.
+
+//const short unsigned int* codepage[] = { cp1252,cp437 };
+const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850 };
+
+// the default codepage (cp1252)
+int selected_codepage = 2;
+
 #endif
 
 #if 0
