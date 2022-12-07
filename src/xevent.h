@@ -9,6 +9,8 @@ extern int inputmode;
 extern void (*handler[LASTEvent])(XEvent *); 
 
 
+//void tty_send_unicode(const Arg *arg);
+
 // callback argument
 typedef union {
   int i;

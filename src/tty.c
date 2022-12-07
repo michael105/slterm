@@ -176,6 +176,7 @@ void ttywrite(const utfchar *s, size_t n, int may_echo) {
 		}
 }
 
+
 void ttywriteraw(const utfchar *s, size_t n) {
 		fd_set wfd, rfd;
 		ssize_t r;

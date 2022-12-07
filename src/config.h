@@ -370,6 +370,8 @@ static Shortcut shortcuts[] = {
     { ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
     //{ XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
 
+	// doesnt ork ??
+	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES },
 
     { ShiftMask, XK_BackSpace, retmark , { },ALLMODES },
     { XK_ANY_MOD, XK_BackSpace, retmark , { },MODE_LESS },

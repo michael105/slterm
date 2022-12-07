@@ -164,6 +164,7 @@ void toggle_winmode(int flag) { win.mode ^= flag; }
 void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
 
 
+
 void resize(XEvent *e) {
 		if (e->xconfigure.width == win.w && e->xconfigure.height == win.h)
 				return;

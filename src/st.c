@@ -53,6 +53,11 @@ static void tdeftran(utfchar);
 static void tstrsequence(uchar);
 
 
+void tty_send_unicode(const Arg *arg){ 
+	char c = (char)arg->i;
+	ttywrite(&c, 1, 1); 
+}
+
 /* Globals */
 Term *term;
 Term *p_term=0;

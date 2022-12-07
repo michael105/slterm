@@ -184,6 +184,8 @@ typedef uint_least32_t Rune;
 typedef unsigned char Rune;
 #endif
 
+void tty_send_unicode(const Arg *arg);
+
 #define Glyph _Glyph
 typedef struct {
 #ifndef UTF8
