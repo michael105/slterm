@@ -39,7 +39,7 @@
   * `Shift+Backspace`: Enable lessmode and scroll back to the place, 
 		   the last command has been entered.
    
-<img align="right" src="images/vt-102-1984.jpg">
+<!-- <img align="right" src="images/vt-102-1984.jpg"> -->
 	 
 ##### Scrollmarks: Bookmarks within the history.
 
