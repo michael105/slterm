@@ -288,9 +288,6 @@ If you'd like to change anything, please edit config.in.
 
 ### Bugs
 
-Clipboard copy/paste of characters > 127 doesn't convert the encodings.
-(Use iconv to do the conversion)
-
 The history ringbuffer could get problematic and scroll to wrong locations in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so this is not at the top of the todo list)
 
 Currently with my local xmodmap and Xorg, it is not possible,
@@ -306,7 +303,7 @@ ancient, in terms of it, but still the trouble is there.
 ====================
 
 
-(misc 2020,2021 - misc.myer@zoho.com )
+(misc 2020-2023 - misc.myer@zoho.com )
 
 
 Credits

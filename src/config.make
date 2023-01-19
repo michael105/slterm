@@ -6,7 +6,7 @@
 #makefilestart
 
 # Set to 0
-SHOWCONFIGINFO := 0
+SHOWCONFIGINFO := 1
 
 # Dump debugging info
 # Values: 0 (off), 1 (on)
@@ -17,7 +17,7 @@ FULLDEBUG := 0
 
 
 # version
-VERSION := 0.94
+VERSION := 0.95
 
 # Set to 1 enable Xresource configuration
 # (in addition, st-asc has to be started with the option "-x on")
@@ -37,6 +37,7 @@ OPT_FLAG := -Os
 
 # Linker Flags
 #LINKER_FLAG = -g
+# Strip
 LINKER_FLAG := -s
 
 # paths

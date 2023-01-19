@@ -256,7 +256,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 		for (i = 0, xp = winx, yp = winy + font->ascent; i < len; ++i) {
 				/* Fetch rune and mode for current glyph. */
-				rune = convert( glyphs[i].u );
+				rune = charmap_convert( glyphs[i].u,glyphs[i].mode );
 				mode = glyphs[i].mode;
 
 #ifdef UTF8

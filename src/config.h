@@ -374,7 +374,7 @@ static Shortcut shortcuts[] = {
 	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES },
 
     { ShiftMask, XK_BackSpace, retmark , { },ALLMODES },
-    { XK_ANY_MOD, XK_BackSpace, retmark , { },MODE_LESS },
+    //{ XK_ANY_MOD, XK_BackSpace, retmark , { },MODE_LESS },
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
@@ -697,8 +697,6 @@ static char ascii_printable[]
 // select codepages
 // can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,cp1256,cp1257,cp1258
 // other codepages could be added in charmaps.h
-// the default codepage is at the first place (cp1252)
-// and assigned to Ctrl+Win+0
 // use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
 //
 // cp1252 is at the same time the DEC-MCS, ANSI, and Windows1252 default codepage.
@@ -712,9 +710,23 @@ static char ascii_printable[]
 // when a console app does draw real borders and frames with cp437.
 // But, there is kyrillic, (cp1251), e.g., as well.
 
+// Finally did write another codepage.
+// Kicked out most of the control chars (1..31),
+// left linebreak, tab (vert and hor.), ESC in.
+// There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
+// the greek alphabet and several mathematical and logical chars.
+// It's what I do need for writing. 
+// There's a filter for the conversion to and from utf8,
+// within tools. (e4, and e42)
+// Numbered the cp e4000, according to the rfc's exxx is reserved for private 
+// assignments. 
+
+
 //const short unsigned int* codepage[] = { cp1252,cp437 };
 const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850 };
 
+// the default codepage is cp1252
+// and assigned to Ctrl+Win+2
 // the default codepage (cp1252)
 int selected_codepage = 2;
 
