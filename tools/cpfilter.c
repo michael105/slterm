@@ -85,6 +85,7 @@ void usage(){
 			"(change the defaults in the source, if needed)\n"
 			"options: -s : silence, no messages to stderr\n"
 			"         -l : list codepages\n"
+			"         -x : display non convertible chars in hexadecimal\n"
 			"\n"
 			"(I'm using this as input filter for vi - just filter every text file,\n"
 			" the conversion is done automatically, if needed..)\n"
