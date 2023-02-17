@@ -798,7 +798,7 @@ const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, 
 // the default codepage is cp1252
 // and assigned to Ctrl+Win+2
 // the default codepage (cp1252)
-int selected_codepage = 6;
+int selected_codepage = 2;
 
 #endif
 
