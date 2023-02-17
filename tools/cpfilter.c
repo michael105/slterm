@@ -9,6 +9,7 @@
 #define DEFAULT_CP 2
 
 // max unicode point to convert.
+// eventually enlarge this.
 #define UNIMAX 4096
 #define BUF 64000
 
@@ -76,12 +77,15 @@ int opts;
 
 void usage(){
 	W("convert stdin to stdout\n"
-			"Usage: convert [-hs] [tocp] [fromcp]\n"
+			"Usage: convert [-hs] [tocp] [fromcp]\n\n"
 			"Example: cat text.txt | convert cp1252 cp850\n\n"
 			"Whithout any options, try to guess the charset and convert to cp437\n"
 			"(change the defaults in the source, if needed)\n"
-			"options: -s : silent\n"
+			"options: -s : silence, no messages to stderr\n"
 			"         -l : list codepages\n"
+			"\n"
+			"(I'm using this as input filter for vi - just filter every text file,\n"
+			" the conversion is done automatically, if needed..)\n"
 			"\nmiSc 23, BSD 3clause\n"
 			);
 	exit(1);
@@ -189,10 +193,6 @@ void listcodepages(){
 int main(int argc, char **argv ){
 	opts = 1; // verbose
 
-	//if ( (argc>1 && argv[1][0] == '-' && argv[1][1] == 'h') ||
-	//		argc > 3 )
-	//	usage();
-	
 	// parse options
 	for ( *argv++; *argv && *argv[0] == '-'; *argv++ ){
 		argc--;
@@ -214,6 +214,7 @@ int main(int argc, char **argv ){
 	int from = -1;
 	int to = -1;
 
+	// parse from and to codepage (if)
 	while ( argc>0 ){
 		from = to;
 		 const charmap *c = cp;
