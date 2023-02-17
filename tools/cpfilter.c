@@ -54,11 +54,8 @@ const charmap cp[] = {
 	{0,0,0,0},
 };
 
-#define NUMCP (sizeof(cp)/sizeof(charmap)-1)
 
-enum codepage { CP1252, CP850, CP437, CPE4002, UTF8 };
-const char* cps[] = { "cp1252", "cp850", "cp437", "cpe4002", "utf8",0 };
-const unsigned short* map[] = { cp1252,cp850,cp437,cpe4002 };
+#define NUMCP (sizeof(cp)/sizeof(charmap)-1)
 
 
 #include <stdio.h>
@@ -69,12 +66,22 @@ const unsigned short* map[] = { cp1252,cp850,cp437,cpe4002 };
 #define W(msg) write(2,msg,sizeof(msg))
 
 
+int opts;
+// verbose
+#define V(msg) ({ if ( opts&1 ) W(msg); 1; })
+#define v(...) { if ( opts&1 ) fprintf(stderr,__VA_ARGS__); }
+// silent
+#define E(msg) { if ( !(opts&2) ) W(msg); }
+
+
 void usage(){
 	W("convert stdin to stdout\n"
-			"Usage: convert [-h] [tocp] [fromcp]\n"
+			"Usage: convert [-hs] [tocp] [fromcp]\n"
 			"Example: cat text.txt | convert cp1252 cp850\n\n"
-			"Whithout any options, try to guess the charset and convert to cpe4002\n"
+			"Whithout any options, try to guess the charset and convert to cp437\n"
 			"(change the defaults in the source, if needed)\n"
+			"options: -s : silent\n"
+			"         -l : list codepages\n"
 			"\nmiSc 23, BSD 3clause\n"
 			);
 	exit(1);
@@ -100,7 +107,7 @@ int guess_charmap(const unsigned char *buf, int len){
 			case 128 ... 255:
 
 				ext++;
-				printf("c: %d\n",buf[a]);
+				//printf("c: %d\n",buf[a]);
 				for ( int b = 0; b<NUMCP; b++ ){
 					//printf("BBB\n");
 					for ( const unsigned char *c = cp[b].chars; *c; c++ ){
@@ -149,12 +156,12 @@ int guess_charmap(const unsigned char *buf, int len){
 	}
 
 	if ( !ext ){
-		W("No extended Ascii/UTF present.\n");
+		V("No extended Ascii/UTF present.\n");
 		return(-1);
 	}
 
 	if ( n<len-len/4 ){
-		W("This looks like a binary file.\nContinuing anyways\n");
+		V("This looks like binary data.\nContinuing anyways\n");
 	}
 
 	int max = 0;
@@ -165,25 +172,49 @@ int guess_charmap(const unsigned char *buf, int len){
 			guessed = a;
 		}
 
-	fprintf(stderr,"Guess: %s\n(%d chars match)\n",cp[guessed].name,max);
-	fprintf(stderr,"utf: %d  so: %d  n: %d\n",utf,so,n);
+	v("Guess: %s\n(%d chars match)\n",cp[guessed].name,max);
+	v("utf: %d\nchars:   %d\n   0-31: %d\n 32-127: %d\n128-191: %d\n192-255: %d\n",utf,len,co,n,so,ext);
 
 	return(guessed);
 }
 
+void listcodepages(){
+	W("Supported charmaps:\n\n");
+	for ( const charmap *cm = cp; cm->name != 0; cm++ )
+		printf("%s\n",cm->name);
+
+	exit(0);
+}
 
 int main(int argc, char **argv ){
+	opts = 1; // verbose
 
-	if ( (argc>1 && argv[1][0] == '-' && argv[1][1] == 'h') ||
-			argc > 3 )
-		usage();
+	//if ( (argc>1 && argv[1][0] == '-' && argv[1][1] == 'h') ||
+	//		argc > 3 )
+	//	usage();
+	
+	// parse options
+	for ( *argv++; *argv && *argv[0] == '-'; *argv++ ){
+		argc--;
+		for ( char *o = *argv+1; *o; o++ ){
+			switch (*o) {
+				case 'h':
+					usage();
+				case 'l':
+					listcodepages();
+				case 's':
+					opts=2;
+			}
+		}
+	}
+	argc--;
 
 	unsigned char buf[BUF],obuf[BUF*4];
 	int len;
 	int from = -1;
 	int to = -1;
 
-	while ( argc>1 ){
+	while ( argc>0 ){
 		from = to;
 		 const charmap *c = cp;
 		 while ( strcmp(c->name,argv[argc-1]) != 0 ){
@@ -213,16 +244,18 @@ int main(int argc, char **argv ){
 	len = read(0,buf,BUF);
 
 	if ( from == -1 ){
-		W("Guessing charset\n");
+		V("Guessing charset\n");
 		from = guess_charmap(buf,len);
 	}
 
-	if ( from == -1 ){ // no conversion possible, no extended ascii
+	if ( (from == -1) || // no conversion possible, no extended ascii
+			( (from==to) && ( V("Source and destination codepage are equal\n")) ) ){ 		
+		// write stdin to stdout (we are a filter)
 		do{ write(1,buf,len); } while (( len=read(0,buf,BUF) ));
 		exit(0);
 	}
 
-	fprintf(stderr,"Convert from %s to %s\n", cp[from].name,cp[to].name);
+	v("Convert from %s to %s\n", cp[from].name,cp[to].name);
 
 	do {
 		for ( int a = 0, p = 0; a<len; a++,p++ ){
@@ -243,9 +276,6 @@ int main(int argc, char **argv ){
 
 	} while (( len = read(0,buf,BUF) ));
 	
-
-
-
 
 
 
