@@ -11,7 +11,7 @@ is defined in Unicode, ISO 10646-1, and RFC 2279.
 
 Using Unicode/UTF-8, you can write in emails and source code things such as
 
-Mathematics and sciences:
+Mathematics and scien#es:
 
   ∮ E⋅da = Q,  n → ∞, ∑ f(i) = ∏ g(i),      ⎧⎡⎛┌─────┐⎞⎤⎫
                                             ⎪⎢⎜│a²+b³ ⎟⎥⎪

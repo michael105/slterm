@@ -53,13 +53,13 @@
  - `Alt+Shift+Insert/Delete`   Enlarge/Shrink font width
  - `Alt+Shift+PageUp/PageDown` Zoom font in / out
  - `Alt+Shift+Home`            Reset to default font size.
- - `Ctrl+Shift+I`            Inverse colors
+ - `Ctrl+Shift+I`              Inverse colors
    
 
 ##### Different charmaps, assigned to hotkeys
  
  per default CP1252 ( ANSI, ISO 8859-1, DEC-MCS(nearly) ) is used,
- and only the first page. (0x0-0xff), "extended ascii", ansi.
+ and only the first page. (0x20-0xff), "extended ascii", ansi.
 
  CP437 (IBM-PC1, et al., with those signs to draw borders and boxes),
  cp850, cp1250, cp1251, cp1253 are compiled in, 
@@ -298,6 +298,11 @@ But this is - not perfect. Originally, with DEC vt100,
 this area of chars had been control characters.
 Sometimes crazy, that's been mor than 40 years before, 
 ancient, in terms of it, but still the trouble is there.
+
+UTF-8 currently might need some work.
+Me, I don't need it. And I don't really like the idea of having up to 4 Bytes per char.
+It's quite simple to add another chartable, if needed, and
+im- and export files via iconv. 
 
 
 ====================

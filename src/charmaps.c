@@ -12,9 +12,21 @@ static inline uint charmap_convert(uint rune,uint attribute){
 	//	return( rune+(0x390 - 0x40) );
 	//}
 
+	if ( attribute & ATTR_BLINK ){
+		return( rune+(0x1D44e - 0x40) );
+	}
+
 
 
 	return(rune);
+}
+
+// reverse table, to convert and display utf8 in the selected codepage
+// works obviously only once, when the runes are created.
+// Later, a redraw or repaste is needed.
+void create_reversetable(){
+	for ( int a = 0; a<128; a++ )
+		rev_cp[a] = codepage[selected_codepage][a];
 }
 
 
@@ -22,6 +34,7 @@ static inline uint charmap_convert(uint rune,uint attribute){
 void set_charmap(const Arg *a){
 	if ( a->i < sizeof(codepage)/sizeof(uint*)){
 		selected_codepage = a->i;
+		create_reversetable();
 		redraw();
 	}
 
