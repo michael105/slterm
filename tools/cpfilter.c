@@ -12,6 +12,7 @@
 // eventually enlarge this.
 #define UNIMAX 4096
 #define BUF 64000
+#define OBUF (BUF*2)
 
 
 typedef char Arg;
@@ -73,6 +74,7 @@ int opts;
 #define v(...) { if ( opts&1 ) fprintf(stderr,__VA_ARGS__); }
 // silent
 #define E(msg) { if ( !(opts&2) ) W(msg); }
+#define e(...) { if ( !(opts&2) ) fprintf(stderr,__VA_ARGS__); }
 
 
 void usage(){
@@ -203,13 +205,22 @@ int main(int argc, char **argv ){
 				case 'l':
 					listcodepages();
 				case 's':
-					opts=2;
+					opts|=2;
+					opts&=0xfe; // reset bit verbose
+					break;
+				case 'u':
+					opts|=4; // write utf8 for nonconvertible chars
+					break;
+				case 'x':
+					opts|=8; // write hex unicode for nonconv. chars
+
 			}
 		}
 	}
 	argc--;
 
-	unsigned char buf[BUF],obuf[BUF*4];
+
+	unsigned char buf[BUF],obuf[OBUF];
 	int len;
 	int from = -1;
 	int to = -1;
@@ -256,24 +267,32 @@ int main(int argc, char **argv ){
 		exit(0);
 	}
 
-	v("Convert from %s to %s\n", cp[from].name,cp[to].name);
+	v("Converting from %s to %s\n", cp[from].name,cp[to].name);
 
 	do {
-		for ( int a = 0, p = 0; a<len; a++,p++ ){
+		int p = 0;
+		for ( int a = 0; a<len; a++ ){
 			if ( buf[a] <128 )
-				obuf[p] = buf[a];
+				obuf[p++] = buf[a];
 			else {
 				if ( ocp[ cp[from].map[buf[a]-128] ] )
-					obuf[p] =  ocp[ cp[from].map[buf[a]-128] ]+128; 
+					obuf[p++] =  ocp[ cp[from].map[buf[a]-128] ]+128; 
 				else { // no conversion possible
-					obuf[p] = cp[to].esign;
+					e("Cannot convert: %s: %d, unicode: %d\n",
+							cp[from].name, buf[a], cp[from].map[buf[a]-128]);
+					obuf[p++] = cp[to].esign;
+					if ( opts&8 ){
+						p+= sprintf((char*)obuf+p,"<%04x>",cp[from].map[buf[a]-128]);
+					}
 				}
 			}
-
-
+			if ( p > OBUF - 16 ){
+				write(1,obuf,p);
+				p=0;
+			}
 		}
 
-		write(1,obuf,len);
+		write(1,obuf,p);
 
 	} while (( len = read(0,buf,BUF) ));
 	
