@@ -277,15 +277,17 @@ int main(int argc, char **argv ){
 		int p = 0;
 		int a = 0; 
 		while ( a<len ){
+
 			if ( buf[a] <128 )
 				obuf[p++] = buf[a];
 			else { // char > 127
+				// get unicode point
 				int uc; 
 				// convert utf-8 to unicode
 				if ( from == UTF8 ){
 					if ( a+3>=len ){ // refill the buffer, before the conversion
 						len -= a;
-						memcpy(buf,(buf+a),len);
+						memmove(buf,(buf+a),len);
 						a = 0;
 						int l = read(0,(buf+len),BUF-len);
 						if ( l>0 )
@@ -311,13 +313,18 @@ int main(int argc, char **argv ){
 					} 
 					if ( tmp == a ){ // error. invalid utf8
 						e("Invalid utf8 sequence: %02x%02x\n",buf[a],buf[a+1]);
-						uc = buf[a];
+						uc = buf[a]; // for "mixed" encodings (e.g. cp1252, and utf-8)
+						// I'm a bit uncertain. In theory, the whole document's conversion
+						// is "invalid". In practice - maybe, some umlauts fall through
+						// I did say, John, you don't use umlauts for the calculation of the escape velocity.
+						// Just don't do it. Well.
 					}
 					  
-				} else {
+				} else { // codepage table conversion to unicode
 					uc = cp[from].map[buf[a]-128];
 				}
 
+				// convert unicode to the destination encoding
 				int t=p;
 				if ( (uc<UNITABLE) && ( ocp[ uc ] != -1 ) ){
 					obuf[p++] = ocp[ uc ]+128; 
@@ -328,6 +335,7 @@ int main(int argc, char **argv ){
 							break;
 						}
 				} 
+
 				if ( t == p ){ // no conversion possible
 					e( "Cannot convert: %s: %d, unicode: %d\n",
 							cp[from].name, buf[a], uc );
