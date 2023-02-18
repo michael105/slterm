@@ -10,6 +10,11 @@
 
 // max unicode point to convert.
 // eventually enlarge this.
+// (65536) is not high enough to convert 4-Byte utf-8 encodings.
+// For this, 0x1fffff (equals 2.1MB memory usage) would be needed
+// Since I don't know a codepage, which translates to 
+// utf-8 4Byte encoding, I leave the value lower.
+// #define UNIMAX 0x1FFFFF 
 #define UNIMAX 65536
 #define BUF 64000
 #define OBUF (BUF*2)
@@ -284,14 +289,19 @@ int main(int argc, char **argv ){
 				if ( from == UTF8 ){
 					uc = -1;
 					if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
+						uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
 						if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
-							uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
 							a++;
 						} else if ( (a+2<len) && ( (buf[a+2] & 0xc0) == 0x80 ) ){ 
+							uc = ( uc << 6 ) | (buf[a+2] & 0x3f);
 							if ( (buf[a] & 0xf0) == 0xe0 ){ // initial Byte 3Byte utf8
-								uc = ( (buf[a] & 0x1f) << 12 ) | ((buf[a+1] & 0x3f)<<6 | (buf[a+2] & 0x3f));
 								a+=2;
-							} 
+							} else if ( (a+3<len) && ( (buf[a+3] & 0xc0) == 0x80 ) ){ 
+								if ( (buf[a] & 0xf8) == 0xf0 ){ //4byte
+									uc = ((uc<<6) & 0x1FFFFF ) | ( buf[a+3] & 0x3f );
+									a+=3;
+								}
+							}
 						} 
 					} 
 					if ( uc < 0 ){ // error. 2.Byte
@@ -303,15 +313,11 @@ int main(int argc, char **argv ){
 						uc = buf[a];
 					}
 					  
-				//	} else if ( (buf[a] & 0xf8) == 0xf0 ){ //4byte
-
-					//fprintf(stderr,"uc: %d\n",uc);
-
 				} else {
 					uc = cp[from].map[buf[a]-128];
 				}
 
-				if ( ocp[ uc ] != -1 )
+				if ( (uc<UNIMAX) && ( ocp[ uc ] != -1 ) )
 					obuf[p++] = ocp[ uc ]+128; 
 				else { // no conversion possible
 					e( "Cannot convert: %s: %d, unicode: %d\n",
