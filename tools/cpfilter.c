@@ -287,6 +287,15 @@ int main(int argc, char **argv ){
 				int uc; 
 				// convert utf-8 to unicode
 				if ( from == UTF8 ){
+					if ( a+3>=len ){ // better refill the buffer, before the conversion
+						len -= a;
+						memcpy(buf,(buf+a),len);
+						a = 0;
+						int l = read(0,(buf+len),BUF-len);
+						if ( l>0 )
+							len += l;
+					}
+
 					int tmp = a;
 					if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
 						uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
@@ -297,16 +306,16 @@ int main(int argc, char **argv ){
 							if ( (buf[a] & 0xf0) == 0xe0 ){ // initial Byte 3Byte utf8
 								a+=2;
 							} else if ( (a+3<len) && ( (buf[a+3] & 0xc0) == 0x80 ) ){ 
-								if ( (buf[a] & 0xf8) == 0xf0 ){ //4byte
+								if ( (buf[a] & 0xf8) == 0xf0 ){ // 4byte
 									uc = ((uc<<6) & 0x1FFFFF ) | ( buf[a+3] & 0x3f );
 									a+=3;
 								}
 							}
 						} 
 					} 
-					if ( tmp == a ){ // error. 2.Byte
+					if ( tmp == a ){ // error. invalid utf8
 						//ERR:
-						e("Invalid unicode sequence: %02x%02x\n",buf[a],buf[a+1]);
+						e("Invalid utf8 sequence: %02x%02x\n",buf[a],buf[a+1]);
 						uc = buf[a];
 					}
 					  
@@ -321,7 +330,7 @@ int main(int argc, char **argv ){
 							cp[from].name, buf[a], uc );
 					obuf[p++] = cp[to].esign;
 					if ( opts&8 ){
-						p+= sprintf( (char*)obuf+p,"<%04x>",uc );
+						p+= sprintf( (char*)obuf+p,"<%x>",uc );
 					}
 				}
 			}
