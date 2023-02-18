@@ -288,12 +288,10 @@ int main(int argc, char **argv ){
 						if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
 							uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
 							a++;
-					W("c2\n");
 						} else if ( (a+2<len) && ( (buf[a+2] & 0xc0) == 0x80 ) ){ 
 							if ( (buf[a] & 0xf0) == 0xe0 ){ // initial Byte 3Byte utf8
 								uc = ( (buf[a] & 0x1f) << 12 ) | ((buf[a+1] & 0x3f)<<6 | (buf[a+2] & 0x3f));
 								a+=2;
-					W("c3\n");
 							} 
 						} 
 					} 
