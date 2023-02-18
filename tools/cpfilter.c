@@ -8,17 +8,14 @@
 
 #define DEFAULT_CP 2
 
-// max unicode point to convert.
-// eventually enlarge this.
-// (65536) is not high enough to convert 4-Byte utf-8 encodings.
-// For this, 0x1fffff (equals 2.1MB memory usage) would be needed
-// Since I don't know a codepage, which translates to 
-// utf-8 4Byte encoding, I leave the value lower.
-// #define UNIMAX 0x1FFFFF 
-#define UNIMAX 65536
+
 #define BUF 64000
 #define OBUF (BUF*2)
 
+// memory used for the translation table
+// Most unicode chars are below 8000.
+// Would be possible to tweak this value for better performance.
+#define UNIMAX 8000
 
 typedef char Arg;
 typedef unsigned int uint;
@@ -321,9 +318,17 @@ int main(int argc, char **argv ){
 					uc = cp[from].map[buf[a]-128];
 				}
 
-				if ( (uc<UNIMAX) && ( ocp[ uc ] != -1 ) )
+				int t=p;
+				if ( (uc<UNIMAX) && ( ocp[ uc ] != -1 ) ){
 					obuf[p++] = ocp[ uc ]+128; 
-				else { // no conversion possible
+				} else if ( uc>=UNIMAX ){
+					for ( int a = 0; a<128; a++ )
+						if ( cp[to].map[a] == uc ){
+							obuf[p++] = a+128;
+							break;
+						}
+				} 
+				if ( t == p ){ // no conversion possible
 					e( "Cannot convert: %s: %d, unicode: %d\n",
 							cp[from].name, buf[a], uc );
 					obuf[p++] = cp[to].esign;
