@@ -15,7 +15,7 @@
 // memory used for the translation table
 // Most unicode chars are below 8000.
 // Would be possible to tweak this value for better performance.
-#define UNIMAX 8000
+#define UNITABLE 8000
 
 typedef char Arg;
 typedef unsigned int uint;
@@ -250,8 +250,8 @@ int main(int argc, char **argv ){
 		to = DEFAULT_CP;
 
 	// create reverse table
-	char ocp[UNIMAX];
-	memset( ocp, -1 , UNIMAX );
+	char ocp[UNITABLE];
+	memset( ocp, -1 , UNITABLE );
 	for ( int a=0; a<128; a++ ){
 		ocp[ cp[to].map[a] ] = a;
 	}
@@ -319,9 +319,9 @@ int main(int argc, char **argv ){
 				}
 
 				int t=p;
-				if ( (uc<UNIMAX) && ( ocp[ uc ] != -1 ) ){
+				if ( (uc<UNITABLE) && ( ocp[ uc ] != -1 ) ){
 					obuf[p++] = ocp[ uc ]+128; 
-				} else if ( uc>=UNIMAX ){
+				} else if ( uc>=UNITABLE ){
 					for ( int a = 0; a<128; a++ )
 						if ( cp[to].map[a] == uc ){
 							obuf[p++] = a+128;
