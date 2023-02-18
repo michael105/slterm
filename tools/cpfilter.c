@@ -253,7 +253,6 @@ int main(int argc, char **argv ){
 	memset( ocp, -1 , UNIMAX );
 	for ( int a=0; a<128; a++ ){
 		ocp[ cp[to].map[a] ] = a;
-		printf("cp %d a %d\n",cp[to].map[a],a);
 	}
 
 
@@ -306,7 +305,7 @@ int main(int argc, char **argv ){
 					  
 				//	} else if ( (buf[a] & 0xf8) == 0xf0 ){ //4byte
 
-					fprintf(stderr,"uc: %d\n",uc);
+					//fprintf(stderr,"uc: %d\n",uc);
 
 				} else {
 					uc = cp[from].map[buf[a]-128];
