@@ -345,9 +345,23 @@ int main(int argc, char **argv ){
 						obuf[p++] = ( uc & 0x3f ) | 0x80;
 					}
 					*/
-					char initb=0xc0;
+					char initb=(char)0x80;
 					uint bits=0xffff;
-
+					int pc = 3;
+					do {
+						if ( (uc > bits) ){
+							obuf[t+pc] = (uc & 0x3f) | 0x80;
+							initb >>= (char)1;
+							uc >>= 6;
+							p++;
+						}
+						pc--;
+						bits >>= 5;
+					} while ( pc );
+					obuf[t] = (char)uc | (char)initb;
+					p++;
+					/*
+					char initb=(char)0xc0;
 					if ( uc >= 65536 ){
 						obuf[t+3] = (uc & 0x3f) | 0x80;
 						initb >>= (char)1;
@@ -363,6 +377,7 @@ int main(int argc, char **argv ){
 					obuf[t+1] = (uc & 0x3f) | 0x80;
 					obuf[t] = (uc>>6) | initb;
 					p += 2;
+					*/
 
 				} else {
 					// convert to codepage
