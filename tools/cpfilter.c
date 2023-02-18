@@ -326,15 +326,32 @@ int main(int argc, char **argv ){
 
 				// convert unicode to the destination encoding
 				int t=p;
-				if ( (uc<UNITABLE) && ( ocp[ uc ] != -1 ) ){
-					obuf[p++] = ocp[ uc ]+128; 
-				} else if ( uc>=UNITABLE ){
-					for ( int a = 0; a<128; a++ )
-						if ( cp[to].map[a] == uc ){
-							obuf[p++] = a+128;
-							break;
-						}
-				} 
+				if ( to == UTF8 ){
+					if ( uc < 2048 ){ // 2byte
+						obuf[p++] = 0xc0 | ( uc >> 6 );
+						obuf[p++] = ( uc & 0x3f ) | 0x80;
+					} else if ( uc < 65536 ){
+						obuf[p++] = 0xe0 | ( uc >> 12 );
+						obuf[p++] = ( (uc >> 6 ) & 0x3f ) | 0x80;
+						obuf[p++] = ( uc & 0x3f ) | 0x80;
+					}else { // 4byte
+						obuf[p++] = 0xf0 | ( uc >> 18 );
+						obuf[p++] = ( (uc >> 12 ) & 0x3f ) | 0x80;
+						obuf[p++] = ( (uc >> 6 ) & 0x3f ) | 0x80;
+						obuf[p++] = ( uc & 0x3f ) | 0x80;
+					}
+				} else {
+					// convert to codepage
+					if ( (uc<UNITABLE) && ( ocp[ uc ] != -1 ) ){
+						obuf[p++] = ocp[ uc ]+128; 
+					} else if ( uc>=UNITABLE ){
+						for ( int a = 0; a<128; a++ )
+							if ( cp[to].map[a] == uc ){
+								obuf[p++] = a+128;
+								break;
+							}
+					} 
+				}
 
 				if ( t == p ){ // no conversion possible
 					e( "Cannot convert: %s: %d, unicode: %d\n",
