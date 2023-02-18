@@ -10,7 +10,7 @@
 
 // max unicode point to convert.
 // eventually enlarge this.
-#define UNIMAX 4096
+#define UNIMAX 65536
 #define BUF 64000
 #define OBUF (BUF*2)
 
@@ -32,6 +32,7 @@ typedef struct {
 
 #define MAP(name,esign,chars) { name, 0x##esign, #name, (unsigned char*) chars }
 
+static const short unsigned int utf8[128]; // empty
 
 // chars, which are likely to be in literal texts.
 // It would be helpful using a dictionary.
@@ -53,9 +54,11 @@ const charmap cp[] = {
                      "\x80\xb6\xa7\x93\x94\xa9"
                      "\xf7\xa9\xb0\xb1\xd7\xb5\xae" ),
 
+	MAP(utf8,7e,""),
 	{0,0,0,0},
 };
 
+#define UTF8 (sizeof(cp)/sizeof(charmap)-2)
 
 #define NUMCP (sizeof(cp)/sizeof(charmap)-1)
 
@@ -115,7 +118,7 @@ int guess_charmap(const unsigned char *buf, int len){
 
 				ext++;
 				//printf("c: %d\n",buf[a]);
-				for ( int b = 0; b<NUMCP; b++ ){
+				for ( int b = 0; b<NUMCP-1; b++ ){
 					//printf("BBB\n");
 					for ( const unsigned char *c = cp[b].chars; *c; c++ ){
 						//printf("b: %d c: %d\n",b,*c);
@@ -133,20 +136,20 @@ int guess_charmap(const unsigned char *buf, int len){
 				} else { // coul'd be  utf8
 					if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
 						if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
-							utf ++;
+							guess[UTF8] ++;
 							a++;
 						}
 					} else if ( (buf[a] & 0xf0) == 0xe0 ){ // 3byte
 						if ( (a+2 < len ) && ( (buf[a+1] & 0xc0) == 0x80 ) && 
 								( (buf[a+2] & 0xc0) == 0x80 )){
-							utf+=2;
+							guess[UTF8] += 2;
 							a+=2;
 						}
 					} else if ( (buf[a] & 0xf8) == 0xf0 ){ //4byte
 						if ( ( a+3<len ) && ( (buf[a+1] & 0xc0) == 0x80 ) &&
 								( (buf[a+2] & 0xc0) == 0x80 ) &&
 								( (buf[a+3] & 0xc0) == 0x80 ) ){
-							utf+=3;
+							guess[UTF8] += 3;
 							a+=3;
 						}
 					}
@@ -180,7 +183,8 @@ int guess_charmap(const unsigned char *buf, int len){
 		}
 
 	v("Guess: %s\n(%d chars match)\n",cp[guessed].name,max);
-	v("utf: %d\nchars:   %d\n   0-31: %d\n 32-127: %d\n128-191: %d\n192-255: %d\n",utf,len,co,n,so,ext);
+	v("  chars: %d\n   utf8: %d\n   0-31: %d\n"
+	  " 32-127: %d\n128-191: %d\n192-255: %d\n",len,guess[UTF8],co,n,so,ext);
 
 	return(guessed);
 }
@@ -201,8 +205,6 @@ int main(int argc, char **argv ){
 		argc--;
 		for ( char *o = *argv+1; *o; o++ ){
 			switch (*o) {
-				case 'h':
-					usage();
 				case 'l':
 					listcodepages();
 				case 's':
@@ -214,7 +216,9 @@ int main(int argc, char **argv ){
 					break;
 				case 'x':
 					opts|=8; // write hex unicode for nonconv. chars
-
+				break;
+				default: // -h, --help, ..
+					usage();
 			}
 		}
 	}
@@ -244,13 +248,12 @@ int main(int argc, char **argv ){
 	if ( to==-1 )
 		to = DEFAULT_CP;
 
-	// to table.
-	char ocp[UNIMAX];
-	memset( ocp, 0 , UNIMAX );
-
 	// create reverse table
+	char ocp[UNIMAX];
+	memset( ocp, -1 , UNIMAX );
 	for ( int a=0; a<128; a++ ){
 		ocp[ cp[to].map[a] ] = a;
+		printf("cp %d a %d\n",cp[to].map[a],a);
 	}
 
 
@@ -270,20 +273,55 @@ int main(int argc, char **argv ){
 
 	v("Converting from %s to %s\n", cp[from].name,cp[to].name);
 
-	do {
+	do { // mainloop
 		int p = 0;
-		for ( int a = 0; a<len; a++ ){
+		int a = 0; 
+		while ( a<len ){
 			if ( buf[a] <128 )
 				obuf[p++] = buf[a];
-			else {
-				if ( ocp[ cp[from].map[buf[a]-128] ] )
-					obuf[p++] =  ocp[ cp[from].map[buf[a]-128] ]+128; 
+			else { // char > 127
+				int uc; 
+				// convert utf-8 to unicode
+				if ( from == UTF8 ){
+					uc = -1;
+					if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
+						if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
+							uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
+							a++;
+					W("c2\n");
+						} else if ( (a+2<len) && ( (buf[a+2] & 0xc0) == 0x80 ) ){ 
+							if ( (buf[a] & 0xf0) == 0xe0 ){ // initial Byte 3Byte utf8
+								uc = ( (buf[a] & 0x1f) << 12 ) | ((buf[a+1] & 0x3f)<<6 | (buf[a+2] & 0x3f));
+								a+=2;
+					W("c3\n");
+							} 
+						} 
+					} 
+					if ( uc < 0 ){ // error. 2.Byte
+						//ERR:
+						e("Invalid unicode sequence: %02x%02x",buf[a],buf[a+1]);
+						if ( uc < -1 )
+							e("%02x",buf[a+2]);
+						E("\n");
+						uc = buf[a];
+					}
+					  
+				//	} else if ( (buf[a] & 0xf8) == 0xf0 ){ //4byte
+
+					fprintf(stderr,"uc: %d\n",uc);
+
+				} else {
+					uc = cp[from].map[buf[a]-128];
+				}
+
+				if ( ocp[ uc ] != -1 )
+					obuf[p++] = ocp[ uc ]+128; 
 				else { // no conversion possible
-					e("Cannot convert: %s: %d, unicode: %d\n",
-							cp[from].name, buf[a], cp[from].map[buf[a]-128]);
+					e( "Cannot convert: %s: %d, unicode: %d\n",
+							cp[from].name, buf[a], uc );
 					obuf[p++] = cp[to].esign;
 					if ( opts&8 ){
-						p+= sprintf((char*)obuf+p,"<%04x>",cp[from].map[buf[a]-128]);
+						p+= sprintf( (char*)obuf+p,"<%04x>",uc );
 					}
 				}
 			}
@@ -291,6 +329,7 @@ int main(int argc, char **argv ){
 				write(1,obuf,p);
 				p=0;
 			}
+			a++;
 		}
 
 		write(1,obuf,p);
