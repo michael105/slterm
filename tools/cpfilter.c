@@ -107,7 +107,6 @@ int guess_charmap(const unsigned char *buf, int len){
 	int guess[NUMCP];
 	memset(guess,0,NUMCP*sizeof(int));
 	int n = 0; // ascii 32-127
-	int utf=0; // utf8 
 	int so=0; // chars, extended ascii ( 128-192 )
 	int co = 0; // control chars.
 	int ext = 0; // chars 128-255
@@ -287,7 +286,7 @@ int main(int argc, char **argv ){
 				int uc; 
 				// convert utf-8 to unicode
 				if ( from == UTF8 ){
-					if ( a+3>=len ){ // better refill the buffer, before the conversion
+					if ( a+3>=len ){ // refill the buffer, before the conversion
 						len -= a;
 						memcpy(buf,(buf+a),len);
 						a = 0;
@@ -314,7 +313,6 @@ int main(int argc, char **argv ){
 						} 
 					} 
 					if ( tmp == a ){ // error. invalid utf8
-						//ERR:
 						e("Invalid utf8 sequence: %02x%02x\n",buf[a],buf[a+1]);
 						uc = buf[a];
 					}
