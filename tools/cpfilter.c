@@ -287,7 +287,7 @@ int main(int argc, char **argv ){
 				int uc; 
 				// convert utf-8 to unicode
 				if ( from == UTF8 ){
-					uc = -1;
+					int tmp = a;
 					if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
 						uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
 						if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
@@ -304,12 +304,9 @@ int main(int argc, char **argv ){
 							}
 						} 
 					} 
-					if ( uc < 0 ){ // error. 2.Byte
+					if ( tmp == a ){ // error. 2.Byte
 						//ERR:
-						e("Invalid unicode sequence: %02x%02x",buf[a],buf[a+1]);
-						if ( uc < -1 )
-							e("%02x",buf[a+2]);
-						E("\n");
+						e("Invalid unicode sequence: %02x%02x\n",buf[a],buf[a+1]);
 						uc = buf[a];
 					}
 					  
