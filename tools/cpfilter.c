@@ -286,7 +286,7 @@ int main(int argc, char **argv ){
 				obuf[p++] = buf[a];
 			else { // char > 127
 				// get unicode point
-				int uc; 
+				uint uc; 
 				// convert utf-8 to unicode
 				if ( from == UTF8 ){
 					if ( a+3>=len ){ // refill the buffer, before the conversion
@@ -331,7 +331,7 @@ int main(int argc, char **argv ){
 				// convert unicode to the destination encoding
 				int t=p;
 				if ( to == UTF8 ){ // convert to utf8
-					if ( uc < 2048 ){ // 2byte
+					/* if ( uc < 2048 ){ // 2byte
 						obuf[p++] = 0xc0 | ( uc >> 6 );
 						obuf[p++] = ( uc & 0x3f ) | 0x80;
 					} else if ( uc < 65536 ){ // 3byte
@@ -344,6 +344,26 @@ int main(int argc, char **argv ){
 						obuf[p++] = ( (uc >> 6 ) & 0x3f ) | 0x80;
 						obuf[p++] = ( uc & 0x3f ) | 0x80;
 					}
+					*/
+					char initb=0xc0;
+					uint bits=0xffff;
+
+					if ( uc >= 65536 ){
+						obuf[t+3] = (uc & 0x3f) | 0x80;
+						initb >>= (char)1;
+						uc >>= 6;
+						p++;
+					}
+					if ( uc >= 2048 ){
+						obuf[t+2] = (uc & 0x3f) | 0x80;
+						initb >>= (char)1;
+						uc >>= 6;
+						p++;
+					}
+					obuf[t+1] = (uc & 0x3f) | 0x80;
+					obuf[t] = (uc>>6) | initb;
+					p += 2;
+
 				} else {
 					// convert to codepage
 					if ( (uc<UNITABLE) && ( ocp[ uc ] != -1 ) ){
