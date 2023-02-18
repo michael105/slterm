@@ -44,7 +44,8 @@ static const short unsigned int utf8[128]; // empty
 // This eventually works best with german and english literal texts,
 // I only added few mathematical and special other chars
 // ( (C),  +-, quotation marks, Euro, ..)
-// For other languages, the typically used characters (and cp's) would need to be added below.
+// For recognition of other languages, 
+// the typically used characters (and cp's) would need to be added below.
 const charmap cp[] = {
 	MAP( cpe4002,a8,  "\x81\x84\x8e\x94\x9a\x99" // umlaute
 	                  "\xe1\xe3\xe4\x9b\x9c\xe6" ),
@@ -55,6 +56,9 @@ const charmap cp[] = {
 	MAP( cp1252, b6,  "\xe4\xf6\xfc\xdc\xd5\xc4" // "üöäÖÜÄ" // Umlauts
                      "\x80\xb6\xa7\x93\x94\xa9"
                      "\xf7\xa9\xb0\xb1\xd7\xb5\xae" ),
+	MAP( cp1250, b6, "" ),
+	MAP( cp1251, b6, "" ),
+	MAP( cp1253, b6, "" ),
 
 	MAP(utf8,7e,""),
 	{0,0,0,0},
@@ -326,11 +330,11 @@ int main(int argc, char **argv ){
 
 				// convert unicode to the destination encoding
 				int t=p;
-				if ( to == UTF8 ){
+				if ( to == UTF8 ){ // convert to utf8
 					if ( uc < 2048 ){ // 2byte
 						obuf[p++] = 0xc0 | ( uc >> 6 );
 						obuf[p++] = ( uc & 0x3f ) | 0x80;
-					} else if ( uc < 65536 ){
+					} else if ( uc < 65536 ){ // 3byte
 						obuf[p++] = 0xe0 | ( uc >> 12 );
 						obuf[p++] = ( (uc >> 6 ) & 0x3f ) | 0x80;
 						obuf[p++] = ( uc & 0x3f ) | 0x80;
