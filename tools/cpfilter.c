@@ -8,7 +8,7 @@
 
 #define DEFAULT_CP 2
 
-
+// Buffer sizes
 #define BUF 64000
 #define OBUF (BUF*2)
 
