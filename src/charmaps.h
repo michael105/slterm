@@ -47,19 +47,18 @@ uint rev_cp[127];
 // About hyphens and diacrytics I'm uncertain yet,
 // but this could also be done by latex.
 
-// accent
 // durchschnitt ungleich
 
 static const unsigned short cpe4002[] = { 
-	//euro , ue,   e acc,      ae
+	//  euro ,   ue,    e acc,   a gr ,  ae   , a hyph, born  , death
 /*80*/ 0x20ac, 0x00fc, 0x00e9, 0x00e2, 0x00e4, 0x00e0, 0x2217, 0x2020,
-       //             Ae
-       0x2200,0x2208,0x2209,0x2203,0x2204,0x27e8, 0xc4,0,
+       //                                          Aea, acc (quote)
+       0x2200,0x2208,0x2209,0x2203,0x2204,0x27e8, 0xc4,0x2019,
        // Dbl quot low,up, single low,up, oe , double !,  ??,  !?
 /*90*/ 0x201e, 0x201c, 0x201a, 0x2018,  0xf6,  0x203c, 0x2047, 0x2049,
-	 // 0,    Oe,    Ue,    Cent,    Pound, Yen,   0, F
-       0, 0x00d6, 0x00dc, 0x00a2, 0x00a3, 0x00a5, 0, 0x0192,
-	// accent a,i,o,u ,    n N , 0, Paragr
+	 // acc,    Oe,    Ue,    Cent,    Pound, Yen,   acc, F
+       0x201d, 0x00d6, 0x00dc, 0x00a2, 0x00a3, 0x00a5, 0xb4, 0x0192,
+	// accent a,i,o,u ,                  n N ,         0, Paragr
 /*A0*/ 0x00e1, 0x00ed, 0x00f3, 0x00fa, 0x00f1, 0x00d1, 0,0xa7,
 	    0x00bf, 0x2310, 0x00ac, 0x00bd, 0x00bc, 0x00a1, 0x00ab, 0x00bb,
 
