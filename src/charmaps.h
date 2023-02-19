@@ -32,9 +32,10 @@ uint rev_cp[127];
 //
 
 
-// Finally.
-// Another chartable.
-// It has two advanteouges,
+// Another personal chartable.
+// I name this cpalpha, 
+// since I guess I'm going to do further changes.
+// It has two advantages,
 // German Umlauts are at the places of CP850,
 // boxdrawing characters and some other chars there of cp437.
 // (marked below)
@@ -47,9 +48,10 @@ uint rev_cp[127];
 // About hyphens and diacrytics I'm uncertain yet,
 // but this could also be done by latex.
 
-// durchschnitt ungleich
+// durchschnitt ungleich 'und' 'oder' 'p'
+// dehungs vokale
 
-static const unsigned short cpe4002[] = { 
+static const unsigned short cpe4002a[] = { 
 	//  euro ,   ue,    e acc,   a gr ,  ae   , a hyph, born  , death
 /*80*/ 0x20ac, 0x00fc, 0x00e9, 0x00e2, 0x00e4, 0x00e0, 0x2217, 0x2020,
        //                                          Aea, acc (quote)

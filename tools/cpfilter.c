@@ -6,7 +6,6 @@
 //
 // Don't blame me for erratic conversions.
 
-#define DEFAULT_CP 2
 
 // Buffer sizes
 #define BUF 64000
@@ -47,7 +46,7 @@ static const short unsigned int utf8[128]; // empty
 // For recognition of other languages, 
 // the typically used characters (and cp's) would need to be added below.
 const charmap cp[] = {
-	MAP( cpe4002,a8,  "\x81\x84\x8e\x94\x9a\x99" // umlaute
+	MAP( cpe4002a,a8, "\x81\x84\x8e\x94\x9a\x99" // umlaute
 	                  "\xe1\xe3\xe4\x9b\x9c\xe6" ),
 	MAP( cp850,  a8,  "\x81\x84\x8e\x94\x9a\x99" // umlaute
    	               "\xe1\x9c\xe6\xf4\xf5\xf8\xb8" ),
@@ -63,6 +62,9 @@ const charmap cp[] = {
 	MAP(utf8,7e,""),
 	{0,0,0,0},
 };
+
+// The default target encoding
+#define DEFAULT_CP 0
 
 #define UTF8 (sizeof(cp)/sizeof(charmap)-2)
 

@@ -695,7 +695,8 @@ static char ascii_printable[]
 
 
 // select codepages
-// can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,cp1256,cp1257,cp1258
+// can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
+//         cp1256,cp1257,cp1258,cpe4000,cpe4002a
 // other codepages could be added in charmaps.h
 // use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
 //
@@ -710,7 +711,7 @@ static char ascii_printable[]
 // when a console app does draw real borders and frames with cp437.
 // But, there is kyrillic, (cp1251), e.g., as well.
 
-// Finally did write another codepage.
+// Now, I did write a personal codepage, named cpe4000
 // Kicked out most of the control chars (1..31),
 // left linebreak, tab (vert and hor.), ESC in.
 // There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
@@ -721,15 +722,20 @@ static char ascii_printable[]
 // Numbered the cp e4000, according to the rfc's exxx is reserved for private 
 // assignments. 
 
+// Finally, I created another codepage. Naming this cpe4002a,
+// but I regard the codepage as alpha status.
 
-//const short unsigned int* codepage[] = { cp1252,cp437 };
 // assign to Ctrl+Win +                    0,       1,    2        3      4      5      6
-const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002 };
-
+const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002a };
 // the default codepage is cp1252
 // and assigned to Ctrl+Win+2
+
+#ifdef MISC //(my local copy..)
+int selected_codepage = 6;
+#else
 // the default codepage (cp1252)
 int selected_codepage = 2;
+#endif
 
 #endif
 

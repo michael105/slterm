@@ -13,7 +13,7 @@ return
 
 #define writes(msg) write(1,msg,sizeof(msg))
 #define ewrites(msg) write(2,msg,sizeof(msg))
-#define printl() write(1,"\n",1)
+#define printl() printf("\n")
 
 #endif
 
@@ -141,7 +141,7 @@ int main(int argc, char **argv){
 		printf(fmt, a, a, a );
 
 		if ( col++ == lb ){
-			printf("\n");
+			printl();
 			col=1;
 		}
 	}

@@ -20,6 +20,7 @@ HEADER = st.h arg.h config.h utf8.h selection.h\
 				 xdraw.h termdraw.h charmaps.h
 
 
+
 ifdef ENABLEDEBUG
 		DBGFLAG=-DENABLEDEBUG=$(ENABLEDEBUG) -DDEBUG_INCLUDESRC
 endif
@@ -62,6 +63,12 @@ STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG)
 #LIBS = -L$(X11LIB) -lm -lX11 -lutil -lXft \
 #       `pkg-config --libs fontconfig` \
 #       `pkg-config --libs freetype2`
+
+# my local preferences
+ifdef MISC
+$(info MISC)
+STCFLAGS := $(STCFLAGS) -DMISC
+endif
 
 ifeq "$(strip $(SHOWCONFIGINFO))" "1"
 ifndef RECURSE
