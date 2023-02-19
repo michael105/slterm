@@ -1,7 +1,7 @@
 
 
-CC:=gcc -Os -Wall -Wno-unused-value
+CC:=gcc -Os -Wall -Wno-unused-value -static -s
 
 
-cpfilter: cpfilter.c
+cpfilter: cpfilter.c ../src/charmaps.h
 	${CC} -o cpfilter cpfilter.c

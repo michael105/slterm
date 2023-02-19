@@ -299,6 +299,7 @@ int main(int argc, char **argv ){
 					}
 
 					int tmp = a;
+					
 					if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
 						uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
 						if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
@@ -315,6 +316,23 @@ int main(int argc, char **argv ){
 							}
 						} 
 					} 
+					/*
+					char bits = 0xc0;
+					uc = (buf[a] & 0x1f);
+					for ( int b = 1; b<4; b++ ){
+						if ( (a+b<len) && ( (buf[a+b] & 0xc0) == 0x80 ) ){ 
+							uc = ( uc << 6 ) | (buf[a+b] & 0x3f);
+							if ( bits == (buf[a] & (bits>>(char)1) ) ){ // initial Byte 
+								a+=b;	
+								if ( b==3 )
+									uc &= 0x1fffff;
+								break;
+							}
+							bits >>=(char)1;
+						}
+					}*/
+
+
 					if ( tmp == a ){ // error. invalid utf8
 						e("Invalid utf8 sequence: %02x%02x\n",buf[a],buf[a+1]);
 						uc = buf[a]; // for "mixed" encodings (e.g. cp1252, and utf-8)
@@ -345,6 +363,7 @@ int main(int argc, char **argv ){
 						obuf[p++] = ( uc & 0x3f ) | 0x80;
 					}
 					*/
+					/*
 					char initb=(char)0x80;
 					uint bits=0xffff;
 					int pc = 3;
@@ -360,7 +379,8 @@ int main(int argc, char **argv ){
 					} while ( pc );
 					obuf[t] = (char)uc | (char)initb;
 					p++;
-					/*
+					*/
+					
 					char initb=(char)0xc0;
 					if ( uc >= 65536 ){
 						obuf[t+3] = (uc & 0x3f) | 0x80;
@@ -377,7 +397,7 @@ int main(int argc, char **argv ){
 					obuf[t+1] = (uc & 0x3f) | 0x80;
 					obuf[t] = (uc>>6) | initb;
 					p += 2;
-					*/
+					
 
 				} else {
 					// convert to codepage
@@ -393,7 +413,7 @@ int main(int argc, char **argv ){
 				}
 
 				if ( t == p ){ // no conversion possible
-					e( "Cannot convert: %s: %d, unicode: %d\n",
+					e( "Cannot convert: %s: %d, unicode: %x\n",
 							cp[from].name, buf[a], uc );
 					obuf[p++] = cp[to].esign;
 					if ( opts&8 ){
