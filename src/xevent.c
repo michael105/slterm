@@ -386,7 +386,12 @@ void kpress(XEvent *ev) {
 
 
 void numlock(const Arg *dummy) { win.mode ^= MODE_NUMLOCK; }
-
+/*
+void temp(const Arg *dummy){
+	for ( int a = 0; a<128; a++){//2190
+		//cpe4002a[a] = a+0x238a;
+	}
+} */
 
 
 // mouse handling

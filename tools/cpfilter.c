@@ -58,6 +58,14 @@ const charmap cp[] = {
 	MAP( cp1250, b6, "" ),
 	MAP( cp1251, b6, "" ),
 	MAP( cp1253, b6, "" ),
+	MAP( cp1255, b6, "" ),
+	MAP( cp1256, b6, "" ),
+	MAP( cp1257, b6, "" ),
+	MAP( cp1258, b6, "" ),
+	MAP( atarist, b6, "" ),
+	MAP( macintosh, b6, "" ),
+	MAP( mac_centraleurope, b6, "" ),
+	MAP( iso8859_15, b6, "" ),
 
 	MAP(utf8,7e,""),
 	{0,0,0,0},
@@ -197,7 +205,7 @@ int guess_charmap(const unsigned char *buf, int len){
 }
 
 void listcodepages(){
-	W("Supported charmaps:\n\n");
+	W("Supported (extended ASCII) encodings:\n\n");
 	for ( const charmap *cm = cp; cm->name != 0; cm++ )
 		printf("%s\n",cm->name);
 

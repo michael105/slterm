@@ -65,6 +65,7 @@ void run();
 
 // callbacks
 void numlock(const Arg *);
+//void temp(const Arg *);
 
 // mouse events handling
 typedef struct {

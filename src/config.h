@@ -409,6 +409,7 @@ static Shortcut shortcuts[] = {
     { ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES },
 
 
+    //{ TERMMOD, XK_T, temp, {.i = 0},ALLMODES },
  
 };
 
@@ -696,7 +697,9 @@ static char ascii_printable[]
 
 // select codepages
 // can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
-//         cp1256,cp1257,cp1258,cpe4000,cpe4002a
+//         cp1256,cp1257,cp1258,cpe4000,cpe4002a, 
+//         macintosh, atarist, mac_centraleurope
+// (macintosh = MacRoman)
 // other codepages could be added in charmaps.h
 // use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
 //
@@ -707,13 +710,9 @@ static char ascii_printable[]
 // it's the old issue of the IBM PC1. Reinvented.)
 //
 // Me, I'm happy with CP1252, it has got umlauts, and yet every application
-// was able to work with the ansi code table. I'm only sometimes more happy,
-// when a console app does draw real borders and frames with cp437.
-// But, there is kyrillic, (cp1251), e.g., as well.
+// was able to work with the ansi code table without modifications. 
 
 // Now, I did write a personal codepage, named cpe4000
-// Kicked out most of the control chars (1..31),
-// left linebreak, tab (vert and hor.), ESC in.
 // There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
 // the greek alphabet and several mathematical and logical chars.
 // It's what I do need for writing. 
@@ -723,14 +722,21 @@ static char ascii_printable[]
 // assignments. 
 
 // Finally, I created another codepage. Naming this cpe4002a,
-// but I regard the codepage as alpha status.
+// but I regard the codepage as alpha, I'm going to change some things.
+// Got the box drawing chars at the same location as with cp437.
+// umlauts are there, at the locations of cp437/cp850
+// Several logical and mathematical operators and signs
+
 
 // assign to Ctrl+Win +                    0,       1,    2        3      4      5      6
-const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002a };
+//const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002a };
+const short unsigned int* codepage[] = { cp1252, cp437, cp850, cpe4002a };
+//    7                    8      9
+//	mac_centraleurope, macintosh    };
 // the default codepage is cp1252
 // and assigned to Ctrl+Win+2
 
-#ifdef MISC //(my local copy..)
+#ifdef MISC //(my local copy)
 int selected_codepage = 6;
 #else
 // the default codepage (cp1252)
