@@ -20,6 +20,11 @@ typedef struct {
 		signed char appcursor; /* application cursor */
 } Key;
 
+
+// save different inputmodes
+extern int inputmode;
+
+
 /* X modifiers */
 #define XK_ANY_MOD UINT_MAX
 #define XK_NO_MOD 0

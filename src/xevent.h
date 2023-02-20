@@ -26,9 +26,6 @@ typedef union {
 #define XEMBED_FOCUS_OUT 5
 
 
-
-
-
 // the main event loop
 void run();
 
@@ -37,7 +34,6 @@ void run();
 
 
 // event handling
-
 
 // xwindow related
 void expose(XEvent *);
