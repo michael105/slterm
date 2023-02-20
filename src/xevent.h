@@ -2,10 +2,6 @@
 #define input_h
 #include <X11/Xlib.h>
 
-
-// save different inputmodes
-extern int inputmode;
-
 extern void (*handler[LASTEvent])(XEvent *); 
 
 
