@@ -15,6 +15,7 @@ typedef struct {
 		KeySym k;
 		unsigned int mask;
 		char *s;
+		unsigned char len;
 		/* three-valued logic variables: 0 indifferent, 1 on, -1 off */
 		signed char appkey;    /* application keypad */
 		signed char appcursor; /* application cursor */
@@ -32,7 +33,7 @@ extern int inputmode;
 
 
 
-char *kmap(KeySym k, unsigned int state);
+int kmap(KeySym k, unsigned int state);
 void numlock(const Arg *);
 void kpress(XEvent *ev);
 
