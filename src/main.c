@@ -184,6 +184,8 @@ run:
 		xsetenv();
 		selinit();
 		create_unicode_table(); // unicode to current cp table
+		sort_shortcuts();								
+
 		run();
 
 		return 0;

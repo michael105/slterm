@@ -275,7 +275,7 @@ static MouseShortcut mshortcuts[] = {
 
 // all comments, starting with //K are parsed into the keystroke shortref
 
-static Shortcut shortcuts[] = {
+Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
     { XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
     { XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP },
@@ -313,8 +313,8 @@ static Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
     { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
 
-		// abort precessing when in the help view. -1 matches every key.
-		{ XK_ANY_MOD, -1, dummy, {}, IMODE_HELP },
+		// abort precessing when in the help view. 0 matches every key.
+		{ XK_ANY_MOD, 0, dummy, {}, IMODE_HELP },
 
 
 		// clipboard
