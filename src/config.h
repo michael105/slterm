@@ -729,10 +729,9 @@ static char ascii_printable[]
 
 
 // assign to Ctrl+Win +                    0,       1,    2        3      4      5      6
-//const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002a };
-const short unsigned int* codepage[] = { cp1252, cp437, cp850, cpe4002a };
+const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002a,
 //    7                    8      9
-//	mac_centraleurope, macintosh    };
+	mac_centraleurope, macintosh    };
 // the default codepage is cp1252
 // and assigned to Ctrl+Win+2
 
