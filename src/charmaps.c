@@ -12,9 +12,9 @@ static inline uint charmap_convert(uint rune,uint attribute){
 	//	return( rune+(0x390 - 0x40) );
 	//}
 
-	if ( attribute & ATTR_BLINK ){
-		return( rune+(0x1D44e - 0x40) );
-	}
+	//if ( attribute & ATTR_BLINK ){
+	//	return( rune+(0x1D44e - 0x40) );
+	//}
 
 
 
