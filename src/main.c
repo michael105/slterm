@@ -183,6 +183,7 @@ run:
 		xinit(cols, rows);
 		xsetenv();
 		selinit();
+		create_unicode_table(); // unicode to current cp table
 		run();
 
 		return 0;

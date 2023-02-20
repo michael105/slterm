@@ -263,10 +263,11 @@ int main(int argc, char **argv ){
 		to = DEFAULT_CP;
 
 	// create reverse table
-	char ocp[UNITABLE];
-	memset( ocp, -1 , UNITABLE );
+	unsigned char ocp[UNITABLE];
+	memset( ocp, 0 , UNITABLE );
 	for ( int a=0; a<128; a++ ){
-		ocp[ cp[to].map[a] ] = a;
+		if ( cp[to].map[a] < UNITABLE )
+			ocp[ cp[to].map[a] ] = a + 128;
 	}
 
 
@@ -410,8 +411,8 @@ int main(int argc, char **argv ){
 
 				} else {
 					// convert to codepage
-					if ( (uc<UNITABLE) && ( ocp[ uc ] != -1 ) ){
-						obuf[p++] = ocp[ uc ]+128; 
+					if ( (uc<UNITABLE) && ( ocp[ uc ] != 0 ) ){
+						obuf[p++] = ocp[ uc ]; 
 					} else if ( uc>=UNITABLE ){
 						for ( int a = 0; a<128; a++ )
 							if ( cp[to].map[a] == uc ){

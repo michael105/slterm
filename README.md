@@ -15,6 +15,8 @@
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
+	* Switching codepages with Shortcuts (cp437,cp850,cp1252,..)
+	* Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
      I claim slterm being the fastest available terminal emulator for X
 

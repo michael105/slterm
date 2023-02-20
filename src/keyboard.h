@@ -12,7 +12,7 @@ typedef struct {
 
 
 typedef struct {
-		KeySym k;
+		KeySym k;  // this is unsigned int (32) here
 		unsigned int mask;
 		char *s;
 		unsigned char len;

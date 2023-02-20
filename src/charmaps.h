@@ -2,12 +2,14 @@
 #define charmaps_h
 
 
+void create_unicode_table();
 
 void set_charmap(const Arg *a);
 
+#define UNITABLE 0x2600
 
 // assignments unicode->codepage
-uint rev_cp[128]; 
+unsigned char uni_to_cp[UNITABLE]; 
 
 
 
