@@ -6,8 +6,8 @@
 void set_charmap(const Arg *a);
 
 
-// assignments utf8->codepage
-uint rev_cp[127]; 
+// assignments unicode->codepage
+uint rev_cp[128]; 
 
 
 

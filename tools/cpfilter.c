@@ -11,10 +11,9 @@
 #define BUF 64000
 #define OBUF (BUF*2)
 
-// memory used for the translation table
-// Most unicode chars are below 8000.
-// Would be possible to tweak this value for better performance.
-#define UNITABLE 8000
+// memory used for the unicode translation table (in Bytes)
+// (Mostly) All unicode chars defined per default are below 0x2600
+#define UNITABLE 0x2600
 
 typedef char Arg;
 typedef unsigned int uint;

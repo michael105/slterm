@@ -2,6 +2,8 @@
 
 // mouse handling
 void mousereport(XEvent *e) {
+		static int oldbutton = 3; /* button event on startup: 3 = release */
+
 		int len, x = evcol(e), y = evrow(e), button = e->xbutton.button,
 				state = e->xbutton.state;
 		char buf[40];
