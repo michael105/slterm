@@ -24,8 +24,8 @@
 #define IS_SET(flag) ((term->mode & (flag)) != 0)
 
 #define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
-		b = (void*)((POINTER)a ^ (POINTER)b);\
-		a = (void*)((POINTER)a ^ (POINTER)b);}
+	b = (void*)((POINTER)a ^ (POINTER)b);\
+	a = (void*)((POINTER)a ^ (POINTER)b);}
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
 
@@ -166,7 +166,7 @@ void showhelp(const Arg *a) {
 	//printf("showhelp\n");
 
 	if ( p_help != term ){ // help is not visible now
-		//p_term = term;
+								  //p_term = term;
 		if ( !p_help ){ // displayed first time
 			tnew(term->col, term->row);
 			p_help = term;
