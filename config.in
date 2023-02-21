@@ -342,6 +342,7 @@ static MouseShortcut mshortcuts[] = {
 // Ctrl+Shift+Win
 #define SETFONTMASK ShiftMask|Mod1Mask
 
+#define ALL_KEYS 1
 // all comments, starting with //K are parsed into the keystroke shortref
 
 Shortcut shortcuts[] = {
@@ -382,8 +383,8 @@ Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
     { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
 
-		// abort precessing when in the help view. 0 matches every key.
-		{ XK_ANY_MOD, 0, dummy, {}, IMODE_HELP },
+		// abort precessing when in the help view. 
+		{ XK_ANY_MOD, ALL_KEYS, dummy, {}, IMODE_HELP },
 
 
 		// clipboard
