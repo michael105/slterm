@@ -30,7 +30,7 @@
 #define BUF 64000
 #define OBUF (BUF*2)
 
-// memory used for the unicode translation table (in Bytes)
+// memory used for the precomputed cache of the unicode translation table (in Bytes)
 // (Mostly) All unicode chars defined per default are below 0x2600
 #define UNITABLE 0x2800
 
