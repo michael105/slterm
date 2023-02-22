@@ -8,12 +8,13 @@
 //
 // There are some flaws - BOM conversion, e.g.
 // I wouldn't recommend using this code in security relevant contexts;
-// e.g. the missing BOM conversion could get into rewmote execution with a websever.
-// (Very extrapolated)
+// e.g. the missing BOM conversion could get into a remote execution with a websever.
+// (Very extrapolated worst case)
 //
 // local conversion might be safe, however,
 // especially for using this hack as an input filter.
 // That's why I wrote this.
+// Yet I didn't need BOM characters, I write with latex.
 //
 // The codepage "guessing" might work mainly for German, it looks 
 // for umlauts.
