@@ -5,7 +5,26 @@
 // miSc Mychael Myer, 23, BSD 3clause
 //
 // Don't blame me for erratic conversions.
+//
+// There are some flaws - BOM conversion, e.g.
+// I wouldn't recommend using this code in security relevant contexts;
+// e.g. the missing BOM conversion could get into rewmote execution with a websever.
+// (Very extrapolated)
+//
+// local conversion might be safe, however,
+// especially for using this hack as an input filter.
+// That's why I wrote this.
+//
+// The codepage "guessing" might work mainly for German, it looks 
+// for umlauts.
+// If you'd need other languages, you would have to add the typical (extended ascii) characters
+// below.
+//
 
+
+// uncomment, to abort at (some) invalid UTF8 characters.
+// (They might still be filtered out)
+#define UTF8_STRICT 
 
 // Buffer sizes
 #define BUF 64000
@@ -13,7 +32,7 @@
 
 // memory used for the unicode translation table (in Bytes)
 // (Mostly) All unicode chars defined per default are below 0x2600
-#define UNITABLE 0x2600
+#define UNITABLE 0x2800
 
 typedef char Arg;
 typedef unsigned int uint;
@@ -110,6 +129,18 @@ void usage(){
 			"\nmiSc 23, BSD 3clause\n"
 			);
 	exit(1);
+}
+
+// according to rfc 3629, this values are not valid
+int valid_uc_utf8(uint unicode){ 
+	if ( (unicode>0xd800)&&(unicode<0xdfff) ){
+#ifdef UTF8_STRICT
+		e("invalid utf8 conversion: %x\n",unicode);
+		exit(1);
+#endif
+		return(0);
+	}
+	return(1);
 }
 
 
@@ -343,7 +374,7 @@ int main(int argc, char **argv ){
 					}*/
 
 
-					if ( tmp == a ){ // error. invalid utf8
+					if ( (tmp == a) || !( valid_uc_utf8(uc) ) ){ // error. invalid utf8
 						e("Invalid utf8 sequence: %02x%02x\n",buf[a],buf[a+1]);
 						uc = buf[a]; // for "mixed" encodings (e.g. cp1252, and utf-8)
 						// I'm a bit uncertain. In theory, the whole document's conversion
@@ -359,6 +390,9 @@ int main(int argc, char **argv ){
 				// convert unicode to the destination encoding
 				int t=p;
 				if ( to == UTF8 ){ // convert to utf8
+					if ( !valid_uc_utf8(uc) )
+						goto ERR_UTF8;
+					// invalid values (rfc3629
 					/* if ( uc < 2048 ){ // 2byte
 						obuf[p++] = 0xc0 | ( uc >> 6 );
 						obuf[p++] = ( uc & 0x3f ) | 0x80;
@@ -423,6 +457,7 @@ int main(int argc, char **argv ){
 				}
 
 				if ( t == p ){ // no conversion possible
+ERR_UTF8:
 					e( "Cannot convert: %s: %d, unicode: %x\n",
 							cp[from].name, buf[a], uc );
 					obuf[p++] = cp[to].esign;
