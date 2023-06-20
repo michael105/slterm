@@ -3,9 +3,9 @@
 .POSIX:
 
 # To edit the configuration,
-# please edit config.in in the parent directory
+# please edit config.make in the parent directory
 
-include config.make
+include ../config.make
 
 
 SRC = base64.c mem.c slterm.c stsrc.c tty.c x.c main.c\
@@ -74,7 +74,7 @@ endif
 ifeq "$(strip $(SHOWCONFIGINFO))" "1"
 ifndef RECURSE
 $(info Unconfigured - trying default config)
-$(info If this doesn't work, please edit config.h.in for the configuration.)
+$(info If this doesn't work, please edit config.h for the configuration.)
 $(info After that run as usually)
 $(info 'make')
 $(info 'sudo make install')
@@ -157,14 +157,14 @@ build/%.o: %.c
 ' > config.h
 #	sed -ne '/^..start config.h/,$$p' ../config.in >> config.h
  
-config.h: ../config.in
-	$(call modwarn,//) > config.h
-	@sed -ne '/^..start config.h/,$$p' ../config.in >> config.h
+#config.h: ../config.in
+#	$(call modwarn,//) > config.h
+#	@sed -ne '/^..start config.h/,$$p' ../config.in >> config.h
  
 
-config.make: ../config.in
-	$(call modwarn,#) > config.make
-	@sed -ne '/#makefilestart/,/#makefileend/p' ../config.in >> config.make
+#config.make: ../config.in
+#	$(call modwarn,#) > config.make
+#	@sed -ne '/#makefilestart/,/#makefileend/p' ../config.in >> config.make
 
 
 man: slterm.1
@@ -178,7 +178,7 @@ clean:
 dist: clean
 	mkdir -p slterm-$(VERSION)
 	cp -R FAQ LEGACY TODO LICENSE Makefile README \
-		config.h config.make slterm.info slterm.1 arg.h st.h $(SRC)\
+		slterm.info slterm.1 arg.h st.h $(SRC)\
 		slterm-$(VERSION)
 	tar -cf - slterm-$(VERSION) | gzip > slterm-$(VERSION).tar.gz
 	rm -rf slterm-$(VERSION)

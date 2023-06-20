@@ -24,7 +24,7 @@
 ---
 
 
-#### Additions in detail:
+#### Additions
 
 
 ##### Lessmode
@@ -177,7 +177,8 @@ different source files. I'm about to tidy this up further.
 
 ### Install
 
-edit [config.in](config.in) (optionally) 
+edit [config.make](config.make) (optionally) 
+edit [src/config.h](src/config.h) (optionally) 
 
     make
     make install

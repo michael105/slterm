@@ -384,17 +384,16 @@ Shortcut shortcuts[] = {
 // // switch on.
     { TERMMOD, XK_Up, lessmode_toggle, { .i=1 },ALLMODES },
     { TERMMOD, XK_Page_Up, lessmode_toggle, { .i=-1 },ALLMODES },
+    { TERMMOD, XK_Page_Down, lessmode_toggle, { .i=-3 },ALLMODES },
+    { TERMMOD, XK_Down, lessmode_toggle, { .i=-3 },ALLMODES },
+
 
 		// toggle
-    { TERMMOD, XK_Down, lessmode_toggle, { .i=0 },ALLMODES },
     { TERMMOD, XK_L, lessmode_toggle, { .i=0 },ALLMODES },
     { XK_ANY_MOD, XK_Scroll_Lock, lessmode_toggle, { .i=0 },ALLMODES },
 		// switchoff
     { XK_ANY_MOD, XK_Escape, lessmode_toggle, { .i=-3 },MODE_LESS },
     { XK_ANY_MOD, XK_q, lessmode_toggle, { .i=-3 },MODE_LESS },
-    { TERMMOD, XK_Page_Down, lessmode_toggle, { .i=-3 },ALLMODES },
-    { TERMMOD, XK_Down, lessmode_toggle, { .i=-3 },ALLMODES },
-
     { ShiftMask, XK_Return, lessmode_toggle, { .i=0 },MODE_LESS },
 		
 	// select charmap
