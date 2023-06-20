@@ -87,30 +87,25 @@ void kscrollup(const Arg *a) {
 
 void scroll( const Arg *a){
 	Arg d;
-	switch ( a->i ){ // scrolling and the history make me dizzy. misc. 
-						  // At some time I'm going to rewrite that 
-		case SCROLL(bottom):
-			scrolltobottom();
-			break;
-		case SCROLL(top):
-			scrolltotop();
-			break;
-		case SCROLL(pageup):
-			d.i = -1;
-			kscrollup( &d );
-			break;
-		case SCROLL(pagedown):
-			d.i = -1;
-			kscrolldown( &d );
-			break;
-		default:
-			if ( a->i > 0 ){
-				kscrolldown( a );
-			} else {
-				d.i = - a->i;
-				kscrollup( &d );
-			}
+	 // scrolling and the history make me dizzy. misc. 
+	  // At some time I'm going to rewrite that 
+	if ( a->i == SCROLL(bottom) ){
+		scrolltobottom();
+	} else if ( a->i == SCROLL(top) ){
+		scrolltotop();
+	} else if ( a->i == SCROLL(pageup) ){
+		d.i = -1;
+		kscrollup( &d );
+	} else if ( a->i == SCROLL(pagedown) ){
+		d.i = -1;
+		kscrolldown( &d );
+	} else if ( ISSCROLLDOWN( a->i ) ){
+		kscrolldown( a );
+	} else if ( ISSCROLLUP( a->i ) ){
+		d.i = - a->i;
+		kscrollup( &d );
 	}
+
 }
 
 void set_scrollmark(const Arg *a) {
