@@ -85,6 +85,33 @@ void kscrollup(const Arg *a) {
 		}
 }
 
+void scroll( const Arg *a){
+	Arg d;
+	switch ( a->i ){ // scrolling and the history make me dizzy. misc. 
+						  // At some time I'm going to rewrite that 
+		case SCROLL(bottom):
+			scrolltobottom();
+			break;
+		case SCROLL(top):
+			scrolltotop();
+			break;
+		case SCROLL(pageup):
+			d.i = -1;
+			kscrollup( &d );
+			break;
+		case SCROLL(pagedown):
+			d.i = -1;
+			kscrolldown( &d );
+			break;
+		default:
+			if ( a->i > 0 ){
+				kscrolldown( a );
+			} else {
+				d.i = - a->i;
+				kscrollup( &d );
+			}
+	}
+}
 
 void set_scrollmark(const Arg *a) {
 	scrollmarks[a->i] = term->histi-term->scr+1;	
@@ -257,32 +284,48 @@ void leavescroll(const Arg *a){
 
 
 void lessmode_toggle(const Arg *a){
-		if (abs(a->i) == 2 ){ // enable
+//		if (abs(a->i) == 2 ){ // enable
+//				inputmode |= MODE_LESS;
+//				//selscroll(0,0);
+//				tfulldirt();
+//				//set_notifmode( 2, -1 ); // show message "less"
+//		} else {
+//				if (abs(a->i) == 1 ){ // enable
+//						inputmode |= MODE_LESS;
+//						//Arg d = { .i=1 };
+//						//kscrollup(&d);
+//				} else {
+//						if ( a->i == -3 ) //disable 
+//								inputmode &= ~MODE_LESS;
+//						else // toggle - i==0
+//								inputmode ^= MODE_LESS;
+//				}
+//		}
+//
+	switch( a->i & LESSMODEMASK ){
+		case LESSMODE(on):
 				inputmode |= MODE_LESS;
-				//selscroll(0,0);
-				tfulldirt();
-				//set_notifmode( 2, -1 ); // show message "less"
-		} else {
-				if (abs(a->i) == 1 ){ // enable
-						inputmode |= MODE_LESS;
-						//Arg d = { .i=1 };
-						//kscrollup(&d);
-				} else {
-						if ( a->i == -3 ) //disable 
-								inputmode &= ~MODE_LESS;
-						else // toggle - i==0
-								inputmode ^= MODE_LESS;
-				}
-		}
+				//tfulldirt();
+				break;
+		case LESSMODE(off):
+				inputmode &= ~MODE_LESS;
+				break;
+		case LESSMODE(toggle):
+				inputmode ^= MODE_LESS;
+				break;
+	}
 
-		if ( inputmode & MODE_LESS ){ // enable
-				//set_notifmode( 2, -1 ); // show message "less"
+	if ( a->i & ~LESSMODEMASK ){
+		Argd d = { .i = ~LESSMODEMASK & a->i };
+		scroll(&d);
+	}
+
+		if ( inputmode & MODE_LESS ){ // enabled
 				showstatus(1,"-LESS-");
 				updatestatus();
 		} else { // disable
-				//set_notifmode( 4,-2 ); // hide message
 				showstatus(0,0);
-				scrolltobottom();
+				//scrolltobottom();
 		}
 }
 

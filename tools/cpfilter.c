@@ -1,4 +1,4 @@
-// Conversion betweeen the different charmaps.
+// Conversion betweeen different charmaps.
 
 
 // github.com/michael105/slterm
@@ -16,10 +16,10 @@
 // That's why I wrote this.
 // Yet I didn't need BOM characters, I write with latex.
 //
-// The codepage "guessing" might work mainly for German, it looks 
+// The codepage "guessing" might work only for German, it looks 
 // for umlauts.
 // If you'd need other languages, you would have to add the typical (extended ascii) characters
-// below.
+// below to the constant charmap cp.
 //
 
 
@@ -118,9 +118,13 @@ int opts;
 void usage(){
 	W("convert stdin to stdout\n"
 			"Usage: convert [-hs] [tocp] [fromcp]\n\n"
-			"Example: cat text.txt | convert cp1252 cp850\n\n"
-			"Whithout any options, try to guess the charset and convert to cp437\n"
-			"(change the defaults in the source, if needed)\n"
+			"Example: cat text.txt | convert cp1252 cp850\n"
+			"        (convert from cp850 to cp1252)\n"
+			"         cat text.txt | convert cp1252\n"
+			"        (convert to cp1252, guessing source charset\n\n"
+			"Whithout any options, try to guess the charset and convert to ");
+   write(2,cp[DEFAULT_CP].name,strlen(cp[DEFAULT_CP].name));
+	W(		"\n(change the default in the source, if needed)\n\n"
 			"options: -s : silence, no messages to stderr\n"
 			"         -l : list codepages\n"
 			"         -x : display non convertible chars in hexadecimal\n"
