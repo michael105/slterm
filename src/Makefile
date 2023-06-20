@@ -193,6 +193,11 @@ install: slterm slterm.1
 	tic -sx slterm.info
 	@echo Please see the README file regarding the terminfo entry of st.
 
+
+loc-install: src/slterm
+	su -c 'sh -c "mv /usr/local/bin/st /usr/local/bin/st.bak; cp src/slterm /usr/local/bin/st; chmod a+rx /usr/local/bin/st" '
+
+
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/slterm
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/slterm.1

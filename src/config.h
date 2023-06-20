@@ -256,7 +256,8 @@ static MouseShortcut mshortcuts[] = {
 #define TERMMOD (ControlMask|ShiftMask)
 #define SETBOOKMARKMASK (ControlMask|Mod1Mask)
 // CapsLock
-#define BOOKMARKMASK ControlMask
+#define BOOKMARKMASK Mod2Mask
+//#define BOOKMARKMASK ControlMask
 
 // inputmodes
 #define ALLMODES 0xffffffff
