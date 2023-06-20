@@ -202,9 +202,5 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/slterm
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/slterm.1
 
-install-devel: slterm
-	sudo mv /usr/local/bin/slterm /usr/local/bin/st.old
-	sudo cp slterm /usr/local/bin/slterm
-
 
 .PHONY: all options clean dist install uninstall

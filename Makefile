@@ -21,11 +21,6 @@ install
 loc-install: src/slterm slterm.1
 	su -c 'sh -c "mv /usr/local/bin/st /usr/local/bin/st.bak; cp src/slterm /usr/local/bin/st; chmod a+rx /usr/local/bin/st" '
 
-linst: 
-	mv /usr/local/bin/st /usr/local/bin/st.old.1
-	cp src/slterm /usr/local/bin/st
-	chmod a+rx /usr/local/bin/st
-
 
 .PHONY: all install
 
