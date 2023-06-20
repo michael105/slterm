@@ -8,20 +8,23 @@
 #define LESSMODE_OFF (1<<28)
 #define LESSMODE_ON (1<<29)
 #define LESSMODE_TOGGLE (LESSMODE_OFF|LESSMODE_ON)
-#define SCROLL_BOTTOM (0)
+#define SCROLL_BOTTOM (1<<26)
 #define SCROLL_PAGEDOWN (1<<30)
 #define SCROLL_PAGEUP ((1<<30)|(1<<31))
 #define SCROLL_TOP (1<<31)
+#define SCROLLUP(x) (x|(1<<27))
+#define SCROLLDOWN(x) (x&(~(1<<27)))
 // SCROLL can also  begiven the number of lines to be scrolled.
 // -1 = scroll up 1 line, 3 scroll down 3 lines
 // SCROLL is also the argument for scroll()
 #define LESSMODEMASK (3<<28)
 #define SCROLLMASK ((3<<30)|((1<<28)-1))
+#define SCROLL_LINEMASK ((1<<26)-1)
 
-#define ISSCROLLDOWN(x) ( !(x&(1<<31)) && ( (x&SCROLLMASK)>0 )) 
+#define ISSCROLLDOWN(x) ( !(x&(1<<27)) && ( (x&SCROLL_LINEMASK)>0 )) 
 //#define ISSCROLLDOWN(x) ( x>0 && x<(1<<31) )
 //#define ISSCROLLUP(x) ( x<0 && x> -(1UI<<32UI) ) 
-#define ISSCROLLUP(x) ( x&(1<<31) ) 
+#define ISSCROLLUP(x) ( x&(1<<27) ) 
 //#define ISSCROLLUP(x) ( ( x&(SCROLLMASK&&(~(1<<32))) ) && (x&(1<<32)) ) 
 
 extern int scrollmarks[12];
@@ -30,6 +33,8 @@ extern int retmarks[10];
 // callbacks
 void kscrolldown(const Arg *);
 void kscrollup(const Arg *);
+// Argument Arg.i is one of LESSMODE_ON, LESSMODE_OFF, LESSMODE_TOGGLE
+// can be or'ed with SCROLL (all definitions), then scrolls also
 void lessmode_toggle(const Arg*);
 
 void set_scrollmark(const Arg *a);

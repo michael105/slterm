@@ -107,7 +107,7 @@ void scroll( const Arg *a){
 			if ( ISSCROLLDOWN(a->i) ){
 				kscrolldown( a );
 			} else if ( ISSCROLLUP(a->i) ){
-				d.i = - a->i;
+				d.i = a->i & SCROLL_LINEMASK;
 				kscrollup( &d );
 			}
 	}
@@ -128,7 +128,7 @@ void set_retmark() {
 void retmark(const Arg* a){
 	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d\n", term->row, retmarks[0],term->histi, term->scr );
 //	if ( scrollmarks[a->i] ){
-	Arg d = { .i=1 };	
+	Arg d = { .i=LESSMODE_ON };	
 	if ( term->histi<term->row){
 			scrolltotop();
 			lessmode_toggle(&d);
@@ -243,7 +243,7 @@ void tscrollup(int orig, int n, int copyhist) {
 						selscroll(0, term->scr);
 						//tfulldirt();
 						Arg a; 
-						 a.i=2;
+						 a.i=LESSMODE_ON;
 					  lessmode_toggle(&a);
 						enterlessmode = 0;
 						//a.i=0;
@@ -283,25 +283,10 @@ void leavescroll(const Arg *a){
 }
 
 
+// Argument Arg.i is one of LESSMODE_ON, LESSMODE_OFF, LESSMODE_TOGGLE
+// can be or'ed with SCROLL (all definitions), then scrolls also
 void lessmode_toggle(const Arg *a){
-//		if (abs(a->i) == 2 ){ // enable
-//				inputmode |= MODE_LESS;
-//				//selscroll(0,0);
-//				tfulldirt();
-//				//set_notifmode( 2, -1 ); // show message "less"
-//		} else {
-//				if (abs(a->i) == 1 ){ // enable
-//						inputmode |= MODE_LESS;
-//						//Arg d = { .i=1 };
-//						//kscrollup(&d);
-//				} else {
-//						if ( a->i == -3 ) //disable 
-//								inputmode &= ~MODE_LESS;
-//						else // toggle - i==0
-//								inputmode ^= MODE_LESS;
-//				}
-//		}
-//
+
 	switch( a->i & LESSMODEMASK ){
 		case LESSMODE_ON:
 				inputmode |= MODE_LESS;
@@ -316,7 +301,9 @@ void lessmode_toggle(const Arg *a){
 	}
 
 	if ( a->i & ~LESSMODEMASK ){
-		Arg d = { .i = ~LESSMODEMASK & a->i };
+		printf("scroll %d\n",a->i);
+		Arg d = { .i = SCROLLMASK & a->i };
+		printf("scroll %d\n",d.i);
 		scroll(&d);
 	}
 

@@ -193,7 +193,7 @@ void showhelp(const Arg *a) {
 		}
 		inputmode = inputmode | MODE_LESS | IMODE_HELP;
 		term->mode = term->mode | TMODE_HELP;
-		Arg a = { .i=1 };
+		Arg a = { .i=LESSMODE_ON };
 		lessmode_toggle( &a );
 		//enterscroll(&a);
 		showstatus(1,"-HELP- ( q to exit )");
@@ -204,7 +204,7 @@ void showhelp(const Arg *a) {
 		inputmode = inputmode & ~(MODE_LESS | IMODE_HELP);
 		showstatus(0,0);
 		term = p_term;
-		Arg a = { .i=-3 };
+		Arg a = { .i=LESSMODE_OFF };
 		lessmode_toggle( &a );
 		if ( ( p_help->row != term->row ) || ( p_help->col != term->col ))
 			tresize( p_help->col, p_help->row );
