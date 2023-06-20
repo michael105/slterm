@@ -195,7 +195,7 @@ install: slterm slterm.1
 
 
 loc-install: src/slterm
-	su -c 'sh -c "mv /usr/local/bin/st /usr/local/bin/st.bak; cp src/slterm /usr/local/bin/st; chmod a+rx /usr/local/bin/st" '
+	su -c 'sh -c "mv /usr/local/bin/st /usr/local/bin/st.bak; cp slterm /usr/local/bin/st; chmod a+rx /usr/local/bin/st" '
 
 
 uninstall:

@@ -13,10 +13,8 @@
 #define SCROLL_PAGEUP ((1<<30)|(1<<31))
 #define SCROLL_TOP (1<<31)
 #define SCROLLUP(x) (x|(1<<27))
+// scroll down x lines, argument to scroll
 #define SCROLLDOWN(x) (x&(~(1<<27)))
-// SCROLL can also  begiven the number of lines to be scrolled.
-// -1 = scroll up 1 line, 3 scroll down 3 lines
-// SCROLL is also the argument for scroll()
 #define LESSMODEMASK (3<<28)
 #define SCROLLMASK ((3<<30)|((1<<28)-1))
 #define SCROLL_LINEMASK ((1<<26)-1)
