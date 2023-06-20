@@ -5,7 +5,13 @@
 
 // SCROLL and LESSMODE are to be or'ed and given to lessmode_toggle
 #define LESSMODE(mode) ({ enum { off=(1<<28), toggle=((1<<28)|(1<<29)), on=(1<<29) }; mode; })
-#define SCROLL(x) ({ enum { bottom=0, pagedown=(1<<30), pageup=((1<<30)|(1<<31), top=(1<<31) }; x; })
+#define LESSMODE_OFF (1<<28)
+#define LESSMODE_ON (1<<29)
+#define LESSMODE_TOGGLE (LESSMODE_OFF|LESSMODE_ON)
+#define SCROLL_BOTTOM (0)
+#define SCROLL_PAGEDOWN (1<<30)
+#define SCROLL_PAGEUP ((1<<30)|(1<<31))
+#define SCROLL_TOP (1<<31)
 // SCROLL can also  begiven the number of lines to be scrolled.
 // -1 = scroll up 1 line, 3 scroll down 3 lines
 // SCROLL is also the argument for scroll()

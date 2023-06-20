@@ -87,25 +87,30 @@ void kscrollup(const Arg *a) {
 
 void scroll( const Arg *a){
 	Arg d;
-	 // scrolling and the history make me dizzy. misc. 
-	  // At some time I'm going to rewrite that 
-	if ( a->i == SCROLL(bottom) ){
-		scrolltobottom();
-	} else if ( a->i == SCROLL(top) ){
-		scrolltotop();
-	} else if ( a->i == SCROLL(pageup) ){
-		d.i = -1;
-		kscrollup( &d );
-	} else if ( a->i == SCROLL(pagedown) ){
-		d.i = -1;
-		kscrolldown( &d );
-	} else if ( ISSCROLLDOWN( a->i ) ){
-		kscrolldown( a );
-	} else if ( ISSCROLLUP( a->i ) ){
-		d.i = - a->i;
-		kscrollup( &d );
+	switch ( a->i ){ // scrolling and the history make me dizzy. misc. 
+						  // At some time I'm going to rewrite that 
+		case SCROLL_BOTTOM:
+			scrolltobottom();
+			break;
+		case SCROLL_TOP:
+			scrolltotop();
+			break;
+		case SCROLL_PAGEUP:
+			d.i = -1;
+			kscrollup( &d );
+			break;
+		case SCROLL_PAGEDOWN:
+			d.i = -1;
+			kscrolldown( &d );
+			break;
+		default:
+			if ( ISSCROLLDOWN(a->i) ){
+				kscrolldown( a );
+			} else if ( ISSCROLLUP(a->i) ){
+				d.i = - a->i;
+				kscrollup( &d );
+			}
 	}
-
 }
 
 void set_scrollmark(const Arg *a) {
@@ -298,20 +303,20 @@ void lessmode_toggle(const Arg *a){
 //		}
 //
 	switch( a->i & LESSMODEMASK ){
-		case LESSMODE(on):
+		case LESSMODE_ON:
 				inputmode |= MODE_LESS;
 				//tfulldirt();
 				break;
-		case LESSMODE(off):
+		case LESSMODE_OFF:
 				inputmode &= ~MODE_LESS;
 				break;
-		case LESSMODE(toggle):
+		case LESSMODE_TOGGLE:
 				inputmode ^= MODE_LESS;
 				break;
 	}
 
 	if ( a->i & ~LESSMODEMASK ){
-		Argd d = { .i = ~LESSMODEMASK & a->i };
+		Arg d = { .i = ~LESSMODEMASK & a->i };
 		scroll(&d);
 	}
 
