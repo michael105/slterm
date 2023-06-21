@@ -18,7 +18,7 @@
 	* Switching codepages with Shortcuts (cp437,cp850,cp1252,..)
 	* Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
-     slterm might be one of the fastest available terminal emulators for X
+     slterm is one of the fastest available terminal emulators for X
 
 
 ---
@@ -33,13 +33,13 @@
 		
 	Afterwards in "lessmode" Cursor keys and PageUp/Down scroll around.
 
-  * `Ctrl+Shift+PageDown/CursorDown`, `q` or `Escape` leave lessmode.
+  * `q` or `Escape` leave lessmode.
 
-  * `Ctrl/Shift+Return` to execute a command in the shell and automatically enter lessmode,
+  * `Shift+Return` to execute a command in the shell and automatically enter lessmode,
        	if more than one screen is written by the command.
 
-  * `Shift+Backspace`: Enable lessmode and scroll back to the place, 
-		   the last command has been entered.
+  * `Shift+Backspace`: Enable lessmode and scroll back to the location, 
+		   the last command was entered.
    
 <!-- <img align="right" src="images/vt-102-1984.jpg"> -->
 	 
@@ -70,7 +70,10 @@
  and edit config.in
 
  All tables are used with 8bit ascii, for performance reasons.
- There still is the possibility to enable UTF-8 at compiletime.
+
+ Keyboard input is translated to the current charmap.
+ 
+ UTF8 is abandoned for now, but the code for utf8 is left in the sources.
 
 
 ##### Inline help
@@ -89,10 +92,6 @@
 
 
 #### Slim resource usage:
-
-
-	UTF8 support is an optional compile switch now.
-	  
 
   Colors restricted to a 256 color palette 
         (Saving 6 Bytes per Glyph)
@@ -144,7 +143,7 @@ Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.
 
 
     Stripped unicode support in favour of the 256 chars (extended) ASCII table
-        utf8 is an optional compiletime switch now.
+        utf8 is an optional compiletime switch now.(was).
         (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
         E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
         but until yet I always needed to dive into the configurations for 
