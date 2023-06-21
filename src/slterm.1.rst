@@ -54,9 +54,12 @@ KEYS
    Enable lessmode and scroll back to the line, 
    the last command has been entered in the shell
 
-**Ctrl+Enter** 
+**Shift+Enter** 
    Execute command, enter lessmode when more than
    one screen is displayed by the command.
+
+**Ctrl+Shift + [Up/Down/PageUp/Pagedown]**
+   Scroll, and enter lessmode
 
 **Ctrl+Alt + [0..9]** 
    Set Scrollmark 0 - 9
@@ -101,6 +104,9 @@ KEYS
 
 **Ctrl+Shift+Home**
    Reset to default font size.
+
+**Ctrl+Win + [0..9]**
+   Switch charmaps
 
 
 OPTIONS
@@ -253,7 +259,7 @@ Applied patches are written by:
 All other additions, performance optimizations, 
 and the reorganization of the source files
 has done Michael (misc) Myer. 
-(2020,21 / misc.myer@zoho.com / https://github.com/michael105)
+(2020-23 / misc.myer@zoho.com / https://github.com/michael105)
 
 (My apologies for not pushing the work back to suckless,
 but the heavy changes and the not so simple additions
@@ -292,5 +298,8 @@ Clipboard copy/paste of characters > 127 currently doesn't communicate correctly
 with Xorg programs. 
 
 The history ringbuffer could get problematic in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so it's not at the top of the todo list)
+
+Under special circumstances the alternate buffer crashes. Yet, I couldn't reproduce
+the problem, when I looked for it. If someone is able to spot the factors, please drop me a note.
 
 
