@@ -194,7 +194,7 @@ install: slterm slterm.1
 	@echo Please see the README file regarding the terminfo entry of st.
 
 
-loc-install: src/slterm
+loc-install: slterm
 	su -c 'sh -c "mv /usr/local/bin/st /usr/local/bin/st.bak; cp slterm /usr/local/bin/st; chmod a+rx /usr/local/bin/st" '
 
 

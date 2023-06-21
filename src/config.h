@@ -300,10 +300,10 @@ Shortcut shortcuts[] = {
     { ShiftMask, XK_End, scrolltobottom, { },ALLMODES },
     { ShiftMask, XK_Home, scrolltotop, { },ALLMODES },
  		// Shift+Up/Down: Scroll Up/Down 3 lines
-		{ ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
+    { ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
     { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
 
-		{ XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },
+    { XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },
     { XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS },
     { XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS },
     { XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS },
@@ -311,7 +311,7 @@ Shortcut shortcuts[] = {
     { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
 
 		// abort precessing when in the help view. 
-		{ XK_ANY_MOD, ALL_KEYS, dummy, {}, IMODE_HELP },
+    { XK_ANY_MOD, ALL_KEYS, dummy, {}, IMODE_HELP },
 
 
 // clipboard
