@@ -14,7 +14,8 @@ man: slterm.1
 slterm.1: slterm.1.rst
 	rst2man slterm.1.rst > slterm.1 || rst2man.py slterm.1.rst > slterm.1
 
-install
+
+install:
 	cd src && make install
 
 

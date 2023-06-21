@@ -13,13 +13,13 @@ FULLDEBUG := 0
 
 
 # version
-VERSION := 0.95
+VERSION := 0.96
 
 # Set to 1 enable Xresource configuration
 # (in addition, st-asc has to be started with the option "-x on")
 XRESOURCES := 0
 
-# compile with utf8-support
+# utf8-support (currently abandoned. Will not work )
 UTF8 := 0
 
 # Length of history, in bits, -> log(size in lines) ~ bits */
