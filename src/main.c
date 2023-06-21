@@ -185,7 +185,7 @@ run:
 		selinit();
 
 		create_unicode_table(); // unicode to current cp table
-		//sort_shortcuts();	
+		sort_shortcuts();	
 
 		run();
 
