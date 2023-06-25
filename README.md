@@ -7,7 +7,7 @@
    Descendant of st (suckless terminal), modified extensively.
 
 
-- I split again the "stable" master branch, and the branch devel.
+- split the "stable" master branch, and the branch devel.
 - Currently utf8 is abandoned. Previous versions should work.
 - configuration is changed (See below)
 
