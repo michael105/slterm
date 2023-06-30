@@ -87,6 +87,8 @@ foreach my $row(@a){
 exit;
 }
 
+print "\033[1;4;38;5;237m"." 1   0   2   2   2   2   2   2   0   0   0   0   0   1   1   1   1   1 "  ."\033[0m\n";
+
 my $i = 38;
 #my $i = 38; # 48 = invert - background
 
