@@ -8,7 +8,7 @@ $YELLOW Keybinding reference $NORM
 
 This is a short reference of keystrokes,
 a longer manual should be accessible via 'man slterm'.
-The keycombinations can be changed in config.in.(recompile needed
+The keycombinations can be changed in config.h(recompile needed)
 
 $YELLOW Keystrokes $NORM
 
@@ -28,6 +28,7 @@ ${BOLD}Set font width/size:$N
   Alt+Shift + Insert/Delete:   Enlarge/Shrink width
   Alt+Shift + PageUp/PageDown: Zoom in / out
 
+
 ${BOLD}Select Codepage:$N
 
   Ctrl+Win + 0 CP1250 
@@ -35,7 +36,8 @@ ${BOLD}Select Codepage:$N
              2 CP1252 ${GRAY}(this is mostly ANSI, and the 1. page of Unicode)$N
              3 CP1253
              4 CP437  ${GRAY}(Old IBM codetable, borders and tables)$N
-             5 CP850  ${GRAY}(DOS Standard table)
+             5 CP850  ${GRAY}(DOS Standard table)$N
+             6 CP4002 ${GRAY}(DOS Standard table)$N
 
 
 $BOLD${UL}${LGREEN}Regular mode:$N
@@ -44,6 +46,7 @@ ${BOLD}Scrolling:$N
 
   Shift + Up/Down/PageUp/Pagedown: Scroll up/down
   Shift + Home/End: Scroll to top/bottom
+  Shift + Backspace: Scroll to the location of the last command (shell)
 
 
 ${BOLD}Clipboard:$N
@@ -70,7 +73,7 @@ $BOLD${UL}${LGREEN}Lessmode:$N
   Shift+Backspace: Scroll to the location of the last entered command,
     enter lessmode
 
-  Ctrl+Enter: Execute command, enter lessmode when more than
+  Shift+Enter: Execute command, enter lessmode when more than
     one screen is displayed by the command.
 
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
