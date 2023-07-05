@@ -263,12 +263,12 @@ static MouseShortcut mshortcuts[] = {
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
 #define MODE_LESS 0x02
-#define IMODE_HELP 0x04
+#define IMODE_HELP 0x06 // 0x4 | 0x2 , keys for lessmode
 
 // Ctrl+Shift+Win
 #define SETFONTMASK ShiftMask|Mod1Mask
 
-#define ALL_KEYS 1
+#define ALL_KEYS UINT_MAX-1
 // all comments, starting with //K are parsed into the keystroke shortref
 
 #define I(value) { .i=value }

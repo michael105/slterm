@@ -11,16 +11,18 @@ function col() {
 		done
 }
 
+function gray(){
+echo -ne "\033[1;30m$*\033[0m"
+}
 
-
-echo -e "\033[1;30m" Grayscale, \#232-255 "\033[0m"
+gray "Grayscale, #232-255 "
+echo
 echo
 
-col 2 0 {232..255}
-echo
-col 0 0 {232..255}
-echo
-col 1 0 {232..255}
+gray "1: "; col 1 0 {255..232}; echo
+gray "0: "; col 0 0 {255..232}; echo
+gray "2: "; col 2 0 {255..232}; echo
+
 echo
 
 

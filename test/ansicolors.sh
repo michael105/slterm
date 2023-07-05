@@ -26,13 +26,13 @@ echo 256 Color mode, \#0-15 "\033[0;1m (indexed palette)"
 echo -n "\033[0m";
 
 for i in 0 8; do
-		for a in 2 0 1; do
-				printf "\033[37;$a""m $a""m:" 
-				for b in {0..7};do 
-						printf "\033[38;5;$[$b+$i]""m %03d" $[$b+$i]
-				done
-				echo
+	for a in 2 0 1; do
+		printf "\033[37;$a""m $a""m:" 
+		for b in {0..7};do 
+			printf "\033[38;5;$[$b+$i]""m %03d" $[$b+$i]
 		done
+		echo
+	done
 done
 
 echo "\033[1;4m";
@@ -42,33 +42,33 @@ echo -n "\033[0m";
 
 
 for i in 0 8; do
-		for a in 2 0 1; do
-				printf "\033[37;$a""m $a""m:" 
-				for b in {0..7};do 
-						printf "\033[38;5;$[$b+$i]m"  
-						# first color; then ivert
-						printf "\033[7""m %03d" $[$b+$i]
-				done
-				echo
+	for a in 2 0 1; do
+		printf "\033[37;$a""m $a""m:" 
+		for b in {0..7};do 
+			printf "\033[38;5;$[$b+$i]m"  
+			# first color; then ivert
+			printf "\033[7""m %03d" $[$b+$i]
 		done
+		echo
+	done
 done
 
 
 function col() {
-		fi=$1; shift
-		fa=$[$1*36]; shift
-		for fb in $@; do
-				printf "\033[0;$fi""m\033[38;5;$[$fa+$fb]""m %03d"  $[$fa+$fb]
-		done
+	fi=$1; shift
+	fa=$[$1*36]; shift
+	for fb in $@; do
+		printf "\033[0;$fi""m\033[38;5;$[$fa+$fb]""m %03d"  $[$fa+$fb]
+	done
 }
 
 
 function colbg() {
-		fi=$1; shift
-		fa=$[$1*36]; shift
-		for fb in $@; do
-				printf "\033[0;$fi""m\033[48;5;$[$fa+$fb]""m %03d"  $[$fa+$fb]
-		done
+	fi=$1; shift
+	fa=$[$1*36]; shift
+	for fb in $@; do
+		printf "\033[0;$fi""m\033[48;5;$[$fa+$fb]""m %03d"  $[$fa+$fb]
+	done
 }
 
 

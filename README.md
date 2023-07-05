@@ -7,10 +7,6 @@
    Descendant of st (suckless terminal), modified extensively.
 
 
-- split the "stable" master branch, and the branch devel.
-- Currently utf8 is abandoned. Previous versions should work.
-- configuration is changed (See below)
-
 
 ##### Addons and modifications:
 
@@ -23,7 +19,20 @@
 	* Switching codepages with Shortcuts (cp437,cp850,cp1252,..)
 	* Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
-     slterm is one of the fastest available terminal emulators for X
+     slterm might be the fastest available terminal emulators for X
+
+
+
+Current changes
+
+- split the "stable" master branch, and the branch devel.
+- Currently utf8 is abandoned. Previous versions should work.
+- configuration is changed (See below)
+
+
+Todo:
+
+- include a font
 
 
 ---
@@ -167,8 +176,6 @@ The scripts for creating the output are within ./test
 
 .. Did split the sourcefile (one big file with several thousand lines)
 into smaller pieces. Hopefully hacking st is in the future a little bit more conveniant. 
-There still are many globals spread over the
-different source files. I'm about to tidy this up further.
 
 
 ---
