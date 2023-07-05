@@ -3,6 +3,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+#ifndef extract_keyref
 // Silence my syntaxcheckerplugin
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
@@ -249,6 +250,31 @@ static MouseShortcut mshortcuts[] = {
 };
 
 /* Internal keyboard shortcuts. */
+// inputmodes
+#define ALLMODES 0xffffffff
+#define MODE_DEFAULT 0x01
+#define MODE_LESS 0x02
+#define IMODE_HELP 0x06 // 0x4 | 0x2 , keys for lessmode
+
+#define ALL_KEYS UINT_MAX-1
+// all comments, starting with //K are parsed into the keystroke shortref
+
+#define I(value) { .i=value }
+#define BIND(mask,keysym,function,argument,inputmode,...) { mask,keysym,function,argument,inputmode }
+
+#else  // ifndef extract_keyref
+		 // definitions to extract a key reference
+#define BIND(mask,keysym,function,argument,inputmode,...) inputmode; mask ; keysym ; function ; __VA_ARGS__
+#define ControlMask Control
+#define ShiftMask Shift
+#define Mod1Mask Alt
+#define Mod4Mask Win
+#define XK_ANY_MOD All
+#define ALLMODES All
+#define MODE_LESS Less
+#define IMODE_HELP Help
+#endif
+
 // masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
 // mod1 = alt, mod2 = win , mod3 = Capslock (here)
 // mod4 = win (!) 
@@ -258,157 +284,153 @@ static MouseShortcut mshortcuts[] = {
 // CapsLock
 //#define BOOKMARKMASK Mod2Mask
 #define BOOKMARKMASK ControlMask
-
-// inputmodes
-#define ALLMODES 0xffffffff
-#define MODE_DEFAULT 0x01
-#define MODE_LESS 0x02
-#define IMODE_HELP 0x06 // 0x4 | 0x2 , keys for lessmode
-
 // Ctrl+Shift+Win
 #define SETFONTMASK ShiftMask|Mod1Mask
 
-#define ALL_KEYS UINT_MAX-1
-// all comments, starting with //K are parsed into the keystroke shortref
 
-#define I(value) { .i=value }
+
+#ifndef extract_keyref
 Shortcut shortcuts[] = {
+#endif
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
-    { XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES },
-    { XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP },
-    { XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP },
-    { XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES },
-    { ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES },
-    { ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES },
-    { XK_ANY_MOD, XK_Print, printsel, {.i = 0},ALLMODES },
-    { TERMMOD, XK_I, inverse_screen, {},ALLMODES },
+
+BIND( XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES ),
+BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES ),
+BIND( ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES ),
+BIND( ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES ),
+BIND( XK_ANY_MOD, XK_Print, printsel, {.i = 0},ALLMODES ),
+BIND( TERMMOD, XK_I, inverse_screen, {},ALLMODES ),
 
 		// Change font size/width
-    { SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES },
-    //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES },
-    { SETFONTMASK, XK_Page_Down, zoom, {.f = +1},ALLMODES },
-    //{ SETFONTMASK, XK_Next, zoom, {.f = -1},ALLMODES },
-    { SETFONTMASK, XK_Home, zoomreset, {.f = 0},ALLMODES },
+BIND( SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES ),
+    //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES ),
+BIND( SETFONTMASK, XK_Page_Down, zoom, {.f = +1},ALLMODES ),
+    //{ SETFONTMASK, XK_Next, zoom, {.f = -1},ALLMODES ),
+BIND( SETFONTMASK, XK_Home, zoomreset, {.f = 0},ALLMODES ),
 
-    { SETFONTMASK, XK_Insert, set_fontwidth, {.i = -1},ALLMODES },
-    { SETFONTMASK, XK_Delete, set_fontwidth, {.i = 1},ALLMODES },
-    { SETFONTMASK, XK_End, set_fontwidth, {.i = -1},ALLMODES },
+BIND( SETFONTMASK, XK_Insert, set_fontwidth, {.i = -1},ALLMODES ),
+BIND( SETFONTMASK, XK_Delete, set_fontwidth, {.i = 1},ALLMODES ),
+BIND( SETFONTMASK, XK_End, set_fontwidth, {.i = -1},ALLMODES ),
 
 // Scrolling
-    { ShiftMask, XK_Page_Up, kscrollup, {.i = -1},ALLMODES },
-    { ShiftMask, XK_Page_Down, kscrolldown, {.i = -1},ALLMODES },
-    { ShiftMask, XK_End, scrolltobottom, { },ALLMODES },
-    { ShiftMask, XK_Home, scrolltotop, { },ALLMODES },
+BIND( ShiftMask, XK_Page_Up, kscrollup, {.i = -1},ALLMODES ),
+BIND( ShiftMask, XK_Page_Down, kscrolldown, {.i = -1},ALLMODES ),
+BIND( ShiftMask, XK_End, scrolltobottom, { },ALLMODES ),
+BIND( ShiftMask, XK_Home, scrolltotop, { },ALLMODES ),
  		// Shift+Up/Down: Scroll Up/Down 3 lines
-    { ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES },
-    { ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES },
+BIND( ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES ),
+BIND( ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES ),
 
-    { XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS },
-    { XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS },
-    { XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS },
-    { XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS },
-    { XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS },
-    { XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS },
+BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS ),
+BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS ),
+BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS ),
+BIND( XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS ),
+BIND( XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS ),
 
 		// abort precessing when in the help view. 
-    { XK_ANY_MOD, ALL_KEYS, dummy, {}, IMODE_HELP },
+BIND( XK_ANY_MOD, ALL_KEYS, dummy, {}, IMODE_HELP ),
 
 
 // clipboard
-    { TERMMOD, XK_C, clipcopy, {.i = 0},ALLMODES },
-    { TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES },
-    { TERMMOD, XK_Y, selpaste, {.i = 0},ALLMODES },
-    { ShiftMask, XK_Insert, selpaste, {.i = 0},ALLMODES },
-    { TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES },
+BIND( TERMMOD, XK_C, clipcopy, {.i = 0},ALLMODES ),
+BIND( TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES ),
+BIND( TERMMOD, XK_Y, selpaste, {.i = 0},ALLMODES ),
+BIND( ShiftMask, XK_Insert, selpaste, {.i = 0},ALLMODES ),
+BIND( TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES ),
 
-    { TERMMOD, XK_Num_Lock, numlock, {.i = 0},ALLMODES },
+BIND( TERMMOD, XK_Num_Lock, numlock, {.i = 0},ALLMODES ),
 
 
 // scrollmarks
-    { SETBOOKMARKMASK, XK_1, set_scrollmark, { .i=1 },ALLMODES },
-    { SETBOOKMARKMASK, XK_2, set_scrollmark, { .i=2 },ALLMODES },
-    { SETBOOKMARKMASK, XK_3, set_scrollmark, { .i=3 },ALLMODES },
-    { SETBOOKMARKMASK, XK_4, set_scrollmark, { .i=4 },ALLMODES },
-    { SETBOOKMARKMASK, XK_5, set_scrollmark, { .i=5 },ALLMODES },
-    { SETBOOKMARKMASK, XK_6, set_scrollmark, { .i=6 },ALLMODES },
-    { SETBOOKMARKMASK, XK_7, set_scrollmark, { .i=7 },ALLMODES },
-    { SETBOOKMARKMASK, XK_8, set_scrollmark, { .i=8 },ALLMODES },
-    { SETBOOKMARKMASK, XK_9, set_scrollmark, { .i=9 },ALLMODES },
-    { SETBOOKMARKMASK, XK_0, set_scrollmark, { .i=0 },ALLMODES },
+BIND( SETBOOKMARKMASK, XK_1, set_scrollmark, { .i=1 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_2, set_scrollmark, { .i=2 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_3, set_scrollmark, { .i=3 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_4, set_scrollmark, { .i=4 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_5, set_scrollmark, { .i=5 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_6, set_scrollmark, { .i=6 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_7, set_scrollmark, { .i=7 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_8, set_scrollmark, { .i=8 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_9, set_scrollmark, { .i=9 },ALLMODES ),
+BIND( SETBOOKMARKMASK, XK_0, set_scrollmark, { .i=0 },ALLMODES ),
 		// set scrollmark 0 on Return
-    //{ XK_ANY_MOD, XK_Return, set_scrollmark, { .i=0 },ALLMODES },
+    //{ XK_ANY_MOD, XK_Return, set_scrollmark, { .i=0 },ALLMODES ),
 
 // here Capslock (mapped with xmodmap)
-    { BOOKMARKMASK, XK_1, scrollmark, { .i=1 },ALLMODES },
-    { BOOKMARKMASK, XK_2, scrollmark, { .i=2 },ALLMODES },
-    { BOOKMARKMASK, XK_3, scrollmark, { .i=3 },ALLMODES },
-    { BOOKMARKMASK, XK_4, scrollmark, { .i=4 },ALLMODES },
-    { BOOKMARKMASK, XK_5, scrollmark, { .i=5 },ALLMODES },
-    { BOOKMARKMASK, XK_6, scrollmark, { .i=6 },ALLMODES },
-    { BOOKMARKMASK, XK_7, scrollmark, { .i=7 },ALLMODES },
-    { BOOKMARKMASK, XK_8, scrollmark, { .i=8 },ALLMODES },
-    { BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES },
-    { BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES },
+BIND( BOOKMARKMASK, XK_1, scrollmark, { .i=1 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_2, scrollmark, { .i=2 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_3, scrollmark, { .i=3 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_4, scrollmark, { .i=4 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_5, scrollmark, { .i=5 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_6, scrollmark, { .i=6 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_7, scrollmark, { .i=7 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_8, scrollmark, { .i=8 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES ),
+BIND( BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES ),
 
-    { XK_ANY_MOD, XK_1, scrollmark, { .i=1 },MODE_LESS },
-    { XK_ANY_MOD, XK_2, scrollmark, { .i=2 },MODE_LESS },
-    { XK_ANY_MOD, XK_3, scrollmark, { .i=3 },MODE_LESS },
-    { XK_ANY_MOD, XK_4, scrollmark, { .i=4 },MODE_LESS },
-    { XK_ANY_MOD, XK_5, scrollmark, { .i=5 },MODE_LESS },
-    { XK_ANY_MOD, XK_6, scrollmark, { .i=6 },MODE_LESS },
-    { XK_ANY_MOD, XK_7, scrollmark, { .i=7 },MODE_LESS },
-    { XK_ANY_MOD, XK_8, scrollmark, { .i=8 },MODE_LESS },
-    { XK_ANY_MOD, XK_9, scrollmark, { .i=9 },MODE_LESS },
-    { XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS },
+BIND( XK_ANY_MOD, XK_1, scrollmark, { .i=1 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_2, scrollmark, { .i=2 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_3, scrollmark, { .i=3 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_4, scrollmark, { .i=4 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_5, scrollmark, { .i=5 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_6, scrollmark, { .i=6 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_7, scrollmark, { .i=7 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_8, scrollmark, { .i=8 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_9, scrollmark, { .i=9 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS ),
 
 
-    { SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES },
-    //{ ControlMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
-    { ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES },
-    //{ XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES },
+BIND( SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES ),
+    //{ ControlMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
+BIND( ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
+    //{ XK_ANY_MOD, XK_Return, leavescroll, { 0 },ALLMODES ),
 
 	// doesnt ork ??
-	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES },
+	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES ),
 
-    { ShiftMask, XK_BackSpace, retmark , { },ALLMODES },
-    //{ XK_ANY_MOD, XK_BackSpace, retmark , { },MODE_LESS },
+BIND( ShiftMask, XK_BackSpace, retmark , { },ALLMODES ),
+    //{ XK_ANY_MOD, XK_BackSpace, retmark , { },MODE_LESS ),
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
 // toggle with Ctrl+Shift + L / down
 // quit with q or Escape
 	// switch on.
-    { TERMMOD, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES },
-    { TERMMOD, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES },
-    { TERMMOD, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES },
-    { TERMMOD, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES },
-    { TERMMOD, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES },
+BIND( TERMMOD, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
+BIND( TERMMOD, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
+BIND( TERMMOD, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES ),
+BIND( TERMMOD, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
+BIND( TERMMOD, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
 
 	// toggle
-    { TERMMOD, XK_L, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES },
-    { XK_ANY_MOD, XK_Scroll_Lock, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES },
+BIND( TERMMOD, XK_L, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES ),
+BIND( XK_ANY_MOD, XK_Scroll_Lock, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES ),
 	// switchoff
-    { XK_ANY_MOD, XK_Escape, lessmode_toggle,  I(LESSMODE_OFF | SCROLL_BOTTOM),MODE_LESS },
-    { XK_ANY_MOD, XK_q, lessmode_toggle, I(LESSMODE_OFF | SCROLL_BOTTOM),MODE_LESS },
-    { ShiftMask, XK_Return, lessmode_toggle, I(LESSMODE_TOGGLE),MODE_LESS },
+BIND( XK_ANY_MOD, XK_Escape, lessmode_toggle,  I(LESSMODE_OFF | SCROLL_BOTTOM),MODE_LESS ),
+BIND( XK_ANY_MOD, XK_q, lessmode_toggle, I(LESSMODE_OFF | SCROLL_BOTTOM),MODE_LESS ),
+BIND( ShiftMask, XK_Return, lessmode_toggle, I(LESSMODE_TOGGLE),MODE_LESS ),
 		
 // select charmap
-    { ControlMask|Mod4Mask, XK_1, set_charmap, { .i=1 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_2, set_charmap, { .i=2 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_3, set_charmap, { .i=3 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_4, set_charmap, { .i=4 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_5, set_charmap, { .i=5 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_6, set_charmap, { .i=6 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_7, set_charmap, { .i=7 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_8, set_charmap, { .i=8 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_9, set_charmap, { .i=9 },ALLMODES },
-    { ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES },
+BIND( ControlMask|Mod4Mask, XK_1, set_charmap, { .i=1 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_2, set_charmap, { .i=2 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_3, set_charmap, { .i=3 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_4, set_charmap, { .i=4 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_5, set_charmap, { .i=5 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_6, set_charmap, { .i=6 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_7, set_charmap, { .i=7 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_8, set_charmap, { .i=8 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_9, set_charmap, { .i=9 },ALLMODES ),
+BIND( ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES ),
 
 
     //{ TERMMOD, XK_T, temp, {.i = 0},ALLMODES },
- 
+
+#ifndef extract_keyref
 };
 #undef I
+#undef BIND
 
 /*
  * Special keys (change & recompile st.info accordingly)
@@ -747,6 +769,8 @@ int selected_codepage = 6;
 #else
 // the default codepage (cp1252)
 int selected_codepage = 2;
+#endif
+
 #endif
 
 #endif
