@@ -5,3 +5,25 @@
 // Especially, it's maybe 1/100 of the memory usage,
 // and furthermore quite possible shared anyways.
 static char* helpcontents = "\
+\n\r\
+[36m     slterm - [00;35msl[36mim [00;35mt[36merminal emulator for X [0;0m\n\r\
+\n\r\
+(Homepage: http://github.com/michael105/slterm)\n\r\
+\n\r\
+\n\r\
+[01;33m Help [0;0m\n\r\
+\n\r\
+\n\r\
+Colors\n\r\
+\n\r\
+\e[1;30mecho -e \"\\e[A;Nm\" text ..\n\r\
+N: fg color 30 - 37, and bg color 40 - 47\n\r\
+\n\r\
+255 colors\n\r\
+echo -e \"\\e[A;38;5;Nm\" text ...\n\r\
+echo -e \"\\e[0,48,5,Nm text\" for colored background.\n\r\
+N: color 0-255\n\r\
+A: 0=normal, 1=light, 2=dark\n\r\
+\n\r\
+\n\r\
+\n\r\

@@ -1,9 +1,3 @@
-
-$CYAN     slterm - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
-
-(Homepage: http://github.com/michael105/slterm)
-
-
 $YELLOW Keybinding reference $NORM
 
 The keycombinations can be changed in config.h(recompile needed)
