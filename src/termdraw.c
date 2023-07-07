@@ -264,7 +264,7 @@ check_control_code:
 
 		gp = &term->line[term->c.y][term->c.x];
 		if (IS_SET(MODE_WRAP) && (term->c.state & CURSOR_WRAPNEXT)) {
-				gp->mode |= ATTR_WRAP; //misc wrapping here
+				gp->mode |= ATTR_WRAP; //misc wrapping here NHIST
 				tnewline(1);
 				gp = &term->line[term->c.y][term->c.x];
 		}
@@ -274,14 +274,14 @@ check_control_code:
 		}
 
 		if (term->c.x + width > term->col) {
-				tnewline(1);
+				tnewline(1);  // NHIST
 				gp = &term->line[term->c.y][term->c.x];
 		}
 
 //	if ( u>=0x80 )
 //		printf("set r: %x\n",u);
 
-
+		// NHIST
 		tsetchar(u, &term->c.attr, term->c.x, term->c.y);
 
 #ifdef UTF8

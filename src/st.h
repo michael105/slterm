@@ -102,7 +102,8 @@ enum glyph_attribute {
   ATTR_BLINK = 1 << 4,
   ATTR_REVERSE = 1 << 5,
 #ifndef UTF8
-  ATTR_WRAP = 1 << 6,
+  ATTR_WRAP = 1 << 6, // NHIST : usable also at the first column, is not tested.
+  ATTR_GREEK = 1<<7, // betacode
   ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
 
   ATTR_INVISIBLE = 0,
@@ -193,7 +194,7 @@ typedef struct {
 				struct { 
 						unsigned char fg; /* foreground  */
 						unsigned char bg; /* background  */
-						unsigned char mode; /* attribute flags */
+						unsigned char mode; /* attribute flags */ //store newline bit here NHIST
 						Rune u;             /* character code */ 
 						// reorder. lowest byte is best
 						// to access
