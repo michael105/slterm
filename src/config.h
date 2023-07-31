@@ -254,7 +254,7 @@ static MouseShortcut mshortcuts[] = {
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
 #define MODE_LESS 0x02
-#define IMODE_HELP 0x06 // 0x4 | 0x2 , keys for lessmode
+#define IMODE_HELP 0x04 // 0x4 | 0x2 , keys for lessmode
 
 #define ALL_KEYS UINT_MAX-1
 // all comments, starting with //K are parsed into the keystroke shortref
@@ -294,7 +294,7 @@ Shortcut shortcuts[] = {
 #endif
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
 
-BIND( XK_ANY_MOD, XK_F1, showhelp, { 0},ALLMODES ),
+BIND( ControlMask, XK_F1, showhelp, { 0},ALLMODES ),
 BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES ),
@@ -323,6 +323,7 @@ BIND( ShiftMask, XK_Home, scrolltotop, { },ALLMODES ),
 BIND( ShiftMask, XK_Up, kscrollup, {.i = 3},ALLMODES ),
 BIND( ShiftMask, XK_Down, kscrolldown, {.i = 3},ALLMODES ),
 
+// lessmode
 BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS ),
@@ -391,7 +392,7 @@ BIND( ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
 	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES ),
 
 BIND( ShiftMask, XK_BackSpace, retmark , { },ALLMODES ),
-    //{ XK_ANY_MOD, XK_BackSpace, retmark , { },MODE_LESS ),
+BIND( XK_ANY_MOD,XK_BackSpace, retmark , { },MODE_LESS ),
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
