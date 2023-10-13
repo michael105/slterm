@@ -81,7 +81,7 @@ Todo:
  cp850, cp1250, cp1251, cp1253 are compiled in, 
  and can be selected by Ctrl+Win+[0..5]
  Other codepages would be possible, by adding them to charmap.h,
- and edit config.in
+ and edit config.h
 
  All tables are used with 8bit ascii, for performance reasons.
 
@@ -198,7 +198,7 @@ The default configuration might be save.
 
 (no utf8, scrollback history 16384 lines, no XResources, installs into /usr/local/bin)
 
-If you'd like to change anything, please edit config.in.
+If you'd like to change anything, please edit config.h and config.make
 
 
 
@@ -240,11 +240,13 @@ Me, I don't need it. And I don't really like the idea of having up to 4 Bytes pe
 It's quite simple to add another chartable, if needed, and
 im- and export files via tools/cpfilter or iconv. 
 
+Crashes sometimes under unknown circumstances when using the alternate screen mode. (man pager, less)
+
 
 ====================
 
 
-(misc 2020-2023 - misc.myer@zoho.com )
+(misc 2020-2023 - misc7@posteo.net )
 
 
 Credits
