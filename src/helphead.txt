@@ -1,0 +1,22 @@
+
+$CYAN     slterm - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
+
+(Homepage: http://github.com/michael105/slterm)
+
+
+$YELLOW Help $NORM
+
+Colors
+
+Colors can be printed at the shell with 'echo -e \"\e[A;Nm\"'
+
+A: one of 0..7, text attributes
+N: fg color 30 - 37, and bg color 40 - 47
+
+255 colors are available with: 'echo -e \"\e[A;38;5;Nm\"',
+and 'echo -e \"\e[0,48,5,Nm'\" for the background.
+A: 0=normal, 1=light, 2=dark
+
+
+
+
