@@ -353,7 +353,7 @@ OPTIONS
 
 **-x**
    enable reading of the XResources database for the configuration
-   st-asc must have been compiled with the XRESOURCES flag in config.h.in set to 1
+   slterm must have been compiled with the XRESOURCES flag in config.h.in set to 1
    
 **-X**
    lock all memory pages into memory, prevent swapping.

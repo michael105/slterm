@@ -31,12 +31,12 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
 .sp
-The \(aqslim terminal\(aq
+(sl)im (term)inal
 .SH SYNOPSIS
 .sp
 \fBslterm\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
 [\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
-[\fB\-l\fP \fIline\fP] [\fB\-w\fP \fIwindowid\fP] [[\fB\-e\fP] \fIcommand\fP
+[\fB\-l\fP \fIline\fP] [\fB\-w\fP \fIwindowid\fP] [[\fB\-e\fP] \fIcommand\fP] [\fB\-X\fP]
 [\fIarguments\fP\&...]]
 .sp
 \fBslterm\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
@@ -44,91 +44,352 @@ The \(aqslim terminal\(aq
 [\fB\-w\fP \fIwindowid\fP] \-l \fIline\fP [\fIstty_args\fP\&...]
 .SH DESCRIPTION
 .sp
-\fBslterm\fP is a virtual terminal emulator for X.
-It is originally based on st (suckless.org),
+\fBslterm\fP is a virtual terminal emulator for X
+It is a slimmed down fork of st (suckless.org),
 utf\-8 and rgb support stripped for better performance,
-with several additions and patches.
+but with several additions and patches.
 .SH KEYS
 .INDENT 0.0
 .TP
-.B \fB(Anymod)+F1\fP
-Show the reference of keybindings
-\(aqAnymod\(aq can be any combination of modification keys (Ctrl, Alt,..)
-Added to show the internal help, also when F1 has been bound to
-e.g. the window manager
-.TP
-.B \fBCtrl+Shift+c\fP
+.B \fBCtrl\-Shift\-c\fP
 Copy the selected text to the clipboard selection.
 .TP
-.B \fBCtrl+Shift+v\fP
+.B \fBCtrl\-Shift\-v\fP
 Paste from the clipboard selection.
 .TP
-.B \fBCtrl+Shift+y\fP
+.B \fBCtrl\-Shift\-y\fP
 Paste from primary selection (middle mouse button).
 .TP
 .B \fBCtrl+Shift+l\fP
 Toggle "less mode": when enabled, Cursor Up/Down, PageUp/PageDown, Home/End
 will scroll up / down, without holding Shift
 .TP
-.B \fBShift+Backspace\fP
-Enable lessmode and scroll back to the line,
-the last command has been entered in the shell
-.TP
-.B \fBShift+Enter\fP
-Execute command, enter lessmode when more than
-one screen is displayed by the command.
-.TP
-.B \fBCtrl+Shift + [Up/Down/PageUp/Pagedown]\fP
-Scroll, and enter lessmode
-.TP
-.B \fBCtrl+Alt + [0..9]\fP
-Set Scrollmark 0 \- 9
-.TP
-.B \fBCtrl + [0..9]\fP
-Scroll to mark 0 \- 9
-.TP
-.B \fBCtrl+Shift+s\fP
+.B \fBCtrl\-Shift\-s\fP
 Enter keyboard selection mode
 (Described below, with a different key mapping)
 .TP
-.B \fBShift+PgUp/PgDown\fP
+.B \fBShift\-PgUp/PgDown\fP
 Scroll Up/Down a Page
 .TP
-.B \fBShift+Up/Down\fP
+.B \fBShift\-Up/Down\fP
 Scroll Up/Down three lines
 .TP
-.B \fBShift+Home/End\fP
+.B \fBShift\-Home/End\fP
 Scroll to top / bottom
 .TP
 .B \fBBreak\fP
 Send a break in the serial line. Break key is obtained in PC
 keyboards pressing at the same time control and pause.
 .TP
-.B \fBCtrl+Print Screen\fP
+.B \fBCtrl\-Print Screen\fP
 Toggle if st should print to the \fIiofile.\fP
 .TP
-.B \fBShift+Print Screen\fP
+.B \fBShift\-Print Screen\fP
 Print the full screen to the \fIiofile.\fP
 .TP
 .B \fBPrint Screen\fP
 Print the selection to the \fIiofile.\fP
 .TP
-.B \fBAlt+Shift + Insert/Delete\fP
-Enlarge/Shrink font width
+.B \fBCtrl\-Shift\-Page Up\fP
+Increase font size.
 .TP
-.B \fBAlt+Shift + PageUp/PageDown\fP
-Zoom in / out
+.B \fBCtrl\-Shift\-Page Down\fP
+Decrease font size.
 .TP
-.B \fBCtrl+Shift + I\fP
-Inverse colors
-.TP
-.B \fBCtrl+Shift+Home\fP
+.B \fBCtrl\-Shift\-Home\fP
 Reset to default font size.
-.TP
-.B \fBCtrl+Win + [0..9]\fP
-Switch charmaps
 .UNINDENT
-.SH OPTIONS
+.SH KEYBINDING REFERENCE
+.sp
+The keycombinations can be changed in config.h(recompile needed)
+.SS Keystrokes
+.sp
+There are 3 different modes in slterm;
+regular mode, lessmode and selection mode.
+slterm is started in the regular mode.
+.sp
+All modes:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+Ctrl+Shift + I: Inverse colors
+.IP \(bu 2
+Ctrl+F1:    Show this help
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Set font width/size:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+Alt+Shift + Insert/Delete:   Enlarge/Shrink width
+.IP \(bu 2
+Alt+Shift + PageUp/PageDown: Zoom in / out
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Select Codepage:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B Ctrl+Win + 0 CP1250
+.INDENT 7.0
+.IP \(bu 2
+1 CP1251
+.IP \(bu 2
+2 CP1252 (this is mostly ANSI, and the 1. page of Unicode)
+.IP \(bu 2
+3 CP1253
+.IP \(bu 2
+4 CP437  (Old IBM codetable, borders and tables)
+.IP \(bu 2
+5 CP850  (DOS Standard table)
+.IP \(bu 2
+6 CP4002 (DOS Standard table)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Regular mode:
+.sp
+Scrolling:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+Shift + Up/Down/PageUp/Pagedown: Scroll up/down
+.IP \(bu 2
+Shift + Home/End: Scroll to top/bottom
+.IP \(bu 2
+Shift + Backspace: Scroll to the location of the last command (shell)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Clipboard:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+Shift + Insert / Ctrl+Shift + y: Paste
+.IP \(bu 2
+Ctrl+Shift + c: Copy
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Scrollmarks:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+Ctrl+Alt + [0..9]: Set Scrollmark 0 \- 9
+.IP \(bu 2
+Ctrl + [0..9]:     Scroll to mark 0 \- 9
+.IP \(bu 2
+Shift + Backspace: Scroll to the last entered command (in shell)
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Lessmode:
+.INDENT 0.0
+.INDENT 3.5
+Ctrl+Shift + Up/PageUp/l: Enter lessmode.
+.sp
+Scroll around with cursor keys, Home, End.
+Backspace goes to the location of the last command in shell.
+Exit with q/ESC
+.INDENT 0.0
+.TP
+.B Shift+Backspace: Scroll to the location of the last entered command,
+enter lessmode
+.TP
+.B Shift+Enter: Execute command, enter lessmode when more than
+one screen is displayed by the command.
+.UNINDENT
+.INDENT 0.0
+.IP \(bu 2
+Ctrl+Alt + [0..9]: Set Scrollmark 0 \- 9
+.IP \(bu 2
+[0..9]: Goto Scrollmark 0 \- 9
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+Selection Mode:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.INDENT 3.5
+Ctrl+Shift + S: Enter selection mode
+.INDENT 0.0
+.TP
+.B There are 3 submodes in selection mode:
+.INDENT 7.0
+.IP \(bu 2
+move mode : to set the start of the selection;
+.IP \(bu 2
+select mode : to activate and set the end of the selection;
+.IP \(bu 2
+input mode : to enter the search criteria.
+.UNINDENT
+.UNINDENT
+.sp
+Shortcuts for move and select modes :
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
+.IP \(bu 2
+h, j, k, l:    move cursor left/down/up/right (also with arrow keys)
+.IP \(bu 2
+!, _, *:       move cursor to the middle of the line/column/screen
+.IP \(bu 2
+Backspace, $:  move cursor to the beginning/end of the line
+.IP \(bu 2
+PgUp, PgDown:  move cursor to the beginning/end of the column
+.IP \(bu 2
+Home, End:     move cursor to the top/bottom left corner of the screen
+.IP \(bu 2
+/, ?:          activate input mode and search up/down
+.IP \(bu 2
+n, N:          repeat last search, up/down
+.IP \(bu 2
+s:             toggle move/selection mode
+.IP \(bu 2
+t:             toggle regular/rectangular selection type
+.IP \(bu 2
+Return:        quit keyboard_select, keeping the highlight of the selection
+.IP \(bu 2
+Escape:        quit keyboard_select
+.UNINDENT
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.INDENT 3.5
+With h,j,k,l (also with arrow keys), you can use a quantifier.
+Enter a number before hitting the appropriate key.
+.UNINDENT
+.UNINDENT
+.sp
+Shortcuts for input mode :
+.UNINDENT
+.UNINDENT
+.sp
+Return:       Return to the previous mode
+.UNINDENT
+.UNINDENT
+.SH FULL SHORTCUT LIST
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+====      =========              ===            ========
+Mode      Modifiers              Key            Function
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+All      Control+Alt             0               set_scrollmark
+All      Control+Alt             1               set_scrollmark
+All      Control+Alt             2               set_scrollmark
+All      Control+Alt             3               set_scrollmark
+All      Control+Alt             4               set_scrollmark
+All      Control+Alt             5               set_scrollmark
+All      Control+Alt             6               set_scrollmark
+All      Control+Alt             7               set_scrollmark
+All      Control+Alt             8               set_scrollmark
+All      Control+Alt             9               set_scrollmark
+All      Control+Alt             Return          enterscroll
+All      Control+Shift           C               clipcopy
+All      Control+Shift           Down            lessmode_toggle
+All      Control+Shift           Home            lessmode_toggle
+All      Control+Shift           I               inverse_screen
+All      Control+Shift           L               lessmode_toggle
+All      Control+Shift           Num_Lock        numlock
+All      Control+Shift           Page_Down       lessmode_toggle
+All      Control+Shift           Page_Up         lessmode_toggle
+All      Control+Shift           S               keyboard_select
+All      Control+Shift           Up              lessmode_toggle
+All      Control+Shift           V               clippaste
+All      Control+Shift           Y               selpaste
+All      All                     Break           sendbreak
+All      All                     Print           printsel
+All      All                     Scroll_Lock     lessmode_toggle
+All      Control                 0               scrollmark
+All      Control                 1               scrollmark
+All      Control                 2               scrollmark
+All      Control                 3               scrollmark
+All      Control                 4               scrollmark
+All      Control                 5               scrollmark
+All      Control                 6               scrollmark
+All      Control                 7               scrollmark
+All      Control                 8               scrollmark
+All      Control                 9               scrollmark
+All      Control                 F1              showhelp
+All      Control                 Print           toggleprinter
+All      Control+Win             0               set_charmap
+All      Control+Win             1               set_charmap
+All      Control+Win             2               set_charmap
+All      Control+Win             3               set_charmap
+All      Control+Win             4               set_charmap
+All      Control+Win             5               set_charmap
+All      Control+Win             6               set_charmap
+All      Control+Win             7               set_charmap
+All      Control+Win             8               set_charmap
+All      Control+Win             9               set_charmap
+All      Shift                   BackSpace       retmark
+All      Shift                   Down            kscrolldown
+All      Shift                   End             scrolltobottom
+All      Shift                   Home            scrolltotop
+All      Shift                   Insert          selpaste
+All      Shift                   Page_Down       kscrolldown
+All      Shift                   Page_Up         kscrollup
+All      Shift                   Print           printscreen
+All      Shift                   Return          enterscroll
+All      Shift                   Up              kscrollup
+All      Shift+Alt               Delete          set_fontwidth
+All      Shift+Alt               End             set_fontwidth
+All      Shift+Alt               Home            zoomreset
+All      Shift+Alt               Insert          set_fontwidth
+All      Shift+Alt               Page_Down       zoom
+All      Shift+Alt               Page_Up         zoom
+Help     All                     ALL_KEYS        dummy
+Help     All                     Escape          showhelp
+Help     All                     q               showhelp
+Less     All                     0               scrollmark
+Less     All                     1               scrollmark
+Less     All                     2               scrollmark
+Less     All                     3               scrollmark
+Less     All                     4               scrollmark
+Less     All                     5               scrollmark
+Less     All                     6               scrollmark
+Less     All                     7               scrollmark
+Less     All                     8               scrollmark
+Less     All                     9               scrollmark
+Less     All                     BackSpace       retmark
+Less     All                     Down            kscrolldown
+Less     All                     End             scrolltobottom
+Less     All                     Escape          lessmode_toggle
+Less     All                     Home            scrolltotop
+Less     All                     Page_Down       kscrolldown
+Less     All                     Page_Up         kscrollup
+Less     All                     Up              kscrollup
+Less     All                     q               lessmode_toggle
+Less     Shift                   Return          lessmode_toggle
+
+
+
+OPTIONS
+=======
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .INDENT 0.0
 .TP
 .B \fB\-a\fP
@@ -191,7 +452,14 @@ arguments are used as a command even without it.
 .TP
 .B \fB\-x\fP
 enable reading of the XResources database for the configuration
-slterm must have been compiled with the XRESOURCES flag in config.h.in set to 1
+st\-asc must have been compiled with the XRESOURCES flag in config.h.in set to 1
+.TP
+.B \fB\-X\fP
+lock all memory pages into memory, prevent swapping.
+Secrets could be revealed, also years later, if the memory
+is swapped to disk. Worse, with flash disks also erasing
+the contents will not necessarily erase the written cells.
+This option locks all memory pages into ram.
 .UNINDENT
 .SH KEYBOARD SELECTION MODE
 .sp
@@ -256,107 +524,22 @@ Shortcuts for input mode:
 Return:       Return to the previous mode
 .SH CUSTOMIZATION
 .sp
-\fBslterm\fP can be customized by editing config.in and (re)compiling
-the source code, or by editing the Xresources init files and
+\fBslterm\fP can be customized by editing makefile.config and src/config.h,
+afterwards (re)compiling the source code, or by editing the Xresources init files and
 compiling slterm with Xresources enabled.
 .SH AUTHORS
 .sp
-Based on Aurelien APTEL <aurelien dot aptel at gmail dot com> bt source code.
+Michael (misc) Myer, www.github.com/michael105
 .sp
-The code has been hosted and maintained by the suckless project.
-.sp
-Applied patches are written by:
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.IP \(bu 2
-Tonton Couillon \- <la dot luge at free dot fr>
-.IP \(bu 2
-Jochen Sprickerhof \- <\fI\%st@jochen.sprickerhof.de\fP>
-.IP \(bu 2
-M Farkas\-Dyck \- <\fI\%strake888@gmail.com\fP>
-.IP \(bu 2
-Ivan Tham \- <\fI\%pickfire@riseup.net\fP> (mouse scrolling)
-.IP \(bu 2
-Ori Bernstein \- <\fI\%ori@eigenstate.org\fP> (fix memory bug)
-.IP \(bu 2
-Matthias Schoth \- <\fI\%mschoth@gmail.com\fP> (auto altscreen scrolling)
-.IP \(bu 2
-Laslo Hunhold \- <\fI\%dev@frign.de\fP> (unscrambling, git port)
-.IP \(bu 2
-Paride Legovini \- <\fI\%pl@ninthfloor.org\fP> (don\(aqt require the Shift
-modifier when using the auto altscreen scrolling)
-.IP \(bu 2
-Lorenzo Bracco \- <\fI\%devtry@riseup.net\fP> (update base patch, use static
-variable for config)
-.IP \(bu 2
-Kamil Kleban \- <\fI\%funmaker95@gmail.com\fP> (fix altscreen detection)
-.IP \(bu 2
-Avi Halachmi \- <\fI\%avihpit@yahoo.com\fP> (mouse + altscreen rewrite after
-\fIa2c479c\fP)
-.IP \(bu 2
-Jacob Prosser \- <\fI\%geriatricjacob@cumallover.me\fP>
-.IP \(bu 2
-Augusto Born de Oliveira \- <\fI\%augustoborn@gmail.com\fP>
-.IP \(bu 2
-Kai Hendry \- <\fI\%hendry@iki.fi\fP>
-.IP \(bu 2
-Laslo Hunhold \- <\fI\%dev@frign.de\fP> (git port)
-.IP \(bu 2
-Matthew Parnell \- <\fI\%matt@parnmatt.co.uk\fP> (0.7, git ports)
-.IP \(bu 2
-Doug Whiteley \- <\fI\%dougwhiteley@gmail.com\fP>
-.IP \(bu 2
-Aleksandrs Stier
-.IP \(bu 2
-@dcat on [Github](\fI\%https://github.com/dcat/st\-xresources\fP)
-.IP \(bu 2
-Devin J. Pohly \- <\fI\%djpohly@gmail.com\fP> (git port)
-.IP \(bu 2
-Sai Praneeth Reddy \- <\fI\%spr.mora04@gmail.com\fP> (read borderpx from
-xresources)
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-All other additions, performance optimizations,
-and the reorganization of the source files
-has done Michael (misc) Myer.
-(2020\-23 / \fI\%misc.myer@zoho.com\fP / \fI\%https://github.com/michael105\fP)
-.sp
-(My apologies for not pushing the work back to suckless,
-but the heavy changes and the not so simple additions
-let me seem this neither easy nor following the suckless philosophy;
-and it wouldn\(aqt be possible to submit "patches" anymore)
+See README and PATCHES for other authors.
 .SH LICENSE
 .sp
-MIT License
+See the LICENSE file for the terms of redistribution.
+.SH SEE ALSO
 .sp
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-.sp
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-.sp
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+\fBtabbed\fP(1), \fButmp\fP(1), \fBstty\fP(1)
 .SH BUGS
 .sp
-Clipboard copy/paste of characters > 127 currently doesn\(aqt communicate correctly
-with Xorg programs.
-.sp
-The history ringbuffer could get problematic in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so it\(aqs not at the top of the todo list)
-.sp
-Under special circumstances the alternate buffer crashes. Yet, I couldn\(aqt reproduce
-the problem, when I looked for it. If someone is able to spot the factors, please drop me a note.
+See the README in the distribution.
 .\" Generated by docutils manpage writer.
 .
