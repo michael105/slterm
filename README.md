@@ -20,7 +20,7 @@
    * Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
      slterm might be the fastest available terminal emulators for X
-   * secure mode, argument -X (lock all pages into memory, prevent swapping)
+   * secure mode, option -X: lock all pages into memory, prevent swapping
 
 
 
