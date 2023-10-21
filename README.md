@@ -23,7 +23,8 @@
    * secure mode, option -X: lock all pages into memory, prevent swapping
 
 
-	Statically linked binary (1.5M compressed, 3.5 uncompressed): [https://github.com/michael105/static-bin](https://github.com/michael105/static-bin)
+	Statically linked binary (1.5M compressed, 3.5 uncompressed)
+	(https://github.com/michael105/static-bin)[https://github.com/michael105/static-bin]
 
 ---
 
