@@ -31,10 +31,6 @@ Current changes
 - configuration is changed (See below)
 
 
-Todo:
-
-- include a font
-
 
 ---
 
@@ -247,7 +243,7 @@ Crashes sometimes under unknown circumstances when using the alternate screen mo
 ====================
 
 
-(misc 2020-2023 - misc7@posteo.net )
+(misc 2020-2023 - misc xx  at posteo.net / replace xx with 4+3 )
 
 
 Credits
