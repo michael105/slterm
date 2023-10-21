@@ -97,7 +97,7 @@ slterm is started in the regular mode.
 All modes:
 
   * Ctrl+Shift + I: Inverse colors
-  * (Anymod)+F1:    Show this help
+  * Ctrl+F1:    Show this help
 
 
 Set font width/size:

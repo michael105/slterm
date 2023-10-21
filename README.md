@@ -93,7 +93,7 @@ Todo:
 
 ##### Inline help
 
-`(Anymod)+F1`
+`Ctrl+F1`
    
     Show the (outdated) reference of keybindings
     `Anymod` can be any combination of modification keys (Ctrl, Alt,..)
