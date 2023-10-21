@@ -2,7 +2,7 @@
 
 
 
-	Slim (94kB) and fast terminal emulator for X11,
+	Slim (94kB linked shared) and fast terminal emulator for X11,
 	with minimal external dependencies (Xlib and Xft).
    Descendant of st (suckless terminal), modified extensively.
 
@@ -23,7 +23,7 @@
    * secure mode, option -X: lock all pages into memory, prevent swapping
 
 
-	Statically linked binary: [https://github.com/michael105/static-bin]
+	Statically linked binary (1.5M compressed, 3.5 uncompressed): [https://github.com/michael105/static-bin](https://github.com/michael105/static-bin)
 
 ---
 
