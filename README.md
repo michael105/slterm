@@ -23,6 +23,8 @@
    * secure mode, option -X: lock all pages into memory, prevent swapping
 
 
+	Statically linked binary: [https://github.com/michael105/static-bin]
+
 ---
 
 
