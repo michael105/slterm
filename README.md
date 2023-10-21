@@ -23,15 +23,6 @@
    * secure mode, option -X: lock all pages into memory, prevent swapping
 
 
-
-Current changes
-
-- split the "stable" master branch, and the branch devel.
-- Currently utf8 is abandoned. Previous versions should work.
-- configuration is changed (See below)
-
-
-
 ---
 
 
