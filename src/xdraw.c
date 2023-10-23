@@ -198,8 +198,6 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			fg = &revfg;
 		}
 #endif
-
-
 	}
 
 

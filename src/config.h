@@ -665,7 +665,8 @@ static Key key[] = {
     K( XK_KP_9, XK_ANY_MOD, "\033Oy", +2, 0),
 
 
-#ifdef F13_35
+//#ifdef F13_35
+#if 1
     K( XK_F13, XK_NO_MOD, "\033[1;2P", 0, 0),
     K( XK_F14, XK_NO_MOD, "\033[1;2Q", 0, 0),
     K( XK_F15, XK_NO_MOD, "\033[1;2R", 0, 0),
