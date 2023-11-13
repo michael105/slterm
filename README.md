@@ -23,7 +23,7 @@
    * secure mode, option -X: lock all pages into memory, prevent swapping
 
 
-Statically linked binary (1.5M compressed, 3.5 uncompressed)
+Statically linked binary, with all runtime dependencies (3.5M)
 [https://codeberg.org/misc1/-/packages/generic/slterm/0.98](https://codeberg.org/misc1/-/packages/generic/slterm/0.98)
 
 ---
