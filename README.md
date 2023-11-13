@@ -24,7 +24,7 @@
 
 
 Statically linked binary (1.5M compressed, 3.5 uncompressed)
-[https://github.com/michael105/static-bin](https://github.com/michael105/static-bin)
+[https://codeberg.org/misc1/-/packages/generic/slterm/0.98](https://codeberg.org/misc1/-/packages/generic/slterm/0.98)
 
 ---
 

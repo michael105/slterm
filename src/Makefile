@@ -170,7 +170,7 @@ help.h: help.h.in help.txt keyref.txt
 keyref.txt: config.h
 	gcc -P -E config.h -Dextract_keyref | \
 		sed 's/|/+/;s/XK_//;s/,\s*$$//'  | sort | \
-		perl keyreffilter.pl > keyref.txt
+		perl keyreffilter.pl | sort > keyref.txt
 
 
 build/%.o: %.c
