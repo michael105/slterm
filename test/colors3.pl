@@ -1,6 +1,6 @@
 #!/bin/perl -w
 
-
+print "\n";
 
 #use Data::Dumper::Simple;
 
@@ -140,6 +140,8 @@ foreach my $row(@a){
 	#}
 	print "\033[40;m\n";
 }
+print "\033[1;38;5;237m"." 1   0   2   2   2   2   2   2   0   0   0   0   0   1   1   1   1   1 "  ."\033[0m\n";
+print "\n";
 exit;
 }
 
@@ -167,3 +169,7 @@ foreach my $row(@a){
 	#print Dumper($row);
 
 }
+
+
+
+
