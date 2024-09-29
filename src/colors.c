@@ -4,6 +4,7 @@
 
 ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
 
+
 int xloadcolor(int i, const char *name, Color *ncolor) {
 	XRenderColor color = {.alpha = 0xffff};
 
@@ -24,6 +25,7 @@ int xloadcolor(int i, const char *name, Color *ncolor) {
 
 	return XftColorAllocName(xw.dpy, xw.vis, xw.cmap, name, ncolor);
 }
+
 
 void xloadcolors(void) {
 	int i;

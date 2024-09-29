@@ -7,7 +7,7 @@ typedef XftDraw *Draw;
 
 /* Drawing Context */
 typedef struct {
-		Color *col;
+		Color *col; // Pointer to an array of 256 colors
 		size_t collen;
 		Font font, bfont, ifont, ibfont;
 		GC gc;

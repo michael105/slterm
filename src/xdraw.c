@@ -69,6 +69,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	}
 
 	if (IS_TRUECOL(base.fg)) {
+		//printf("Truecolor\n");
 		colfg.alpha = 0xffff;
 		colfg.red = TRUERED(base.fg);
 		colfg.green = TRUEGREEN(base.fg);
