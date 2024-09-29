@@ -106,8 +106,8 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #define cbold(c) colfg.c = ((fg->color.c + fg->color.c/2) | fg->color.c ) & 0xffff
 	//#define cbold(c) colfg.c = fg->color.c > 250?  : fg->color.c+ 5;
 	//#define cfaint(c) colfg.c = fg->color.c - (fg->color.c/2)
-#define cfaint(c) colfg.c = fg->color.c - fg->color.c/4;
-	if ( (base.mode & ATTR_FAINT) == ATTR_FAINT && !BETWEEN(base.fg,0,15) )  {
+#define cfaint(c) colfg.c = fg->color.c - fg->color.c/2; // prev: - .c/4
+	if ( (base.mode & ATTR_FAINT) == ATTR_FAINT ) { //&& !BETWEEN(base.fg,0,15) )  {
 		cfaint(red); //= fg->color.red * 2;
 		cfaint(green); //= fg->color.green * 2;
 		cfaint(blue); //= fg->color.blue +  2;
