@@ -97,9 +97,6 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #undef ASB
 
 
-	/* Change basic system colors [0-7] to bright system colors [8-15] */
-	if ((base.mode & ATTR_BOLD_FAINT) == ATTR_BOLD && BETWEEN(base.fg, 0, 7))
-		fg = &dc.col[base.fg + 8];
 
 #define boldf 0xfff
 	//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
@@ -107,6 +104,23 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	//#define cbold(c) colfg.c = fg->color.c > 250?  : fg->color.c+ 5;
 	//#define cfaint(c) colfg.c = fg->color.c - (fg->color.c/2)
 #define cfaint(c) colfg.c = fg->color.c - fg->color.c/2; // prev: - .c/4
+																			//
+	/* Change basic system colors [0-7] to bright system colors [8-15] */
+	if ((base.mode & ATTR_BOLD) == ATTR_BOLD ){
+		if ( BETWEEN(base.fg, 0, 7)){
+			fg = &dc.col[base.fg + 8];
+	} else { 
+	//if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  {
+		cbold(red); //= fg->color.red * 2;
+		cbold(green); //= fg->color.green * 2;
+		cbold(blue); //= fg->color.blue +  2;
+		colfg.alpha = fg->color.alpha;
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+		fg = &revfg;
+		}
+	}
+
+		// also BOLD|FAINT
 	if ( (base.mode & ATTR_FAINT) == ATTR_FAINT ) { //&& !BETWEEN(base.fg,0,15) )  {
 		cfaint(red); //= fg->color.red * 2;
 		cfaint(green); //= fg->color.green * 2;
@@ -116,14 +130,6 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		fg = &revfg;
 	}
 
-	if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  {
-		cbold(red); //= fg->color.red * 2;
-		cbold(green); //= fg->color.green * 2;
-		cbold(blue); //= fg->color.blue +  2;
-		colfg.alpha = fg->color.alpha;
-		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-		fg = &revfg;
-	}
 
 
 	if (IS_SET(MODE_REVERSE)) {
