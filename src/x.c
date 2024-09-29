@@ -121,7 +121,7 @@ int xloadcolor(int i, const char *name, Color *ncolor) {
 	return XftColorAllocName(xw.dpy, xw.vis, xw.cmap, name, ncolor);
 }
 
-void xloadcols(void) {
+void xloadcolors(void) {
 	int i;
 	static int loaded;
 	Color *cp;
@@ -264,7 +264,7 @@ void xinit(int cols, int rows) {
 
 	/* colors */
 	xw.cmap = XDefaultColormap(xw.dpy, xw.scr);
-	xloadcols();
+	xloadcolors();
 
 	/* adjust fixed window geometry */
 	win.w = 2 * win.hborderpx + cols * win.cw;

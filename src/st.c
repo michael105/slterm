@@ -962,7 +962,7 @@ int eschandle(uchar ascii) {
 		case 'c': /* RIS -- Reset to initial state */
 			treset();
 			resettitle();
-			xloadcols();
+			xloadcolors();
 			break;
 		case '=': /* DECPAM -- Application keypad */
 			xsetmode(1, MODE_APPKEYPAD);

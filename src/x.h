@@ -92,7 +92,7 @@ void xsetenv(void);
 
 void xbell(void);
 void xclipcopy(void);
-void xloadcols(void);
+void xloadcolors(void);
 int xsetcolorname(int, const char *);
 void xsettitle(char *);
 int xsetcursor(int);

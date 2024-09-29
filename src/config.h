@@ -106,12 +106,17 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* Terminal colors (16 first used in escape sequence) */
+// todo: table of 32 colors ( normal, bold, faint, bold|faint )
 static const char *colorname[] = {
     /* 8 normal colors */
     "black",
     "red3",
     "green3",
-    "brown3",
+    //"brown3", // sort of brown (orange). brown is "brown" and faint..
+	"#592a1d",
+	 //"#532020", // brown
+	 //"#531818", // brown
+	 //"#562215", // brown
     //"yellow3",
     "blue2",
     "magenta3",
@@ -123,7 +128,8 @@ static const char *colorname[] = {
     "red",
     "green",
     "yellow",
-    "#5c5cff",
+    "#5050ff", // light blue
+    //"#5c5cff",
     "magenta",
     "cyan",
     "white",
