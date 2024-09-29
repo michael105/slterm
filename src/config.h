@@ -107,6 +107,10 @@ unsigned int tabspaces = 8;
 
 /* Terminal colors (16 first used in escape sequence) */
 // todo: table of 32 colors ( normal, bold, faint, bold|faint )
+// dgreen 036209
+// lgreen 00ff10
+// dblue 070060
+// dfblue 3c33aa
 static const char *colorname[] = {
     /* 8 normal colors */
     "black",
@@ -128,7 +132,8 @@ static const char *colorname[] = {
     "red",
     "green",
     "yellow",
-    "#5050ff", // light blue
+    //"#5050ff", // light blue
+	 "#00aaea", // schweinchenblau
     //"#5c5cff",
     "magenta",
     "cyan",

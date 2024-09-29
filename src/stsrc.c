@@ -41,6 +41,7 @@
 #include "mem.c"
 #include "base64.c"
 #include "selection.c"
+#include "colors.c"
 #include "x.c"
 #include "xevent.c"
 #include "mouse.c"
