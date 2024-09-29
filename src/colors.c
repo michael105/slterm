@@ -2,6 +2,7 @@
 // Default colors are defined in config.h
 
 
+ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
 
 int xloadcolor(int i, const char *name, Color *ncolor) {
 	XRenderColor color = {.alpha = 0xffff};

@@ -41,7 +41,6 @@ typedef struct {
 #define TRUEGREEN(x) (((x)&0xff00))
 #define TRUEBLUE(x) (((x)&0xff) << 8)
 
-inline ushort sixd_to_16bit(int);
 int xgeommasktogravity(int);
 void ximopen(Display *);
 void ximinstantiate(Display *, XPointer, XPointer);
@@ -97,7 +96,6 @@ void xresize(int col, int row) {
 	xw.specbuf = xrealloc(xw.specbuf, col * sizeof(GlyphFontSpec));
 }
 
-ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
 
 
 void xhints(void) {
