@@ -142,6 +142,21 @@ slterm is started in the regular mode.\n\r\
 Mode\t Modifiers\t\t Key\t\t Function\t Info\n\r\
 \n\r\
 \n\r\
+All	 All                	 Break      	 sendbreak 	\n\r\
+All	 All                	 Print      	 printsel 	\n\r\
+All	 All                	 Scroll_Lock 	 lessmode_toggle 	\n\r\
+All	 Control            	 0          	 scrollmark 	\n\r\
+All	 Control            	 1          	 scrollmark 	\n\r\
+All	 Control            	 2          	 scrollmark 	\n\r\
+All	 Control            	 3          	 scrollmark 	\n\r\
+All	 Control            	 4          	 scrollmark 	\n\r\
+All	 Control            	 5          	 scrollmark 	\n\r\
+All	 Control            	 6          	 scrollmark 	\n\r\
+All	 Control            	 7          	 scrollmark 	\n\r\
+All	 Control            	 8          	 scrollmark 	\n\r\
+All	 Control            	 9          	 scrollmark 	\n\r\
+All	 Control            	 F1         	 showhelp 	\n\r\
+All	 Control            	 Print      	 toggleprinter 	\n\r\
 All	 Control+Alt        	 0          	 set_scrollmark 	\n\r\
 All	 Control+Alt        	 1          	 set_scrollmark 	\n\r\
 All	 Control+Alt        	 2          	 set_scrollmark 	\n\r\
@@ -165,21 +180,6 @@ All	 Control+Shift      	 S          	 keyboard_select 	\n\r\
 All	 Control+Shift      	 Up         	 lessmode_toggle 	\n\r\
 All	 Control+Shift      	 V          	 clippaste 	\n\r\
 All	 Control+Shift      	 Y          	 selpaste 	\n\r\
-All	 All                	 Break      	 sendbreak 	\n\r\
-All	 All                	 Print      	 printsel 	\n\r\
-All	 All                	 Scroll_Lock 	 lessmode_toggle 	\n\r\
-All	 Control            	 0          	 scrollmark 	\n\r\
-All	 Control            	 1          	 scrollmark 	\n\r\
-All	 Control            	 2          	 scrollmark 	\n\r\
-All	 Control            	 3          	 scrollmark 	\n\r\
-All	 Control            	 4          	 scrollmark 	\n\r\
-All	 Control            	 5          	 scrollmark 	\n\r\
-All	 Control            	 6          	 scrollmark 	\n\r\
-All	 Control            	 7          	 scrollmark 	\n\r\
-All	 Control            	 8          	 scrollmark 	\n\r\
-All	 Control            	 9          	 scrollmark 	\n\r\
-All	 Control            	 F1         	 showhelp 	\n\r\
-All	 Control            	 Print      	 toggleprinter 	\n\r\
 All	 Control+Win        	 0          	 set_charmap 	\n\r\
 All	 Control+Win        	 1          	 set_charmap 	\n\r\
 All	 Control+Win        	 2          	 set_charmap 	\n\r\

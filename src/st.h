@@ -103,11 +103,12 @@ enum glyph_attribute {
   ATTR_REVERSE = 1 << 5,
 #ifndef UTF8
   ATTR_WRAP = 1 << 6, // NHIST : usable also at the first column, is not tested.
-  ATTR_GREEK = 1<<7, // betacode
+  ATTR_STRUCK = 1<<7,
+  //ATTR_STRUCK = 0,
+ // ATTR_GREEK = 1<<7, // betacode
   ATTR_BOLD_FAINT = ATTR_BOLD | ATTR_FAINT,
 
   ATTR_INVISIBLE = 0,
-  ATTR_STRUCK = 0,
 
 #else
 	ATTR_INVISIBLE  = 1 << 6,

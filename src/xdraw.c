@@ -203,15 +203,18 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	if (base.mode & ATTR_REVERSE) {
 		//	fprintf(stderr,"attrinv\n");//D
+#if 0
 		bg = &dc.col[selectionbg];
 		if (!ignoreselfg)
 			fg = &dc.col[selectionfg];
-		//cltmp = bg;
-		//bg = fg;
-		//fg = cltmp;
-#define AS(c) {int tc = colfg.c; colfg.c=colbg.c;colbg.c = tc;}
-		//				AS(red);AS(green);AS(blue);
-#undef AS
+#else
+			cltmp = bg;
+			bg = fg;
+			fg = cltmp;
+//#define AS(c) {int tc = colfg.c; colfg.c=colbg.c;colbg.c = tc;}
+//					AS(red);AS(green);AS(blue);
+//#undef AS
+#endif
 		//				fg = &revfg;
 		//				bg = &revbg;
 	}
@@ -259,7 +262,8 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	}
 
 	if (base.mode & ATTR_STRUCK) {
-		XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent / 3, width, 1);
+		XftDrawRect(xw.draw, fg, winx, winy + 5*dc.font.ascent /8, width, 1);
+		//XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent / 3, width, 1);
 	}
 
 	/* Reset clip to none. */
