@@ -20,7 +20,7 @@ int xloadcolor(int i, const char *name, Color *ncolor) {
 			}
 			return XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &color, ncolor);
 		} else
-			name = colorname[i];
+			name = colorname[i]; // color 0..16
 	}
 
 	return XftColorAllocName(xw.dpy, xw.vis, xw.cmap, name, ncolor);
@@ -66,6 +66,188 @@ int xsetcolorname(int x, const char *name) {
 }
 
 
+#if 0
+void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
+	XRenderColor colfg, colbg;
+	Color revfg, revbg, truefg, truebg, *cltmp;
+	Color *fg,*bg;
 
+	/* Fallback on color display for attributes not supported by the font */
+	if (base->mode & ATTR_ITALIC && base->mode & ATTR_BOLD) {
+		if (dc.ibfont.badslant || dc.ibfont.badweight)
+			base->fg = defaultattr;
+	} else if ((base->mode & ATTR_ITALIC && dc.ifont.badslant) ||
+			(base->mode & ATTR_BOLD && dc.bfont.badweight)) {
+		base->fg = defaultattr;
+	}
+
+	if (IS_TRUECOL(base->fg)) {
+		//printf("Truecolor\n");
+		colfg.alpha = 0xffff;
+		colfg.red = TRUERED(base->fg);
+		colfg.green = TRUEGREEN(base->fg);
+		colfg.blue = TRUEBLUE(base->fg);
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
+		fg = &truefg;
+	} else {
+		fg = &dc.col[base->fg];
+	}
+
+	if (IS_TRUECOL(base->bg)) {
+		colbg.alpha = 0xffff;
+		colbg.green = TRUEGREEN(base->bg);
+		colbg.red = TRUERED(base->bg);
+		colbg.blue = TRUEBLUE(base->bg);
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &truebg);
+		bg = &truebg;
+	} else {
+		bg = &dc.col[base->bg];
+	}
+#define AS(c) colfg.c = fg->color.c
+#define ASB(c) colbg.c = bg->color.c
+	//AS(red);AS(green);AS(blue);AS(alpha);
+	//ASB(red);ASB(green);ASB(blue);ASB(alpha);
+#undef AS
+#undef ASB
+
+
+
+#define boldf 0xfff
+	//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
+#define cbold(c) colfg.c = ((fg->color.c + fg->color.c/2) | fg->color.c ) & 0xffff
+	//#define cbold(c) colfg.c = fg->color.c > 250?  : fg->color.c+ 5;
+	//#define cfaint(c) colfg.c = fg->color.c - (fg->color.c/2)
+#define cfaint(c) colfg.c = fg->color.c - fg->color.c/2; // prev: - .c/4
+																			//
+	/* Change basic system colors [0-7] to bright system colors [8-15] */
+	if ((base->mode & ATTR_BOLD) == ATTR_BOLD ){
+		if ( BETWEEN(base->fg, 0, 7)){
+			fg = &dc.col[base->fg + 8];
+	} else { 
+	//if ( ( (base->mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base->fg,0,15) )  {
+		cbold(red); //= fg->color.red * 2;
+		cbold(green); //= fg->color.green * 2;
+		cbold(blue); //= fg->color.blue +  2;
+		colfg.alpha = fg->color.alpha;
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+		fg = &revfg;
+		}
+	}
+
+		// also BOLD|FAINT
+	if ( (base->mode & ATTR_FAINT) == ATTR_FAINT ) { //&& !BETWEEN(base->fg,0,15) )  {
+		cfaint(red); //= fg->color.red * 2;
+		cfaint(green); //= fg->color.green * 2;
+		cfaint(blue); //= fg->color.blue +  2;
+		colfg.alpha = fg->color.alpha;//2;
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+		fg = &revfg;
+	}
+
+
+
+	if (IS_SET(MODE_REVERSE)) {
+		if (fg == &dc.col[defaultfg]) {
+			fg = &dc.col[defaultbg];
+		} else {
+			//						colfg.blue = ~fg->color.blue;
+			//						colfg.alpha = fg->color.alpha;
+#define AS(c) colfg.c = ~colfg.c
+			AS(red);AS(green);AS(blue);
+#undef AS
+
+
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			fg = &revfg;
+		}
+
+		if ( bg == &dc.col[defaultbg]) {
+			bg = &dc.col[defaultfg];
+		} else {
+			//					fprintf(stderr,"inv\n");//D
+			//colbg.red = ~bg->color.red;
+			//colbg.green = ~bg->color.green;
+			//colbg.blue = ~bg->color.blue;
+			//colbg.alpha = bg->color.alpha;
+#define ASB(c) colbg.c = ~bg->color.c
+			ASB(red);ASB(green);ASB(blue);
+#undef ASB
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+			bg = &revbg;
+		}
+	}
+
+
+#define CLFA 24000
+	// Change colors on focusout
+	if ( !(win.mode & MODE_FOCUSED) ){
+		/*colfg.red = fg->color.red / 2;
+		  colfg.green = fg->color.green / 4 * 3;
+		  colfg.blue = fg->color.blue / 4 * 3;*/
+		if ( (fg->color.blue > CLFA) && (fg->color.red < CLFA) && (fg->color.green < CLFA) ){
+			colfg.red = fg->color.red +13000;
+			colfg.green = fg->color.green +13000;
+			colfg.blue = fg->color.blue;
+			colfg.alpha = fg->color.alpha;
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			fg = &revfg;
+		}
+		if ( (bg->color.blue > CLFA) && (bg->color.red < CLFA) && (bg->color.green < CLFA) ){
+			colbg.red = bg->color.red +CLFA;
+			colbg.green = bg->color.green +CLFA;
+			colbg.blue = bg->color.blue;
+			colbg.alpha = bg->color.alpha;
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+			bg = &revbg;
+		}
+#if 0
+		if ( (fg->color.blue > CLFA) && (fg->color.red < CLFA) ){
+			colfg.red = fg->color.red +CLFA;
+			colfg.green = fg->color.green;// +CLFA;
+			colfg.blue = fg->color.blue;
+			colfg.alpha = fg->color.alpha;
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			fg = &revfg;
+		}
+		if ( (fg->color.blue > CLFA) && (fg->color.green < CLFA) ){
+			colfg.red = fg->color.red;// +CLFA;
+			colfg.green = fg->color.green +CLFA;
+			colfg.blue = fg->color.blue;
+			colfg.alpha = fg->color.alpha;
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			fg = &revfg;
+		}
+#endif
+	}
+
+
+	if (base->mode & ATTR_REVERSE) {
+		//	fprintf(stderr,"attrinv\n");//D
+#if 0
+		bg = &dc.col[selectionbg];
+		if (!ignoreselfg)
+			fg = &dc.col[selectionfg];
+#else
+			cltmp = bg;
+			bg = fg;
+			fg = cltmp;
+//#define AS(c) {int tc = colfg.c; colfg.c=colbg.c;colbg.c = tc;}
+//					AS(red);AS(green);AS(blue);
+//#undef AS
+#endif
+		//				fg = &revfg;
+		//				bg = &revbg;
+	}
+
+	if (base->mode & ATTR_BLINK && win.mode & MODE_BLINK)
+		fg = bg;
+
+	if (base->mode & ATTR_INVISIBLE)
+		fg = bg;
+
+	*pfg = fg;
+	*pbg = bg;
+}
+#endif
 
 
