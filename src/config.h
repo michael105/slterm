@@ -156,10 +156,10 @@ static const char* colortablenames[8][4] = {
 	{ "red3",      	"red",   	"darkred",  	"orangered" },
 	{ "green3", 		"green", 	"darkgreen",	"olive" },
 	{ "saddlebrown",	"yellow",	"#531818",  	"chocolate" },
-	{ "blue2",     	"#5050ff", 	"darkblue", 	"deepskyblue" },
+	{ "blue2",     	"#5050ff", 	"darkblue", 	"#00aaea" }, //"deepskyblue" },
 	{ "magenta3",  	"magenta", 	"darkmagenta",	"blueviolet" },
 	{ "cyan3",     	"cyan", 		"darkcyan", 	"aquamarine" },
-	{ "gray90",    	"white", 	"darkkhaki",	"silver" } };
+	{ "gray90",    	"white", 	"SlateGray3", 	"darkkhaki" } };
 
 // the background colornames (40..47, and "\e[48;5;0..15m" )
 static const char* bgcolornames[16] = { 
