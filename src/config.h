@@ -131,6 +131,7 @@ static const char *colorname[] = {
 	 Names are defined by xorg, and (should be) conformant with the css names.
 	 a table of colornames is in doc/colors.html.
  RGB in hexadecimal (#RRGGBB) is also possible.
+ The table is oriented at the de facto xterm standard.
 
 
  each color is: "normal", "bold", "faint", "bold+faint"
@@ -147,17 +148,18 @@ static const char *colorname[] = {
  	*/
 static const char* colortablenames[8][4] = { 
 #define GRADIENT(_normal,_bold,_faint,_bold_faint) { #_normal, #_bold, #_faint, #_bold_faint }
-//     0m      	1m				2m				1;2m	
-	{ "black",		"gray50", "gray11", "darkslategray" },
-	{ "red3",		"red", "darkred", "orangered" },
-	{ "green3",		"green", "darkgreen", "olive" },
-	{ "saddlebrown", "yellow",	"#531818", "chocolate" },
-	//{ "chocolate", "yellow", "saddlebrown", "maroon" },
-	{ "blue2",		"#5050ff", "darkblue", "deepskyblue" },
-	{ "magenta3", 	"magenta", "darkmagenta", "blueviolet" },
-	{ "cyan3",		"cyan", "darkcyan", "aquamarine" },
-	//{ "gray90",		"white", "silver", "SlateGray1" } };
-	{ "gray90",		"white", "darkkhaki", "silver" } };
+
+//	   0m          	1m    		2m           	1;2m	
+//	   normal      	bold      	faint       	bold_faint
+
+	{ "black",     	"gray50", 	"gray11",   	"darkslategray" },
+	{ "red3",      	"red",   	"darkred",  	"orangered" },
+	{ "green3", 		"green", 	"darkgreen",	"olive" },
+	{ "saddlebrown",	"yellow",	"#531818",  	"chocolate" },
+	{ "blue2",     	"#5050ff", 	"darkblue", 	"deepskyblue" },
+	{ "magenta3",  	"magenta", 	"darkmagenta",	"blueviolet" },
+	{ "cyan3",     	"cyan", 		"darkcyan", 	"aquamarine" },
+	{ "gray90",    	"white", 	"darkkhaki",	"silver" } };
 
 // the background colornames (40..47, and "\e[48;5;0..15m" )
 static const char* bgcolornames[16] = { 
@@ -166,7 +168,9 @@ static const char* bgcolornames[16] = {
 	"blue", "magenta", "cyan", "white",
 	
 	"darkslategray", "OrangeRed", "LimeGreen", "gold", 
-	"blue4" , "magenta4", "turquoise4", "silver" };
+	"blue4" , "magenta4", "turquoise4", "silver" 
+
+};
 
     //"brown3", // sort of brown (orange). brown is "brown" and faint..
 	//"#592a1d",
