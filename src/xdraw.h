@@ -11,6 +11,7 @@ typedef struct {
 		size_t collen;
 		Color *colortable; // Colors 0..7 in normal, bold, faint, bold|faint 
 								 // Pointer to an array
+		Color *bgcolors; // Background colors 0..15
 		Font font, bfont, ifont, ibfont;
 		GC gc;
 } DC;

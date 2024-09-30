@@ -138,23 +138,35 @@ static const char *colorname[] = {
  > echo -e "\e[33;1m Text" shows text in red (bold)
  > echo -e "\e[33;1;2m Text" shows text in red (bold_faint)
  (30-37 is foreground,40-47 background color, according to 0..7)
- background color is always bold.
  foregroundcolor 8-15 is color 0-7, bold.
 
- colors 16 - 255 are the colors used from xterm and calculated in colors.c/xdraw.c
- (idea: use colors 8-15 to switch to betacode)
+ colors 16 - 255 are colors used from xterm and calculated in colors.c/xdraw.c
+  the algorithm to display faint and bold_faint colors is slightly modified
+  for better contrast.
+ (todo: use colors 8-15 to switch to betacode (-> switch via vi syntax colorizing ))
  	*/
 static const char* colortablenames[8][4] = { 
 #define GRADIENT(_normal,_bold,_faint,_bold_faint) { #_normal, #_bold, #_faint, #_bold_faint }
+//     0m      	1m				2m				1;2m	
+	{ "black",		"gray50", "gray11", "darkslategray" },
+	{ "red3",		"red", "darkred", "orangered" },
+	{ "green3",		"green", "darkgreen", "olive" },
+	{ "saddlebrown", "yellow",	"#531818", "chocolate" },
+	//{ "chocolate", "yellow", "saddlebrown", "maroon" },
+	{ "blue2",		"#5050ff", "darkblue", "deepskyblue" },
+	{ "magenta3", 	"magenta", "darkmagenta", "blueviolet" },
+	{ "cyan3",		"cyan", "darkcyan", "aquamarine" },
+	//{ "gray90",		"white", "silver", "SlateGray1" } };
+	{ "gray90",		"white", "darkkhaki", "silver" } };
 
-	{ "black", "gray50", "darkgray", "darkslategray" },
-	{ "red3", "red", "darkred", "orangered" },
-	{ "green3", "green", "darkgreen", "olive" },
-	{ "chocolate", "yellow", "saddlebrown", "maroon" },
-	{ "blue2", "#5050ff", "darkblue", "deepskyblue" },
-	{ "magenta3", "magenta", "darkmagenta", "blueviolet" },
-	{ "cyan3", "cyan", "darkcyan", "aquamarine" },
-	{ "gray90", "white", "darkkhaki", "silver" } };
+// the background colornames (40..47, and "\e[48;5;0..15m" )
+static const char* bgcolornames[16] = { 
+
+	"black", "red", "green", "yellow", 
+	"blue", "magenta", "cyan", "white",
+	
+	"darkslategray", "OrangeRed", "LimeGreen", "gold", 
+	"blue4" , "magenta4", "turquoise4", "silver" };
 
     //"brown3", // sort of brown (orange). brown is "brown" and faint..
 	//"#592a1d",

@@ -5,7 +5,7 @@
 ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
 
 
-int xloadcolor(int i, const char *name, Color *ncolor) {
+int xloadcolor(int i, const char *name, Color *p_color) {
 	XRenderColor color = {.alpha = 0xffff};
 
 	if (!name) {
@@ -18,12 +18,12 @@ int xloadcolor(int i, const char *name, Color *ncolor) {
 				color.red = 0x0808 + 0x0a0a * (i - (6 * 6 * 6 + 16));
 				color.green = color.blue = color.red;
 			}
-			return XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &color, ncolor);
+			return XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &color, p_color);
 		} else
 			name = colorname[i]; // color 0..16
 	}
 
-	return XftColorAllocName(xw.dpy, xw.vis, xw.cmap, name, ncolor);
+	return XftColorAllocName(xw.dpy, xw.vis, xw.cmap, name, p_color);
 }
 
 
@@ -33,8 +33,9 @@ void xloadcolors(void) {
 	Color *cp;
 
 	if (loaded) {
-		printf("Loaded!!\n");
+		printf("Loaded!! - colors.c\n");
 		return; // dunno. this code drives me crazy
+				  // there might be memory leaks
 				  // misc24
 		for (cp = dc.col; cp < &dc.col[dc.collen]; ++cp)
 			XftColorFree(xw.dpy, xw.vis, xw.cmap, cp);
@@ -51,31 +52,45 @@ void xloadcolors(void) {
 				die("could not allocate color %d\n", i);
 		}
 
+	// Load gradient tables
 	dc.colortable = xmalloc( 4*8*sizeof(Color) );
-	Color *ncolor = dc.colortable;
+	Color *p_color = dc.colortable;
 	for ( int a = 0; a<4; a++ ){
 		for ( int b = 0; b<8; b++ ){
-			 if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, colortablenames[b][a], ncolor) ){
+			 if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, colortablenames[b][a], p_color) ){
 				 printf( "Cannot load color: %s\n",colortablenames[b][a] );
+			 	if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, "gray", p_color) )
+				 	die( "Cannot load fallback \"gray\"\n" );
 			 }
-			 ncolor++;
+			 p_color++;
 		}
 	}
 
-	loaded = 1;
+	dc.bgcolors = xmalloc( 16*sizeof(Color) );
+	p_color = dc.bgcolors;
+	for ( int a = 0; a<16; a++ ){
+		if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, bgcolornames[a],p_color) ){
+			printf( "Cannot load color: %s\n",bgcolornames[a]);
+			if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, "gray", p_color) )
+				die( "Cannot load fallback \"gray\"\n" );
+		}
+		p_color++;
+	}
+
+		loaded = 1;
 }
 
 int xsetcolorname(int x, const char *name) {
-	Color ncolor;
+	Color p_color;
 
 	if (!BETWEEN(x, 0, dc.collen))
 		return 1;
 
-	if (!xloadcolor(x, name, &ncolor))
+	if (!xloadcolor(x, name, &p_color))
 		return 1;
 
 	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
-	dc.col[x] = ncolor;
+	dc.col[x] = p_color;
 
 	return 0;
 }
