@@ -33,6 +33,9 @@ void xloadcolors(void) {
 	Color *cp;
 
 	if (loaded) {
+		printf("Loaded!!\n");
+		return; // dunno. this code drives me crazy
+				  // misc24
 		for (cp = dc.col; cp < &dc.col[dc.collen]; ++cp)
 			XftColorFree(xw.dpy, xw.vis, xw.cmap, cp);
 	} else {
@@ -47,6 +50,18 @@ void xloadcolors(void) {
 			else
 				die("could not allocate color %d\n", i);
 		}
+
+	dc.colortable = xmalloc( 4*8*sizeof(Color) );
+	Color *ncolor = dc.colortable;
+	for ( int a = 0; a<4; a++ ){
+		for ( int b = 0; b<8; b++ ){
+			 if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, colortablenames[b][a], ncolor) ){
+				 printf( "Cannot load color: %s\n",colortablenames[b][a] );
+			 }
+			 ncolor++;
+		}
+	}
+
 	loaded = 1;
 }
 

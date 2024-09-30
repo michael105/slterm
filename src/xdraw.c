@@ -68,6 +68,23 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		base.fg = defaultattr;
 	}
 
+	fg = &dc.col[base.fg];
+	bg = &dc.col[base.bg];
+
+	//misc
+	if ( base.fg < 8 ){
+		//printf("<c %d>an",base.fg);
+		int fi = 0;
+		if ((base.mode & ATTR_FAINT) == ATTR_FAINT )
+			fi = 2;
+		if ((base.mode & ATTR_BOLD) == ATTR_BOLD )
+			fi++;
+
+		fg = &dc.colortable[base.fg+8*fi];
+	} else if ( base.fg < 16 ) {
+		fg = &dc.colortable[base.fg];
+	} else {
+	// old code
 	if (IS_TRUECOL(base.fg)) {
 		//printf("Truecolor\n");
 		colfg.alpha = 0xffff;
@@ -80,26 +97,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		fg = &dc.col[base.fg];
 	}
 
-	if (IS_TRUECOL(base.bg)) {
-		colbg.alpha = 0xffff;
-		colbg.green = TRUEGREEN(base.bg);
-		colbg.red = TRUERED(base.bg);
-		colbg.blue = TRUEBLUE(base.bg);
-		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &truebg);
-		bg = &truebg;
-	} else {
-		bg = &dc.col[base.bg];
-	}
-#define AS(c) colfg.c = fg->color.c
-#define ASB(c) colbg.c = bg->color.c
-	//AS(red);AS(green);AS(blue);AS(alpha);
-	//ASB(red);ASB(green);ASB(blue);ASB(alpha);
-#undef AS
-#undef ASB
 
-
-
-#define boldf 0xfff
 	//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
 #define cbold(c) colfg.c = ((fg->color.c + fg->color.c/2) | fg->color.c ) & 0xffff
 	//#define cbold(c) colfg.c = fg->color.c > 250?  : fg->color.c+ 5;
@@ -130,6 +128,39 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
 		fg = &revfg;
 	}
+
+
+
+	}
+
+	//misc
+	if ( base.bg < 16 ){
+		bg = &dc.colortable[base.bg];
+		//printf("<b %d>\n",base.bg);
+	} else {
+	if (IS_TRUECOL(base.bg)) {
+		colbg.alpha = 0xffff;
+		colbg.green = TRUEGREEN(base.bg);
+		colbg.red = TRUERED(base.bg);
+		colbg.blue = TRUEBLUE(base.bg);
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &truebg);
+		bg = &truebg;
+	} else {
+		bg = &dc.col[base.bg];
+	}
+
+	}
+
+#if 1
+
+
+#define AS(c) colfg.c = fg->color.c
+#define ASB(c) colbg.c = bg->color.c
+	//AS(red);AS(green);AS(blue);AS(alpha);
+	//ASB(red);ASB(green);ASB(blue);ASB(alpha);
+#undef AS
+#undef ASB
+
 
 
 
@@ -207,7 +238,9 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #endif
 	}
 
+#endif
 
+	// reverse background and foreground colors
 	if (base.mode & ATTR_REVERSE) {
 		//	fprintf(stderr,"attrinv\n");//D
 #if 0

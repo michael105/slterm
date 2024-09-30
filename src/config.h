@@ -146,23 +146,27 @@ static const char *colorname[] = {
     "#2e3440",
 };
 
-// A table of the first 8 (32) colors.
-// each color is: "normal", "bold", "faint", "bold+faint"
-// They are used via the ansi sequence "\033[31m" for red. 
-// > echo -e "\e[33;1m Text" shows text in red (bold)
-// > echo -e "\e[33;1;2m Text" shows text in red (bold_faint)
-// (30-37 is foreground,40-47 background color, according to 0..7)
-// background color is always bold 
+/* A table of the first 8 (32) colors.
+ each color is: "normal", "bold", "faint", "bold+faint"
+ They are used via the ansi sequence "\033[31m" for red. 
+ > echo -e "\e[33;1m Text" shows text in red (bold)
+ > echo -e "\e[33;1;2m Text" shows text in red (bold_faint)
+ (30-37 is foreground,40-47 background color, according to 0..7)
+ background color is always bold.
+ foregroundcolor 8-15 is color 0-7, bold.
+
+ colors 8 - 255 are the same as used by xterm and calculated
+ 	*/
 static const char* colortablenames[8][4] = { 
 #define GRADIENT(_normal,_bold,_faint,_bold_faint) { #_normal, #_bold, #_faint, #_bold_faint }
-	{ "black", "gray50", "slategray", "darkslategray" },
-	{ "red3", "red", "crimson", "orangered" },
-	{ "green3", "green", "seagreen", "olive" },
+	{ "black", "gray50", "darkgray", "darkslategray" },
+	{ "red3", "red", "darkred", "orangered" },
+	{ "green3", "green", "darkgreen", "olive" },
 	{ "chocolate", "yellow", "saddlebrown", "maroon" },
-	{ "blue2", "#00aaea", "darkblue", "deepskyblue" },
+	{ "blue2", "#5050ff", "darkblue", "deepskyblue" },
 	{ "magenta3", "magenta", "darkmagenta", "blueviolet" },
 	{ "cyan3", "cyan", "darkcyan", "aquamarine" },
-	{ "gray90", "white", "darkkaki", "silver" } };
+	{ "gray90", "white", "darkkhaki", "silver" } };
 
     //"brown3", // sort of brown (orange). brown is "brown" and faint..
 	//"#592a1d",
