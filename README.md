@@ -95,7 +95,8 @@ Statically linked binary, with all runtime dependencies (3.5M)
   Truecolor is there as well.	
 
   Combining blink and inverse attributes does blinking inverse. (wonderful)
-  ```echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n'```
+  
+	```echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n'```
 
 ##### Inline help
 
