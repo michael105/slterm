@@ -16,11 +16,13 @@
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
-   * Switching codepages with Shortcuts (cp437,cp850,cp1252,..)
+   * Switching codepages with hotkeys (cp437,cp850,cp1252,..)
    * Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
      slterm might be the fastest available terminal emulators for X
    * secure mode, option -X: lock all pages into memory, prevent swapping
+	* Gradient custom color palette for colors 0..16 
+	  (and 0..7, with attributes normal, bold, faint, bold_faint)
 
 
 Statically linked binary, with all runtime dependencies (3.5M)
