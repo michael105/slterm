@@ -82,6 +82,7 @@ int xsetcolorname(int x, const char *name) {
 
 
 #if 0
+// is yet in xdraw.c. somepointer trouble, as to expect.
 void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 	XRenderColor colfg, colbg;
 	Color revfg, revbg, truefg, truebg, *cltmp;

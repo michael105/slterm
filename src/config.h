@@ -106,47 +106,31 @@ char *termname = "st-256color";
 unsigned int tabspaces = 8;
 
 /* Terminal colors (16 first used in escape sequence) */
-// todo: table of 32 colors ( normal, bold, faint, bold|faint )
+// Outdated. the current table is below, colortablenames.
 // dgreen 036209
 // lgreen 00ff10
 // dblue 070060
 // dfblue 3c33aa
 static const char *colorname[] = {
     /* 8 normal colors */
-    "black",
-    "red3",
-    "green3",
-    //"brown3", // sort of brown (orange). brown is "brown" and faint..
-	"#592a1d",
-	 //"#532020", // brown
-	 //"#531818", // brown
-	 //"#562215", // brown
-    //"yellow3",
-    "blue2",
-    "magenta3",
-    "cyan3",
-    "gray90",
-
+    "black", "red3", "green3", //"brown3", // sort of brown (orange). brown is "brown" and faint..
+	"#592a1d", //"#532020", // brown //"#531818", // brown //"#562215", // brown //"yellow3",
+    "blue2", "magenta3", "cyan3", "gray90",
     /* 8 bright colors */
-    "gray50",
-    "red",
-    "green",
-    "yellow",
+    "gray50", "red", "green", "yellow",
     //"#5050ff", // light blue
 	 "#00aaea", // schweinchenblau
     //"#5c5cff",
-    "magenta",
-    "cyan",
-    "white",
-
+    "magenta", "cyan", "white",
     [255] = 0,
-
     /* more colors can be added after 255 to use with DefaultXX */
-    "#cccccc",
-    "#2e3440",
+    "#cccccc", "#2e3440",
 };
 
-/* A table of the first 8 (32) colors.
+/* The table of the first 8 (32) colors. 
+	 Names are defined by xorg, and (should be) conformant with the css names.
+	 a colortable is in doc/colors.html.
+
  each color is: "normal", "bold", "faint", "bold+faint"
  They are used via the ansi sequence "\033[31m" for red. 
  > echo -e "\e[33;1m Text" shows text in red (bold)
@@ -178,10 +162,7 @@ static const char* colortablenames[8][4] = {
     //"magenta3",
     //"cyan3",
     //"gray90" } };
-
-
-
-
+	
 /*
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
