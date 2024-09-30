@@ -257,10 +257,19 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #endif
 		//				fg = &revfg;
 		//				bg = &revbg;
+	//printf("<%x>\n",base.mode);
 	}
 
-	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK)
-		fg = bg;
+	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK){
+		if ( base.mode & ATTR_REVERSE ){ // blinking by reversing colors
+			cltmp = bg;
+			bg = fg;
+			fg = cltmp;
+		} else fg = bg;
+	}
+
+	//if ( base.mode )
+	//printf("<%x>",base.mode);
 
 	/*
 	if (base.mode & ATTR_WRAP && win.mode & MODE_BLINK){

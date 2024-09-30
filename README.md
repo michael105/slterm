@@ -83,6 +83,24 @@ Statically linked binary, with all runtime dependencies (3.5M)
  UTF8 is abandoned for now, but the code for utf8 is left in the sources.
 
 
+##### Colors
+
+  The default 7 colors, with additional 3 attributes bold, faint and bold_faint 
+  ( so there are 32 colors ) are configured as color gradients.
+  Configurable in config.h
+
+  The 256 colors map follows the xterm standard, with the difference 
+  of more contrast with faint and bold_faint attributes.
+
+  Truecolor is there as well.(Albite this might be a strange bug. Dunno. 
+		  I'm sort of fed up with the codebase. Should have had rewritten that,
+		  instead of using the code as base. Sry. Starting with all those globals,
+		  undocumented, having several thousand lines within one source file,
+		  doing strange undocumented pointer stuff all the time - this is not "suckless".)
+  Sry. I'nm just a little bit frustrated.
+	
+
+
 ##### Inline help
 
 `Ctrl+F1`
