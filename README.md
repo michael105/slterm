@@ -92,13 +92,7 @@ Statically linked binary, with all runtime dependencies (3.5M)
   The 256 colors map follows the xterm standard, with the difference 
   of more contrast with faint and bold_faint attributes.
 
-  Truecolor is there as well.(Albite this might be a strange bug. Dunno. 
-		  I'm sort of fed up with the codebase. Should have had rewritten that,
-		  instead of using the code as base. Sry. Starting with all those globals,
-		  undocumented, having several thousand lines within one source file,
-		  doing strange undocumented pointer stuff all the time - this is not "suckless".)
-  Sry. I'nm just a little bit frustrated.
-	
+  Truecolor is there as well.	
 
 
 ##### Inline help
@@ -118,7 +112,7 @@ Statically linked binary, with all runtime dependencies (3.5M)
 
 #### Slim resource usage:
 
-  Colors restricted to a 256 color palette 
+  Colors restricted to a 256 color palette per default.
         (Saving 6 Bytes per Glyph)
 
 	Keep the history and terminal contents on resize events
