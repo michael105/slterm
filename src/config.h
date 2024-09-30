@@ -105,7 +105,7 @@ char *termname = "st-256color";
  */
 unsigned int tabspaces = 8;
 
-/* Terminal colors (16 first used in escape sequence) */
+
 // Outdated. the current table is below, colortablenames.
 // dgreen 036209
 // lgreen 00ff10
