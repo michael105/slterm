@@ -129,20 +129,24 @@ static const char *colorname[] = {
 
 /* The table of the first 8 (32) colors. 
 	 Names are defined by xorg, and (should be) conformant with the css names.
-	 a colortable is in doc/colors.html.
+	 a table of colornames is in doc/colors.html.
+ RGB in hexadecimal (#RRGGBB) is also possible.
+
 
  each color is: "normal", "bold", "faint", "bold+faint"
- They are used via the ansi sequence "\033[31m" for red. 
+ They are used via the ansi sequences, e.g "\033[31m" for red. 
  > echo -e "\e[33;1m Text" shows text in red (bold)
  > echo -e "\e[33;1;2m Text" shows text in red (bold_faint)
  (30-37 is foreground,40-47 background color, according to 0..7)
  background color is always bold.
  foregroundcolor 8-15 is color 0-7, bold.
 
- colors 8 - 255 are the same as used by xterm and calculated
+ colors 16 - 255 are the colors used from xterm and calculated in colors.c/xdraw.c
+ (idea: use colors 8-15 to switch to betacode)
  	*/
 static const char* colortablenames[8][4] = { 
 #define GRADIENT(_normal,_bold,_faint,_bold_faint) { #_normal, #_bold, #_faint, #_bold_faint }
+
 	{ "black", "gray50", "darkgray", "darkslategray" },
 	{ "red3", "red", "darkred", "orangered" },
 	{ "green3", "green", "darkgreen", "olive" },
