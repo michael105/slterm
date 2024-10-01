@@ -98,7 +98,7 @@ Statically linked binary, with all runtime dependencies (3.5M)
   > echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n' 
 
 
-![indexed_colors](images/indexed_colors.jpg)
+![indexed_colors](images/indexed_fgcolors.jpg)
 
 
 ##### Inline help
