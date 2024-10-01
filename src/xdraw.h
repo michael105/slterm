@@ -21,9 +21,10 @@ typedef struct {
 extern DC dc;
 
 
-
-void xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int);
-void xdrawglyph(Glyph, int, int);
+// Returns the used background color
+Color* xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int);
+// Returns the used background color
+Color* xdrawglyph(Glyph, int, int);
 void xclear(int, int, int, int);
 
 int xstartdraw(void);

@@ -46,7 +46,7 @@ void xdrawline(Line line, int x1, int y1, int x2) {
 }
 
 
-void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
+Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		int x, int y) {
 #ifdef UTF8
 	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
@@ -75,7 +75,7 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	bg = &dc.col[base.bg];
 
 
-	//misc
+	//misc use 16 color bg table
 	if ( base.bg < 16 ){
 		bg = &dc.bgcolors[base.bg];
 		//printf("<b %d>\n",base.bg);
@@ -325,14 +325,16 @@ void xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	/* Reset clip to none. */
 	XftDrawSetClip(xw.draw, 0);
+
+	return(bg);
 }
 
-void xdrawglyph(Glyph g, int x, int y) {
+Color* xdrawglyph(Glyph g, int x, int y) {
 	int numspecs;
 	XftGlyphFontSpec spec;
 
 	numspecs = xmakeglyphfontspecs(&spec, &g, 1, x, y);
-	xdrawglyphfontspecs(&spec, g, numspecs, x, y);
+	return( xdrawglyphfontspecs(&spec, g, numspecs, x, y) );
 }
 
 
@@ -352,6 +354,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	/*
 	 * Select the right color for the right mode.
 	 */
+/*
 #ifdef UTF8
 	g.mode &= ATTR_BOLD | ATTR_ITALIC | ATTR_UNDERLINE | ATTR_STRUCK | ATTR_WIDE;
 #else
@@ -378,6 +381,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 		}
 		drawcol = dc.col[g.bg];
 	}
+	*/
 
 	/* draw text cursor */
 	if (IS_SET(MODE_FOCUSED)) {
@@ -393,10 +397,11 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				break;
 			case 3: /* Blinking Underline */
 			case 4: /* Steady Underline */
-				if ( focusinx == cx && focusiny == cy ) {
+				if ( focusinx == cx && focusiny == cy ) { // highlight cursor on focusin
 					g.bg = 208;
 					g.fg = 4;
 					xdrawglyph(g, cx, cy);
+
 					drawcol = dc.col[1];
 					//printf("c\n");
 
@@ -435,9 +440,18 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 							win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
 							cursorthickness);
 
-				} else {
+				} else { // draw cursor as underline
 					focusinx=focusiny=0;
 					drawcol = dc.col[defaultcs];
+					Color *bg = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+					
+					// invert bgcolor
+					XRenderColor csc;
+#define ASB(c) csc.c = ~bg->color.c
+					ASB(red);ASB(green);ASB(blue);
+#undef ASB
+					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+					
 					XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
 							win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
 							cursorthickness);

@@ -163,6 +163,7 @@ static const char* colortablenames[8][4] = {
 	//{ "cyan3",     	"cyan", 		"#321680", 	"aquamarine" },
 	{ "cyan3",     	"cyan", 		"darkcyan", 	"aquamarine" },
 	{ "gray90",    	"white", 	"darkkhaki", 	"SlateGray3"  } 
+	// The default text color is "gray90" on "black"
 
 };
 
@@ -184,20 +185,13 @@ static const char* bgcolornames[16] = {
 	 //"#532020", // brown
 	 //"#531818", // brown
 	 //"#562215", // brown
-    //"yellow3",
-    //"blue2",
-    //"magenta3",
-    //"cyan3",
-    //"gray90" } };
 	
 /*
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
 unsigned char defaultfg = 7;
-//unsigned int defaultfg = 7;
 unsigned char defaultbg = 0;
-//unsigned int defaultbg = 0;
 static unsigned char defaultcs = 255;
 static unsigned char defaultrcs = 202;
 // Unfocused window
