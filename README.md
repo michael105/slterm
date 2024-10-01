@@ -86,8 +86,8 @@ Statically linked binary, with all runtime dependencies (3.5M)
 ##### Colors
 
   The default 7 colors, with additional 3 attributes bold, faint and bold_faint 
-  ( so there are 32 colors ) are configured as color gradients.
-  Configurable in config.h
+  ( so there are 32 colors ) are configured as color gradients,
+  configurable in config.h
 
   The 256 colors map follows the xterm standard, with the difference 
   of more contrast with faint and bold_faint attributes.
@@ -96,6 +96,10 @@ Statically linked binary, with all runtime dependencies (3.5M)
 
   Combining blink and inverse attributes does blinking inverse. (wonderful)
   > echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n' 
+
+
+![indexed_colors](images/indexed_colors.jpg)
+
 
 ##### Inline help
 
