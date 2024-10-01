@@ -169,7 +169,8 @@ static const char* colortablenames[8][4] = {
 // the background colornames (40..47, and "\e[48;5;0..15m" )
 static const char* bgcolornames[16] = { 
 
-	"black", "OrangeRed", "Green4", "saddlebrown", 
+	"black", "DarkRed", "Green4", "saddlebrown", 
+	//"black", "OrangeRed", "Green4", "saddlebrown", 
 	"blue4" , "magenta4", "#321680", "silver",
 	//"blue4" , "magenta4", "turquoise4", "silver",
 
