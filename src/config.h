@@ -154,8 +154,10 @@ static const char* colortablenames[8][4] = {
 
 	{ "black",     	"gray50", 	"gray11",   	"darkslategray" },
 	{ "red3",      	"red",   	"darkred",  	"orangered" },
-	{ "green3", 		"green", 	"darkgreen",	"olive" },
-	{ "saddlebrown",	"yellow",	"#531818",  	"chocolate" },
+	{ "green3", 		"green", 	"darkgreen",	"PaleGreen" },
+	//{ "green3", 		"green", 	"darkgreen",	"olive" },
+	{ "saddlebrown",	"yellow",	"#531818",  	"orange" },
+	//{ "saddlebrown",	"yellow",	"#531818",  	"chocolate" },
 	{ "blue2",     	"#5050ff", 	"darkblue", 	"#00aaea" }, //"deepskyblue" },
 	{ "magenta3",  	"magenta", 	"darkmagenta",	"blueviolet" },
 	//{ "cyan3",     	"cyan", 		"#321680", 	"aquamarine" },
