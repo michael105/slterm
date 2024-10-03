@@ -198,8 +198,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		if (fg == &dc.col[defaultfg]) {
 			fg = &dc.col[defaultbg];
 		} else {
-			//						colfg.blue = ~fg->color.blue;
-			//						colfg.alpha = fg->color.alpha;
+			colfg.alpha = fg->color.alpha;
 #define AS(c) colfg.c = ~colfg.c
 			AS(red);AS(green);AS(blue);
 #undef AS
@@ -212,11 +211,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		if ( bg == &dc.col[defaultbg]) {
 			bg = &dc.col[defaultfg];
 		} else {
-			//					fprintf(stderr,"inv\n");//D
-			//colbg.red = ~bg->color.red;
-			//colbg.green = ~bg->color.green;
-			//colbg.blue = ~bg->color.blue;
-			//colbg.alpha = bg->color.alpha;
+			colbg.alpha = bg->color.alpha;
 #define ASB(c) colbg.c = ~bg->color.c
 			ASB(red);ASB(green);ASB(blue);
 #undef ASB
