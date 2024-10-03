@@ -265,18 +265,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			cltmp = bg;
 			bg = fg;
 			fg = cltmp;
-		} else fg = bg;
+		} else fg = bg; // blink
 	}
-
-	//if ( base.mode )
-	//printf("<%x>",base.mode);
-
-	/*
-	if (base.mode & ATTR_WRAP && win.mode & MODE_BLINK){
-			cltmp = bg;
-			bg = fg;
-			fg = cltmp;
-	} */
 
 
 	if (base.mode & ATTR_INVISIBLE)
@@ -325,6 +315,14 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	/* Reset clip to none. */
 	XftDrawSetClip(xw.draw, 0);
+
+	// free colors, if allocated
+	if ( fg == &revfg || bg == &revfg )
+			XftColorFree(xw.dpy, xw.vis, xw.cmap, &revfg);
+
+	if ( bg == &revbg || fg == &revbg )
+			XftColorFree(xw.dpy, xw.vis, xw.cmap, &revbg);
+
 
 	return(bg);
 }
@@ -443,18 +441,28 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				} else { // draw cursor as underline
 					focusinx=focusiny=0;
 					drawcol = dc.col[defaultcs];
-					Color *bg = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
-					
-					// invert bgcolor
-					XRenderColor csc;
+
+					if ( g.bg != defaultbg ){
+						Color *bg = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+
+						// invert bgcolor
+						XRenderColor csc;
 #define ASB(c) csc.c = ~bg->color.c
-					ASB(red);ASB(green);ASB(blue);
+						ASB(red);ASB(green);ASB(blue);
 #undef ASB
-					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
-					
-					XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+
+						XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+								win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
+								cursorthickness);
+
+						XftColorFree(xw.dpy, xw.vis, xw.cmap, &drawcol);
+					} else {
+						XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
 							win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
 							cursorthickness);
+					}
+
 				}
 				break;
 			case 5: /* Blinking bar */
