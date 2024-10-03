@@ -194,13 +194,14 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 #endif
 
+
 	if (IS_SET(MODE_REVERSE)) {
 		if (fg == &dc.col[defaultfg]) {
 			fg = &dc.col[defaultbg];
 		} else {
 			colfg.alpha = fg->color.alpha;
-#define AS(c) colfg.c = ~colfg.c
-			AS(red);AS(green);AS(blue);
+#define AS(c) colfg.c = ~fg->color.c
+			FOR_RGB(AS);
 #undef AS
 
 
@@ -213,7 +214,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		} else {
 			colbg.alpha = bg->color.alpha;
 #define ASB(c) colbg.c = ~bg->color.c
-			ASB(red);ASB(green);ASB(blue);
+			FOR_RGB(ASB);
 #undef ASB
 			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
 			bg = &revbg;

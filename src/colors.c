@@ -1,6 +1,8 @@
 // Color related functions
 // Default colors are defined in config.h
 
+#include "colors.h"
+
 
 ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
 

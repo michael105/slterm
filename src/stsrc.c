@@ -26,6 +26,7 @@
 #include "xdraw.h"
 #include "termdraw.h"
 #include "charmaps.h"
+#include "colors.h"
 
 
 #include "statusbar.c"
