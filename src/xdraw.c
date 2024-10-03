@@ -195,7 +195,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #endif
 
 
-	if (IS_SET(MODE_REVERSE)) {
+	if (IS_SET(MODE_REVERSE)) { // inverse mode (Ctrl+Shift+I)
 		if (fg == &dc.col[defaultfg]) {
 			fg = &dc.col[defaultbg];
 		} else {
