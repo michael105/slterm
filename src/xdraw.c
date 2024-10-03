@@ -190,24 +190,6 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
 					bg = &revbg;
 				}
-#if 0
-				if ( (fg->color.blue > CLFA) && (fg->color.red < CLFA) ){
-					colfg.red = fg->color.red +CLFA;
-					colfg.green = fg->color.green;// +CLFA;
-					colfg.blue = fg->color.blue;
-					colfg.alpha = fg->color.alpha;
-					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-					fg = &revfg;
-				}
-				if ( (fg->color.blue > CLFA) && (fg->color.green < CLFA) ){
-					colfg.red = fg->color.red;// +CLFA;
-					colfg.green = fg->color.green +CLFA;
-					colfg.blue = fg->color.blue;
-					colfg.alpha = fg->color.alpha;
-					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-					fg = &revfg;
-				}
-#endif
 			}
 
 #endif
