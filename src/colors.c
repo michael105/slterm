@@ -12,12 +12,24 @@ static uint cc_mode[COLORCACHESIZE];
 static uint cc_p;
 
 // get a cached color, if present
-Color* getcachecolor( uint fg, uint mode, uint winmode ){
+Color* getcachecolor( uint fg, Glyph*g, uint winmode ){
 	
 	for ( int a = 0; a<cc_p; a++ ){
-		if ( cc_mode[a] == ( (fg<<16) | ( winmode<<24) | mode ) ){
+		if ( cc_mode[a] == (( (fg<<16) | ( (winmode<<24)&0xff000000) | ( fg?g->fg:g->bg) ) |(g->mode<<8))){
 			//printf("cache hit\n");
-			return( & cc_rc[a] );
+		printf("cachehit: %d  %d  %x\n",fg,a,cc_mode[a]);
+		if ( a>0 ){
+			printf("swap: %d\n",a);
+			Color tmp;
+			memcpy( &tmp, &cc_rc[a], sizeof(Color) );
+			memcpy( &cc_rc[a], &cc_rc[a-1], sizeof(Color) );
+			memcpy( &cc_rc[a-1], &tmp, sizeof(Color) );
+			uint t = cc_mode[a];
+			cc_mode[a] = cc_mode[a-1];
+			cc_mode[a-1] = t;
+			a--;
+		}
+			return( &cc_rc[a] );
 		}
 	}
 	return(0);
@@ -26,12 +38,12 @@ Color* getcachecolor( uint fg, uint mode, uint winmode ){
 
 
 // Cache a color
-void cachecolor( uint fg, uint mode, uint winmode, Color *color ){ 
-	if ( getcachecolor(fg,mode,winmode) ){
+void cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){ 
+	if ( getcachecolor(fg,g,winmode) ){
 		//printf("double store\n");
 		return;
 	}
-	if ( cc_p == COLORCACHESIZE ){
+	if ( cc_p == COLORCACHESIZE-1 ){
 		//printf("Free cachecolor\n");
 		XftColorFree(xw.dpy, xw.vis, xw.cmap, &cc_rc[cc_p]);
 		//cc_rc[cc_p] = cc_rc[0];
@@ -39,8 +51,10 @@ void cachecolor( uint fg, uint mode, uint winmode, Color *color ){
 
 	memmove( &cc_rc[1], &cc_rc[0], sizeof(Color)*(COLORCACHESIZE-1) );
 	memmove( &cc_mode[1], &cc_mode[0], sizeof(uint)*(COLORCACHESIZE-1) );
-	cc_rc[0] = *color;
-	cc_mode[0] = ( fg<<16 ) | (winmode<<24 ) | mode;
+	//memcpy( &cc_rc[cc_p], color, sizeof(Color) );
+	memcpy( cc_rc, color, sizeof(Color) );
+	cc_mode[0] = ( fg<<16 ) | ((winmode<<24)&0xff000000 ) | g->mode<<8 | ( fg?g->fg:g->bg);
+	printf("cache: %d  %x\n",fg,cc_mode[cc_p]);
 }
 
 

@@ -72,86 +72,108 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		base.fg = defaultattr;
 	}
 
-	bg = &dc.col[base.bg];
-	//misc use 16 color bg table
-	if ( base.bg < 16 ){
-		bg = &dc.bgcolors[base.bg];
-	} else if ( ( bg =getcachecolor( 0, base.mode,win.mode ) ) ){
-		bgcache = 1;
+	//get colors from cache, if present
+	if (  !(win.mode & MODE_FOCUSED) || IS_SET(MODE_REVERSE) ){
+		if ( ( bg =getcachecolor( 0, &base,win.mode ) ) )
+			bgcache = 1;
+		if ( ( fg =getcachecolor( 1, &base,win.mode ) ) )
+			fgcache = 1;
 	} else {
-		if (IS_TRUECOL(base.bg)) { // Always false, if compiled without UTF8
-			colbg.alpha = 0xffff;
-			colbg.green = TRUEGREEN(base.bg);
-			colbg.red = TRUERED(base.bg);
-			colbg.blue = TRUEBLUE(base.bg);
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &truebg);
-			bg = &truebg;
-		} else {
-			bg = &dc.col[base.bg];
+		if ( base.mode& (ATTR_BOLD|ATTR_FAINT) ){
+			if ( base.fg>15 )
+				if ( ( fg =getcachecolor( 1, &base,win.mode ) ) )
+					fgcache = 1;
 		}
+	}
 
+	//misc use 16 color bg table
+	//if ( ( ( base.bg>15 && base.mode & ATTR_REVERSE && base.mode& (ATTR_BOLD|ATTR_FAINT) ) ||
+	//			!(win.mode & MODE_FOCUSED ) )
+	//			&& ( bg =getcachecolor( 0, &base,win.mode ) ) ){
+	//	bgcache = 1;
+	//} else 
+	if ( !bgcache ){
+		if ( base.bg < 16 ){
+			bg = &dc.bgcolors[base.bg];
+		} else {
+			if (IS_TRUECOL(base.bg)) { // Always false, if compiled without UTF8
+				colbg.alpha = 0xffff;
+				colbg.green = TRUEGREEN(base.bg);
+				colbg.red = TRUERED(base.bg);
+				colbg.blue = TRUEBLUE(base.bg);
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &truebg);
+				bg = &truebg;
+			} else {
+				bg = &dc.col[base.bg];
+			}
+		}
 	}
 
 
-	fg = &dc.col[base.fg];
 	//misc
-	if ( base.fg < 8 ){
-		//printf("<c %d>an",base.fg);
-		int fi = 0;
-		if ((base.mode & ATTR_FAINT) == ATTR_FAINT )
-			fi = 2;
-		if ((base.mode & ATTR_BOLD) == ATTR_BOLD )
-			fi++;
+	//if ( ( fg =getcachecolor( 1, &base,win.mode ) ) ){
+	//if ( ( ( base.fg>15 && base.mode& (ATTR_BOLD|ATTR_FAINT) ) ||
+	//			!(win.mode & MODE_FOCUSED ) )
+	//			&& ( fg =getcachecolor( 1, &base,win.mode ) ) ){
+	//	fgcache = 1;
+	//} else 
+	if ( !fgcache ){
+		if ( base.fg < 8 ){
+			//printf("<c %d>an",base.fg);
+			int fi = 0;
+			if ((base.mode & ATTR_FAINT) == ATTR_FAINT )
+				fi = 2;
+			if ((base.mode & ATTR_BOLD) == ATTR_BOLD )
+				fi++;
 
-		fg = &dc.colortable[base.fg+8*fi];
-	} else if ( base.fg < 16 ) {
-		fg = &dc.colortable[base.fg];
-	} else if ( ( fg =getcachecolor( 1, base.mode,win.mode ) ) ){
-		fgcache = 1;
-	} else {
-		// old code
-		if (IS_TRUECOL(base.fg)) {
-			//printf("Truecolor\n");
-			colfg.alpha = 0xffff;
-			colfg.red = TRUERED(base.fg);
-			colfg.green = TRUEGREEN(base.fg);
-			colfg.blue = TRUEBLUE(base.fg);
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
-			fg = &truefg;
+			fg = &dc.colortable[base.fg+8*fi];
+		} else if ( base.fg < 16 ) {
+			fg = &dc.colortable[base.fg];
 		} else {
-			fg = &dc.col[base.fg];
-		}
+			// old code
+			if (IS_TRUECOL(base.fg)) {
+				//printf("Truecolor\n");
+				colfg.alpha = 0xffff;
+				colfg.red = TRUERED(base.fg);
+				colfg.green = TRUEGREEN(base.fg);
+				colfg.blue = TRUEBLUE(base.fg);
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
+				fg = &truefg;
+			} else {
+				fg = &dc.col[base.fg];
+			}
 
 
-		//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
+			//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
 #define cbold(c) colfg.c = ((fg->color.c + fg->color.c/2) | fg->color.c ) & 0xffff
-		//#define cbold(c) colfg.c = fg->color.c > 250?  : fg->color.c+ 5;
-		//#define cfaint(c) colfg.c = fg->color.c - (fg->color.c/2)
+			//#define cbold(c) colfg.c = fg->color.c > 250?  : fg->color.c+ 5;
+			//#define cfaint(c) colfg.c = fg->color.c - (fg->color.c/2)
 #define cfaint(c) colfg.c = fg->color.c - fg->color.c/2; // prev: - .c/4
 																			//
-		/* Change basic system colors [0-7] to bright system colors [8-15] */
-		if ((base.mode & ATTR_BOLD) == ATTR_BOLD ){
-			if ( BETWEEN(base.fg, 0, 7)){
-				fg = &dc.col[base.fg + 8];
-			} else { 
-				//if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  
-				cbold(red); //= fg->color.red * 2;
-				cbold(green); //= fg->color.green * 2;
-				cbold(blue); //= fg->color.blue +  2;
-				colfg.alpha = fg->color.alpha;
+			/* Change basic system colors [0-7] to bright system colors [8-15] */
+			if ((base.mode & ATTR_BOLD) == ATTR_BOLD ){
+				if ( BETWEEN(base.fg, 0, 7)){
+					fg = &dc.col[base.fg + 8];
+				} else { 
+					//if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  
+					cbold(red); //= fg->color.red * 2;
+					cbold(green); //= fg->color.green * 2;
+					cbold(blue); //= fg->color.blue +  2;
+					colfg.alpha = fg->color.alpha;
+					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+					fg = &revfg;
+				}
+			}
+
+			// also BOLD|FAINT
+			if ( (base.mode & ATTR_FAINT) == ATTR_FAINT ) { //&& !BETWEEN(base.fg,0,15) )  
+				cfaint(red); //= fg->color.red * 2;
+				cfaint(green); //= fg->color.green * 2;
+				cfaint(blue); //= fg->color.blue +  2;
+				colfg.alpha = fg->color.alpha;//2;
 				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
 				fg = &revfg;
 			}
-		}
-
-		// also BOLD|FAINT
-		if ( (base.mode & ATTR_FAINT) == ATTR_FAINT ) { //&& !BETWEEN(base.fg,0,15) )  
-			cfaint(red); //= fg->color.red * 2;
-			cfaint(green); //= fg->color.green * 2;
-			cfaint(blue); //= fg->color.blue +  2;
-			colfg.alpha = fg->color.alpha;//2;
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-			fg = &revfg;
 		}
 	}
 
@@ -164,7 +186,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		/*colfg.red = fg->color.red / 2;
 		  colfg.green = fg->color.green / 4 * 3;
 		  colfg.blue = fg->color.blue / 4 * 3;*/
-		if ( (fg->color.blue > CLFA) && (fg->color.red < CLFA) && (fg->color.green < CLFA) ){
+		if ( !fgcache && (fg->color.blue > CLFA) && (fg->color.red < CLFA) && (fg->color.green < CLFA) ){
 			colfg.red = fg->color.red +13000;
 			colfg.green = fg->color.green +13000;
 			colfg.blue = fg->color.blue;
@@ -172,7 +194,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
 			fg = &revfg;
 		}
-		if ( (bg->color.blue > CLFA) && (bg->color.red < CLFA) && (bg->color.green < CLFA) ){
+		if ( !bgcache && (bg->color.blue > CLFA) && (bg->color.red < CLFA) && (bg->color.green < CLFA) ){
 			colbg.red = bg->color.red +CLFA;
 			colbg.green = bg->color.green +CLFA;
 			colbg.blue = bg->color.blue;
@@ -187,31 +209,31 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	if (IS_SET(MODE_REVERSE)) { // inverse mode (Ctrl+Shift+I)
 		if ( !fgcache ){
-		if ( fg == &dc.col[defaultfg]) {
-			fg = &dc.col[defaultbg];
-		} else {
-			colfg.alpha = fg->color.alpha;
+			if ( fg == &dc.col[defaultfg]) {
+				fg = &dc.col[defaultbg];
+			} else {
+				colfg.alpha = fg->color.alpha;
 #define AS(c) colfg.c = ~fg->color.c
-			FOR_RGB(AS);
+				FOR_RGB(AS);
 #undef AS
 
 
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-			fg = &revfg;
-		}
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				fg = &revfg;
+			}
 		}
 
 		if ( !bgcache ){
-		if ( bg == &dc.col[defaultbg]) {
-			bg = &dc.col[defaultfg];
-		} else {
-			colbg.alpha = bg->color.alpha;
+			if ( bg == &dc.col[defaultbg]) {
+				bg = &dc.col[defaultfg];
+			} else {
+				colbg.alpha = bg->color.alpha;
 #define ASB(c) colbg.c = ~bg->color.c
-			FOR_RGB(ASB);
+				FOR_RGB(ASB);
 #undef ASB
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
-			bg = &revbg;
-		}
+				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+				bg = &revbg;
+			}
 		}
 	}
 
@@ -281,12 +303,12 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	XftDrawSetClip(xw.draw, 0);
 
 	// free colors, if allocated and not in one of the tables
-	if ( !fgcache && fg == &revfg || fg == &revbg && fg!=bg )
-		cachecolor( base.mode & ATTR_REVERSE? 0:1, base.mode, win.mode, fg );
+	if ( !fgcache && (fg == &revfg || fg == &revbg) && fg!=bg )
+		cachecolor( base.mode & ATTR_REVERSE? 0:1, &base, win.mode, fg );
 			//XftColorFree(xw.dpy, xw.vis, xw.cmap, &revfg);
 
-	if ( !bgcache && bg == &revbg || bg == &revfg )
-		cachecolor( base.mode & ATTR_REVERSE? 1:0, base.mode, win.mode, bg );
+	if ( !bgcache && (bg == &revbg || bg == &revfg) )
+		cachecolor( base.mode & ATTR_REVERSE? 1:0, &base, win.mode, bg );
 		//	XftColorFree(xw.dpy, xw.vis, xw.cmap, &revbg);
 
 
@@ -406,28 +428,35 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 				} else { // draw cursor as underline
 					focusinx=focusiny=0;
-					drawcol = dc.col[defaultcs];
+					//drawcol = dc.col[defaultcs];
+					Color *col;
 
-					if ( g.bg != defaultbg ){
-						Color *bg = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+					if ( g.bg == defaultbg ){
+						col = &dc.col[defaultcs];
+					} else {
+						if ( !( col = getcachecolor( 2, &g, win.mode ) ) ){
+						col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
 
 						// invert bgcolor
 						XRenderColor csc;
-#define ASB(c) csc.c = ~bg->color.c
+#define ASB(c) csc.c = ~col->color.c
 						ASB(red);ASB(green);ASB(blue);
 #undef ASB
 						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+						cachecolor(2,&g,win.mode,&drawcol);
+						col = &drawcol;
+						}
 
-						XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-								win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
-								cursorthickness);
+						//XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+						//		win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
+						//		cursorthickness);
 
-						XftColorFree(xw.dpy, xw.vis, xw.cmap, &drawcol);
-					} else {
-						XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
+						//XftColorFree(xw.dpy, xw.vis, xw.cmap, &drawcol);
+					} 
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 							win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
 							cursorthickness);
-					}
+					
 
 				}
 				break;
