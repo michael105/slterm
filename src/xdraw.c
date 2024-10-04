@@ -328,6 +328,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	Color drawcol;
 	static int focusinx, focusiny;
 	uchar tmp;
+	Color *col;
 
 	// hide cursor in lessmode
 	if (inputmode&MODE_LESS)
@@ -443,7 +444,6 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				} else { // draw cursor as underline
 					focusinx=focusiny=0;
 					//drawcol = dc.col[defaultcs];
-					Color *col;
 
 					if ( g.bg == defaultbg ){
 						col = &dc.col[defaultcs];
@@ -477,8 +477,27 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				break;
 			case 5: /* Blinking bar */
 			case 6: /* Steady bar */
-				XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-						win.vborderpx + (cy+1) * win.ch, cursorthickness, win.ch);
+					if ( g.bg == defaultbg ){
+						col = &dc.col[defaultcs];
+					} else {
+						if ( !( col = getcachecolor( 2, &g, win.mode ) ) ){
+						col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+
+						// invert bgcolor
+						XRenderColor csc;
+//#define ASB(c) csc.c = 0xff-col->color.c //~col->color.c
+#define ASB(c) csc.c = ~col->color.c
+						ASB(red);ASB(green);ASB(blue);
+#undef ASB
+						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+						cachecolor(2,&g,win.mode,&drawcol);
+						col = &drawcol;
+						}
+					}
+
+
+				XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+						win.vborderpx + (cy) * win.ch, cursorthickness, win.ch);
 				break;
 		}
 	} else { // window hasn't the focus. 
