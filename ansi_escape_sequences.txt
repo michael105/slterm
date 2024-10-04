@@ -4,8 +4,11 @@
 Some of the ansi escape sequences,
 also documented in ./doc/..
 
+Available colors can be displayed with the script ansicolors.sh in ./test
 
 
+COLORS
+------
 
 '\e[X1m'
 '\e[X1;X2m'
@@ -31,7 +34,9 @@ cyan
 white(gray) 
 
 
-Attribute:
+ATTRIBUTES
+----------
+
 0 	clear all attributes
 1	bold
 2	faint
@@ -39,14 +44,18 @@ Attribute:
 4	underline
 5	blink
 6	blink
-7	inverse
+7	reverse
+9	strikethrough
 
 
-attributes can be combined, also 1 and 2
+attributes can be combined, also 1 and 2 (=bold_faint)
+combining blink and reverse blinks by reversing 
+foreground and background colors.
 
 
 
-255 colors:
+255 COLORS
+----------
 
 foreground: '\e[38;5;XXm'
 
@@ -55,7 +64,9 @@ xx one of 16-255
 background: '\e[48;5;XXm'
 
 
-cursor:
+
+CURSOR
+------
 
 '\e[X q'
 
