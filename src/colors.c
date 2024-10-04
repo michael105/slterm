@@ -7,36 +7,40 @@
 ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
 
 
-static XftColor cc_rc[8];
-static uint cc_mode[8];
+static XftColor cc_rc[COLORCACHESIZE];
+static uint cc_mode[COLORCACHESIZE];
 static uint cc_p;
 
-
-// Cache a color
-void cachecolor( uint fg, uint mode, uint winmode, Color *color ){ 
-	if ( cc_p == 8 ){
-		printf("Free cachecolor\n");
-		XftColorFree(xw.dpy, xw.vis, xw.cmap, &cc_rc[cc_p]);
-		//cc_rc[cc_p] = cc_rc[0];
-	} else cc_p++;
-
-	memmove( &cc_rc[1], &cc_rc[0], sizeof(Color)*7 );
-	memmove( &cc_mode[1], &cc_mode[0], sizeof(uint)*7 );
-	cc_rc[0] = *color;
-	cc_mode[0] = ( fg<<16 ) | (winmode<<24 ) | mode;
-}
-
-
+// get a cached color, if present
 Color* getcachecolor( uint fg, uint mode, uint winmode ){
 	
 	for ( int a = 0; a<cc_p; a++ ){
 		if ( cc_mode[a] == ( (fg<<16) | ( winmode<<24) | mode ) ){
-			printf("cache hit\n");
+			//printf("cache hit\n");
 			return( & cc_rc[a] );
 		}
 	}
-
 	return(0);
+}
+
+
+
+// Cache a color
+void cachecolor( uint fg, uint mode, uint winmode, Color *color ){ 
+	if ( getcachecolor(fg,mode,winmode) ){
+		//printf("double store\n");
+		return;
+	}
+	if ( cc_p == COLORCACHESIZE ){
+		//printf("Free cachecolor\n");
+		XftColorFree(xw.dpy, xw.vis, xw.cmap, &cc_rc[cc_p]);
+		//cc_rc[cc_p] = cc_rc[0];
+	} else cc_p++;
+
+	memmove( &cc_rc[1], &cc_rc[0], sizeof(Color)*(COLORCACHESIZE-1) );
+	memmove( &cc_mode[1], &cc_mode[0], sizeof(uint)*(COLORCACHESIZE-1) );
+	cc_rc[0] = *color;
+	cc_mode[0] = ( fg<<16 ) | (winmode<<24 ) | mode;
 }
 
 
