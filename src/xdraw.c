@@ -279,11 +279,14 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	/* Render underline and strikethrough. */
 	if (base.mode & ATTR_UNDERLINE) {
 		XftDrawRect(xw.draw, fg, winx, winy + dc.font.ascent + 1, width, 1);
-	}
-
-	if (base.mode & ATTR_STRUCK) {
-		XftDrawRect(xw.draw, fg, winx, winy + 5*dc.font.ascent /8, width, 1);
-		//XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent / 3, width, 1);
+		if (base.mode & ATTR_STRUCK) { // struck and underline - double underline
+			XftDrawRect(xw.draw, fg, winx, winy + dc.font.ascent + 3, width, 1);
+		} 
+	} else {
+		if (base.mode & ATTR_STRUCK) {
+			XftDrawRect(xw.draw, fg, winx, winy + 5*dc.font.ascent /8, width, 1);
+			//XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent / 3, width, 1);
+		}
 	}
 
 	/* Reset clip to none. */

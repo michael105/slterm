@@ -51,6 +51,7 @@ ATTRIBUTES
 attributes can be combined, also 1 and 2 (=bold_faint)
 combining blink and reverse blinks by reversing 
 foreground and background colors.
+strikethrough and underline gets double underline
 
 
 
