@@ -8,6 +8,7 @@ ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
 
 
 static XftColor cc_rc[COLORCACHESIZE];
+// for UTF8: (Truecolor) ulongs, and other code needs changes
 static uint cc_mode[COLORCACHESIZE];
 static uint cc_p;
 

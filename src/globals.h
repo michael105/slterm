@@ -4,13 +4,16 @@
 
 // Globals, used across several source files, 
 // and some global typedefs (type aliases)
-// (It's been not my idea.)
+// There might be globals left within other source files,
+// todo: keep them together here.
 
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned short ushort;
 
+
+extern char* argv0;
 
 typedef XftColor Color;
 typedef XftDraw *Draw;
@@ -41,6 +44,8 @@ typedef struct {
 		int cursor; /* cursor style */
 } TermWindow;
 
+extern TermWindow win;
+
 typedef struct {
 		Display *dpy;
 		Colormap cmap;
@@ -60,11 +65,41 @@ typedef struct {
 } XWindow;
 
 
-
 extern XWindow xw;
-extern TermWindow win;
-extern char* argv0;
 
+
+/* Internal representation of the screen */
+typedef struct {
+//#warning memo to me
+  Line hist[1][HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
+	int guard;
+  Line *line;                               /* screen */
+  Line *alt;                                /* alternate screen */
+  //Line *helpscr;                                /* help screen */
+  TCursor c;                                /* cursor */
+	int cthist; // current history, need 2cond buf for resizing
+  int row;                                  /* nb row */
+  int col;                                  /* nb col */
+	int colalloc; // allocated col. won't shrink, only enlarge. 
+  int histi;                                /* history index */ // points to the bottom of the terminal
+  int scr;                                  /* scroll back */
+  int *dirty;                               /* dirtyness of lines */
+  int ocx;                                  /* old cursor col */
+  int ocy;                                  /* old cursor row */
+  int top;                                  /* top    scroll limit */
+  int bot;                                  /* bottom scroll limit */
+  int mode;                                 /* terminal mode flags */
+  int esc;                                  /* escape state flags */
+  char trantbl[4];                          /* charset table translation */
+  int charset;                              /* current charset */
+  int icharset;                             /* selected charset for sequence */
+  int *tabs;
+	char circledhist;
+} Term;
+
+extern Term *term; 
+extern Term *p_help; 
+extern Term *p_term; 
 
 
 

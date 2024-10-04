@@ -214,39 +214,6 @@ typedef struct {
   char state;
 } TCursor;
 
-/* Internal representation of the screen */
-typedef struct {
-//#warning memo to me
-  Line hist[1][HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
-	int guard;
-  Line *line;                               /* screen */
-  Line *alt;                                /* alternate screen */
-  //Line *helpscr;                                /* help screen */
-  TCursor c;                                /* cursor */
-	int cthist; // current history, need 2cond buf for resizing
-  int row;                                  /* nb row */
-  int col;                                  /* nb col */
-	int colalloc; // allocated col. won't shrink, only enlarge. 
-  int histi;                                /* history index */ // points to the bottom of the terminal
-  int scr;                                  /* scroll back */
-  int *dirty;                               /* dirtyness of lines */
-  int ocx;                                  /* old cursor col */
-  int ocy;                                  /* old cursor row */
-  int top;                                  /* top    scroll limit */
-  int bot;                                  /* bottom scroll limit */
-  int mode;                                 /* terminal mode flags */
-  int esc;                                  /* escape state flags */
-  char trantbl[4];                          /* charset table translation */
-  int charset;                              /* current charset */
-  int icharset;                             /* selected charset for sequence */
-  int *tabs;
-	char circledhist;
-} Term;
-
-extern Term *term; 
-extern Term *p_help; 
-extern Term *p_term; 
-
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
 typedef struct {

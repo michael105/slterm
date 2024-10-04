@@ -327,6 +327,7 @@ Color* xdrawglyph(Glyph g, int x, int y) {
 void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	Color drawcol;
 	static int focusinx, focusiny;
+	uchar tmp;
 
 	// hide cursor in lessmode
 	if (inputmode&MODE_LESS)
@@ -377,8 +378,21 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				// g.u = 0x2603;
 				g.u = 'X';
 			case 0: /* Blinking Block */
-			case 1: /* Blinking Block (Default) */
+			case 1: /* Blinking Block */ // doesnt ork out. I dislike blinking anyways.
+												  // Thats a feature!
+				//g.mode |= ATTR_BLINK | ATTR_REVERSE;
+				//term->c.attr.mode |= ATTR_BLINK;
+				//printf("blc\n");
 			case 2: /* Steady Block */
+			if ( g.bg == defaultbg ){
+				g.bg = defaultcs;
+			} else {
+				//if ( (win.cursor==2) || ( win.mode & MODE_BLINK )){
+					tmp = g.fg;
+					g.fg = g.bg;
+					g.bg = tmp;
+				//}
+			}
 				xdrawglyph(g, cx, cy);
 				break;
 			case 3: /* Blinking Underline */

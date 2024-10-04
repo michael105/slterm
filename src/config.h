@@ -192,7 +192,7 @@ static const char* bgcolornames[16] = {
  */
 unsigned char defaultfg = 7;
 unsigned char defaultbg = 0;
-static unsigned char defaultcs = 255;
+static unsigned char defaultcs = 7;
 static unsigned char defaultrcs = 202;
 // Unfocused window
 static unsigned char unfocusedrcs = 46; //118;//226; 
@@ -235,6 +235,7 @@ static unsigned int mousebg = 0;
 
 /*
  * Xresources preferences to load at startup
+ * TODO: update this with colortablenames
  */
 #ifdef XRESOURCES
 ResourcePref resources[] = {
