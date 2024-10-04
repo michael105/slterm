@@ -86,14 +86,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		}
 	}
 
-	//misc use 16 color bg table
-	//if ( ( ( base.bg>15 && base.mode & ATTR_REVERSE && base.mode& (ATTR_BOLD|ATTR_FAINT) ) ||
-	//			!(win.mode & MODE_FOCUSED ) )
-	//			&& ( bg =getcachecolor( 0, &base,win.mode ) ) ){
-	//	bgcache = 1;
-	//} else 
 	if ( !bgcache ){
-		if ( base.bg < 16 ){
+		if ( base.bg < 16 ){ //misc use 16 color bg table
 			bg = &dc.bgcolors[base.bg];
 		} else {
 			if (IS_TRUECOL(base.bg)) { // Always false, if compiled without UTF8
@@ -110,13 +104,6 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	}
 
 
-	//misc
-	//if ( ( fg =getcachecolor( 1, &base,win.mode ) ) ){
-	//if ( ( ( base.fg>15 && base.mode& (ATTR_BOLD|ATTR_FAINT) ) ||
-	//			!(win.mode & MODE_FOCUSED ) )
-	//			&& ( fg =getcachecolor( 1, &base,win.mode ) ) ){
-	//	fgcache = 1;
-	//} else 
 	if ( !fgcache ){
 		if ( base.fg < 8 ){
 			//printf("<c %d>an",base.fg);
