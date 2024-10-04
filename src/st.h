@@ -172,11 +172,6 @@ enum selection_type { SEL_REGULAR = 1, SEL_RECTANGULAR = 2 };
 
 enum selection_snap { SNAP_WORD = 1, SNAP_LINE = 2 };
 
-typedef unsigned char uchar;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-typedef unsigned short ushort;
-
 #ifdef UTF8
 typedef uint_least32_t Rune;
 #else

@@ -14,9 +14,7 @@
 #endif
 // seems ok. is there a reason?
 #define IS_SET(flag) ((win.mode & (flag)) != 0)
-#define TRUERED(x) (((x)&0xff0000) >> 8)
-#define TRUEGREEN(x) (((x)&0xff00))
-#define TRUEBLUE(x) (((x)&0xff) << 8)
+
 
 void SET(int flag);
 
@@ -46,42 +44,6 @@ enum win_mode {
 		MODE_ENTERSTRING = 1 << 20,
 };
 
-
-
-/* Purely graphic info */
-typedef struct {
-		int tw, th; /* tty width and height */
-		int w, h;   /* window width and height */
-		int hborderpx, vborderpx;
-		int ch;     /* char height */
-		int cw;     /* char width  */
-		uint mode;   /* window state/mode flags */
-		int cursor; /* cursor style */
-} TermWindow;
-
-typedef struct {
-		Display *dpy;
-		Colormap cmap;
-		Window win;
-		Drawable buf;
-		GlyphFontSpec *specbuf; /* font spec buffer used for rendering */
-		Atom xembed, wmdeletewin, netwmname, netwmpid;
-		XIM xim;
-		XIC xic;
-		Draw draw;
-		Visual *vis;
-		XSetWindowAttributes attrs;
-		int scr;
-		int isfixed; /* is fixed geometry? */
-		int l, t;    /* left and top offset */
-		int gm;      /* geometry mask */
-} XWindow;
-
-
-
-extern XWindow xw;
-extern TermWindow win;
-extern char* argv0;
 
 
 void cresize(int, int);

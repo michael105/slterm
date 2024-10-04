@@ -2,6 +2,9 @@
 #define colors_h
 // color related functions and definitions
 
+// number of colors to cache
+#define COLORCACHESIZE 64
+
 
 #define FOR_RGB(_do) _do(red);_do(green);_do(blue)
 
@@ -15,8 +18,10 @@
 #define IS_TRUECOL(x) (1 << 24 & (x))
 #endif
 
-// number of cached colors
-#define COLORCACHESIZE 64
+#define TRUERED(x) (((x)&0xff0000) >> 8)
+#define TRUEGREEN(x) (((x)&0xff00))
+#define TRUEBLUE(x) (((x)&0xff) << 8)
+
 
 
 
