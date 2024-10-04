@@ -439,6 +439,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 						// invert bgcolor
 						XRenderColor csc;
+//#define ASB(c) csc.c = 0xff-col->color.c //~col->color.c
 #define ASB(c) csc.c = ~col->color.c
 						ASB(red);ASB(green);ASB(blue);
 #undef ASB

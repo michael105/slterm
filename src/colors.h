@@ -15,6 +15,7 @@
 #define IS_TRUECOL(x) (1 << 24 & (x))
 #endif
 
+// number of cached colors
 #define COLORCACHESIZE 32
 
 

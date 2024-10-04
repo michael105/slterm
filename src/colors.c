@@ -15,8 +15,7 @@ static uint cc_p;
 Color* getcachecolor( uint fg, Glyph*g, uint winmode ){
 	
 	for ( int a = 0; a<cc_p; a++ ){
-		if ( cc_mode[a] == (( (fg<<16) | ( (winmode<<24)&0xff000000) | ( fg?g->fg:g->bg) ) |(g->mode<<8))){
-			//printf("cache hit\n");
+		if ( cc_mode[a] == (( (fg<<16) | ( (winmode<<24)&0xff000000) | ( fg==1?g->fg:g->bg) ) |(g->mode<<8))){
 		//printf("cachehit: %d  %d  %x\n",fg,a,cc_mode[a]);
 		if ( a>0 ){
 			//printf("swap: %d\n",a);
@@ -37,7 +36,7 @@ Color* getcachecolor( uint fg, Glyph*g, uint winmode ){
 
 
 
-// Cache a color
+// Cache a color, fg: 0=bg, 1=fg, 2=cursor(fg)
 void cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){ 
 	if ( getcachecolor(fg,g,winmode) ){
 		//printf("double store\n");
@@ -51,9 +50,8 @@ void cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){
 
 	memmove( &cc_rc[1], &cc_rc[0], sizeof(Color)*(COLORCACHESIZE-1) );
 	memmove( &cc_mode[1], &cc_mode[0], sizeof(uint)*(COLORCACHESIZE-1) );
-	//memcpy( &cc_rc[cc_p], color, sizeof(Color) );
 	memcpy( cc_rc, color, sizeof(Color) );
-	cc_mode[0] = ( fg<<16 ) | ((winmode<<24)&0xff000000 ) | g->mode<<8 | ( fg?g->fg:g->bg);
+	cc_mode[0] = ( fg<<16 ) | ((winmode<<24)&0xff000000 ) | g->mode<<8 | ( fg==1?g->fg:g->bg);
 	//printf("cache: %d  %x\n",fg,cc_mode[cc_p]);
 }
 
