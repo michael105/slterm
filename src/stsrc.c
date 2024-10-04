@@ -11,6 +11,7 @@
 
 
 #include "includes.h"
+#include "globals.h"
 #include "arg.h"
 #include "st.h"
 #include "x.h"

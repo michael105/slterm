@@ -16,7 +16,7 @@
 #endif
 
 // number of cached colors
-#define COLORCACHESIZE 32
+#define COLORCACHESIZE 64
 
 
 

@@ -128,8 +128,8 @@ static const char *colorname[] = {
 };
 
 /* The table of the first 8 (32) colors. 
-	 Names are defined by xorg, and (should be) conformant with the css names.
-	 a table of colornames is in doc/colors.html.
+	 Names are defined by xorg, and (should be) conformant with css names.
+	 a table of colornames is in doc/colornames.html, and colornames_gray.html.
  RGB in hexadecimal (#RRGGBB) is also possible.
  The table is oriented at the de facto xterm standard.
 
@@ -139,7 +139,7 @@ static const char *colorname[] = {
  > echo -e "\e[33;1m Text" shows text in red (bold)
  > echo -e "\e[33;1;2m Text" shows text in red (bold_faint)
  (30-37 is foreground,40-47 background color, according to 0..7)
- foregroundcolor 8-15 is color 0-7, bold.
+ foregroundcolor 8-15 gets color 0-7, bold.
 
  colors 16 - 255 are colors used from xterm and calculated in colors.c/xdraw.c
   the algorithm to display faint and bold_faint colors is slightly modified
