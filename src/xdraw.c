@@ -71,16 +71,12 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		base.fg = defaultattr;
 	}
 
-	fg = &dc.col[base.fg];
 	bg = &dc.col[base.bg];
-
-
 	//misc use 16 color bg table
 	if ( base.bg < 16 ){
 		bg = &dc.bgcolors[base.bg];
-		//printf("<b %d>\n",base.bg);
 	} else {
-		if (IS_TRUECOL(base.bg)) {
+		if (IS_TRUECOL(base.bg)) { // Always false, if compiled without UTF8
 			colbg.alpha = 0xffff;
 			colbg.green = TRUEGREEN(base.bg);
 			colbg.red = TRUERED(base.bg);
@@ -93,6 +89,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	}
 
+
+	fg = &dc.col[base.fg];
 	//misc
 	if ( base.fg < 8 ){
 		//printf("<c %d>an",base.fg);
@@ -131,7 +129,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			if ( BETWEEN(base.fg, 0, 7)){
 				fg = &dc.col[base.fg + 8];
 			} else { 
-				//if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  {
+				//if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  
 				cbold(red); //= fg->color.red * 2;
 				cbold(green); //= fg->color.green * 2;
 				cbold(blue); //= fg->color.blue +  2;
@@ -139,34 +137,21 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
 				fg = &revfg;
 			}
-			}
+		}
 
-			// also BOLD|FAINT
-			if ( (base.mode & ATTR_FAINT) == ATTR_FAINT ) { //&& !BETWEEN(base.fg,0,15) )  {
-				cfaint(red); //= fg->color.red * 2;
-				cfaint(green); //= fg->color.green * 2;
-				cfaint(blue); //= fg->color.blue +  2;
-				colfg.alpha = fg->color.alpha;//2;
-				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-				fg = &revfg;
-			}
-
-
-
-			}
+		// also BOLD|FAINT
+		if ( (base.mode & ATTR_FAINT) == ATTR_FAINT ) { //&& !BETWEEN(base.fg,0,15) )  
+			cfaint(red); //= fg->color.red * 2;
+			cfaint(green); //= fg->color.green * 2;
+			cfaint(blue); //= fg->color.blue +  2;
+			colfg.alpha = fg->color.alpha;//2;
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			fg = &revfg;
+		}
+	}
 
 
 #if 1
-
-
-#define AS(c) colfg.c = fg->color.c
-#define ASB(c) colbg.c = bg->color.c
-			//AS(red);AS(green);AS(blue);AS(alpha);
-			//ASB(red);ASB(green);ASB(blue);ASB(alpha);
-#undef AS
-#undef ASB
-
-
 
 #define CLFA 24000
 			// Change colors on focusout
@@ -195,34 +180,34 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #endif
 
 
-	if (IS_SET(MODE_REVERSE)) { // inverse mode (Ctrl+Shift+I)
-		if (fg == &dc.col[defaultfg]) {
-			fg = &dc.col[defaultbg];
-		} else {
-			colfg.alpha = fg->color.alpha;
+			if (IS_SET(MODE_REVERSE)) { // inverse mode (Ctrl+Shift+I)
+				if (fg == &dc.col[defaultfg]) {
+					fg = &dc.col[defaultbg];
+				} else {
+					colfg.alpha = fg->color.alpha;
 #define AS(c) colfg.c = ~fg->color.c
-			FOR_RGB(AS);
+					FOR_RGB(AS);
 #undef AS
 
 
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
-			fg = &revfg;
-		}
+					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+					fg = &revfg;
+				}
 
-		if ( bg == &dc.col[defaultbg]) {
-			bg = &dc.col[defaultfg];
-		} else {
-			colbg.alpha = bg->color.alpha;
+				if ( bg == &dc.col[defaultbg]) {
+					bg = &dc.col[defaultfg];
+				} else {
+					colbg.alpha = bg->color.alpha;
 #define ASB(c) colbg.c = ~bg->color.c
-			FOR_RGB(ASB);
+					FOR_RGB(ASB);
 #undef ASB
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
-			bg = &revbg;
-		}
-	}
+					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+					bg = &revbg;
+				}
+			}
 
 
-	// reverse background and foreground colors
+	// reverse background and foreground colors, Attribute 7
 	if (base.mode & ATTR_REVERSE) {
 #if 0
 		bg = &dc.col[selectionbg];
@@ -238,17 +223,18 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	//printf("<%x>\n",base.mode);
 	}
 
+
+	if (base.mode & ATTR_INVISIBLE)
+		fg = bg; // top secret
+
+
 	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK){
-		if ( base.mode & ATTR_REVERSE ){ // blinking by reversing colors
+		if ( base.mode & ATTR_REVERSE ){ // blink by reversing colors
 			cltmp = bg;
 			bg = fg;
 			fg = cltmp;
 		} else fg = bg; // blink
 	}
-
-
-	if (base.mode & ATTR_INVISIBLE)
-		fg = bg;
 
 	/* Intelligent cleaning up of the borders. */
 	if (x == 0) {
@@ -294,12 +280,14 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	/* Reset clip to none. */
 	XftDrawSetClip(xw.draw, 0);
 
-	// free colors, if allocated
-	if ( fg == &revfg || bg == &revfg )
-			XftColorFree(xw.dpy, xw.vis, xw.cmap, &revfg);
+	// free colors, if allocated and not in one of the tables
+	if ( fg == &revfg || fg == &revbg )
+		cachecolor( 1, base.mode, win.mode, fg );
+			//XftColorFree(xw.dpy, xw.vis, xw.cmap, &revfg);
 
-	if ( bg == &revbg || fg == &revbg )
-			XftColorFree(xw.dpy, xw.vis, xw.cmap, &revbg);
+	if ( bg == &revbg || bg == &revfg )
+		cachecolor( 0, base.mode, win.mode, bg );
+		//	XftColorFree(xw.dpy, xw.vis, xw.cmap, &revbg);
 
 
 	return(bg);

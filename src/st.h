@@ -51,9 +51,6 @@
 
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
-#define TRUECOLOR(r, g, b) (1 << 24 | (r) << 16 | (g) << 8 | (b))
-#define IS_TRUECOL(x) (1 << 24 & (x))
-
 
 #define IS_SET(flag) ((term->mode & (flag)) != 0)
 
