@@ -369,25 +369,27 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				// g.u = 0x2603;
 				g.u = 'X';
 			case 0: /* Blinking Block */
-			case 1: /* Blinking Block */ // doesnt ork out. I dislike blinking anyways.
+			case 1: /* Blinking Block */ // doesnt work out. I dislike blinking anyways.
 												  // Thats a feature!
 				//g.mode |= ATTR_BLINK | ATTR_REVERSE;
 				//term->c.attr.mode |= ATTR_BLINK;
 				//printf("blc\n");
+				//term->c.attr.mode |= ATTR_BLINK;
 			case 2: /* Steady Block */
-			if ( g.bg == defaultbg ){
-				g.bg = defaultcs;
-			} else {
-				//if ( (win.cursor==2) || ( win.mode & MODE_BLINK )){
+			//if ( g.bg == defaultbg ){
+			//	g.bg = defaultcs;
+			//} else {
+				//if ( (win.cursor==2) || !( win.mode & MODE_BLINK )){
 					tmp = g.fg;
 					g.fg = g.bg;
 					g.bg = tmp;
 				//}
-			}
+			//}
 				xdrawglyph(g, cx, cy);
 				break;
 			case 3: /* Blinking Underline */
 			case 4: /* Steady Underline */
+			case 8: // double underline
 				if ( focusinx == cx && focusiny == cy ) { // highlight cursor on focusin
 					g.bg = 208;
 					g.fg = 4;
@@ -452,16 +454,19 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 						col = &drawcol;
 						}
 
-						//XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-						//		win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
-						//		cursorthickness);
-
-						//XftColorFree(xw.dpy, xw.vis, xw.cmap, &drawcol);
 					} 
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+					if ( win.cursor == 8 ){ // double underline
+						XftDrawRect(xw.draw, col, 
+							win.hborderpx + cx * win.cw,
+							win.vborderpx + (cy + 1) * win.ch - 1, win.cw, 1);
+						XftDrawRect(xw.draw, col, 
+							win.hborderpx + cx * win.cw,
+							win.vborderpx + (cy + 1) * win.ch - 3, win.cw, 1);
+					} else { // underline
+						XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 							win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
 							cursorthickness);
-					
+					}
 
 				}
 				break;

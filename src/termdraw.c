@@ -140,8 +140,8 @@ void tputc(Rune u) {
 //	if ( u>=0x80 )
 //		printf("r: %x\n",u);
 
-
 		control = ISCONTROL(u);
+		//control = 0; // display binary
 #ifndef UTF8
 		c[0] = u;
 		width = len = 1;
