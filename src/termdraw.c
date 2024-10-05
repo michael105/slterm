@@ -603,6 +603,9 @@ void tsetattr(int *attr, int l) {
 						case 9:
 								term->c.attr.mode |= ATTR_STRUCK;
 								break;
+						case 21: // double underline
+								term->c.attr.mode |= ATTR_STRUCK | ATTR_UNDERLINE;
+								break;
 						case 22:
 								term->c.attr.mode &= ~(ATTR_BOLD | ATTR_FAINT);
 								break;

@@ -215,7 +215,8 @@ static int ignoreselfg = 1;
  * 2: Block 
  * 4: Underline ("_")
  * 6: Bar ("|")
- * 7: Snowman ()
+ * 7: Block, and (X)
+ * 8: double underline
  */
 unsigned int cursorshape = 4;
 
