@@ -327,6 +327,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	/* remove the old cursor */
 	if (selected(ox, oy))
 		og.mode ^= ATTR_REVERSE;
+	//og.mode ^= ATTR_BLINK;
 	xdrawglyph(og, ox, oy);
 
 	/*
@@ -368,6 +369,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			case 7: /* st extension: snowman (U+2603) */
 				// g.u = 0x2603;
 				g.u = 'X';
+				g.bg = 9;
 			case 0: /* Blinking Block */
 			case 1: /* Blinking Block */ // doesnt work out. I dislike blinking anyways.
 												  // Thats a feature!
@@ -375,6 +377,9 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				//term->c.attr.mode |= ATTR_BLINK;
 				//printf("blc\n");
 				//term->c.attr.mode |= ATTR_BLINK;
+				//tsetdirtattr(ATTR_BLINK);
+				//xdrawglyph(g, cx, cy);
+				//break;
 			case 2: /* Steady Block */
 			//if ( g.bg == defaultbg ){
 			//	g.bg = defaultcs;
