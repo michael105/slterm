@@ -101,9 +101,6 @@ Statically linked binary, with all runtime dependencies (3.5M)
 ![indexed_colors](images/indexed_fgcolors.jpg)
 
 
-  Currently I'm trying to find a better color palette.
-  (https://lospec.com/palette-list) ...
-
 
 ##### Inline help
 
