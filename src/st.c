@@ -58,15 +58,7 @@ void tty_send_unicode(const Arg *arg){
 	ttywrite(&c, 1, 1); 
 }
 
-/* Globals */
-Term *term;
-Term *p_term=0;
-Term *p_help=0;
-static CSIEscape csiescseq;
-static STREscape strescseq;
-int borderpx;
-int enterlessmode;
-static int tresize_rec = 0;
+
 
 // initiate new terminal window and buffers
 void tnew(int col, int row) {

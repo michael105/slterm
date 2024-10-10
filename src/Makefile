@@ -11,7 +11,7 @@ include ../config.make
 SRC = base64.c mem.c slterm.c stsrc.c tty.c x.c main.c\
 			selection.c st.c  system.c utf8.c xevent.c fonts.c\
 			statusbar.c xdraw.c termdraw.c arg.c scroll.c charmaps.c mouse.c \
-			keyboard.c colors.c
+			keyboard.c colors.c globals.c
 SRCO = base64 mem slterm tty x main  selection st  system utf8
 
 

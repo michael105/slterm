@@ -30,6 +30,7 @@
 #include "colors.h"
 
 
+#include "globals.c"
 #include "statusbar.c"
 #include "arg.c"
 #include "st.c"
