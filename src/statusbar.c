@@ -56,17 +56,17 @@ void updatestatus(){
 				term->histi-term->scr,term->histi-term->scr+term->row, 
 				term->histi+term->row, 
 				((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
-				((term->histi-term->scr-scrollmarks[0]+1)*100)/((term->histi-scrollmarks[0]+1)?term->histi-scrollmarks[0]+1:1)
+				((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1)
 				);
 		buf[p]=' ';
 
 		for ( int a=1; a<10; a++ ){
-			if ( scrollmarks[a] )
+			if ( term->scrollmarks[a] )
 				buf[a+p] = a+'0';
 			else
 				buf[a+p] = ' ';
 		}
-		if ( scrollmarks[0] )
+		if ( term->scrollmarks[0] )
 			buf[p+10] = '0';
 		else 
 			buf[p+10] = ' ';

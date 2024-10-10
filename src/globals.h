@@ -94,6 +94,9 @@ typedef struct {
   int charset;                              /* current charset */
   int icharset;                             /* selected charset for sequence */
   int *tabs;
+int scrollmarks[12];
+int retmarks[10];
+
 	char circledhist;
 } Term;
 

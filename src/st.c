@@ -69,6 +69,7 @@ void tnew(int col, int row) {
 	dbg2("col: %d, row: %d\n",col,row);
 	//term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
 	term = xmalloc(sizeof(Term));
+	memset ( term, 0, sizeof(Term) );
 	if ( !p_term )
 		p_term = term;
 	term->c = (TCursor){.attr = {.fg = defaultfg, .bg = defaultbg}};
@@ -134,12 +135,12 @@ void treset(void) {
 	memset(term->trantbl, CS_USA, sizeof(term->trantbl));
 	term->charset = 0;
 
-	for (i = 0; i < 2; i++) {
+	//for (i = 0; i < 2; i++) {
 		tmoveto(0, 0);
 		tcursor(CURSOR_SAVE);
 		tclearregion(0, 0, term->colalloc - 1, term->row - 1);
-		tswapscreen();
-	}
+		//tswapscreen(); //xxx
+	//}
 }
 
 
@@ -150,12 +151,34 @@ int tisaltscr(void) {
 
 // show alt screen (swap)
 void tswapscreen(void) {
+#if 0
 	SWAPp( term->line, term->alt ); //xxx
 	term->mode ^= MODE_ALTSCREEN; //xxx
+	//printf("swapscreen, mode: %x\n",term->mode);
+	tfulldirt(); 
+#else
+
+	///printf("swapscreen, mode: %x\n",term->mode);
+	if ( p_alt != term ){ // altscr is not visible now
+		lessmode_toggle( &(Arg){.i=LESSMODE_OFF} ); 
+		if ( !p_alt ){ // displayed first time
+			tnew(term->col, term->row);
+			p_alt = term;
+		} else { // p_alt != term
+			term = p_alt;
+			if ( ( p_term->row != term->row ) || ( p_term->col != term->col )){
+				tresize( p_term->col, p_term->row );
+			}
+		}
+		term->mode |= MODE_ALTSCREEN;
+	} else {
+		term = p_term;
+		if ( ( p_alt->row != term->row ) || ( p_alt->col != term->col ))
+			tresize( p_alt->col, p_alt->row );
+	}
+
 	tfulldirt();
-
-
-
+#endif
 }
 
 void inverse_screen(){
@@ -1192,7 +1215,7 @@ void tresize(int col, int row) {
 		tmoveto(term->c.x, term->c.y);
 		/* Clearing both screens (it makes dirty all lines) */
 		c = term->c;
-		for (i = 0; i < 2; i++) {
+		//for (i = 0; i < 2; i++) {
 			//if ( mincol < term->colalloc && !enlarge )
 			if (mincol < term->colalloc && 0 < minrow && enlarge) {
 				tclearregion(mincol, 0, term->colalloc - 1, minrow - 1);
@@ -1200,9 +1223,9 @@ void tresize(int col, int row) {
 			if (0 < col && minrow < row) {
 				tclearregion(0, minrow, term->colalloc - 1, row - 1);
 			}
-			tswapscreen();
-			tcursor(CURSOR_LOAD);
-		}
+			//tswapscreen(); //xxx
+			//tcursor(CURSOR_LOAD);
+		//}
 		term->c = c;
 
 #if 0

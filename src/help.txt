@@ -4,9 +4,11 @@ The keycombinations can be changed in config.h(recompile needed)
 
 $YELLOW Keystrokes $NORM
 
-${GRAY}There are 3 different modes in slterm;
-regular mode, lessmode and selection mode.
+${GRAY}There are 4 different modes in slterm;
+regular mode, lessmode, selection mode and alt mode(alt screen).
 slterm is started in the regular mode.
+When the alt mode is used, e.g. by man or links, 
+scrollmarks and lessmode are disabled.
 $N
 
 $UL${LGREEN}All modes:$N

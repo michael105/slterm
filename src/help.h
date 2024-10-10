@@ -33,9 +33,11 @@ The keycombinations can be changed in config.h(recompile needed)\n\r\
 \n\r\
 [01;33m Keystrokes [0;0m\n\r\
 \n\r\
-[01;30mThere are 3 different modes in slterm;\n\r\
-regular mode, lessmode and selection mode.\n\r\
+[01;30mThere are 4 different modes in slterm;\n\r\
+regular mode, lessmode, selection mode and alt mode(alt screen).\n\r\
 slterm is started in the regular mode.\n\r\
+When the alt mode is used, e.g. by man or links, \n\r\
+scrollmarks and lessmode are disabled.\n\r\
 [0;0m\n\r\
 \n\r\
 [4m[01;32mAll modes:[0;0m\n\r\
@@ -234,7 +236,7 @@ Less	 Shift              	 Return     	 lessmode_toggle 	\n\r\
 [36m\n\r\
 ===============================================================================\n\r\
 \n\r\
-[37m(2019-2024 miSc, Michael Myer, started with the suckless st sources)\n\r\
+[37m(2019-2023 miSc, Michael Myer, started with the suckless st sources)\n\r\
 [01;30m\n\r\
 License: MIT\n\r\
 Permission is hereby granted, free of charge, to any person obtaining a copy\n\r\

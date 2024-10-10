@@ -350,7 +350,7 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 	//	printf("r: %x\n",u);
 		//printf("tsetchar %d %d %x %x\n",x,y,attr->u,u);
 		if ( term->line[y] == 0 ){ // xxx
-			printf("NULL %d %d\n",x,y);
+			fprintf(stderr,"WARNING, NULL %d %d\n",x,y); // shouldn't get here
 			return;
 		}
 		term->dirty[y] = 1;
@@ -415,13 +415,13 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 
 		for (y = y1; y <= y2; y++) { 
 				term->dirty[y] = 1;
-#if 0
+#if 1
 //#ifndef UTF8
 				dbg("y: %d, x1: %d, x2: %d\n", y, x1, x2);
 				memset32( &term->line[y][x1].intG, term->c.attr.intG, (x2-x1)+1 ); // memset64 or comp
 				dbg("ok\n");
 #else
-				printf("y: %d, x1: %d, x2: %d\n", y, x1, x2); // xxx
+				//printf("y: %d, x1: %d, x2: %d\n", y, x1, x2); // xxx
 				for (x = x1; x <= x2; x++) { //misc copy longs (64bit)or,better: memset. mmx/sse?
 						//if (selected(x, y)) { // room for optimization. only ask once, when no selection
 						//		selclear();
@@ -505,7 +505,7 @@ int tattrset(int attr) {
 		for (i = 0; i < term->row - 1; i++) {
 				for (j = 0; j < term->col - 1; j++) {
 					if ( term->line[i] == 0 ){ // xxx
-						printf("tattrset NULL: %d %d\n",i,j);
+						fprintf(stderr,"WARNING: tattrset NULL: %d %d\n",i,j);
 						return ( 0 );
 					} 
 						if (term->line[i][j].mode & attr) {
