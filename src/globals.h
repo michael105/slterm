@@ -70,7 +70,7 @@ extern XWindow xw;
 
 /* Internal representation of the screen */
 typedef struct {
-	// todo: remove alt and hist[1]
+	// todo: remove alt and hist[1], histsize should be smaller for help and alt screens
 	Line hist[1][HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
 	int guard;
 	Line *line;                               /* screen */
