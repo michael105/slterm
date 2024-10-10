@@ -230,7 +230,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 
 		//printf("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d term->bot: %d\n",orig,n, term->histi, term->scr, copyhist, term->bot);
 		if ( term->histi == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
-		// else segfaults. reproduce: man man  and hit END, then pageup.										
+		// else segfaults. reproduce: man man; and scroll with a (now, since this is patched rotfl) unknown combination of commands.
 			printf("RETURN\n"); // xxx
 			//return;
 		}
