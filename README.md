@@ -249,13 +249,13 @@ Me, I don't need it. And I don't really like the idea of having up to 4 Bytes pe
 It's quite simple to add another chartable, if needed, and
 im- and export files via tools/cpfilter or iconv. 
 
-When scrolled an entering selection mode, wrong chars will be written
-onto the screen via cursor movement.
 
 
 #### fixed:
 
 crashes with the alt screen
+corrected ret marks
+
 
 ====================
 
