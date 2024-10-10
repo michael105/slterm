@@ -78,11 +78,11 @@ void tnew(int col, int row) {
 	// works flawless at arch.
 	// crashes at gentoo. quite seldom.
 	// guessing the problem is here.
-	term->hist[0][0] = xmalloc( col * sizeof(Glyph));
-	memset(term->hist[0][0],0, col * sizeof(Glyph));
+	term->hist[0] = xmalloc( col * sizeof(Glyph));
+	memset(term->hist[0],0, col * sizeof(Glyph));
 
 	term->colalloc=0;
-	//term->hist[1][0] = xmalloc( col * sizeof(Glyph));
+	//term->hist[0] = xmalloc( col * sizeof(Glyph));
 
 	term->guard=0xf0f0f0f0;
 	tresize(col, row);
@@ -1044,24 +1044,24 @@ void tresize(int col, int row) {
 	 */
 	for (i = 0; i <= term->cursor.y - row; i++) {
 		free(term->line[i]);
-		free(term->alt[i]);
+		//free(term->alt[i]);
 		//free(term->helpscr[i]);
 	}
 	/* ensure that both src and dst are not NULL */
 	if (i > 0) {
 		memmove(term->line, term->line + i, row * sizeof(Line));
-		memmove(term->alt, term->alt + i, row * sizeof(Line));
+		//memmove(term->alt, term->alt + i, row * sizeof(Line));
 		//memmove(term->helpscr,term->helpscr + i, row * sizeof(Line));
 	}
 	for (i += row; i < term->row; i++) {
 		free(term->line[i]);
-		free(term->alt[i]);
+		//free(term->alt[i]);
 		//free(term->helpscr[i]);
 	}
 
 	/* resize to new height */
 	term->line = xrealloc(term->line, row * sizeof(Line));
-	term->alt = xrealloc(term->alt, row * sizeof(Line));
+	//term->alt = xrealloc(term->alt, row * sizeof(Line));
 	//term->helpscr = xrealloc(term->helpscr, row * sizeof(Line));
 	term->dirty = xrealloc(term->dirty, row * sizeof(*term->dirty));
 	term->tabs = xrealloc(term->tabs, term->colalloc * sizeof(*term->tabs));
@@ -1081,43 +1081,43 @@ void tresize(int col, int row) {
 #if 0
 
 	if ( oldline != term->histi ){
-		term->hist[newhist][newline] = xmalloc( col * sizeof(Glyph));
-		memset32( &term->hist[newhist][newline][mincol].intG, term->cursor.attr.intG, col-mincol );
+		term->hist[newline] = xmalloc( col * sizeof(Glyph));
+		memset32( &term->hist[newline][mincol].intG, term->cursor.attr.intG, col-mincol );
 	}
 
 	while (oldline!=term->histi) { // Didn't reach the end of the old history yet
 		dbg3( "oldhist: %d term->col %d newhist %d oldline: %d oldcol: %d newline: %d newcol: %d", oldhist, term->col,newhist, oldline, oldcol, newline, newcol );
-		while( (oldline!=term->histi) && (oldcol < term->col) ){ // && !( ( oldcol>0 ) && (term->hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
+		while( (oldline!=term->histi) && (oldcol < term->col) ){ // && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
 			dbg3( "term->col: %d L2: oldline: %d oldcol: %d newline: %d newcol: %d",term->col, oldline, oldcol, newline, newcol );
-			//dbg3( "intG oldhist: %d - %d\n", term->hist[oldhist][oldline][oldcol].intG, term->hist[oldhist][oldline][oldcol].u );
-			if ( term->hist[oldhist][oldline][oldcol].mode & ATTR_WRAP ){
+			//dbg3( "intG oldhist: %d - %d\n", term->hist[oldline][oldcol].intG, term->hist[oldline][oldcol].u );
+			if ( term->hist[oldline][oldcol].mode & ATTR_WRAP ){
 				dbg2("WRAP");
 			}
-			term->hist[newhist][newline][newcol].intG = term->hist[oldhist][oldline][oldcol].intG;
-			//term->hist[newhist][newline][newcol].mode
+			term->hist[newline][newcol].intG = term->hist[oldline][oldcol].intG;
+			//term->hist[newline][newcol].mode
 			oldcol++;
 			newcol++;
-			if ( ( newcol == col) || ( (oldcol>0) && (term->hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){ // end of line
+			if ( ( newcol == col) || ( (oldcol>0) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){ // end of line
 				dbg3("Eol. newcol: %d  oldcol:%d",newcol,oldcol);
-				//term->hist[newhist][newline][newcol-1].mode |= ATTR_WRAP;
+				//term->hist[newline][newcol-1].mode |= ATTR_WRAP;
 				newline++;
 				newline &= ((1<<HISTSIZEBITS)-1);
 				newcol=0;
-				if ( !term->hist[newhist][newline] ){ 
-					term->hist[newhist][newline] = xmalloc( col * sizeof(Glyph));
+				if ( !term->hist[newline] ){ 
+					term->hist[newline] = xmalloc( col * sizeof(Glyph));
 					dbg3(AC_BLUE"malloc: hist %d, line %d, cols: %d"AC_NORM, newhist, newline, col );
 				} else {
 					dbg3(AC_GREEN"realloc: hist %d, line %d, cols: %d"AC_NORM, newhist, newline, col );
-					term->hist[newhist][newline] = xrealloc( 	term->hist[newhist][newline], col * sizeof(Glyph));
+					term->hist[newline] = xrealloc( 	term->hist[newline], col * sizeof(Glyph));
 				}
 				//dbg3("newline: %d",newline);
-				memset32( &term->hist[newhist][newline][mincol].intG, term->cursor.attr.intG, col-mincol );
+				memset32( &term->hist[newline][mincol].intG, term->cursor.attr.intG, col-mincol );
 			}
-			if ( oldcol == term->col ){// && !( ( oldcol>0 ) && (term->hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
+			if ( oldcol == term->col ){// && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
 				dbg3( "YY: newline: %d newcol: %d", newline, newcol );
-				//free( term->hist[oldhist][oldline] );
+				//free( term->hist[oldline] );
 				oldcol = 0;
-				//term->hist[oldhist][oldline] = 0;
+				//term->hist[oldline] = 0;
 				oldline++;
 				oldline &= ((1<<HISTSIZEBITS)-1); // modulo
 
@@ -1135,17 +1135,17 @@ void tresize(int col, int row) {
 
 		if ( enlarge )
 			for (i = 0; i < t; i++) { // 
-				term->hist[(term->cthist)][i] = xrealloc(term->hist[term->cthist][i], term->colalloc * sizeof(Glyph));
+				term->hist[i] = xrealloc(term->hist[i], term->colalloc * sizeof(Glyph));
 #ifndef UTF8
-				memset32( &term->hist[term->cthist][i][oldwidth].intG, term->cursor.attr.intG, term->colalloc-oldwidth );
-				//memset32( &term->hist[term->cthist][i][mincol].intG, term->cursor.attr.intG, term->colalloc-mincol );
+				memset32( &term->hist[i][oldwidth].intG, term->cursor.attr.intG, term->colalloc-oldwidth );
+				//memset32( &term->hist[i][mincol].intG, term->cursor.attr.intG, term->colalloc-mincol );
 				//for (j = mincol; j < col; j++) {
-				//		term->hist[term->cthist][i][j].intG = term->cursor.attr.intG;
+				//		term->hist[i][j].intG = term->cursor.attr.intG;
 				//}
 #else
 				for (j = mincol; j < term->colalloc; j++) {
-					term->hist[term->cthist][i][j] = term->cursor.attr;
-					term->hist[term->cthist][i][j].u = ' '; 
+					term->hist[i][j] = term->cursor.attr;
+					term->hist[i][j].u = ' '; 
 					//append empty chars, if more cols than before
 				}
 #endif
@@ -1159,7 +1159,7 @@ void tresize(int col, int row) {
 				//dbg3("i: %d, %d", i, minrow );
 				term->line[i] = xrealloc(term->line[i], term->colalloc * sizeof(Glyph));
 				//dbg3("i2\n");
-				term->alt[i] = xrealloc(term->alt[i], term->colalloc * sizeof(Glyph));
+				//term->alt[i] = xrealloc(term->alt[i], term->colalloc * sizeof(Glyph));
 				//term->helpscr[i] = xrealloc(term->helpscr[i], term->colalloc * sizeof(Glyph));
 			}
 		} else {
@@ -1181,9 +1181,9 @@ void tresize(int col, int row) {
 		for ( i = minrow ; i < row; i++) {
 			term->line[i] = xmalloc(term->colalloc * sizeof(Glyph));
 			memset(term->line[i], 0, sizeof(Glyph) * term->colalloc);
-			term->alt[i] = xmalloc(term->colalloc * sizeof(Glyph));
+			//term->alt[i] = xmalloc(term->colalloc * sizeof(Glyph));
 			//term->helpscr[i] = xmalloc(term->colalloc * sizeof(Glyph));
-			memset(term->alt[i], 0, sizeof(Glyph) * term->colalloc);
+			//memset(term->alt[i], 0, sizeof(Glyph) * term->colalloc);
 			//memset(term->helpscr[i], 0, sizeof(Glyph) * term->colalloc);
 		}
 		/*if ( term->colalloc > col ){
@@ -1227,6 +1227,9 @@ void tresize(int col, int row) {
 			//tcursor(CURSOR_LOAD);
 		//}
 		term->cursor = c;
+
+		if ( !enlarge )
+			tfulldirt();
 
 #if 0
 		if ( p_help && ( tresize_rec == 0 ) ){ // need to resize the not displayed term as well

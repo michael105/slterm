@@ -188,8 +188,8 @@ void tscrolldown(int orig, int n, int copyhist) {
 				//term->histi = (term->histi - 1 ) & ~(HISTSIZE-1); //xxx
 				term->histi = ((term->histi - 1 ) ^ HISTSIZE) & (HISTSIZE-1); 
 				//term->histi = (term->histi - 1 + HISTSIZE) % HISTSIZE; //??? uh. negative number, I guess
-				SWAPp( term->hist[term->cthist][term->histi], term->line[term->bot] );
-				///printf("copyhist: term->histi %d   %p <->  %p  \n", term->histi, term->hist[term->cthist][term->histi], term->line[term->bot] );
+				SWAPp( term->hist[term->histi], term->line[term->bot] );
+				///printf("copyhist: term->histi %d   %p <->  %p  \n", term->histi, term->hist[term->histi], term->line[term->bot] );
 
 				if (  term->line[term->bot] == 0 ){
 					///printf("newline .");
@@ -228,13 +228,13 @@ void tscrollup(int orig, int n, int copyhist) {
 								term->circledhist=1;
 								///printf("circledhist = 1");
 								// dirty bugfix below. didn't find the real problem
-								term->hist[0][0] = xmalloc( term->colalloc * sizeof(Glyph));
-								memset(term->hist[0][0],0,term->colalloc * sizeof(Glyph));
+								term->hist[0] = xmalloc( term->colalloc * sizeof(Glyph));
+								memset(term->hist[0],0,term->colalloc * sizeof(Glyph));
 						}
 				}
 
 
-				if ( term->hist[term->cthist][term->histi] ){
+				if ( term->hist[term->histi] ){
 						///printf("SWAP cthist %d, histi %d, orig %d\n", term->cthist, term->histi, orig);
 
 						if (  term->line[term->bot] == 0 ){
@@ -243,11 +243,11 @@ void tscrollup(int orig, int n, int copyhist) {
 							term->line[term->bot]  = xmalloc( term->colalloc * sizeof(Glyph));
 							memset( term->line[term->bot]  ,0,term->colalloc * sizeof(Glyph));
 						}
-						SWAPp( term->hist[term->cthist][term->histi], term->line[orig] );
+						SWAPp( term->hist[term->histi], term->line[orig] );
 
 				}	 else {
 						///printf("New line, cthist %d, term->histi: %d, term->col: %d\n", term->cthist, term->histi, term->col);
-						term->hist[term->cthist][term->histi] = term->line[orig];
+						term->hist[term->histi] = term->line[orig];
 						term->line[orig] = xmalloc( term->colalloc * sizeof(Glyph));
 						memset(term->line[orig],0,term->colalloc * sizeof(Glyph));
 				}
