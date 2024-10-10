@@ -150,9 +150,10 @@ void treset(void) {
 
 int tisaltscr(void) { return IS_SET(MODE_ALTSCREEN); }
 
+// display alt screen (swap)
 void tswapscreen(void) {
-	SWAPp( term->line, term->alt );
-	term->mode ^= MODE_ALTSCREEN;
+	SWAPp( term->line, term->alt ); //xxx
+	term->mode ^= MODE_ALTSCREEN; //xxx
 	tfulldirt();
 }
 

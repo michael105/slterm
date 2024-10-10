@@ -33,6 +33,9 @@ magenta
 cyan 
 white(gray) 
 
+90..97: bold fg color
+100..107: bold  bg color
+
 
 ATTRIBUTES
 ----------

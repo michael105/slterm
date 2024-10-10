@@ -45,6 +45,7 @@ void kscrolldown(const Arg *a) {
 }
 
 void scrolltobottom(){
+	printf("scrolltobottom\n"); // xxx
 		if ( term->scr ){
 				term->scr=0;
 				selscroll(0, 0);
@@ -164,13 +165,29 @@ void tscrolldown(int orig, int n, int copyhist) {
 		int i;
 
 
-		//printf("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d\n",orig,n, term->histi, term->scr, copyhist);
-		LIMIT(n, 0, term->bot - orig + 1);
+		printf("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d term->bot: %d\n",orig,n, term->histi, term->scr, copyhist, term->bot);
+		if ( term->histi == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
+		// else segfaults. reproduce: man man  and hit END, then pageup.										
+			printf("RETURN\n"); // xxx
+			//return;
+		}
+		LIMIT(n, 0, term->bot - orig ); //xxx
+		//LIMIT(n, 0, term->bot - orig + 1);
 
 		if (copyhist) {
+				//term->histi = (term->histi - 1 ) & ~(HISTSIZE-1); //xxx
 				term->histi = ((term->histi - 1 ) ^ HISTSIZE) & (HISTSIZE-1); 
 				//term->histi = (term->histi - 1 + HISTSIZE) % HISTSIZE; //??? uh. negative number, I guess
 				SWAPp( term->hist[term->cthist][term->histi], term->line[term->bot] );
+				printf("copyhist: term->histi %d   %p <->  %p  \n", term->histi, term->hist[term->cthist][term->histi], term->line[term->bot] );
+
+				if (  term->line[term->bot] == 0 ){
+					printf("newline .");
+						//term->circledhist=1; //?
+					 term->line[term->bot]  = xmalloc( term->colalloc * sizeof(Glyph));
+					memset( term->line[term->bot]  ,0,term->colalloc * sizeof(Glyph));
+				}
+
 		}
 
 		tsetdirt(orig, term->bot - n);
@@ -188,17 +205,18 @@ void tscrolldown(int orig, int n, int copyhist) {
 void tscrollup(int orig, int n, int copyhist) {
 		int i;
 
-		//printf("===== tscrollup, orig:%d n:%d , histi: %d  scr: %d copyhist: %d \n",orig,n, term->histi, term->scr, copyhist);
-		LIMIT(n, 0, term->bot - orig + 1);
+		printf("===== tscrollup, orig:%d n:%d , histi: %d  scr: %d copyhist: %d \n",orig,n, term->histi, term->scr, copyhist);
+		LIMIT(n, 0, term->bot - orig ); //xxx
+		//LIMIT(n, 0, term->bot - orig + 1);
 
 		if (copyhist) {
 				dbg2("term->histi: %d\n", term->histi);
 				term->histi = ((term->histi + 1) ^ HISTSIZE ) & (HISTSIZE-1);
-				dbg2("term->histi: %d, \n", term->histi);
+				printf("term->histi: %d, \n", term->histi);
 				if ( term->histi == 0 ){
 						if ( term->circledhist == 0 ){
 								term->circledhist=1;
-								dbg("circledhist = 1");
+								printf("circledhist = 1");
 								// dirty bugfix below. didn't find the real problem
 								term->hist[0][0] = xmalloc( term->colalloc * sizeof(Glyph));
 								memset(term->hist[0][0],0,term->colalloc * sizeof(Glyph));
@@ -207,10 +225,10 @@ void tscrollup(int orig, int n, int copyhist) {
 
 
 				if ( term->hist[term->cthist][term->histi] ){
-						dbg2("SWAP cthist %d, histi %d, orig %d\n", term->cthist, term->histi, orig);
+						printf("SWAP cthist %d, histi %d, orig %d\n", term->cthist, term->histi, orig);
 						SWAPp( term->hist[term->cthist][term->histi], term->line[orig] );
 				}	 else {
-						dbg2("New line, cthist %d, term->histi: %d, term->col: %d\n", term->cthist, term->histi, term->col);
+						printf("New line, cthist %d, term->histi: %d, term->col: %d\n", term->cthist, term->histi, term->col);
 						term->hist[term->cthist][term->histi] = term->line[orig];
 						term->line[orig] = xmalloc( term->colalloc * sizeof(Glyph));
 						memset(term->line[orig],0,term->colalloc * sizeof(Glyph));
@@ -259,7 +277,8 @@ void tscrollup(int orig, int n, int copyhist) {
 void tnewline(int first_col) {
 		int y = term->c.y;
 
-		dbgf("tnewline: %d, term->scr: %d  histi: %d\n",first_col, term->scr,term->histi );
+		//xxx
+		printf("tnewline: %d, term->scr: %d  histi: %d\n",first_col, term->scr,term->histi );
 		if (y == term->bot) {
 				tscrollup(term->top, 1, 1);
 		} else {
