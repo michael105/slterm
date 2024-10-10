@@ -156,7 +156,7 @@ void retmark(const Arg* a){
 		int b = 1;
 		for ( int t = (term->current_retmark +1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
 				t = (t+1) & ( RETMARKCOUNT-1 ) ){
-			printf("mark: %d   %d\n",t, term->retmarks[t] );
+			//printf("mark: %d   %d\n",t, term->retmarks[t] );
 			if ( (term->histi - term->retmarks[t] < term->scr) ){
 				term->scr=(term->histi-term->retmarks[t]);
 				b = 0;
@@ -362,7 +362,7 @@ void tnewline(int first_col) {
 
 void enterscroll(const Arg *a){
 	if (term==p_alt) return;
-		printf("enterscroll: %d %d %d %d\n",term->histi,term->row,term->scr,term->cursor.y);
+		//printf("enterscroll: %d %d %d %d\n",term->histi,term->row,term->scr,term->cursor.y);
 		
 		term->scrollmarks[0] = term->histi+ term->row - ( term->row - term->cursor.y );
 		enterlessmode = term->row;
