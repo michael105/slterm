@@ -376,9 +376,9 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			case 1: /* Blinking Block */ // doesnt work out. I dislike blinking anyways.
 												  // Thats a feature!
 				//g.mode |= ATTR_BLINK | ATTR_REVERSE;
-				//term->c.attr.mode |= ATTR_BLINK;
+				//term->cursor.attr.mode |= ATTR_BLINK;
 				//printf("blc\n");
-				//term->c.attr.mode |= ATTR_BLINK;
+				//term->cursor.attr.mode |= ATTR_BLINK;
 				//tsetdirtattr(ATTR_BLINK);
 				//xdrawglyph(g, cx, cy);
 				//break;

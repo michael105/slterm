@@ -72,7 +72,7 @@ void tnew(int col, int row) {
 	memset ( term, 0, sizeof(Term) );
 	if ( !p_term )
 		p_term = term;
-	term->c = (TCursor){.attr = {.fg = defaultfg, .bg = defaultbg}};
+	term->cursor = (TCursor){.attr = {.fg = defaultfg, .bg = defaultbg}};
 
 	// might be buggy. fix this!
 	// works flawless at arch.
@@ -110,9 +110,9 @@ void tcursor(int mode) {
 	int alt = IS_SET(MODE_ALTSCREEN);
 
 	if (mode == CURSOR_SAVE) {
-		c[alt] = term->c;
+		c[alt] = term->cursor;
 	} else if (mode == CURSOR_LOAD) {
-		term->c = c[alt];
+		term->cursor = c[alt];
 		tmoveto(c[alt].x, c[alt].y);
 	}
 }
@@ -120,7 +120,7 @@ void tcursor(int mode) {
 void treset(void) {
 	uint i;
 
-	term->c = (TCursor){{.mode = ATTR_NULL, .fg = defaultfg, .bg = defaultbg,.u=' '},
+	term->cursor = (TCursor){{.mode = ATTR_NULL, .fg = defaultfg, .bg = defaultbg,.u=' '},
 		.x = 0,
 		.y = 0,
 		.state = CURSOR_DEFAULT};
@@ -271,22 +271,22 @@ void csiparse(void) {
 
 /* for absolute user moves, when decom is set */
 void tmoveato(int x, int y) {
-	tmoveto(x, y + ((term->c.state & CURSOR_ORIGIN) ? term->top : 0));
+	tmoveto(x, y + ((term->cursor.state & CURSOR_ORIGIN) ? term->top : 0));
 }
 
 void tmoveto(int x, int y) {
 	int miny, maxy;
 
-	if (term->c.state & CURSOR_ORIGIN) {
+	if (term->cursor.state & CURSOR_ORIGIN) {
 		miny = term->top;
 		maxy = term->bot;
 	} else {
 		miny = 0;
 		maxy = term->row - 1;
 	}
-	term->c.state &= ~CURSOR_WRAPNEXT;
-	term->c.x = LIMIT(x, 0, term->col - 1);
-	term->c.y = LIMIT(y, miny, maxy);
+	term->cursor.state &= ~CURSOR_WRAPNEXT;
+	term->cursor.x = LIMIT(x, 0, term->col - 1);
+	term->cursor.y = LIMIT(y, miny, maxy);
 }
 
 void tsetmode(int priv, int set, int *args, int narg) {
@@ -302,7 +302,7 @@ void tsetmode(int priv, int set, int *args, int narg) {
 					xsetmode(set, MODE_REVERSE);
 					break;
 				case 6: /* DECOM -- Origin */
-					MODBIT(term->c.state, set, CURSOR_ORIGIN);
+					MODBIT(term->cursor.state, set, CURSOR_ORIGIN);
 					tmoveato(0, 0);
 					break;
 				case 7: /* DECAWM -- Auto wrap */
@@ -434,12 +434,12 @@ unknown:
 			break;
 		case 'A': /* CUU -- Cursor <n> Up */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveto(term->c.x, term->c.y - csiescseq.arg[0]);
+			tmoveto(term->cursor.x, term->cursor.y - csiescseq.arg[0]);
 			break;
 		case 'B': /* CUD -- Cursor <n> Down */
 		case 'e': /* VPR --Cursor <n> Down */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveto(term->c.x, term->c.y + csiescseq.arg[0]);
+			tmoveto(term->cursor.x, term->cursor.y + csiescseq.arg[0]);
 			break;
 		case 'i': /* MC -- Media Copy */
 			switch (csiescseq.arg[0]) {
@@ -447,7 +447,7 @@ unknown:
 					tdump();
 					break;
 				case 1:
-					tdumpline(term->c.y);
+					tdumpline(term->cursor.y);
 					break;
 				case 2:
 					tdumpsel();
@@ -468,24 +468,24 @@ unknown:
 		case 'C': /* CUF -- Cursor <n> Forward */
 		case 'a': /* HPR -- Cursor <n> Forward */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveto(term->c.x + csiescseq.arg[0], term->c.y);
+			tmoveto(term->cursor.x + csiescseq.arg[0], term->cursor.y);
 			break;
 		case 'D': /* CUB -- Cursor <n> Backward */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveto(term->c.x - csiescseq.arg[0], term->c.y);
+			tmoveto(term->cursor.x - csiescseq.arg[0], term->cursor.y);
 			break;
 		case 'E': /* CNL -- Cursor <n> Down and first col */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveto(0, term->c.y + csiescseq.arg[0]);
+			tmoveto(0, term->cursor.y + csiescseq.arg[0]);
 			break;
 		case 'F': /* CPL -- Cursor <n> Up and first col */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveto(0, term->c.y - csiescseq.arg[0]);
+			tmoveto(0, term->cursor.y - csiescseq.arg[0]);
 			break;
 		case 'g': /* TBC -- Tabulation clear */
 			switch (csiescseq.arg[0]) {
 				case 0: /* clear current tab stop */
-					term->tabs[term->c.x] = 0;
+					term->tabs[term->cursor.x] = 0;
 					break;
 				case 3: /* clear all the tabs */
 					memset(term->tabs, 0, term->colalloc * sizeof(*term->tabs));
@@ -497,7 +497,7 @@ unknown:
 		case 'G': /* CHA -- Move to <col> */
 		case '`': /* HPA */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveto(csiescseq.arg[0] - 1, term->c.y);
+			tmoveto(csiescseq.arg[0] - 1, term->cursor.y);
 			break;
 		case 'H': /* CUP -- Move to <row> <col> */
 		case 'f': /* HVP */
@@ -512,16 +512,16 @@ unknown:
 		case 'J': /* ED -- Clear screen */
 			switch (csiescseq.arg[0]) {
 				case 0: /* below */
-					tclearregion(term->c.x, term->c.y, term->colalloc - 1, term->c.y);
-					if (term->c.y < term->row - 1) {
-						tclearregion(0, term->c.y + 1, term->colalloc - 1, term->row - 1);
+					tclearregion(term->cursor.x, term->cursor.y, term->colalloc - 1, term->cursor.y);
+					if (term->cursor.y < term->row - 1) {
+						tclearregion(0, term->cursor.y + 1, term->colalloc - 1, term->row - 1);
 					}
 					break;
 				case 1: /* above */
-					if (term->c.y > 1) {
-						tclearregion(0, 0, term->col - 1, term->c.y - 1);
+					if (term->cursor.y > 1) {
+						tclearregion(0, 0, term->col - 1, term->cursor.y - 1);
 					}
-					tclearregion(0, term->c.y, term->c.x, term->c.y);
+					tclearregion(0, term->cursor.y, term->cursor.x, term->cursor.y);
 					break;
 				case 2: /* all */
 					tclearregion(0, 0, term->col - 1, term->row - 1);
@@ -533,13 +533,13 @@ unknown:
 		case 'K': /* EL -- Clear line */
 			switch (csiescseq.arg[0]) {
 				case 0: /* right */
-					tclearregion(term->c.x, term->c.y, term->colalloc - 1, term->c.y);
+					tclearregion(term->cursor.x, term->cursor.y, term->colalloc - 1, term->cursor.y);
 					break;
 				case 1: /* left */
-					tclearregion(0, term->c.y, term->c.x, term->c.y);
+					tclearregion(0, term->cursor.y, term->cursor.x, term->cursor.y);
 					break;
 				case 2: /* all */
-					tclearregion(0, term->c.y, term->colalloc - 1, term->c.y);
+					tclearregion(0, term->cursor.y, term->colalloc - 1, term->cursor.y);
 					break;
 			}
 			break;
@@ -564,7 +564,7 @@ unknown:
 			break;
 		case 'X': /* ECH -- Erase <n> char */
 			DEFAULT(csiescseq.arg[0], 1);
-			tclearregion(term->c.x, term->c.y, term->c.x + csiescseq.arg[0] - 1, term->c.y);
+			tclearregion(term->cursor.x, term->cursor.y, term->cursor.x + csiescseq.arg[0] - 1, term->cursor.y);
 			break;
 		case 'P': /* DCH -- Delete <n> char */
 			DEFAULT(csiescseq.arg[0], 1);
@@ -577,7 +577,7 @@ unknown:
 			break;
 		case 'd': /* VPA -- Move to <row> */
 			DEFAULT(csiescseq.arg[0], 1);
-			tmoveato(term->c.x, csiescseq.arg[0] - 1);
+			tmoveato(term->cursor.x, csiescseq.arg[0] - 1);
 			break;
 		case 'h': /* SM -- Set terminal mode */
 			tsetmode(csiescseq.priv, 1, csiescseq.arg, csiescseq.narg);
@@ -588,7 +588,7 @@ unknown:
 		case 'n': /* DSR – Device Status Report (cursor position) */
 			if (csiescseq.arg[0] == 6) {
 				len =
-					snprintf(buf, sizeof(buf), "\033[%i;%iR", term->c.y + 1, term->c.x + 1);
+					snprintf(buf, sizeof(buf), "\033[%i;%iR", term->cursor.y + 1, term->cursor.x + 1);
 				ttywrite(buf, len, 0);
 			}
 			break;
@@ -804,7 +804,7 @@ void tdectest(utfchar c) {
 	if (c == '8') { /* DEC screen alignment test. */
 		for (x = 0; x < term->col; ++x) {
 			for (y = 0; y < term->row; ++y) {
-				tsetchar('E', &term->c.attr, x, y);
+				tsetchar('E', &term->cursor.attr, x, y);
 			}
 		}
 	}
@@ -839,10 +839,10 @@ void tcontrolcode(uchar ascii) {
 			tputtab(1);
 			return;
 		case '\b': /* BS */
-			tmoveto(term->c.x - 1, term->c.y);
+			tmoveto(term->cursor.x - 1, term->cursor.y);
 			return;
 		case '\r': /* CR */
-			tmoveto(0, term->c.y);
+			tmoveto(0, term->cursor.y);
 			return;
 		case '\f': /* LF */
 		case '\v': /* VT */
@@ -868,7 +868,7 @@ void tcontrolcode(uchar ascii) {
 			term->charset = 1 - (ascii - '\016');
 			return;
 		case '\032': /* SUB */
-			tsetchar('?', &term->c.attr, term->c.x, term->c.y);
+			tsetchar('?', &term->cursor.attr, term->cursor.x, term->cursor.y);
 		case '\030': /* CAN */
 			csireset();
 			break;
@@ -891,7 +891,7 @@ void tcontrolcode(uchar ascii) {
 		case 0x87: /* TODO: ESA */
 			break;
 		case 0x88: /* HTS -- Horizontal tab stop */
-			term->tabs[term->c.x] = 1;
+			term->tabs[term->cursor.x] = 1;
 			break;
 		case 0x89: /* TODO: HTJ */
 		case 0x8a: /* TODO: VTS */
@@ -962,23 +962,23 @@ int eschandle(uchar ascii) {
 			term->esc |= ESC_ALTCHARSET;
 			return 0;
 		case 'D': /* IND -- Linefeed */
-			if (term->c.y == term->bot) {
+			if (term->cursor.y == term->bot) {
 				tscrollup(term->top, 1, 1);
 			} else {
-				tmoveto(term->c.x, term->c.y + 1);
+				tmoveto(term->cursor.x, term->cursor.y + 1);
 			}
 			break;
 		case 'E':      /* NEL -- Next line */
 			tnewline(1); /* always go to first col */
 			break;
 		case 'H': /* HTS -- Horizontal tab stop */
-			term->tabs[term->c.x] = 1;
+			term->tabs[term->cursor.x] = 1;
 			break;
 		case 'M': /* RI -- Reverse index */
-			if (term->c.y == term->top) {
+			if (term->cursor.y == term->top) {
 				tscrolldown(term->top, 1, 1);
 			} else {
-				tmoveto(term->c.x, term->c.y - 1);
+				tmoveto(term->cursor.x, term->cursor.y - 1);
 			}
 			break;
 		case 'Z': /* DECID -- Identify Terminal */
@@ -1042,7 +1042,7 @@ void tresize(int col, int row) {
 	 * tscrollup would work here, but we can optimize to
 	 * memmove because we're freeing the earlier lines
 	 */
-	for (i = 0; i <= term->c.y - row; i++) {
+	for (i = 0; i <= term->cursor.y - row; i++) {
 		free(term->line[i]);
 		free(term->alt[i]);
 		//free(term->helpscr[i]);
@@ -1076,13 +1076,13 @@ void tresize(int col, int row) {
 	if ( term->circledhist  ){
 		oldline = (term->histi+1 > HISTSIZE ) ? 0 : (term->histi+1);
 	}
-	term->c.attr.u = ' '; 
+	term->cursor.attr.u = ' '; 
 	dbg2(AC_YELLOW "oldline: %d  term->histi: %d  term->col: %d col: %d" AC_NORM,oldline,term->histi, term->col, col);
 #if 0
 
 	if ( oldline != term->histi ){
 		term->hist[newhist][newline] = xmalloc( col * sizeof(Glyph));
-		memset32( &term->hist[newhist][newline][mincol].intG, term->c.attr.intG, col-mincol );
+		memset32( &term->hist[newhist][newline][mincol].intG, term->cursor.attr.intG, col-mincol );
 	}
 
 	while (oldline!=term->histi) { // Didn't reach the end of the old history yet
@@ -1111,7 +1111,7 @@ void tresize(int col, int row) {
 					term->hist[newhist][newline] = xrealloc( 	term->hist[newhist][newline], col * sizeof(Glyph));
 				}
 				//dbg3("newline: %d",newline);
-				memset32( &term->hist[newhist][newline][mincol].intG, term->c.attr.intG, col-mincol );
+				memset32( &term->hist[newhist][newline][mincol].intG, term->cursor.attr.intG, col-mincol );
 			}
 			if ( oldcol == term->col ){// && !( ( oldcol>0 ) && (term->hist[oldhist][oldline][oldcol-1].mode & ATTR_WRAP )) ){
 				dbg3( "YY: newline: %d newcol: %d", newline, newcol );
@@ -1137,14 +1137,14 @@ void tresize(int col, int row) {
 			for (i = 0; i < t; i++) { // 
 				term->hist[(term->cthist)][i] = xrealloc(term->hist[term->cthist][i], term->colalloc * sizeof(Glyph));
 #ifndef UTF8
-				memset32( &term->hist[term->cthist][i][oldwidth].intG, term->c.attr.intG, term->colalloc-oldwidth );
-				//memset32( &term->hist[term->cthist][i][mincol].intG, term->c.attr.intG, term->colalloc-mincol );
+				memset32( &term->hist[term->cthist][i][oldwidth].intG, term->cursor.attr.intG, term->colalloc-oldwidth );
+				//memset32( &term->hist[term->cthist][i][mincol].intG, term->cursor.attr.intG, term->colalloc-mincol );
 				//for (j = mincol; j < col; j++) {
-				//		term->hist[term->cthist][i][j].intG = term->c.attr.intG;
+				//		term->hist[term->cthist][i][j].intG = term->cursor.attr.intG;
 				//}
 #else
 				for (j = mincol; j < term->colalloc; j++) {
-					term->hist[term->cthist][i][j] = term->c.attr;
+					term->hist[term->cthist][i][j] = term->cursor.attr;
 					term->hist[term->cthist][i][j].u = ' '; 
 					//append empty chars, if more cols than before
 				}
@@ -1212,9 +1212,9 @@ void tresize(int col, int row) {
 		/* reset scrolling region */
 		tsetscroll(0, row - 1);
 		/* make use of the LIMIT in tmoveto */
-		tmoveto(term->c.x, term->c.y);
+		tmoveto(term->cursor.x, term->cursor.y);
 		/* Clearing both screens (it makes dirty all lines) */
-		c = term->c;
+		c = term->cursor;
 		//for (i = 0; i < 2; i++) {
 			//if ( mincol < term->colalloc && !enlarge )
 			if (mincol < term->colalloc && 0 < minrow && enlarge) {
@@ -1226,7 +1226,7 @@ void tresize(int col, int row) {
 			//tswapscreen(); //xxx
 			//tcursor(CURSOR_LOAD);
 		//}
-		term->c = c;
+		term->cursor = c;
 
 #if 0
 		if ( p_help && ( tresize_rec == 0 ) ){ // need to resize the not displayed term as well

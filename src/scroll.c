@@ -125,7 +125,7 @@ void set_scrollmark(const Arg *a) {
 void set_retmark() {
 	if (term==p_alt) return;
 	//term->retmarks[0] = term->histi;//-term->scr;	
-	term->retmarks[0] = term->histi+ term->row - ( term->row - term->c.y );
+	term->retmarks[0] = term->histi+ term->row - ( term->row - term->cursor.y );
 	//updatestatus();
 	//printf("Setretmark: n:%d histi:%d scr:%d\n", 0, term->histi, term->scr );
 }
@@ -294,7 +294,7 @@ void tscrollup(int orig, int n, int copyhist) {
 }
 
 void tnewline(int first_col) {
-		int y = term->c.y;
+		int y = term->cursor.y;
 
 		//xxx
 		//printf("tnewline: %d, term->scr: %d  histi: %d\n",first_col, term->scr,term->histi );
@@ -303,17 +303,17 @@ void tnewline(int first_col) {
 		} else {
 				y++;
 		}
-		tmoveto(first_col ? 0 : term->c.x, y);
+		tmoveto(first_col ? 0 : term->cursor.x, y);
 		updatestatus();
 }
 
 void enterscroll(const Arg *a){
 	if (term==p_alt) return;
 		//set_scrollmark( a );
-		//printf("enterscroll: %d %d %d %d\n",term->histi,term->row,term->scr,term->c.y);
+		//printf("enterscroll: %d %d %d %d\n",term->histi,term->row,term->scr,term->cursor.y);
 		
 	// yyy
-		term->scrollmarks[0] = term->histi+ term->row - ( term->row - term->c.y );
+		term->scrollmarks[0] = term->histi+ term->row - ( term->row - term->cursor.y );
 		enterlessmode = term->row;
 		ttywrite("\n",1,1);
 }

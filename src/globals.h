@@ -76,7 +76,7 @@ typedef struct {
 	Line *line;                               /* screen */
 	Line *alt;                                /* alternate screen */
 	//Line *helpscr;                                /* help screen */
-	TCursor c;                                /* cursor */
+	TCursor cursor;                                /* cursor */
 	// TODO: strip cthist
 	int cthist; // current history, need 2cond buf for resizing
 	int row;                                  /* nb row */
