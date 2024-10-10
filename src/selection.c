@@ -103,9 +103,11 @@ void select_or_drawcursor(int selectsearch_mode, int type) {
 	if (selectsearch_mode & 1) {
 		selextend(term->c.x, term->c.y, type, done);
 		xsetsel(getsel());
-	} else {
-		xdrawcursor(term->c.x, term->c.y, term->line[term->c.y][term->c.x], term->ocx,
-				term->ocy, term->line[term->ocy][term->ocx]);
+	} else { // xxx need to 
+		xdrawcursor(term->c.x, term->c.y, TLINE(term->c.y)[term->c.x], term->ocx,
+				term->ocy, TLINE(term->ocy)[term->ocx]);
+
+		//xdrawcursor(term->c.x, term->c.y, term->line[term->c.y][term->c.x], term->ocx,
 	}
 }
 
