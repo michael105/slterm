@@ -829,6 +829,12 @@ int selected_codepage = 6;
 int selected_codepage = 2;
 #endif
 
+// number of saved scroll marks, set with enter.
+// needs to be a power of 2.
+// memory usage is RETMARKCOUNT*4 bytes,
+// and the is scanned linear when browsing to the marks.
+#define RETMARKCOUNT 512
+
 #endif
 
 #endif

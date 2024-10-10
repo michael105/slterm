@@ -149,10 +149,10 @@ void retmark(const Arg* a){
 		if ( term->scroll_retmark == ((term->current_retmark)&(RETMARKCOUNT-1)) ||
 				(term->retmarks[t]==0 && term->retmarks[term->scroll_retmark] == 0 )  )
 			term->scroll_retmark = t;
-			
-
 		term->scr=(term->histi-term->retmarks[term->scroll_retmark]);
 		*/
+
+		// scanning could be optimized. (skip, and divide..)
 		int b = 1;
 		for ( int t = (term->current_retmark +1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
 				t = (t+1) & ( RETMARKCOUNT-1 ) ){
