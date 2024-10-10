@@ -196,6 +196,7 @@ All	 Shift              	 BackSpace  	 retmark 	\n\r\
 All	 Shift              	 Down       	 kscrolldown 	\n\r\
 All	 Shift              	 End        	 scrolltobottom 	\n\r\
 All	 Shift              	 Home       	 scrolltotop 	\n\r\
+All	 Shift              	 ISO_Left_Tab 	 retmark 	\n\r\
 All	 Shift              	 Insert     	 selpaste 	\n\r\
 All	 Shift              	 Page_Down  	 kscrolldown 	\n\r\
 All	 Shift              	 Page_Up    	 kscrollup 	\n\r\
@@ -228,8 +229,10 @@ Less	 All                	 Escape     	 lessmode_toggle 	\n\r\
 Less	 All                	 Home       	 scrolltotop 	\n\r\
 Less	 All                	 Page_Down  	 kscrolldown 	\n\r\
 Less	 All                	 Page_Up    	 kscrollup 	\n\r\
+Less	 All                	 Tab        	 retmark 	\n\r\
 Less	 All                	 Up         	 kscrollup 	\n\r\
 Less	 All                	 q          	 lessmode_toggle 	\n\r\
+Less	 All                	 space      	 kscrolldown 	\n\r\
 Less	 Shift              	 Return     	 lessmode_toggle 	\n\r\
 \n\r\
 \n\r\

@@ -74,18 +74,16 @@ void tnew(int col, int row) {
 		p_term = term;
 	term->cursor = (TCursor){.attr = {.fg = defaultfg, .bg = defaultbg}};
 
-	// might be buggy. fix this!
-	// works flawless at arch.
-	// crashes at gentoo. quite seldom.
-	// guessing the problem is here.
 	term->hist[0] = xmalloc( col * sizeof(Glyph));
 	memset(term->hist[0],0, col * sizeof(Glyph));
 
-	term->colalloc=0;
-	//term->hist[0] = xmalloc( col * sizeof(Glyph));
+	term->colalloc = 0;
+
+	term->scroll_retmark = 1;
+	term->current_retmark = 0;
 
 	term->guard=0xf0f0f0f0;
-	tresize(col, row);
+	tresize(col,row);
 	treset();
 }
 

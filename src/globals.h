@@ -96,7 +96,10 @@ typedef struct {
 	int icharset;                             /* selected charset for sequence */
 	int *tabs;
 	int scrollmarks[12];
-	int retmarks[10];
+#define RETMARKCOUNT 256  // needs to be a power of 2
+	int retmarks[RETMARKCOUNT];
+	int current_retmark; // current retmark. retmarks are stored circular.
+	int scroll_retmark; // to which retmark was scrolled
 
 	char circledhist;
 } Term;

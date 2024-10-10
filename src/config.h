@@ -380,6 +380,7 @@ BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS ),
+BIND( XK_ANY_MOD, XK_space, kscrolldown, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS ),
 
@@ -444,7 +445,10 @@ BIND( ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
 	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES ),
 
 BIND( ShiftMask, XK_BackSpace, retmark , { },ALLMODES ),
+BIND( ShiftMask, XK_ISO_Left_Tab, retmark, {}, ALLMODES ), // tab left <- to enter lessmode
 BIND( XK_ANY_MOD,XK_BackSpace, retmark , { },MODE_LESS ),
+BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=1 },MODE_LESS ), // tab -> to scroll down
+	// tab left or backspace and right cycle between set retmarks.
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
