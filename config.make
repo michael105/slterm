@@ -13,7 +13,7 @@ FULLDEBUG := 0
 
 
 # version
-VERSION := 0.98
+VERSION := 0.99rc1
 
 # Set to 1 enable Xresource configuration
 # (in addition, slterm has to be started with the option "-x on")
@@ -28,13 +28,13 @@ HISTSIZEBITS := 14
 #HISTSIZEBITS = 6
 
 # opt Flag. -O2 might be save, -O3 sometimes gives troubles
-#OPT_FLAG := -Os 
-OPT_FLAG = -g
+OPT_FLAG := -Os 
+#OPT_FLAG = -g
 
 # Linker Flags
-LINKER_FLAG = -g
+#LINKER_FLAG = -g
 # Strip
-#LINKER_FLAG := -Os -s 
+LINKER_FLAG := -Os -s 
 
 # paths
 PREFIX := /usr/local
