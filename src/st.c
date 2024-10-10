@@ -58,6 +58,9 @@ void tty_send_unicode(const Arg *arg){
 	ttywrite(&c, 1, 1); 
 }
 
+static CSIEscape csiescseq;
+static STREscape strescseq;
+static int tresize_rec = 0;
 
 
 // initiate new terminal window and buffers
@@ -140,13 +143,19 @@ void treset(void) {
 }
 
 
-int tisaltscr(void) { return IS_SET(MODE_ALTSCREEN); }
+int tisaltscr(void) { 
+	
+	return IS_SET(MODE_ALTSCREEN); 
+}
 
-// display alt screen (swap)
+// show alt screen (swap)
 void tswapscreen(void) {
 	SWAPp( term->line, term->alt ); //xxx
 	term->mode ^= MODE_ALTSCREEN; //xxx
 	tfulldirt();
+
+
+
 }
 
 void inverse_screen(){
