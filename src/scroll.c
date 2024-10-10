@@ -307,9 +307,12 @@ void tnewline(int first_col) {
 
 void enterscroll(const Arg *a){
 	if (term==p_alt) return;
-		//printf("enterscroll\n");
 		//set_scrollmark( a );
-		term->scrollmarks[0] = term->histi+term->row;
+		//printf("enterscroll: %d %d %d\n",term->histi,term->row,term->scr);
+		if ( term->histi == 0 )
+			term->scrollmarks[0] = 0;
+		else 
+			term->scrollmarks[0] = term->histi+term->row -1;
 		enterlessmode = term->row;
 		ttywrite("\n",1,1);
 }
