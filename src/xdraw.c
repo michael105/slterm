@@ -321,7 +321,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	Color *col;
 
 	// hide cursor in lessmode
-	if (inputmode&MODE_LESS)
+	if (inputmode&MODE_LESS && !(win.mode & MODE_KBDSELECT))
 		return;
 
 	/* remove the old cursor */

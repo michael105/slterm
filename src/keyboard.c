@@ -137,6 +137,8 @@ void sort_shortcuts(){
 					*l1^=*l2; 
 					l1++; l2++;
 				} */ // doesnt work. ??? :( finally. my processor is faulty. 
+					  // (misc 24) - there seems to be a bug with the order of instruction execution
+					  // did have more trouble, also with rep mov et al
 				pt++;
 			}
 	};

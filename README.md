@@ -21,8 +21,9 @@
    * Several performance and memory related modifications;
      slterm might be the fastest available terminal emulators for X
    * secure mode, option -X: lock all pages into memory, prevent swapping
-	* Gradient custom color palette for colors 0..16 
-	  (and 0..7, with attributes normal, bold, faint, bold_faint)
+	* Gradient custom 32 color palette for colors 0..7
+	  (0..7 with attributes normal, bold, faint, bold_faint)
+	  and the first 16 background colors.
 
 
 Statically linked binary, with all runtime dependencies (3.5M)
@@ -92,9 +93,7 @@ Statically linked binary, with all runtime dependencies (3.5M)
   The 256 colors map follows the xterm standard, with the difference 
   of more contrast with faint and bold_faint attributes.
 
-  Truecolor is there as well.	
-
-  Combining blink and inverse attributes does blinking inverse. (wonderful)
+  Combining blink and inverse attributes does blinking by reversing. (wonderful)
   > echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n' 
 
 
@@ -106,7 +105,7 @@ Statically linked binary, with all runtime dependencies (3.5M)
 
 `Ctrl+F1`
    
-    Show the (outdated) reference of keybindings
+    Show inline help, and the reference of keybindings
     `Anymod` can be any combination of modification keys (Ctrl, Alt,..)
     Added to show the internal help, also when e.g. F1 has been
 	 bound to the window manager
@@ -245,17 +244,21 @@ If you'd like to change anything, please edit config.h and config.make
 
 ### Bugs
 
-The history ringbuffer could get problematic and scroll to wrong locations in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so this is not at the top of the todo list)
-
-UTF-8 currently might need some work.
+UTF-8 currently would need some work.
 Me, I don't need it. And I don't really like the idea of having up to 4 Bytes per Rune.
 It's quite simple to add another chartable, if needed, and
 im- and export files via tools/cpfilter or iconv. 
 
-Crashes sometimes under unknown circumstances when using the alternate screen mode. (man pager, less)
+When scrolled an entering selection mode, wrong chars will be written
+onto the screen via cursor movement.
 
+
+#### fixed:
+
+crashes with the alt screen
 
 ====================
+
 
 
 (misc 2020-2023 - misc xx  at posteo.net / replace xx with 4+3 )

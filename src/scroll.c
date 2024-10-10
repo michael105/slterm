@@ -323,7 +323,7 @@ void leavescroll(const Arg *a){
 // Argument Arg.i is one of LESSMODE_ON, LESSMODE_OFF, LESSMODE_TOGGLE
 // can be or'ed with SCROLL (all definitions), then scrolls also
 void lessmode_toggle(const Arg *a){
-	if (term==p_alt) return;
+	if (term!=p_term) return;
 
 	switch( a->i & LESSMODEMASK ){
 		case LESSMODE_ON:
