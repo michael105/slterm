@@ -171,8 +171,8 @@ void tscrolldown(int orig, int n, int copyhist) {
 			printf("RETURN\n"); // xxx
 			//return;
 		}
-		LIMIT(n, 0, term->bot - orig ); //xxx
-		//LIMIT(n, 0, term->bot - orig + 1);
+		//LIMIT(n, 0, term->bot - orig ); //xxx
+		LIMIT(n, 0, term->bot - orig + 1);
 
 		if (copyhist) {
 				//term->histi = (term->histi - 1 ) & ~(HISTSIZE-1); //xxx
@@ -206,8 +206,8 @@ void tscrollup(int orig, int n, int copyhist) {
 		int i;
 
 		printf("===== tscrollup, orig:%d n:%d , histi: %d  scr: %d copyhist: %d \n",orig,n, term->histi, term->scr, copyhist);
-		LIMIT(n, 0, term->bot - orig ); //xxx
-		//LIMIT(n, 0, term->bot - orig + 1);
+		//LIMIT(n, 0, term->bot - orig ); //xxx
+		LIMIT(n, 0, term->bot - orig + 1);
 
 		if (copyhist) {
 				dbg2("term->histi: %d\n", term->histi);
