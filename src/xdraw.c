@@ -324,13 +324,11 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	if (inputmode&MODE_LESS && !(win.mode & MODE_KBDSELECT))
 		return;
 
-	printf("xdrawcursor: %d %d, %d %d, %d\n",cx,cy,ox,oy, term->scr);
-		//cy+=term->scr;
-		//oy+=term->scr;
+	//printf("xdrawcursor: %d %d, %d %d, %d\n",cx,cy,ox,oy, term->scr);
+	
 	/* remove the old cursor */
 	if (selected(ox, oy))
 		og.mode ^= ATTR_REVERSE;
-	//og.mode ^= ATTR_BLINK;
 	
 	xdrawglyph(og, ox, oy);
 
