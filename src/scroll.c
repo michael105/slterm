@@ -124,7 +124,8 @@ void set_scrollmark(const Arg *a) {
 
 void set_retmark() {
 	if (term==p_alt) return;
-	term->retmarks[0] = term->histi;//-term->scr;	
+	//term->retmarks[0] = term->histi;//-term->scr;	
+	term->retmarks[0] = term->histi+ term->row - ( term->row - term->c.y );
 	//updatestatus();
 	//printf("Setretmark: n:%d histi:%d scr:%d\n", 0, term->histi, term->scr );
 }
@@ -140,7 +141,8 @@ void retmark(const Arg* a){
 			return;
 	}
 
-	term->scr=(term->histi-term->retmarks[0])-term->row+1;
+	term->scr=(term->histi-term->retmarks[0]);
+	//term->scr=(term->histi-term->retmarks[0])-term->row+1;
 	//printf("scr: %d\n", term->scr );
 	if ( term->scr<0 ){
 			// TODO: circledhist
@@ -308,11 +310,10 @@ void tnewline(int first_col) {
 void enterscroll(const Arg *a){
 	if (term==p_alt) return;
 		//set_scrollmark( a );
-		//printf("enterscroll: %d %d %d\n",term->histi,term->row,term->scr);
-		if ( term->histi == 0 )
-			term->scrollmarks[0] = 0;
-		else 
-			term->scrollmarks[0] = term->histi+term->row -1;
+		//printf("enterscroll: %d %d %d %d\n",term->histi,term->row,term->scr,term->c.y);
+		
+	// yyy
+		term->scrollmarks[0] = term->histi+ term->row - ( term->row - term->c.y );
 		enterlessmode = term->row;
 		ttywrite("\n",1,1);
 }
