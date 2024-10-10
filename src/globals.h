@@ -7,6 +7,14 @@
 // There might be globals left within other source files,
 // todo: keep them together here.
 
+
+// number of saved scroll marks, set with enter.
+// needs to be a power of 2.
+// memory usage is RETMARKCOUNT*4 bytes,
+// and the is scanned linear when browsing to the marks.
+#define RETMARKCOUNT 512
+
+
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned long ulong;
