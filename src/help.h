@@ -88,19 +88,21 @@ scrollmarks and lessmode are disabled.\n\r\
 \n\r\
 [1m[4m[01;32mLessmode:[0;0m\n\r\
 \n\r\
-  Ctrl+Shift + Up/PageUp/l: Enter lessmode. \n\r\
+  Ctrl+Shift + Up/PageUp/l, ScrollLock:  Enter lessmode. \n\r\
   Scroll around with cursor keys, Home, End.\n\r\
-  Backspace goes to the location of the last command in shell.\n\r\
+  Backspace/Tab left go to the location of the previous command in shell,\n\r\
+  Tab scrolls down to the next entered command location.\n\r\
   Exit with q/ESC\n\r\
 \n\r\
-  Shift+Backspace: Scroll to the location of the last entered command,\n\r\
+  Shift+Backspace/Tab left: Scroll to the location of the last entered command,\n\r\
     enter lessmode\n\r\
 \n\r\
   Shift+Enter: Execute command, enter lessmode when more than\n\r\
     one screen is displayed by the command.\n\r\
 \n\r\
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9\n\r\
-             [0..9]: Goto Scrollmark 0 - 9\n\r\
+      Ctrl + [0..9]: Goto Scrollmark 0 - 9\n\r\
+  Lessmode:  [0..9]: Goto Scrollmark 0 - 9\n\r\
 \n\r\
 \n\r\
 \n\r\

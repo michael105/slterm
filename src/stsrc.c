@@ -34,6 +34,7 @@
 #include "statusbar.c"
 #include "arg.c"
 #include "st.c"
+#include "controlchars.c"
 #include "charmaps.c"
 // termdraw needs to go after st.c .?
 // otherweise delete and cursor keys do make trouble.

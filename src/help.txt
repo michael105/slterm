@@ -59,7 +59,7 @@ ${BOLD}Scrollmarks:$N
 
 $BOLD${UL}${LGREEN}Lessmode:$N
 
-  Ctrl+Shift + Up/PageUp/l: Enter lessmode. 
+  Ctrl+Shift + Up/PageUp/l, ScrollLock:  Enter lessmode. 
   Scroll around with cursor keys, Home, End.
   Backspace/Tab left go to the location of the previous command in shell,
   Tab scrolls down to the next entered command location.

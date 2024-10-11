@@ -13,7 +13,7 @@
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 
-// Config options, C-Style syntax below
+// Config options
 
 // font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
 // defaultfont 
@@ -127,7 +127,7 @@ static const char *colorname[] = {
     "#cccccc", "#2e3440",
 };
 
-/* The table of the first 8 (32) colors. 
+/* The table of the first 8 (32) colors, numbered 30..37
 	 Names are defined by xorg, and (should be) conformant with css names.
 	 a table of colornames is in doc/colornames.html, and colornames_gray.html.
  RGB in hexadecimal (#RRGGBB) is also possible.
@@ -139,7 +139,7 @@ static const char *colorname[] = {
  > echo -e "\e[33;1m Text" shows text in red (bold)
  > echo -e "\e[33;1;2m Text" shows text in red (bold_faint)
  (30-37 is foreground,40-47 background color, according to 0..7)
- foregroundcolor 8-15 gets color 0-7, bold.
+ foregroundcolor 8-15 (90..97) gets color 0-7, bold.
 
  colors 16 - 255 are colors used from xterm and calculated in colors.c/xdraw.c
   the algorithm to display faint and bold_faint colors is slightly modified
@@ -167,7 +167,7 @@ static const char* colortablenames[8][4] = {
 
 };
 
-// the background colornames (40..47, and "\e[48;5;0..15m" )
+// background colors (40..47, and 100..107 )
 static const char* bgcolornames[16] = { 
 
 	"black", "DarkRed", "Green4", "saddlebrown", 
@@ -217,6 +217,7 @@ static int ignoreselfg = 1;
  * 6: Bar ("|")
  * 7: Block, and (X)
  * 8: double underline
+ * 9: empty block
  */
 unsigned int cursorshape = 4;
 
@@ -340,6 +341,20 @@ static MouseShortcut mshortcuts[] = {
 #define SETFONTMASK ShiftMask|Mod1Mask
 
 
+/*
+ The table of bound shortcuts and keys
+ Can be changed. 
+ The key names are in the according header file of xorg,
+ here: /usr/include/X11/keysymdef.h 
+ 
+ The first matching binding will be used,
+ the table is matched in its order here.
+ e.g.
+ Match Shift + PageUp
+ Match PageUp
+ 
+ 
+ */
 
 #ifndef extract_keyref
 Shortcut shortcuts[] = {
@@ -762,26 +777,6 @@ static uint selmasks[] = {
     [SEL_RECTANGULAR] = Mod1Mask,
 };
 
-/*
- * Printable characters in ASCII, used to estimate the advance width
- * of single wide characters.
- */
-#ifdef UTF8
-static char ascii_printable[]
-    = " !\"#$%&'()*+,-./0123456789:;<=>?"
-      "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
-      "`abcdefghijklmnopqrstuvwxyz{|}~";
-#else
-// no utf8, but using cp1250 (extended ascii)
-static char ascii_printable[]
-    = " !\"#$%&'()*+,-./0123456789:;<=>?"
-      "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
-      "`abcdefghijklmnopqrstuvwxyz{|}~"
-			"¡¢£¤¥¦§¨©ª«¬­®¯°±²³/µ¶·¸¹º»¼½¾¿À"
-			"ÁÂÃ}ÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕ{×ØÙÚÛ%İŞßà"
-			"áâã]åæçèéêëìíîï"
-			"ğñòóôõ[÷øùúû$ışÿ";
-
 
 // select codepages
 // can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
@@ -830,8 +825,6 @@ int selected_codepage = 6;
 int selected_codepage = 2;
 #endif
 
-
-#endif
 
 #endif
 

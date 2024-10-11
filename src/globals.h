@@ -118,3 +118,30 @@ extern Term *p_alt;
 
 
 
+
+/*
+Printable characters in ASCII, used to estimate the advance width
+of single wide characters.
+
+ */
+#ifdef UTF8
+static char ascii_printable[]
+    = " !\"#$%&'()*+,-./0123456789:;<=>?"
+      "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
+      "`abcdefghijklmnopqrstuvwxyz{|}~";
+#else
+// no utf8, but using cp1250 (extended ascii)
+static char ascii_printable[]
+    = " !\"#$%&'()*+,-./0123456789:;<=>?"
+      "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
+      "`abcdefghijklmnopqrstuvwxyz{|}~"
+			"¡¢£¤¥¦§¨©ª«¬­®¯°±²³/µ¶·¸¹º»¼½¾¿À"
+			"ÁÂÃ}ÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕ{×ØÙÚÛ%İŞßà"
+			"áâã]åæçèéêëìíîï"
+			"ğñòóôõ[÷øùúû$ışÿ";
+#endif
+
+
+
+
+
