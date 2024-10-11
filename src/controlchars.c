@@ -7,9 +7,9 @@ static CSIEscape csiescseq;
 static STREscape strescseq;
 
 
-int handle_controlchars( Rune u, uint len, char* decoded_char ){
+int handle_controlchars( Rune u, uint decoded_len, char* decoded_char ){
 
-	if (term->esc & ESC_STR) {
+	if (term->esc & ESC_STR) { // within a esc sequence
 		if (u == '\a' || u == 030 || u == 032 || u == 033 || ISCONTROLC1(u)) {
 			term->esc &= ~(ESC_START | ESC_STR | ESC_DCS);
 			if (IS_SET(MODE_SIXEL)) {
@@ -29,7 +29,7 @@ int handle_controlchars( Rune u, uint len, char* decoded_char ){
 			term->mode |= MODE_SIXEL;
 		}
 
-		if (strescseq.len + len >= strescseq.siz) {
+		if (strescseq.len + decoded_len >= strescseq.siz) {
 			/*
 			 * Here is a bug in terminals. If the user never sends
 			 * some code to stop the str or esc command, then st
@@ -58,8 +58,8 @@ int handle_controlchars( Rune u, uint len, char* decoded_char ){
 			strescseq.buf = xrealloc(strescseq.buf, strescseq.siz);
 		}
 
-		memmove(&strescseq.buf[strescseq.len], decoded_char, len);
-		strescseq.len += len;
+		memmove(&strescseq.buf[strescseq.len], decoded_char, decoded_len);
+		strescseq.len += decoded_len;
 		return(1);
 	}
 

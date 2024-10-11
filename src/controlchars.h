@@ -4,14 +4,13 @@
 
 #pragma once
 
-#define ISCONTROLC0(c) (BETWEEN(c, 0, 0x1f) || (c) == 0x7f) // 0x7f = delete who tf did write '\177'??
-//#define ISCONTROLC1(c) (BETWEEN(c, 0x80, 0x9f))
-//#define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
+#define ISCONTROLC0(c) (BETWEEN(c, 0, 0x1f) || (c) == 0x7f) // 0x7f = delete
 
+//#define ISCONTROLC1(c) (BETWEEN(c, 0x80, 0x9f))
+#define ISCONTROLC1(c) (0)
 
 #define ISCONTROL(c) ((c <= 0x1f) || (c==0x7f))
-
-#define ISCONTROLC1(c) (0)
+//#define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
 //#define ISCONTROL(c) (0)
 
 
