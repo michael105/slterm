@@ -210,7 +210,8 @@ void tputc(Rune u) {
 							// I added the error msg. And changed the maximum size to an
 							// IMHO more reasonable value.
 							// Users might like to be told about problems 
-							fprintf(stderr,"ESC Sequence too long\n"); 
+							// (addendum. worse: the buffers are defined with 8*128 Bytes.(!!)
+							fprintf(stderr,"ESC Sequence too long, exceeding 8kB\n"); 
 							return;
 						}
 						strescseq.siz *= 2;

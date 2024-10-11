@@ -21,6 +21,31 @@ typedef unsigned long ulong;
 typedef unsigned short ushort;
 
 
+// ascii needs the whole 256 char table, 
+// therefore unsigned chars
+#ifdef UTF8
+
+// silence quirky cpp warnings ("quirky". .. misc24. Hopefully fixed that.)
+#define utfchar char
+#define UTF_SIZ 4
+#define UTF_INVALID 0xFFFD
+
+#else
+
+#define utfchar unsigned char
+#define UTF_INVALID 0xff
+#define UTF_SIZ 1
+
+#endif
+
+
+
+#define ESC_BUF_SIZ (128 * UTF_SIZ)
+#define ESC_ARG_SIZ 16
+#define STR_BUF_SIZ ESC_BUF_SIZ
+#define STR_ARG_SIZ ESC_ARG_SIZ
+
+
 extern char* argv0;
 
 typedef XftColor Color;

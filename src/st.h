@@ -13,14 +13,6 @@
 
 /* macros */
 
-// ascii needs the whole 256 char table, 
-// therefore unsigned chars
-#ifdef UTF8
-#define utfchar char
-#else
-#define utfchar unsigned char
-#endif
-
 
 #if (__SIZEOF_POINTER__==8)
 #define POINTER unsigned long
@@ -28,7 +20,7 @@
 #if (__SIZEOF_POINTER__==4)
 #define POINTER unsigned int
 #else
-#error
+#error 
 #endif
 #endif
 
@@ -67,26 +59,6 @@
 
 #define HISTSIZE (1<<HISTSIZEBITS)
 
-/* Arbitrary sizes */
-
-#define UTF_SIZ 4
-#define UTF_INVALID 0xFFFD
-//#define utfchar char
-
-// silence quirky cpp warnings
-#ifndef UTF8
-#undef UTF_INVALID
-#define UTF_INVALID 0xff
-#undef UTF_SIZ
-#define UTF_SIZ 1
-#undef utfchar
-#define utfchar unsigned char
-#endif
-
-#define ESC_BUF_SIZ (128 * UTF_SIZ)
-#define ESC_ARG_SIZ 16
-#define STR_BUF_SIZ ESC_BUF_SIZ
-#define STR_ARG_SIZ ESC_ARG_SIZ
 
 #define IMODE_HELP 0x04
 
