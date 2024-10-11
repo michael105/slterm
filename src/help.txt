@@ -77,7 +77,7 @@ $BOLD${UL}${LGREEN}Lessmode:$N
 
 $BOLD${UL}${LGREEN}Selection Mode:$N
 
-  Ctrl+Shift + S: Enter selection mode
+  Ctrl+Shift + S, Alt + S: Enter selection mode
 
   There are 3 submodes in selection mode:
     - move mode : to set the start of the selection;
@@ -89,14 +89,19 @@ $BOLD${UL}${LGREEN}Selection Mode:$N
  
  h, j, k, l:    move cursor left/down/up/right (also with arrow keys)
  !, _, *:       move cursor to the middle of the line/column/screen
- Backspace, $:  move cursor to the beginning/end of the line
+ Backspace,Home move cursor to the beginning of line
+ $,End          move cursor to end of line
  PgUp, PgDown:  move cursor to the beginning/end of the column
- Home, End:     move cursor to the top/bottom left corner of the screen
+ g, G:          move cursor to the top/bottom left corner of the screen
+
+ y:             In move mode, select the current line.
+                In select mode, copy the selection to the clipboard, quit selection
+					 (yy means yank the current line)
  /, ?:          activate input mode and search up/down
  n, N:          repeat last search, up/down
- s:             toggle move/selection mode
+ s,v:           toggle move/selection mode
  t:             toggle regular/rectangular selection type
- Return:        quit keyboard_select, keeping the highlight of the selection
+ Return:        quit keyboard_select, copy selection to clipboard
  Escape:        quit keyboard_select
  
  With h,j,k,l (also with arrow keys), you can use a quantifier.

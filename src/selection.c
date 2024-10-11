@@ -441,6 +441,15 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			set_notifmode(15, ksym);
 			selectsearch_mode ^= 2;
 			break;
+		case XK_y:
+			if ( selectsearch_mode == 0 ){
+				selstart(0,term->cursor.y,0);
+				set_notifmode(selectsearch_mode = 1, ksym);
+				selextend(term->col-1, term->cursor.y, type, 0);
+				xsetsel(getsel());
+				break;
+			}
+			goto L_XK_Return;
 		case XK_q:
 		case XK_Escape:
 			if (!in_use) {
@@ -448,11 +457,12 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			}
 			selclear();
 		case XK_Return:
+			L_XK_Return:
 			set_notifmode(4, ksym);
 			term->cursor.x = cu.x, term->cursor.y = cu.y;
 			select_or_drawcursor(selectsearch_mode = 0, type);
 			in_use = quant = 0;
-			xsetxursor( sel_savedcursor );
+			xsetcursor( sel_savedcursor );
 			return MODE_KBDSELECT;
 		case XK_n:
 		case XK_N:
