@@ -202,8 +202,16 @@ void tputc(Rune u) {
 						 * term->esc = 0;
 						 * strhandle();
 						 */
-						if (strescseq.siz > (SIZE_MAX - UTF_SIZ) / 2) {
-								return;
+						//if (strescseq.siz > (SIZE_MAX - UTF_SIZ) / 2) {
+						if (strescseq.siz > 8192 ) {
+							// misc2024 How could a user fix that, when not being told? Eh??
+							// albite nowadays SIZE_MAX is defined here with 0xfffffff*4,
+							// why. anyways. The comment above might be about 30 years old.
+							// I added the error msg. And changed the maximum size to an
+							// IMHO more reasonable value.
+							// Users might like to be told about problems 
+							fprintf(stderr,"ESC Sequence too long\n"); 
+							return;
 						}
 						strescseq.siz *= 2;
 						strescseq.buf = xrealloc(strescseq.buf, strescseq.siz);

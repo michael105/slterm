@@ -8,6 +8,85 @@ static STREscape strescseq;
 
 
 
+void strparse(void) {
+	int c;
+	char *p = strescseq.buf;
+
+	strescseq.narg = 0;
+	strescseq.buf[strescseq.len] = '\0';
+
+	if (*p == '\0') {
+		return;
+	}
+
+	while (strescseq.narg < STR_ARG_SIZ) {
+		strescseq.args[strescseq.narg++] = p;
+		while ((c = *p) != ';' && c != '\0') {
+			++p;
+		}
+		if (c == '\0') {
+			return;
+		}
+		*p++ = '\0';
+	}
+}
+
+void strdump(void) {
+	size_t i;
+	uint c;
+
+	fprintf(stderr, "ESC%c", strescseq.type);
+	for (i = 0; i < strescseq.len; i++) {
+		c = strescseq.buf[i] & 0xff;
+		if (c == '\0') {
+			putc('\n', stderr);
+			return;
+		} else if (isprint(c)) {
+			putc(c, stderr);
+		} else if (c == '\n') {
+			fprintf(stderr, "(\\n)");
+		} else if (c == '\r') {
+			fprintf(stderr, "(\\r)");
+		} else if (c == 0x1b) {
+			fprintf(stderr, "(\\e)");
+		} else {
+			fprintf(stderr, "(%02x)", c);
+		}
+	}
+	fprintf(stderr, "ESC\\\n");
+}
+
+void strreset(void) {
+	strescseq = (STREscape){
+		.buf = xrealloc(strescseq.buf, STR_BUF_SIZ),
+			.siz = STR_BUF_SIZ,
+	};
+}
+
+
+
+void tstrsequence(uchar c) {
+	strreset();
+
+	switch (c) {
+		case 0x90: /* DCS -- Device Control String */
+			c = 'P';
+			term->esc |= ESC_DCS;
+			break;
+		case 0x9f: /* APC -- Application Program Command */
+			c = '_';
+			break;
+		case 0x9e: /* PM -- Privacy Message */
+			c = '^';
+			break;
+		case 0x9d: /* OSC -- Operating System Command */
+			c = ']';
+			break;
+	}
+	strescseq.type = c;
+	term->esc |= ESC_STR;
+}
+
 void csiparse(void) {
 	char *p = csiescseq.buf, *np;
 	long int v;
@@ -40,6 +119,29 @@ void csiparse(void) {
 }
 
 
+void csidump(void) {
+	size_t i;
+	uint c;
+
+	fprintf(stderr, "ESC[");
+	for (i = 0; i < csiescseq.len; i++) {
+		c = csiescseq.buf[i] & 0xff;
+		if (isprint(c)) {
+			putc(c, stderr);
+		} else if (c == '\n') {
+			fprintf(stderr, "(\\n)");
+		} else if (c == '\r') {
+			fprintf(stderr, "(\\r)");
+		} else if (c == 0x1b) {
+			fprintf(stderr, "(\\e)");
+		} else {
+			fprintf(stderr, "(%02x)", c);
+		}
+	}
+	putc('\n', stderr);
+}
+
+void csireset(void) { memset(&csiescseq, 0, sizeof(csiescseq)); }
 
 
 void csihandle(void) {
@@ -248,29 +350,6 @@ unknown:
 	}
 }
 
-void csidump(void) {
-	size_t i;
-	uint c;
-
-	fprintf(stderr, "ESC[");
-	for (i = 0; i < csiescseq.len; i++) {
-		c = csiescseq.buf[i] & 0xff;
-		if (isprint(c)) {
-			putc(c, stderr);
-		} else if (c == '\n') {
-			fprintf(stderr, "(\\n)");
-		} else if (c == '\r') {
-			fprintf(stderr, "(\\r)");
-		} else if (c == 0x1b) {
-			fprintf(stderr, "(\\e)");
-		} else {
-			fprintf(stderr, "(%02x)", c);
-		}
-	}
-	putc('\n', stderr);
-}
-
-void csireset(void) { memset(&csiescseq, 0, sizeof(csiescseq)); }
 
 void strhandle(void) {
 	char *p = NULL, *dec;
@@ -339,84 +418,6 @@ void strhandle(void) {
 	strdump();
 }
 
-void strparse(void) {
-	int c;
-	char *p = strescseq.buf;
-
-	strescseq.narg = 0;
-	strescseq.buf[strescseq.len] = '\0';
-
-	if (*p == '\0') {
-		return;
-	}
-
-	while (strescseq.narg < STR_ARG_SIZ) {
-		strescseq.args[strescseq.narg++] = p;
-		while ((c = *p) != ';' && c != '\0') {
-			++p;
-		}
-		if (c == '\0') {
-			return;
-		}
-		*p++ = '\0';
-	}
-}
-
-void strdump(void) {
-	size_t i;
-	uint c;
-
-	fprintf(stderr, "ESC%c", strescseq.type);
-	for (i = 0; i < strescseq.len; i++) {
-		c = strescseq.buf[i] & 0xff;
-		if (c == '\0') {
-			putc('\n', stderr);
-			return;
-		} else if (isprint(c)) {
-			putc(c, stderr);
-		} else if (c == '\n') {
-			fprintf(stderr, "(\\n)");
-		} else if (c == '\r') {
-			fprintf(stderr, "(\\r)");
-		} else if (c == 0x1b) {
-			fprintf(stderr, "(\\e)");
-		} else {
-			fprintf(stderr, "(%02x)", c);
-		}
-	}
-	fprintf(stderr, "ESC\\\n");
-}
-
-void strreset(void) {
-	strescseq = (STREscape){
-		.buf = xrealloc(strescseq.buf, STR_BUF_SIZ),
-			.siz = STR_BUF_SIZ,
-	};
-}
-
-
-
-void tstrsequence(uchar c) {
-	strreset();
-
-	switch (c) {
-		case 0x90: /* DCS -- Device Control String */
-			c = 'P';
-			term->esc |= ESC_DCS;
-			break;
-		case 0x9f: /* APC -- Application Program Command */
-			c = '_';
-			break;
-		case 0x9e: /* PM -- Privacy Message */
-			c = '^';
-			break;
-		case 0x9d: /* OSC -- Operating System Command */
-			c = ']';
-			break;
-	}
-	strescseq.type = c;
-	term->esc |= ESC_STR;
-}
 
 // misc: handle control chars
 // bin mode should go here.
