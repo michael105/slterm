@@ -6,8 +6,12 @@
 static CSIEscape csiescseq;
 static STREscape strescseq;
 
-
+#ifdef UTF8
 int handle_controlchars( Rune u, uint decoded_len, char* decoded_char ){
+#else
+int handle_controlchars( Rune u ){
+#define decoded_len 1
+#endif
 
 	if (term->esc & ESC_STR) { // within a esc sequence
 		if (u == '\a' || u == 030 || u == 032 || u == 033 || ISCONTROLC1(u)) {
@@ -58,7 +62,11 @@ int handle_controlchars( Rune u, uint decoded_len, char* decoded_char ){
 			strescseq.buf = xrealloc(strescseq.buf, strescseq.siz);
 		}
 
+#ifdef UTF8
 		memmove(&strescseq.buf[strescseq.len], decoded_char, decoded_len);
+#else
+		strescseq.buf[strescseq.len] = u;
+#endif
 		strescseq.len += decoded_len;
 		return(1);
 	}

@@ -46,6 +46,12 @@ typedef struct {
 
 
 
-int handle_controlchars( Rune u, uint len, char* decoded_char );
+#ifdef UTF8
+int handle_controlchars( Rune u, uint decoded_len, char* decoded_char );
+#else
+int _handle_controlchars( Rune u );
+#define handle_controlchars( _rune, ... ) _handle_controlchars( _rune )
+#endif
+
 
 
