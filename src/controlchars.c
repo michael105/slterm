@@ -1,6 +1,7 @@
 
 // handle control chars and sequences, ansi escape sequences.
 
+#include "controlchars.h"
 
 static CSIEscape csiescseq;
 static STREscape strescseq;

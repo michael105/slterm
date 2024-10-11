@@ -11,9 +11,6 @@ Term *p_alt=0;
 
 
 // st.c
-//static CSIEscape csiescseq;
-//static STREscape strescseq;
-//static int tresize_rec = 0;
 int borderpx;
 int enterlessmode;
 

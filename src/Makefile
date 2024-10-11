@@ -19,7 +19,7 @@ SRCO = base64 mem slterm tty x main  selection st  system utf8
 HEADER = st.h arg.h config.h utf8.h selection.h\
 				 includes.h debug.h x.h fonts.h xevent.h statusbar.h\
 				 xdraw.h termdraw.h charmaps.h mouse.h keyboard.h scroll.h\
-				 globals.h colors.h
+				 globals.h colors.h controlchars.h
 
 
 
