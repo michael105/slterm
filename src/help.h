@@ -106,7 +106,7 @@ scrollmarks and lessmode are disabled.\n\r\
 \n\r\
 [1m[4m[01;32mSelection Mode:[0;0m\n\r\
 \n\r\
-  Ctrl+Shift + S: Enter selection mode\n\r\
+  Ctrl+Shift + S, Alt + S: Enter selection mode\n\r\
 \n\r\
   There are 3 submodes in selection mode:\n\r\
     - move mode : to set the start of the selection;\n\r\
@@ -118,14 +118,19 @@ scrollmarks and lessmode are disabled.\n\r\
  \n\r\
  h, j, k, l:    move cursor left/down/up/right (also with arrow keys)\n\r\
  !, _, *:       move cursor to the middle of the line/column/screen\n\r\
- Backspace, $:  move cursor to the beginning/end of the line\n\r\
+ Backspace,Home move cursor to the beginning of line\n\r\
+ $,End          move cursor to end of line\n\r\
  PgUp, PgDown:  move cursor to the beginning/end of the column\n\r\
- Home, End:     move cursor to the top/bottom left corner of the screen\n\r\
+ g, G:          move cursor to the top/bottom left corner of the screen\n\r\
+\n\r\
+ y:             In move mode, select the current line.\n\r\
+                In select mode, copy the selection to the clipboard, quit selection\n\r\
+					 (yy means yank the current line)\n\r\
  /, ?:          activate input mode and search up/down\n\r\
  n, N:          repeat last search, up/down\n\r\
- s:             toggle move/selection mode\n\r\
+ s,v:           toggle move/selection mode\n\r\
  t:             toggle regular/rectangular selection type\n\r\
- Return:        quit keyboard_select, keeping the highlight of the selection\n\r\
+ Return:        quit keyboard_select, copy selection to clipboard\n\r\
  Escape:        quit keyboard_select\n\r\
  \n\r\
  With h,j,k,l (also with arrow keys), you can use a quantifier.\n\r\

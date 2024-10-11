@@ -61,17 +61,19 @@ $BOLD${UL}${LGREEN}Lessmode:$N
 
   Ctrl+Shift + Up/PageUp/l: Enter lessmode. 
   Scroll around with cursor keys, Home, End.
-  Backspace goes to the location of the last command in shell.
+  Backspace/Tab left go to the location of the previous command in shell,
+  Tab scrolls down to the next entered command location.
   Exit with q/ESC
 
-  Shift+Backspace: Scroll to the location of the last entered command,
+  Shift+Backspace/Tab left: Scroll to the location of the last entered command,
     enter lessmode
 
   Shift+Enter: Execute command, enter lessmode when more than
     one screen is displayed by the command.
 
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
-             [0..9]: Goto Scrollmark 0 - 9
+      Ctrl + [0..9]: Goto Scrollmark 0 - 9
+  Lessmode:  [0..9]: Goto Scrollmark 0 - 9
 
 
 
