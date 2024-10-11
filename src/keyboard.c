@@ -88,11 +88,6 @@ int kmap(KeySym k, uint state) {
 	return(0);
 }
 
-
-void keyboard_select(const Arg *dummy) {
-	win.mode ^= trt_kbdselect(-1, NULL, 0);
-}
-
 // sort the shortcuts, 
 // to be able to abort scanning through all of them for each key
 // gets callen at startup

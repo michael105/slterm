@@ -501,6 +501,45 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 						win.vborderpx + (cy) * win.ch, cursorthickness, win.ch);
 				break;
+			case 9: // empty block, unfilled
+					if ( g.bg == defaultbg ){
+						col = &dc.col[defaultcs];
+					} else {
+						if ( !( col = getcachecolor( 2, &g, win.mode ) ) ){
+						col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+
+						// invert bgcolor
+						XRenderColor csc;
+//#define ASB(c) csc.c = 0xff-col->color.c //~col->color.c
+#define ASB(c) csc.c = ~col->color.c
+						ASB(red);ASB(green);ASB(blue);
+#undef ASB
+						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+						cachecolor(2,&g,win.mode,&drawcol);
+						col = &drawcol;
+						}
+					}
+					// upper line
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+							win.vborderpx + cy * win.ch, win.cw - 1, 1);
+
+					// lines at sides
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+							win.vborderpx + cy * win.ch, 1, win.ch);
+					//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
+							win.vborderpx + cy * win.ch, 1, win.ch);
+					//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+					// lower cursor part
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+							(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
+					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
+							win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+							win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
+
+
+				break;
 		}
 	} else { // window hasn't the focus. 
 				//g.fg = unfocusedrcs;

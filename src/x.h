@@ -57,6 +57,7 @@ void xloadcolors(void);
 int xsetcolorname(int, const char *);
 void xsettitle(char *);
 int xsetcursor(int);
+int xgetcursor();
 void xsetmode(int, unsigned int);
 void xsetpointermotion(int);
 void xximspot(int, int);

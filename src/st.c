@@ -82,7 +82,7 @@ void tnew(int col, int row) {
 	term->scroll_retmark = 1;
 	term->current_retmark = 0;
 
-	term->guard=0xf0f0f0f0;
+	term->guard = 0xf0f0f0f0;
 	tresize(col,row);
 	treset();
 }

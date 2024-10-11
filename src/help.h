@@ -147,6 +147,7 @@ Mode\t Modifiers\t\t Key\t\t Function\t Info\n\r\
 All	 All                	 Break      	 sendbreak 	\n\r\
 All	 All                	 Print      	 printsel 	\n\r\
 All	 All                	 Scroll_Lock 	 lessmode_toggle 	\n\r\
+All	 Alt                	 s          	 keyboard_select 	\n\r\
 All	 Control            	 0          	 scrollmark 	\n\r\
 All	 Control            	 1          	 scrollmark 	\n\r\
 All	 Control            	 2          	 scrollmark 	\n\r\

@@ -1,6 +1,7 @@
 All	 All                	 Break      	 sendbreak 	
 All	 All                	 Print      	 printsel 	
 All	 All                	 Scroll_Lock 	 lessmode_toggle 	
+All	 Alt                	 s          	 keyboard_select 	
 All	 Control            	 0          	 scrollmark 	
 All	 Control            	 1          	 scrollmark 	
 All	 Control            	 2          	 scrollmark 	

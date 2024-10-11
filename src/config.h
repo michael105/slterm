@@ -394,6 +394,7 @@ BIND( TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES ),
 BIND( TERMMOD, XK_Y, selpaste, {.i = 0},ALLMODES ),
 BIND( ShiftMask, XK_Insert, selpaste, {.i = 0},ALLMODES ),
 BIND( TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES ),
+BIND( Mod1Mask, XK_s, keyboard_select, { 0 },ALLMODES ),
 
 BIND( TERMMOD, XK_Num_Lock, numlock, {.i = 0},ALLMODES ),
 
