@@ -4,6 +4,24 @@
 
 #pragma once
 
+#define ISCONTROLC0(c) (BETWEEN(c, 0, 0x1f) || (c) == 0x7f) // 0x7f = delete who tf did write '\177'??
+//#define ISCONTROLC1(c) (BETWEEN(c, 0x80, 0x9f))
+//#define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
+
+
+#define ISCONTROL(c) ((c <= 0x1f) || (c==0x7f))
+
+#define ISCONTROLC1(c) (0)
+//#define ISCONTROL(c) (0)
+
+
+
+
+#define ESC_BUF_SIZ (256 * UTF_SIZ) // UTF_SIZ is 4 with utf8, 1 without
+#define ESC_ARG_SIZ 16
+#define STR_BUF_SIZ ESC_BUF_SIZ
+#define STR_ARG_SIZ ESC_ARG_SIZ
+
 
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
@@ -29,5 +47,6 @@ typedef struct {
 
 
 
+int handle_controlchars( Rune u, uint len, char* decoded_char );
 
 

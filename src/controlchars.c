@@ -7,6 +7,111 @@ static CSIEscape csiescseq;
 static STREscape strescseq;
 
 
+int handle_controlchars( Rune u, uint len, char* decoded_char ){
+
+	if (term->esc & ESC_STR) {
+		if (u == '\a' || u == 030 || u == 032 || u == 033 || ISCONTROLC1(u)) {
+			term->esc &= ~(ESC_START | ESC_STR | ESC_DCS);
+			if (IS_SET(MODE_SIXEL)) {
+				/* TODO: render sixel */
+				term->mode &= ~MODE_SIXEL;
+				return(1);
+			}
+			term->esc |= ESC_STR_END;
+			goto check_control_code;
+		}
+
+		if (IS_SET(MODE_SIXEL)) {
+			/* TODO: implement sixel mode */
+			return(1);
+		}
+		if (term->esc & ESC_DCS && strescseq.len == 0 && u == 'q') {
+			term->mode |= MODE_SIXEL;
+		}
+
+		if (strescseq.len + len >= strescseq.siz) {
+			/*
+			 * Here is a bug in terminals. If the user never sends
+			 * some code to stop the str or esc command, then st
+			 * will stop responding. But this is better than
+			 * silently failing with unknown characters. At least
+			 * then users will report back.
+			 *
+			 * In the case users ever get fixed, here is the code:
+			 */
+			/*
+			 * term->esc = 0;
+			 * strhandle();
+			 */
+			//if (strescseq.siz > (SIZE_MAX - UTF_SIZ) / 2) 
+			if (strescseq.siz > 8192 ) {
+				// misc2024 How could a user fix that, when not being told? Eh??
+				// albite nowadays SIZE_MAX is defined here with 0xfffffff*4,
+				// why. anyways. The comment above might be about 30 years old.
+				// I added the error msg. And changed the maximum size to an
+				// IMHO more reasonable value.
+				// Users might like to be told about problems 
+				fprintf(stderr,"ESC Sequence too long, exceeding 8kB\n"); 
+				return(1);
+			}
+			strescseq.siz *= 2;
+			strescseq.buf = xrealloc(strescseq.buf, strescseq.siz);
+		}
+
+		memmove(&strescseq.buf[strescseq.len], decoded_char, len);
+		strescseq.len += len;
+		return(1);
+	}
+
+check_control_code:
+	/*
+	 * Actions of control codes must be performed as soon they arrive
+	 * because they can be embedded inside a control sequence, and
+	 * they must not cause conflicts with sequences.
+	 */
+	if (ISCONTROL(u)) {
+		//	if ( u>=0x80 )
+		//		printf("cont r: %x\n",u);
+
+		tcontrolcode(u);
+		/*
+		 * control codes are not shown ever
+		 */
+		return(1);
+	} else if (term->esc & ESC_START) {
+		if (term->esc & ESC_CSI) {
+			csiescseq.buf[csiescseq.len++] = u;
+			if (BETWEEN(u, 0x40, 0x7E) ||
+					csiescseq.len >= sizeof(csiescseq.buf) - 1) {
+				term->esc = 0;
+				csiparse();
+				csihandle();
+			}
+			return(1);
+		} else if (term->esc & ESC_UTF8) {
+			tdefutf8(u);
+		} else if (term->esc & ESC_ALTCHARSET) {
+			tdeftran(u);
+		} else if (term->esc & ESC_TEST) {
+			tdectest(u);
+		} else {
+			if (!eschandle(u)) {
+				return(1);
+			}
+			/* sequence already finished */
+		}
+		term->esc = 0;
+		/*
+		 * All characters which form part of a sequence are not
+		 * printed
+		 */
+		return(1);
+	}
+
+
+	return(0);
+}
+
 
 void strparse(void) {
 	int c;
