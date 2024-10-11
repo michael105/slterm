@@ -2,6 +2,9 @@
 // handle control chars and sequences, ansi escape sequences.
 
 
+static CSIEscape csiescseq;
+static STREscape strescseq;
+
 
 
 void csiparse(void) {

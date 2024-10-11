@@ -58,10 +58,6 @@ void tty_send_unicode(const Arg *arg){
 	ttywrite(&c, 1, 1); 
 }
 
-static CSIEscape csiescseq;
-static STREscape strescseq;
-static int tresize_rec = 0;
-
 
 // initiate new terminal window and buffers
 void tnew(int col, int row) {
@@ -595,10 +591,6 @@ void tresize(int col, int row) {
 		for ( i = minrow ; i < row; i++) {
 			term->line[i] = xmalloc(term->colalloc * sizeof(Glyph));
 			memset(term->line[i], 0, sizeof(Glyph) * term->colalloc);
-			//term->alt[i] = xmalloc(term->colalloc * sizeof(Glyph));
-			//term->helpscr[i] = xmalloc(term->colalloc * sizeof(Glyph));
-			//memset(term->alt[i], 0, sizeof(Glyph) * term->colalloc);
-			//memset(term->helpscr[i], 0, sizeof(Glyph) * term->colalloc);
 		}
 		/*if ( term->colalloc > col ){
 		  if ( minrow < row )
@@ -645,40 +637,7 @@ void tresize(int col, int row) {
 		if ( !enlarge )
 			tfulldirt();
 
-#if 0
-		if ( p_help && ( tresize_rec == 0 ) ){ // need to resize the not displayed term as well
-			tresize_rec = 1;
-
-			if ( term==p_term )
-				term = p_help;
-			else
-				term = p_term;
-
-			tresize(col,row);
-			tresize_rec = 0;
-
-			if ( term==p_term )
-				term = p_help;
-			else
-				term = p_term;
-		}
-
-		if ( p_help && ( tresize_rec == 0 ) ){
-			if ( p_help!=term ){ // not displayed
-				free(p_help);
-				p_help = 0;
-			} else {
-				tresize_rec = 1;
-				term = p_term;
-				tresize(col,row);
-				tresize_rec = 0;
-				term = p_help;
-			}
-		}
-
-#endif
-
-		}
+}
 
 
 
