@@ -6,9 +6,9 @@ Use the excellent tool of [utmp](https://git.suckless.org/utmp/) for this task.
 
 #### Some _random program_ complains that st is unknown/not recognised/unsupported/whatever!
 
-It means that st doesn’t have any terminfo entry on your system. Chances are
+It means that st does not have any terminfo entry on your system. Chances are
 you did not `make install`. If you just want to test it without installing it,
-you can manually run `tic -sx st.info`.
+you can manually run `tic -sx st.info`. (misc24: the file is named slterm.info)
 
 #### Nothing works, and nothing is said about an unknown terminal!
 
