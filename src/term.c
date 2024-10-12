@@ -1,6 +1,6 @@
 /* See LICENSE for license details. */
 
-#include "st.h"
+#include "term.h"
 #include "x.h"
 #include "selection.h"
 #include "scroll.h"
@@ -35,7 +35,8 @@ static void csiparse(void);
 static void csireset(void);
 static int eschandle(uchar);
 static void strdump(void);
-static void strhandle(void);
+static void term.handle(void);
+static void term.handle(void);
 static void strparse(void);
 static void strreset(void);
 
