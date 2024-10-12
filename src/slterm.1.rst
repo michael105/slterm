@@ -199,7 +199,7 @@ Full shortcut list
 
 ====      =========              ===            ========                
 Mode      Modifiers              Key            Function                 
------------------------------------------------------------------------------
+--------------------------------------------------------
 All	 Control+Alt        	 0          	 set_scrollmark 	
 All	 Control+Alt        	 1          	 set_scrollmark 	
 All	 Control+Alt        	 2          	 set_scrollmark 	
@@ -287,6 +287,7 @@ Less	 All                	 Page_Up    	 kscrollup
 Less	 All                	 Up         	 kscrollup 	
 Less	 All                	 q          	 lessmode_toggle 	
 Less	 Shift              	 Return     	 lessmode_toggle 	
+
 
 
 
@@ -416,30 +417,30 @@ AUTHORS
 (2020-2024) Michael (misc147), www.github.com/michael105
 
 The code is based on st, the suckless terminal emulator,
-fetched from git 1.1.2020.
+fetched from git 1.1.2020, which was based on code from Aurelien Aptel.
 
 The patches to st had been provided by: 
 
 Tonton Couillon,
-Jochen Sprickerhof
-M Farkas-Dyck
-Ivan Tham
-Ori Bernstein
-Matthias Schoth
-Laslo Hunhold
-Paride Legovini
-Lorenzo Bracco
-variable for config)
-Kamil Kleban
-Avi Halachmi
-Jacob Prosser
-Augusto Born de Oliveira
-Kai Hendry
-Laslo Hunhold
-Matthew Parnell
-Doug Whiteley
-Aleksandrs Stier
-Devin J. Pohly
+Jochen Sprickerhof,
+M Farkas-Dyck,
+Ivan Tham,
+Ori Bernstein,
+Matthias Schoth,
+Laslo Hunhold,
+Paride Legovini,
+Lorenzo Bracco,
+variable for config),
+Kamil Kleban,
+Avi Halachmi,
+Jacob Prosser,
+Augusto Born de Oliveira,
+Kai Hendry,
+Laslo Hunhold,
+Matthew Parnell,
+Doug Whiteley,
+Aleksandrs Stier,
+Devin J. Pohly,
 Sai Praneeth Reddy
  
 
