@@ -259,6 +259,7 @@ No UTF8
 UTF-8 currently would need some work,
 stripped for performance reasons.
 
+Xresources, untested for a while. Currently colors are not used.
 
 
 #### fixed:
