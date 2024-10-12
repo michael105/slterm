@@ -2,7 +2,7 @@
 
 
 
-	Slim (94kB linked shared) and fast terminal emulator for X11,
+	Slim (110kB linked shared) and fast terminal emulator for X11,
 	with minimal external dependencies (Xlib and Xft).
    Descendant of st (suckless terminal), modified extensively.
 
@@ -139,7 +139,7 @@ ___
 
 
 The sourcecode is heavily modified, partly rewritten, and split into 
-smaller parts. (Original it has been one single file with several thousand lines).
+smaller sections. (Originally it had been one single file with several thousand lines).
 
 
 ___
@@ -248,24 +248,30 @@ If you'd like to change anything, please edit config.h and config.make
 
 ### Bugs
 
-UTF-8 currently would need some work.
-Me, I don't need it. And I don't really like the idea of having up to 4 Bytes per Rune.
-It's quite simple to add another chartable, if needed, and
-im- and export files via tools/cpfilter or iconv. 
+
+Switching back and forth from alt screen does reset the cursor position,
+but doesn't clear the screen.
+
+There might be some trouble with scrolling, when the history is circled.
+The trouble might be every HISTSIZE's line, default: 32768.
+
+No UTF8
+UTF-8 currently would need some work,
+stripped for performance reasons.
 
 
 
 #### fixed:
 
 crashes with the alt screen
-corrected ret marks
+corrected ret marks and scrollmarks
 
 
 ====================
 
 
 
-(misc 2020-2023 - misc xx  at posteo.net / replace xx with 4+3 )
+(misc147 2020-2024 - github.com/michael105)
 
 
 Credits
@@ -275,12 +281,16 @@ Based on Aurelien APTEL <aurelien dot aptel at gmail dot com> bt source code.
 
 Fetched from the suckless git repo (suckless.org) on 2020/01/01.
 
-Please see for the authors of the patches [PATCHES](PATCHES.md)
+Please see for more information on the authors of the patches [PATCHES](PATCHES.md)
+(Tonton Couillon, dcat,  Jochen Sprickerhof, M Farkas-Dyck, Ivan Tham, 
+ Ori Bernstein, Matthias Schoth, Laslo Hunhold, Paride Legovini, Lorenzo Bracco, 
+ Kamil Kleban, Avi Halachmi, Jacob Prosser, Augusto Born de Oliveira, 
+ Kai Hendry, Laslo Hunhold, Matthew Parnell, Doug Whiteley, Aleksandrs Stier, 
+ Devin J. Pohly, Sai Praneeth Reddy)
 
-
-(My apologies for not pushing the work back to suckless,
+My apologies for not pushing the work back to suckless,
 but the heavy changes and the not so simple additions
 let me seem this neither easy nor following the suckless philosophy;
-and it wouldn't be possible to submit "patches" anymore)
+and it wouldn't be possible to submit "patches" anymore.
 
 

@@ -422,6 +422,7 @@ fetched from git 1.1.2020, which was based on code from Aurelien Aptel.
 The patches to st had been provided by: 
 
 Tonton Couillon,
+dcat, 
 Jochen Sprickerhof,
 M Farkas-Dyck,
 Ivan Tham,
@@ -430,7 +431,6 @@ Matthias Schoth,
 Laslo Hunhold,
 Paride Legovini,
 Lorenzo Bracco,
-variable for config),
 Kamil Kleban,
 Avi Halachmi,
 Jacob Prosser,
