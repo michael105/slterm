@@ -8,7 +8,7 @@
 include ../config.make
 
 
-SRC = base64.c mem.c slterm.c stsrc.c tty.c x.c main.c\
+SRC = base64.c mem.c slterm_shared.c stsrc.c tty.c x.c main.c\
 			selection.c st.c  system.c utf8.c xevent.c fonts.c\
 			statusbar.c xdraw.c termdraw.c arg.c scroll.c charmaps.c mouse.c \
 			keyboard.c colors.c globals.c controlchars.c
@@ -146,7 +146,7 @@ slterm: $(SRC) $(HEADER) help.h ../config.make
 	
 #-DCOMPILECOMMAND='$(CC) -o slterm $(SRC) $(STCFLAGS) $(STLDFLAGS)'
 	
-shared: $(SRC) $(HEADER) libslterm.so slterm.c
+shared: $(SRC) $(HEADER) libslterm.so slterm_shared.c
 	$(CC) -o slterm.shared stsrc.c $(STCFLAGS) $(STLDFLAGS) 
 
 #gcc -o slterm.shared slterm.c -lslterm -O3 

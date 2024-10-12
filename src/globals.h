@@ -155,7 +155,7 @@ static char ascii_printable[]
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~";
 #else
-// no utf8, but using cp1250 (extended ascii)
+// no utf8, but using extended ascii
 static char ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"

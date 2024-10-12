@@ -2,6 +2,6 @@
 
 
 int main(int argc, char *argv[]){
-		return(stmain(argc,argv));
+		return(shared_main(argc,argv));
 }
 

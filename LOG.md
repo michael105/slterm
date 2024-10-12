@@ -1,4 +1,20 @@
 
+Date: 2024/10/12
+
+Did some rework.
+The whole scrollback buffer would need a rewrite.
+I'm unhappy with the copying between a "screen" buffer,
+and the scrollback buffer.
+Furthermore I'd like to compress the scrollback buffer.
+What is currently not doable, the scrollback buffer code
+makes me dizzy, so I'm unable to modify it (again).
+There are several variables, which point to the current location
+in the history of line. (term->scr, histi, cthist ) 
+They are however all calculated relatively
+to each other of them, and the index is somehow reversed, sort of.
+
+Looking at this, I think, it might be possible.
+
 
 Date: 2024/10/08
 
