@@ -6,10 +6,8 @@
 static CSIEscape csiescseq;
 static STREscape strescseq;
 
-#ifdef UTF8
-int handle_controlchars( Rune u, uint decoded_len, char* decoded_char ){
-#else
-int handle_controlchars( Rune u ){
+int handle_controlchars( Rune u IF_UTF8(, uint decoded_len, char* decoded_char ) ){
+#ifndef UTF8
 #define decoded_len 1
 #endif
 
@@ -64,10 +62,11 @@ int handle_controlchars( Rune u ){
 
 #ifdef UTF8
 		memmove(&strescseq.buf[strescseq.len], decoded_char, decoded_len);
+		strescseq.len += decoded_len;
 #else
 		strescseq.buf[strescseq.len] = u;
+		strescseq.len++;
 #endif
-		strescseq.len += decoded_len;
 		return(1);
 	}
 
@@ -116,6 +115,9 @@ check_control_code:
 		return(1);
 	}
 
+#ifndef UTF8
+#undef decoded_len
+#endif
 
 	return(0);
 }

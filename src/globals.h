@@ -30,11 +30,18 @@ typedef unsigned short ushort;
 #define UTF_SIZ 4
 #define UTF_INVALID 0xFFFD
 
+#define IF_UTF8(...) __VA_ARGS__
+#define IFNOT_UTF8(...)
+
 #else
 
 #define utfchar unsigned char
 #define UTF_INVALID 0xff
 #define UTF_SIZ 1
+
+
+#define IF_UTF8(...) 
+#define IFNOT_UTF8(...) __VA_ARGS__
 
 #endif
 
