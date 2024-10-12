@@ -376,17 +376,20 @@ When you run "keyboard\_select", you have 3 modes available:
 
 Shortcuts for move and select modes:
     
-   
+(TODO: update keys)   
 :h, j, k, l:      move cursor left/down/up/right (also with arrow keys)
 :!, _, \*:        move cursor to the middle of the line/column/screen
 :Backspace, $:    move cursor to the beginning/end of the line
-:PgUp, PgDown:    move cursor to the beginning/end of the column
-:Home, End:       move cursor to the top/bottom left corner of the screen
+:Home,end:        move cursor to the beginning/end of the row
+:PgUp,PgDown:     move cursor to the top/bottom of the screen
 :/, ?:            activate input mode and search up/down
 :n, N:            repeat last search, up/down
-:s:               toggle move/selection mode
+:s,v:             toggle move/selection mode
+:y:               highlight current line and enter selectmode
+
+selectmode:
 :t:               toggle regular/rectangular selection type
-:Return:          quit keyboard_select, keeping the highlight of the selection
+:Return,y:        quit keyboard_select, keeping the highlight of the selection
 :Escape:          quit keyboard_select
  
       
@@ -403,21 +406,48 @@ Return:       Return to the previous mode
 CUSTOMIZATION
 =============
 
-**slterm** can be customized by editing makefile.config and src/config.h,
+**slterm** can be customized by editing config.make and src/config.h,
 afterwards (re)compiling the source code, or by editing the Xresources init files and 
 compiling slterm with Xresources enabled.
 
 AUTHORS
 =======
 
-Michael (misc) Myer, www.github.com/michael105
+(2020-2024) Michael (misc147), www.github.com/michael105
 
-See README and PATCHES for other authors.
+The code is based on st, the suckless terminal emulator,
+fetched from git 1.1.2020.
+
+The patches to st had been provided by: 
+
+Tonton Couillon,
+Jochen Sprickerhof
+M Farkas-Dyck
+Ivan Tham
+Ori Bernstein
+Matthias Schoth
+Laslo Hunhold
+Paride Legovini
+Lorenzo Bracco
+variable for config)
+Kamil Kleban
+Avi Halachmi
+Jacob Prosser
+Augusto Born de Oliveira
+Kai Hendry
+Laslo Hunhold
+Matthew Parnell
+Doug Whiteley
+Aleksandrs Stier
+Devin J. Pohly
+Sai Praneeth Reddy
+ 
+
 
 LICENSE
 =======
 
-See the LICENSE file for the terms of redistribution.
+MIT, see the LICENSE file for the terms of redistribution.
 
 SEE ALSO
 ========

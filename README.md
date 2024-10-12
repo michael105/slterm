@@ -13,6 +13,7 @@
    * Lessmode: scroll around with less like keybindings
    * Hit shift+backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
+	* Tab and Tab left to jump in scrollmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
@@ -24,6 +25,7 @@
 	* Gradient custom 32 color palette for colors 0..7
 	  (0..7 with attributes normal, bold, faint, bold_faint)
 	  and the first 16 background colors.
+	* Copy whole lines in the history with 'yy'
 
 
 Statically linked binary, with all runtime dependencies (3.5M)
@@ -48,6 +50,8 @@ Statically linked binary, with all runtime dependencies (3.5M)
 
   * `Shift+Backspace`: Enable lessmode and scroll back to the location, 
 		   the last command was entered.
+
+  * `Tab`, `Tab left`: Jump back and forth to the locations, commands had been entered.
    
 <!-- <img align="right" src="images/vt-102-1984.jpg"> -->
 	 

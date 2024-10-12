@@ -151,7 +151,7 @@ void tswapscreen(void) {
 	//printf("swapscreen, mode: %x\n",term->mode);
 	tfulldirt(); 
 #else
-
+	// swap the whole term struct
 	///printf("swapscreen, mode: %x\n",term->mode);
 	if ( p_alt != term ){ // altscr is not visible now
 		lessmode_toggle( &(Arg){.i=LESSMODE_OFF} ); 
