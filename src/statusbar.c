@@ -1,6 +1,6 @@
 
 #include "statusbar.h"
-#include "st.h"
+#include "term.h"
 #include "mem.h"
 #include "config.h"
 
@@ -56,17 +56,17 @@ void updatestatus(){
 				term->histi-term->scr,term->histi-term->scr+term->row, 
 				term->histi+term->row, 
 				((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
-				((term->histi-term->scr-scrollmarks[0]+1)*100)/((term->histi-scrollmarks[0]+1)?term->histi-scrollmarks[0]+1:1)
+				((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1)
 				);
 		buf[p]=' ';
 
 		for ( int a=1; a<10; a++ ){
-			if ( scrollmarks[a] )
+			if ( term->scrollmarks[a] )
 				buf[a+p] = a+'0';
 			else
 				buf[a+p] = ' ';
 		}
-		if ( scrollmarks[0] )
+		if ( term->scrollmarks[0] )
 			buf[p+10] = '0';
 		else 
 			buf[p+10] = ' ';
@@ -141,35 +141,35 @@ void set_notifmode(int type, KeySym ksym) {
 	static char *lib[] = {" MOVE ", " SEL  "," LESS " };
 	static Glyph *g, *deb, *fin;
 	static int col, bot;
+	col = term->col, bot = term->bot;
 
 	if (ksym == -1) { // show
 		free(g);
-		col = term->col, bot = term->bot;
 		g = xmalloc(term->colalloc * sizeof(Glyph));
-		memcpy(g, term->line[bot], term->colalloc * sizeof(Glyph));
+		memcpy(g, TLINE(bot), term->colalloc * sizeof(Glyph));
 		//tresize(term->col,term->row-1);
 	} else if (ksym == -2) { // hide
-		memcpy(term->line[bot], g, term->colalloc * sizeof(Glyph));
+		memcpy(TLINE(bot), g, term->colalloc * sizeof(Glyph));
 		//tresize(term->col,term->row+1);
 	}
 
 	if (type < 3) {
 		char *z = lib[type];
-		for (deb = &term->line[bot][col - 6], fin = &term->line[bot][col]; deb < fin;
+		for (deb = &TLINE(bot)[col - 6], fin = &TLINE(bot)[col]; deb < fin;
 				z++, deb++) {
 			deb->mode = ATTR_REVERSE, deb->u = *z, deb->fg = defaultfg,
 				deb->bg = defaultbg;
 		}
 	} else if (type < 5) {
-		memcpy(term->line[bot], g, term->colalloc * sizeof(Glyph));
-		//memcpy(term->line[bot], g, term->colalloc * sizeof(Glyph));
+		memcpy(TLINE(bot), g, term->colalloc * sizeof(Glyph));
+		//memcpy(TLINE(bot), g, term->colalloc * sizeof(Glyph));
 	} else {
-		for (deb = &term->line[bot][0], fin = &term->line[bot][col]; deb < fin;
+		for (deb = &TLINE(bot)[0], fin = &TLINE(bot)[col]; deb < fin;
 				deb++) {
 			deb->mode = ATTR_REVERSE, deb->u = ' ', deb->fg = defaultfg,
 				deb->bg = defaultbg;
 		}
-		term->line[bot][0].u = ksym;
+		TLINE(bot)[0].u = ksym;
 	}
 
 	term->dirty[bot] = 1;

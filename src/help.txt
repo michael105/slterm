@@ -4,9 +4,11 @@ The keycombinations can be changed in config.h(recompile needed)
 
 $YELLOW Keystrokes $NORM
 
-${GRAY}There are 3 different modes in slterm;
-regular mode, lessmode and selection mode.
+${GRAY}There are 4 different modes in slterm;
+regular mode, lessmode, selection mode and alt mode(alt screen).
 slterm is started in the regular mode.
+When the alt mode is used, e.g. by man or links, 
+scrollmarks and lessmode are disabled.
 $N
 
 $UL${LGREEN}All modes:$N
@@ -57,25 +59,27 @@ ${BOLD}Scrollmarks:$N
 
 $BOLD${UL}${LGREEN}Lessmode:$N
 
-  Ctrl+Shift + Up/PageUp/l: Enter lessmode. 
+  Ctrl+Shift + Up/PageUp/l, ScrollLock:  Enter lessmode. 
   Scroll around with cursor keys, Home, End.
-  Backspace goes to the location of the last command in shell.
+  Backspace/Tab left go to the location of the previous command in shell,
+  Tab scrolls down to the next entered command location.
   Exit with q/ESC
 
-  Shift+Backspace: Scroll to the location of the last entered command,
+  Shift+Backspace/Tab left: Scroll to the location of the last entered command,
     enter lessmode
 
   Shift+Enter: Execute command, enter lessmode when more than
     one screen is displayed by the command.
 
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
-             [0..9]: Goto Scrollmark 0 - 9
+      Ctrl + [0..9]: Goto Scrollmark 0 - 9
+  Lessmode:  [0..9]: Goto Scrollmark 0 - 9
 
 
 
 $BOLD${UL}${LGREEN}Selection Mode:$N
 
-  Ctrl+Shift + S: Enter selection mode
+  Ctrl+Shift + S, Alt + S: Enter selection mode
 
   There are 3 submodes in selection mode:
     - move mode : to set the start of the selection;
@@ -87,14 +91,19 @@ $BOLD${UL}${LGREEN}Selection Mode:$N
  
  h, j, k, l:    move cursor left/down/up/right (also with arrow keys)
  !, _, *:       move cursor to the middle of the line/column/screen
- Backspace, $:  move cursor to the beginning/end of the line
+ Backspace,Home move cursor to the beginning of line
+ $,End          move cursor to end of line
  PgUp, PgDown:  move cursor to the beginning/end of the column
- Home, End:     move cursor to the top/bottom left corner of the screen
+ g, G:          move cursor to the top/bottom left corner of the screen
+
+ y:             In move mode, select the current line.
+                In select mode, copy the selection to the clipboard, quit selection
+					 (yy means yank the current line)
  /, ?:          activate input mode and search up/down
  n, N:          repeat last search, up/down
- s:             toggle move/selection mode
+ s,v:           toggle move/selection mode
  t:             toggle regular/rectangular selection type
- Return:        quit keyboard_select, keeping the highlight of the selection
+ Return:        quit keyboard_select, copy selection to clipboard
  Escape:        quit keyboard_select
  
  With h,j,k,l (also with arrow keys), you can use a quantifier.

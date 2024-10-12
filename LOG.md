@@ -1,3 +1,52 @@
+
+Date: 2024/10/12
+
+Did some rework.
+The whole scrollback buffer would need a rewrite.
+I'm unhappy with the copying between a "screen" buffer,
+and the scrollback buffer.
+Furthermore I'd like to compress the scrollback buffer.
+What is currently not doable, the scrollback buffer code
+makes me dizzy, so I'm unable to modify it (again).
+There are several variables, which point to the current location
+in the history of line. (term->scr, histi, cthist ) 
+They are however all calculated relatively
+to each other of them, and the index is somehow reversed, sort of.
+
+Looking at this, I think, it might be possible.
+
+
+Date: 2024/10/08
+
+Well. better keeping my notes here.
+
+Funnny with those colors.
+I'm unhappy with the xterm palette.
+
+The first 8 colors I've been able to change to a xterm compatible palette.
+So, there are already 32 hand selected colors, since all colors
+come in normal, faint, bold and bold_faint.
+
+However, the 6x6x6 color cube of the colors 16-232 isn't that bright.
+
+Looking around, there is this site.
+
+https://lospec.com/palette-list
+
+and, for 256 colors.
+
+https://lospec.com/palette-list/srb2 - 256 colors
+
+
+Now, well, eventually I'll stick to a 64 color palette. 
+First 16 colors, with attributes.
+
+I would need to know, how many apps actually use those extended indexed colorset.
+
+64 colors ought to be enough for everyone!
+
+
+
 -- 2020/01/11
 
 

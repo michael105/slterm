@@ -13,14 +13,6 @@
 
 /* macros */
 
-// ascii needs the whole 256 char table, 
-// therefore unsigned chars
-#ifdef UTF8
-#define utfchar char
-#else
-#define utfchar unsigned char
-#endif
-
 
 #if (__SIZEOF_POINTER__==8)
 #define POINTER unsigned long
@@ -28,7 +20,7 @@
 #if (__SIZEOF_POINTER__==4)
 #define POINTER unsigned int
 #else
-#error
+#error 
 #endif
 #endif
 
@@ -47,13 +39,10 @@
 
 #define TLINE(y)                                                               \
   ((y) < term->scr                                                              \
-       ? term->hist[term->cthist][(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
+       ? term->hist[(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
 
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
-#define TRUECOLOR(r, g, b) (1 << 24 | (r) << 16 | (g) << 8 | (b))
-#define IS_TRUECOL(x) (1 << 24 & (x))
-
 
 #define IS_SET(flag) ((term->mode & (flag)) != 0)
 
@@ -70,26 +59,6 @@
 
 #define HISTSIZE (1<<HISTSIZEBITS)
 
-/* Arbitrary sizes */
-
-#define UTF_SIZ 4
-#define UTF_INVALID 0xFFFD
-//#define utfchar char
-
-// silence quirky cpp warnings
-#ifndef UTF8
-#undef UTF_INVALID
-#define UTF_INVALID 0xff
-#undef UTF_SIZ
-#define UTF_SIZ 1
-#undef utfchar
-#define utfchar unsigned char
-#endif
-
-#define ESC_BUF_SIZ (128 * UTF_SIZ)
-#define ESC_ARG_SIZ 16
-#define STR_BUF_SIZ ESC_BUF_SIZ
-#define STR_ARG_SIZ ESC_ARG_SIZ
 
 #define IMODE_HELP 0x04
 
@@ -103,6 +72,7 @@ enum glyph_attribute {
   ATTR_REVERSE = 1 << 5,
 #ifndef UTF8
   ATTR_WRAP = 1 << 6, // NHIST : usable also at the first column, is not tested.
+							 // attr_wrap might be not used neccessarily
   ATTR_STRUCK = 1<<7,
   //ATTR_STRUCK = 0,
  // ATTR_GREEK = 1<<7, // betacode
@@ -175,11 +145,6 @@ enum selection_type { SEL_REGULAR = 1, SEL_RECTANGULAR = 2 };
 
 enum selection_snap { SNAP_WORD = 1, SNAP_LINE = 2 };
 
-typedef unsigned char uchar;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-typedef unsigned short ushort;
-
 #ifdef UTF8
 typedef uint_least32_t Rune;
 #else
@@ -221,61 +186,6 @@ typedef struct {
   int y;
   char state;
 } TCursor;
-
-/* Internal representation of the screen */
-typedef struct {
-//#warning memo to me
-  Line hist[1][HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
-	int guard;
-  Line *line;                               /* screen */
-  Line *alt;                                /* alternate screen */
-  //Line *helpscr;                                /* help screen */
-  TCursor c;                                /* cursor */
-	int cthist; // current history, need 2cond buf for resizing
-  int row;                                  /* nb row */
-  int col;                                  /* nb col */
-	int colalloc; // allocated col. won't shrink, only enlarge. 
-  int histi;                                /* history index */ // points to the bottom of the terminal
-  int scr;                                  /* scroll back */
-  int *dirty;                               /* dirtyness of lines */
-  int ocx;                                  /* old cursor col */
-  int ocy;                                  /* old cursor row */
-  int top;                                  /* top    scroll limit */
-  int bot;                                  /* bottom scroll limit */
-  int mode;                                 /* terminal mode flags */
-  int esc;                                  /* escape state flags */
-  char trantbl[4];                          /* charset table translation */
-  int charset;                              /* current charset */
-  int icharset;                             /* selected charset for sequence */
-  int *tabs;
-	char circledhist;
-} Term;
-
-extern Term *term; 
-extern Term *p_help; 
-extern Term *p_term; 
-
-/* CSI Escape sequence structs */
-/* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
-typedef struct {
-  char buf[ESC_BUF_SIZ]; /* raw string */
-  size_t len;            /* raw string length */
-  char priv;
-  int arg[ESC_ARG_SIZ];
-  int narg; /* nb of args */
-  char mode[2];
-} CSIEscape;
-
-/* STR Escape sequence structs */
-/* ESC type [[ [<priv>] <arg> [;]] <mode>] ESC '\' */
-typedef struct {
-  char type;  /* ESC type ... */
-  char *buf;  /* allocated raw string */
-  size_t siz; /* allocation size */
-  size_t len; /* raw string length */
-  char *args[STR_ARG_SIZ];
-  int narg; /* nb of args */
-} STREscape;
 
 
 void redraw(void);

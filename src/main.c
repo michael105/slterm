@@ -94,9 +94,10 @@ void usage(void) {
 
 
 #ifdef shared
-int stmain(int argc, char *argv[]) {
+// share the whole text segment, including main
+int shared_main(int argc, char *argv[]) {
 #else
-	int main(int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
 #endif
 		xw.l = xw.t = 0;
 		xw.isfixed = False;

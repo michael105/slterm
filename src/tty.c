@@ -5,7 +5,7 @@
 #include "includes.h"
 #include "system.h"
 #include "scroll.h"
-#include "st.h"
+#include "term.h"
 #include "tty.h"
 #include "debug.h"
 #include "termdraw.h"

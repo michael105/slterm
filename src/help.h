@@ -33,9 +33,11 @@ The keycombinations can be changed in config.h(recompile needed)\n\r\
 \n\r\
 [01;33m Keystrokes [0;0m\n\r\
 \n\r\
-[01;30mThere are 3 different modes in slterm;\n\r\
-regular mode, lessmode and selection mode.\n\r\
+[01;30mThere are 4 different modes in slterm;\n\r\
+regular mode, lessmode, selection mode and alt mode(alt screen).\n\r\
 slterm is started in the regular mode.\n\r\
+When the alt mode is used, e.g. by man or links, \n\r\
+scrollmarks and lessmode are disabled.\n\r\
 [0;0m\n\r\
 \n\r\
 [4m[01;32mAll modes:[0;0m\n\r\
@@ -86,25 +88,27 @@ slterm is started in the regular mode.\n\r\
 \n\r\
 [1m[4m[01;32mLessmode:[0;0m\n\r\
 \n\r\
-  Ctrl+Shift + Up/PageUp/l: Enter lessmode. \n\r\
+  Ctrl+Shift + Up/PageUp/l, ScrollLock:  Enter lessmode. \n\r\
   Scroll around with cursor keys, Home, End.\n\r\
-  Backspace goes to the location of the last command in shell.\n\r\
+  Backspace/Tab left go to the location of the previous command in shell,\n\r\
+  Tab scrolls down to the next entered command location.\n\r\
   Exit with q/ESC\n\r\
 \n\r\
-  Shift+Backspace: Scroll to the location of the last entered command,\n\r\
+  Shift+Backspace/Tab left: Scroll to the location of the last entered command,\n\r\
     enter lessmode\n\r\
 \n\r\
   Shift+Enter: Execute command, enter lessmode when more than\n\r\
     one screen is displayed by the command.\n\r\
 \n\r\
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9\n\r\
-             [0..9]: Goto Scrollmark 0 - 9\n\r\
+      Ctrl + [0..9]: Goto Scrollmark 0 - 9\n\r\
+  Lessmode:  [0..9]: Goto Scrollmark 0 - 9\n\r\
 \n\r\
 \n\r\
 \n\r\
 [1m[4m[01;32mSelection Mode:[0;0m\n\r\
 \n\r\
-  Ctrl+Shift + S: Enter selection mode\n\r\
+  Ctrl+Shift + S, Alt + S: Enter selection mode\n\r\
 \n\r\
   There are 3 submodes in selection mode:\n\r\
     - move mode : to set the start of the selection;\n\r\
@@ -116,14 +120,19 @@ slterm is started in the regular mode.\n\r\
  \n\r\
  h, j, k, l:    move cursor left/down/up/right (also with arrow keys)\n\r\
  !, _, *:       move cursor to the middle of the line/column/screen\n\r\
- Backspace, $:  move cursor to the beginning/end of the line\n\r\
+ Backspace,Home move cursor to the beginning of line\n\r\
+ $,End          move cursor to end of line\n\r\
  PgUp, PgDown:  move cursor to the beginning/end of the column\n\r\
- Home, End:     move cursor to the top/bottom left corner of the screen\n\r\
+ g, G:          move cursor to the top/bottom left corner of the screen\n\r\
+\n\r\
+ y:             In move mode, select the current line.\n\r\
+                In select mode, copy the selection to the clipboard, quit selection\n\r\
+					 (yy means yank the current line)\n\r\
  /, ?:          activate input mode and search up/down\n\r\
  n, N:          repeat last search, up/down\n\r\
- s:             toggle move/selection mode\n\r\
+ s,v:           toggle move/selection mode\n\r\
  t:             toggle regular/rectangular selection type\n\r\
- Return:        quit keyboard_select, keeping the highlight of the selection\n\r\
+ Return:        quit keyboard_select, copy selection to clipboard\n\r\
  Escape:        quit keyboard_select\n\r\
  \n\r\
  With h,j,k,l (also with arrow keys), you can use a quantifier.\n\r\
@@ -145,6 +154,7 @@ Mode\t Modifiers\t\t Key\t\t Function\t Info\n\r\
 All	 All                	 Break      	 sendbreak 	\n\r\
 All	 All                	 Print      	 printsel 	\n\r\
 All	 All                	 Scroll_Lock 	 lessmode_toggle 	\n\r\
+All	 Alt                	 s          	 keyboard_select 	\n\r\
 All	 Control            	 0          	 scrollmark 	\n\r\
 All	 Control            	 1          	 scrollmark 	\n\r\
 All	 Control            	 2          	 scrollmark 	\n\r\
@@ -194,6 +204,7 @@ All	 Shift              	 BackSpace  	 retmark 	\n\r\
 All	 Shift              	 Down       	 kscrolldown 	\n\r\
 All	 Shift              	 End        	 scrolltobottom 	\n\r\
 All	 Shift              	 Home       	 scrolltotop 	\n\r\
+All	 Shift              	 ISO_Left_Tab 	 retmark 	\n\r\
 All	 Shift              	 Insert     	 selpaste 	\n\r\
 All	 Shift              	 Page_Down  	 kscrolldown 	\n\r\
 All	 Shift              	 Page_Up    	 kscrollup 	\n\r\
@@ -226,15 +237,17 @@ Less	 All                	 Escape     	 lessmode_toggle 	\n\r\
 Less	 All                	 Home       	 scrolltotop 	\n\r\
 Less	 All                	 Page_Down  	 kscrolldown 	\n\r\
 Less	 All                	 Page_Up    	 kscrollup 	\n\r\
+Less	 All                	 Tab        	 retmark 	\n\r\
 Less	 All                	 Up         	 kscrollup 	\n\r\
 Less	 All                	 q          	 lessmode_toggle 	\n\r\
+Less	 All                	 space      	 kscrolldown 	\n\r\
 Less	 Shift              	 Return     	 lessmode_toggle 	\n\r\
 \n\r\
 \n\r\
 [36m\n\r\
 ===============================================================================\n\r\
 \n\r\
-[37m(2019-2023 miSc, Michael Myer, started with the suckless st sources)\n\r\
+[37m(2019-2024 miSc, Michael 147 , started with the suckless st sources)\n\r\
 [01;30m\n\r\
 License: MIT\n\r\
 Permission is hereby granted, free of charge, to any person obtaining a copy\n\r\

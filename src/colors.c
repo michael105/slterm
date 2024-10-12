@@ -1,8 +1,61 @@
 // Color related functions
 // Default colors are defined in config.h
 
+#include "colors.h"
+
 
 ushort sixd_to_16bit(int x) { return x == 0 ? 0 : 0x3737 + 0x2828 * x; }
+
+
+static XftColor cc_rc[COLORCACHESIZE];
+// for UTF8: (Truecolor) ulongs, and other code needs changes
+static uint cc_mode[COLORCACHESIZE];
+static uint cc_p;
+
+// get a cached color, if present
+Color* getcachecolor( uint fg, Glyph*g, uint winmode ){
+	
+	for ( int a = 0; a<cc_p; a++ ){
+		if ( cc_mode[a] == (( (fg<<16) | ( (winmode<<24)&0xff000000) | ( fg==1?g->fg:g->bg) ) |(g->mode<<8))){
+		//printf("cachehit: %d  %d  %x\n",fg,a,cc_mode[a]);
+		if ( a>0 ){
+			//printf("swap: %d\n",a);
+			Color tmp;
+			memcpy( &tmp, &cc_rc[a], sizeof(Color) );
+			memcpy( &cc_rc[a], &cc_rc[a-1], sizeof(Color) );
+			memcpy( &cc_rc[a-1], &tmp, sizeof(Color) );
+			uint t = cc_mode[a];
+			cc_mode[a] = cc_mode[a-1];
+			cc_mode[a-1] = t;
+			a--;
+		}
+			return( &cc_rc[a] );
+		}
+	}
+	return(0);
+}
+
+
+
+// Cache a color, fg: 0=bg, 1=fg, 2=cursor(fg)
+void cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){ 
+	if ( getcachecolor(fg,g,winmode) ){
+		//printf("double store\n");
+		return;
+	}
+	if ( cc_p == COLORCACHESIZE-1 ){
+		//printf("Free cachecolor\n");
+		XftColorFree(xw.dpy, xw.vis, xw.cmap, &cc_rc[cc_p]);
+		//cc_rc[cc_p] = cc_rc[0];
+	} else cc_p++;
+
+	memmove( &cc_rc[1], &cc_rc[0], sizeof(Color)*(COLORCACHESIZE-1) );
+	memmove( &cc_mode[1], &cc_mode[0], sizeof(uint)*(COLORCACHESIZE-1) );
+	memcpy( cc_rc, color, sizeof(Color) );
+	cc_mode[0] = ( fg<<16 ) | ((winmode<<24)&0xff000000 ) | g->mode<<8 | ( fg==1?g->fg:g->bg);
+	//printf("cache: %d  %x\n",fg,cc_mode[cc_p]);
+}
+
 
 
 int xloadcolor(int i, const char *name, Color *p_color) {

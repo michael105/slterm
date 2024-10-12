@@ -25,8 +25,8 @@
 #define ISSCROLLUP(x) ( x&(1<<27) ) 
 //#define ISSCROLLUP(x) ( ( x&(SCROLLMASK&&(~(1<<32))) ) && (x&(1<<32)) ) 
 
-extern int scrollmarks[12];
-extern int retmarks[10];
+//extern int scrollmarks[12];
+//extern int retmarks[10];
 
 // callbacks
 void kscrolldown(const Arg *);

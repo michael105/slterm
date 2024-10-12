@@ -1,6 +1,7 @@
 All	 All                	 Break      	 sendbreak 	
 All	 All                	 Print      	 printsel 	
 All	 All                	 Scroll_Lock 	 lessmode_toggle 	
+All	 Alt                	 s          	 keyboard_select 	
 All	 Control            	 0          	 scrollmark 	
 All	 Control            	 1          	 scrollmark 	
 All	 Control            	 2          	 scrollmark 	
@@ -50,6 +51,7 @@ All	 Shift              	 BackSpace  	 retmark
 All	 Shift              	 Down       	 kscrolldown 	
 All	 Shift              	 End        	 scrolltobottom 	
 All	 Shift              	 Home       	 scrolltotop 	
+All	 Shift              	 ISO_Left_Tab 	 retmark 	
 All	 Shift              	 Insert     	 selpaste 	
 All	 Shift              	 Page_Down  	 kscrolldown 	
 All	 Shift              	 Page_Up    	 kscrollup 	
@@ -82,6 +84,8 @@ Less	 All                	 Escape     	 lessmode_toggle
 Less	 All                	 Home       	 scrolltotop 	
 Less	 All                	 Page_Down  	 kscrolldown 	
 Less	 All                	 Page_Up    	 kscrollup 	
+Less	 All                	 Tab        	 retmark 	
 Less	 All                	 Up         	 kscrollup 	
 Less	 All                	 q          	 lessmode_toggle 	
+Less	 All                	 space      	 kscrolldown 	
 Less	 Shift              	 Return     	 lessmode_toggle 	

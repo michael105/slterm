@@ -3,7 +3,7 @@
 
 
 #include "arg.h"
-#include "st.h"
+#include "term.h"
 #include "x.h"
 #include "fonts.h"
 #include "mem.h"
@@ -330,10 +330,14 @@ void xsetmode(int set, unsigned int flags) {
 
 int xsetcursor(int cursor) {
 	DEFAULT(cursor, 1);
-	if (!BETWEEN(cursor, 0, 6))
+	if (!BETWEEN(cursor, 0, 9))
 		return 1;
 	win.cursor = cursor;
 	return 0;
+}
+
+int xgetcursor(){
+	return(win.cursor);
 }
 
 void xseturgency(int add) {

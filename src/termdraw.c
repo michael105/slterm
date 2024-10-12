@@ -2,19 +2,9 @@
 
 #include "termdraw.h"
 #include "utf8.h"
-#include "st.h"
+#include "term.h"
 
 /* macros */
-#define ISCONTROLC0(c) (BETWEEN(c, 0, 0x1f) || (c) == 0x7f) // 0x7f = delete who tf did write '\177'??
-//#define ISCONTROLC1(c) (BETWEEN(c, 0x80, 0x9f))
-//#define ISCONTROL(c) ((c <= 0x1f) || BETWEEN(c, 0x7f, 0x9f))
-
-
-#define ISCONTROL(c) ((c <= 0x1f) || (c==0x7f))
-
-#define ISCONTROLC1(c) (0)
-//#define ISCONTROL(c) (0)
-
 
 
 // exclusively in drawregion the real drawing( line per line, with xdrawline ) 
@@ -36,7 +26,7 @@ void drawregion(int x1, int y1, int x2, int y2) {
 
 
 void draw(void) {
-		int cx = term->c.x;
+		int cx = term->cursor.x;
 
 		if (!xstartdraw()) {
 				return;
@@ -50,17 +40,17 @@ void draw(void) {
 		if (term->line[term->ocy][term->ocx].mode & ATTR_WDUMMY) {
 				term->ocx--;
 		}
-		if (term->line[term->c.y][cx].mode & ATTR_WDUMMY) {
+		if (term->line[term->cursor.y][cx].mode & ATTR_WDUMMY) {
 				cx--;
 		}
 #endif 
 
 		drawregion(0, 0, term->col, term->row);
 		if (term->scr == 0) {
-				xdrawcursor(cx, term->c.y, term->line[term->c.y][cx], term->ocx, term->ocy,
+				xdrawcursor(cx, term->cursor.y, term->line[term->cursor.y][cx], term->ocx, term->ocy,
 								term->line[term->ocy][term->ocx]);
 		}
-		term->ocx = cx, term->ocy = term->c.y;
+		term->ocx = cx, term->ocy = term->cursor.y;
 		xfinishdraw();
 		xximspot(term->ocx, term->ocy);
 }
@@ -114,7 +104,7 @@ int twrite(const utfchar *buf, int buflen, int show_ctrl) {
 
 
 void tputtab(int n) {
-		uint x = term->c.x;
+		uint x = term->cursor.x;
 
 		if (n > 0) {
 				while (x < term->col && n--) {
@@ -129,7 +119,7 @@ void tputtab(int n) {
 						}
 				}
 		}
-		term->c.x = LIMIT(x, 0, term->col - 1);
+		term->cursor.x = LIMIT(x, 0, term->col - 1);
 }
 
 void tputc(Rune u) {
@@ -140,8 +130,7 @@ void tputc(Rune u) {
 //	if ( u>=0x80 )
 //		printf("r: %x\n",u);
 
-
-		control = ISCONTROL(u);
+		//control = 0; // display binary
 #ifndef UTF8
 		c[0] = u;
 		width = len = 1;
@@ -151,6 +140,7 @@ void tputc(Rune u) {
 				width = len = 1;
 		} else {
 				len = utf8encode(u, c);
+				control = ISCONTROL(u);
 				if (!control && (width = wcwidth(u)) == -1) {
 						memcpy(c, "\357\277\275", 4); // UTF_INVALID
 						width = 1;
@@ -168,175 +158,89 @@ void tputc(Rune u) {
 		 * receives a ESC, a SUB, a ST or any other C1 control
 		 * character.
 		 */
-		if (term->esc & ESC_STR) {
-				if (u == '\a' || u == 030 || u == 032 || u == 033 || ISCONTROLC1(u)) {
-						term->esc &= ~(ESC_START | ESC_STR | ESC_DCS);
-						if (IS_SET(MODE_SIXEL)) {
-								/* TODO: render sixel */
-								term->mode &= ~MODE_SIXEL;
-								return;
-						}
-						term->esc |= ESC_STR_END;
-						goto check_control_code;
-				}
+		if ( handle_controlchars( u,len,c ) )
+			return;
 
-				if (IS_SET(MODE_SIXEL)) {
-						/* TODO: implement sixel mode */
-						return;
-				}
-				if (term->esc & ESC_DCS && strescseq.len == 0 && u == 'q') {
-						term->mode |= MODE_SIXEL;
-				}
 
-				if (strescseq.len + len >= strescseq.siz) {
-						/*
-						 * Here is a bug in terminals. If the user never sends
-						 * some code to stop the str or esc command, then st
-						 * will stop responding. But this is better than
-						 * silently failing with unknown characters. At least
-						 * then users will report back.
-						 *
-						 * In the case users ever get fixed, here is the code:
-						 */
-						/*
-						 * term->esc = 0;
-						 * strhandle();
-						 */
-						if (strescseq.siz > (SIZE_MAX - UTF_SIZ) / 2) {
-								return;
-						}
-						strescseq.siz *= 2;
-						strescseq.buf = xrealloc(strescseq.buf, strescseq.siz);
-				}
-
-				memmove(&strescseq.buf[strescseq.len], c, len);
-				strescseq.len += len;
-				return;
-		}
-
-check_control_code:
-		/*
-		 * Actions of control codes must be performed as soon they arrive
-		 * because they can be embedded inside a control sequence, and
-		 * they must not cause conflicts with sequences.
-		 */
-		if (control) {
-//	if ( u>=0x80 )
-//		printf("cont r: %x\n",u);
-
-				tcontrolcode(u);
-				/*
-				 * control codes are not shown ever
-				 */
-				return;
-		} else if (term->esc & ESC_START) {
-				if (term->esc & ESC_CSI) {
-						csiescseq.buf[csiescseq.len++] = u;
-						if (BETWEEN(u, 0x40, 0x7E) ||
-										csiescseq.len >= sizeof(csiescseq.buf) - 1) {
-								term->esc = 0;
-								csiparse();
-								csihandle();
-						}
-						return;
-				} else if (term->esc & ESC_UTF8) {
-						tdefutf8(u);
-				} else if (term->esc & ESC_ALTCHARSET) {
-						tdeftran(u);
-				} else if (term->esc & ESC_TEST) {
-						tdectest(u);
-				} else {
-						if (!eschandle(u)) {
-								return;
-						}
-						/* sequence already finished */
-				}
-				term->esc = 0;
-				/*
-				 * All characters which form part of a sequence are not
-				 * printed
-				 */
-				return;
-		}
-		if (sel.ob.x != -1 && BETWEEN(term->c.y, sel.ob.y, sel.oe.y)) {
+		if (sel.ob.x != -1 && BETWEEN(term->cursor.y, sel.ob.y, sel.oe.y)) {
 				selclear();
 		}
 
-		gp = &term->line[term->c.y][term->c.x];
-		if (IS_SET(MODE_WRAP) && (term->c.state & CURSOR_WRAPNEXT)) {
+		gp = &term->line[term->cursor.y][term->cursor.x];
+		if (IS_SET(MODE_WRAP) && (term->cursor.state & CURSOR_WRAPNEXT)) {
 				gp->mode |= ATTR_WRAP; //misc wrapping here NHIST
 				tnewline(1);
-				gp = &term->line[term->c.y][term->c.x];
+				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
 
-		if (IS_SET(MODE_INSERT) && term->c.x + width < term->col) {
-				memmove(gp + width, gp, (term->col - term->c.x - width) * sizeof(Glyph));
+		if (IS_SET(MODE_INSERT) && term->cursor.x + width < term->col) {
+				memmove(gp + width, gp, (term->col - term->cursor.x - width) * sizeof(Glyph));
 		}
 
-		if (term->c.x + width > term->col) {
+		if (term->cursor.x + width > term->col) {
 				tnewline(1);  // NHIST
-				gp = &term->line[term->c.y][term->c.x];
+				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
 
 //	if ( u>=0x80 )
 //		printf("set r: %x\n",u);
 
 		// NHIST
-		tsetchar(u, &term->c.attr, term->c.x, term->c.y);
+		tsetchar(u, &term->cursor.attr, term->cursor.x, term->cursor.y);
 
 #ifdef UTF8
 		if (width == 2) {
 				dbg2("tputchar width2: %x %c", gp[0].u, gp[0].u );
 				gp->mode |= ATTR_WIDE;
-				if (term->c.x + 1 < term->col) {
+				if (term->cursor.x + 1 < term->col) {
 						gp[1].u = '\0';
 						gp[1].mode = ATTR_WDUMMY;
 				}
 		}
 #endif
 
-		if (term->c.x + width < term->col) {
-				tmoveto(term->c.x + width, term->c.y);
+		if (term->cursor.x + width < term->col) {
+				tmoveto(term->cursor.x + width, term->cursor.y);
 		} else {
-				term->c.state |= CURSOR_WRAPNEXT;
+				term->cursor.state |= CURSOR_WRAPNEXT;
 		}
 }
 #if 0
 void histputc(utfchar c){
-		gp = &term->line[term->c.y][term->c.x];
-		if (IS_SET(MODE_WRAP) && (term->c.state & CURSOR_WRAPNEXT)) {
+		gp = &term->line[term->cursor.y][term->cursor.x];
+		if (IS_SET(MODE_WRAP) && (term->cursor.state & CURSOR_WRAPNEXT)) {
 				gp->mode |= ATTR_WRAP;
 				tnewline(1);
-				gp = &term->line[term->c.y][term->c.x];
+				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
 
-		if (IS_SET(MODE_INSERT) && term->c.x + width < term->col) {
-				memmove(gp + width, gp, (term->col - term->c.x - width) * sizeof(Glyph));
+		if (IS_SET(MODE_INSERT) && term->cursor.x + width < term->col) {
+				memmove(gp + width, gp, (term->col - term->cursor.x - width) * sizeof(Glyph));
 		}
 
-		if (term->c.x + width > term->col) {
+		if (term->cursor.x + width > term->col) {
 				tnewline(1);
-				gp = &term->line[term->c.y][term->c.x];
+				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
 
-		tsetchar(u, &term->c.attr, term->c.x, term->c.y);
+		tsetchar(u, &term->cursor.attr, term->cursor.x, term->cursor.y);
 
 
 #ifdef UTF8
 		if (width == 2) {
 				dbg2("tputchar width2: %x %c", gp[0].u, gp[0].u );
 				gp->mode |= ATTR_WIDE;
-				if (term->c.x + 1 < term->col) {
+				if (term->cursor.x + 1 < term->col) {
 						gp[1].u = '\0';
 						gp[1].mode = ATTR_WDUMMY;
 				}
 		}
 #endif
 
-		if (term->c.x + width < term->col) {
-				tmoveto(term->c.x + width, term->c.y);
+		if (term->cursor.x + width < term->col) {
+				tmoveto(term->cursor.x + width, term->cursor.y);
 		} else {
-				term->c.state |= CURSOR_WRAPNEXT;
+				term->cursor.state |= CURSOR_WRAPNEXT;
 		}
 }
 #endif
@@ -348,6 +252,11 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 #ifndef UTF8
 	//if ( u>=0x80 )
 	//	printf("r: %x\n",u);
+		//printf("tsetchar %d %d %x %x\n",x,y,attr->u,u);
+		if ( term->line[y] == 0 ){ // xxx
+			fprintf(stderr,"WARNING, NULL %d %d\n",x,y); // shouldn't get here
+			return;
+		}
 		term->dirty[y] = 1;
 		term->line[y][x] = *attr; 
 		term->line[y][x].u = u;
@@ -406,24 +315,29 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 		LIMIT(y2, 0, term->row - 1);
 
 		selclear(); // only call once.
-		//term->c.attr.u=' ';
+		//term->cursor.attr.u=' ';
 
 		for (y = y1; y <= y2; y++) { 
 				term->dirty[y] = 1;
-#ifndef UTF8
+#if 1
+//#ifndef UTF8
 				dbg("y: %d, x1: %d, x2: %d\n", y, x1, x2);
-				memset32( &term->line[y][x1].intG, term->c.attr.intG, (x2-x1)+1 ); // memset64 or comp
+				memset32( &term->line[y][x1].intG, term->cursor.attr.intG, (x2-x1)+1 ); // memset64 or comp
 				dbg("ok\n");
 #else
-				for (x = x1; x <= x2; x++) {//misc copy longs (64bit)or,better: memset. mmx/sse?
+				//printf("y: %d, x1: %d, x2: %d\n", y, x1, x2); // xxx
+				for (x = x1; x <= x2; x++) { //misc copy longs (64bit)or,better: memset. mmx/sse?
 						//if (selected(x, y)) { // room for optimization. only ask once, when no selection
 						//		selclear();
 						//}
+					//printf("x: %d %p\n", x, &term->line[y][x] );
 						gp = &term->line[y][x];
-						gp->fg = term->c.attr.fg;
-						gp->bg = term->c.attr.bg;
+						if ( !gp ) break; // xxx
+						gp->fg = term->cursor.attr.fg;
+						gp->bg = term->cursor.attr.bg;
 						gp->mode = 0;
 						gp->u = ' ';
+					
 				}
 #endif
 		}
@@ -433,41 +347,41 @@ void tdeletechar(int n) {
 		int dst, src, size;
 		Glyph *line;
 
-		LIMIT(n, 0, term->col - term->c.x);
+		LIMIT(n, 0, term->col - term->cursor.x);
 
-		dst = term->c.x;
-		src = term->c.x + n;
+		dst = term->cursor.x;
+		src = term->cursor.x + n;
 		size = term->col - src;
-		line = term->line[term->c.y];
+		line = term->line[term->cursor.y];
 
 		memmove(&line[dst], &line[src], size * sizeof(Glyph));
-		tclearregion(term->col - n, term->c.y, term->col - 1, term->c.y);
+		tclearregion(term->col - n, term->cursor.y, term->col - 1, term->cursor.y);
 }
 
 void tinsertblank(int n) {
 		int dst, src, size;
 		Glyph *line;
 
-		LIMIT(n, 0, term->col - term->c.x);
+		LIMIT(n, 0, term->col - term->cursor.x);
 
-		dst = term->c.x + n;
-		src = term->c.x;
+		dst = term->cursor.x + n;
+		src = term->cursor.x;
 		size = term->col - dst;
-		line = term->line[term->c.y];
+		line = term->line[term->cursor.y];
 
 		memmove(&line[dst], &line[src], size * sizeof(Glyph));
-		tclearregion(src, term->c.y, dst - 1, term->c.y);
+		tclearregion(src, term->cursor.y, dst - 1, term->cursor.y);
 }
 
 void tinsertblankline(int n) {
-		if (BETWEEN(term->c.y, term->top, term->bot)) {
-				tscrolldown(term->c.y, n, 0);
+		if (BETWEEN(term->cursor.y, term->top, term->bot)) {
+				tscrolldown(term->cursor.y, n, 0);
 		}
 }
 
 void tdeleteline(int n) {
-		if (BETWEEN(term->c.y, term->top, term->bot)) {
-				tscrollup(term->c.y, n, 0);
+		if (BETWEEN(term->cursor.y, term->top, term->bot)) {
+				tscrollup(term->cursor.y, n, 0);
 		}
 }
 
@@ -494,6 +408,10 @@ int tattrset(int attr) {
 
 		for (i = 0; i < term->row - 1; i++) {
 				for (j = 0; j < term->col - 1; j++) {
+					if ( term->line[i] == 0 ){ // xxx
+						fprintf(stderr,"WARNING: tattrset NULL: %d %d\n",i,j);
+						return ( 0 );
+					} 
 						if (term->line[i][j].mode & attr) {
 								return 1;
 						}
@@ -571,84 +489,87 @@ void tsetattr(int *attr, int l) {
 		for (i = 0; i < l; i++) {
 				switch (attr[i]) {
 						case 0:
-								term->c.attr.mode &=
+								term->cursor.attr.mode &=
 										~(ATTR_BOLD | ATTR_FAINT | ATTR_ITALIC | ATTR_UNDERLINE | ATTR_BLINK |
 														ATTR_REVERSE | ATTR_INVISIBLE | ATTR_STRUCK);
-								term->c.attr.fg = defaultfg;
-								term->c.attr.bg = defaultbg;
+								term->cursor.attr.fg = defaultfg;
+								term->cursor.attr.bg = defaultbg;
 								break;
 						case 1:
-								term->c.attr.mode |= ATTR_BOLD;
+								term->cursor.attr.mode |= ATTR_BOLD;
 								break;
 						case 2:
-								term->c.attr.mode |= ATTR_FAINT;
+								term->cursor.attr.mode |= ATTR_FAINT;
 								break;
 						case 3:
-								term->c.attr.mode |= ATTR_ITALIC;
+								term->cursor.attr.mode |= ATTR_ITALIC;
 								break;
 						case 4:
-								term->c.attr.mode |= ATTR_UNDERLINE;
+								term->cursor.attr.mode |= ATTR_UNDERLINE;
 								break;
 						case 5: /* slow blink */
 								/* FALLTHROUGH */
 						case 6: /* rapid blink */
-								term->c.attr.mode |= ATTR_BLINK;
+								term->cursor.attr.mode |= ATTR_BLINK;
 								break;
 						case 7:
-								term->c.attr.mode |= ATTR_REVERSE;
+								term->cursor.attr.mode |= ATTR_REVERSE;
 								break;
 						case 8:
-								term->c.attr.mode |= ATTR_INVISIBLE;
+								term->cursor.attr.mode |= ATTR_INVISIBLE;
 								break;
 						case 9:
-								term->c.attr.mode |= ATTR_STRUCK;
+								term->cursor.attr.mode |= ATTR_STRUCK;
+								break;
+						case 21: // double underline
+								term->cursor.attr.mode |= ATTR_STRUCK | ATTR_UNDERLINE;
 								break;
 						case 22:
-								term->c.attr.mode &= ~(ATTR_BOLD | ATTR_FAINT);
+								term->cursor.attr.mode &= ~(ATTR_BOLD | ATTR_FAINT);
 								break;
 						case 23:
-								term->c.attr.mode &= ~ATTR_ITALIC;
+								term->cursor.attr.mode &= ~ATTR_ITALIC;
 								break;
 						case 24:
-								term->c.attr.mode &= ~ATTR_UNDERLINE;
+								term->cursor.attr.mode &= ~ATTR_UNDERLINE;
 								break;
 						case 25:
-								term->c.attr.mode &= ~ATTR_BLINK;
+								term->cursor.attr.mode &= ~ATTR_BLINK;
 								break;
 						case 27:
-								term->c.attr.mode &= ~ATTR_REVERSE;
+								term->cursor.attr.mode &= ~ATTR_REVERSE;
 								break;
 						case 28:
-								term->c.attr.mode &= ~ATTR_INVISIBLE;
+								term->cursor.attr.mode &= ~ATTR_INVISIBLE;
 								break;
 						case 29:
-								term->c.attr.mode &= ~ATTR_STRUCK;
+								term->cursor.attr.mode &= ~ATTR_STRUCK;
 								break;
 						case 38:
 								if ((idx = tdefcolor(attr, &i, l)) >= 0) {
-										term->c.attr.fg = idx;
+										term->cursor.attr.fg = idx;
 								}
 								break;
 						case 39:
-								term->c.attr.fg = defaultfg;
+								term->cursor.attr.fg = defaultfg;
 								break;
 						case 48:
 								if ((idx = tdefcolor(attr, &i, l)) >= 0) {
-										term->c.attr.bg = idx;
+										term->cursor.attr.bg = idx;
 								}
 								break;
 						case 49:
-								term->c.attr.bg = defaultbg;
+								term->cursor.attr.bg = defaultbg;
 								break;
 						default:
 								if (BETWEEN(attr[i], 30, 37)) {
-										term->c.attr.fg = attr[i] - 30;
+										term->cursor.attr.fg = attr[i] - 30;
 								} else if (BETWEEN(attr[i], 40, 47)) {
-										term->c.attr.bg = attr[i] - 40;
+										term->cursor.attr.bg = attr[i] - 40;
 								} else if (BETWEEN(attr[i], 90, 97)) {
-										term->c.attr.fg = attr[i] - 90 + 8;
+										term->cursor.attr.fg = attr[i] - 90 + 8;
 								} else if (BETWEEN(attr[i], 100, 107)) {
-										term->c.attr.bg = attr[i] - 100 + 8;
+										term->cursor.attr.bg = attr[i] - 100 + 8;
 								} else {
 										fprintf(stderr, "erresc(default): gfx attr %d unknown\n", attr[i]);
 										csidump();

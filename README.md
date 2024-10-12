@@ -2,7 +2,7 @@
 
 
 
-	Slim (94kB linked shared) and fast terminal emulator for X11,
+	Slim (110kB linked shared) and fast terminal emulator for X11,
 	with minimal external dependencies (Xlib and Xft).
    Descendant of st (suckless terminal), modified extensively.
 
@@ -13,14 +13,19 @@
    * Lessmode: scroll around with less like keybindings
    * Hit shift+backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
+	* Tab and Tab left to jump in scrollmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
-   * Switching codepages with Shortcuts (cp437,cp850,cp1252,..)
+   * Switching codepages with hotkeys (cp437,cp850,cp1252,..)
    * Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
      slterm might be the fastest available terminal emulators for X
    * secure mode, option -X: lock all pages into memory, prevent swapping
+	* Gradient custom 32 color palette for colors 0..7
+	  (0..7 with attributes normal, bold, faint, bold_faint)
+	  and the first 16 background colors.
+	* Copy whole lines in the history with 'yy'
 
 
 Statically linked binary, with all runtime dependencies (3.5M)
@@ -45,6 +50,8 @@ Statically linked binary, with all runtime dependencies (3.5M)
 
   * `Shift+Backspace`: Enable lessmode and scroll back to the location, 
 		   the last command was entered.
+
+  * `Tab`, `Tab left`: Jump back and forth to the locations, commands had been entered.
    
 <!-- <img align="right" src="images/vt-102-1984.jpg"> -->
 	 
@@ -81,11 +88,28 @@ Statically linked binary, with all runtime dependencies (3.5M)
  UTF8 is abandoned for now, but the code for utf8 is left in the sources.
 
 
+##### Colors
+
+  The default 7 colors, with additional 3 attributes bold, faint and bold_faint 
+  ( so there are 32 colors ) are configured as color gradients,
+  configurable in config.h
+
+  The 256 colors map follows the xterm standard, with the difference 
+  of more contrast with faint and bold_faint attributes.
+
+  Combining blink and inverse attributes does blinking by reversing. (wonderful)
+  > echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n' 
+
+
+![indexed_colors](images/indexed_fgcolors.jpg)
+
+
+
 ##### Inline help
 
 `Ctrl+F1`
    
-    Show the (outdated) reference of keybindings
+    Show inline help, and the reference of keybindings
     `Anymod` can be any combination of modification keys (Ctrl, Alt,..)
     Added to show the internal help, also when e.g. F1 has been
 	 bound to the window manager
@@ -98,7 +122,7 @@ Statically linked binary, with all runtime dependencies (3.5M)
 
 #### Slim resource usage:
 
-  Colors restricted to a 256 color palette 
+  Colors restricted to a 256 color palette per default.
         (Saving 6 Bytes per Glyph)
 
 	Keep the history and terminal contents on resize events
@@ -115,7 +139,7 @@ ___
 
 
 The sourcecode is heavily modified, partly rewritten, and split into 
-smaller parts. (Original it has been one single file with several thousand lines).
+smaller sections. (Originally it had been one single file with several thousand lines).
 
 
 ___
@@ -224,20 +248,31 @@ If you'd like to change anything, please edit config.h and config.make
 
 ### Bugs
 
-The history ringbuffer could get problematic and scroll to wrong locations in conjunction with the scrollmarks when circled. (atm, the default history has 65536 lines, so this is not at the top of the todo list)
 
-UTF-8 currently might need some work.
-Me, I don't need it. And I don't really like the idea of having up to 4 Bytes per Rune.
-It's quite simple to add another chartable, if needed, and
-im- and export files via tools/cpfilter or iconv. 
+Switching back and forth from alt screen does reset the cursor position,
+but doesn't clear the screen.
 
-Crashes sometimes under unknown circumstances when using the alternate screen mode. (man pager, less)
+There might be some trouble with scrolling, when the history is circled.
+The trouble might be every HISTSIZE's line, default: 32768.
+
+No UTF8
+UTF-8 currently would need some work,
+stripped for performance reasons.
+
+Xresources, untested for a while. Currently colors are not used.
+
+
+#### fixed:
+
+crashes with the alt screen
+corrected ret marks and scrollmarks
 
 
 ====================
 
 
-(misc 2020-2023 - misc xx  at posteo.net / replace xx with 4+3 )
+
+(misc147 2020-2024 - github.com/michael105)
 
 
 Credits
@@ -247,12 +282,16 @@ Based on Aurelien APTEL <aurelien dot aptel at gmail dot com> bt source code.
 
 Fetched from the suckless git repo (suckless.org) on 2020/01/01.
 
-Please see for the authors of the patches [PATCHES](PATCHES.md)
+Please see for more information on the authors of the patches [PATCHES](PATCHES.md)
+(Tonton Couillon, dcat,  Jochen Sprickerhof, M Farkas-Dyck, Ivan Tham, 
+ Ori Bernstein, Matthias Schoth, Laslo Hunhold, Paride Legovini, Lorenzo Bracco, 
+ Kamil Kleban, Avi Halachmi, Jacob Prosser, Augusto Born de Oliveira, 
+ Kai Hendry, Laslo Hunhold, Matthew Parnell, Doug Whiteley, Aleksandrs Stier, 
+ Devin J. Pohly, Sai Praneeth Reddy)
 
-
-(My apologies for not pushing the work back to suckless,
+My apologies for not pushing the work back to suckless,
 but the heavy changes and the not so simple additions
 let me seem this neither easy nor following the suckless philosophy;
-and it wouldn't be possible to submit "patches" anymore)
+and it wouldn't be possible to submit "patches" anymore.
 
 

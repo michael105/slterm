@@ -70,7 +70,9 @@ void run() {
 	clock_gettime(CLOCK_MONOTONIC, &last);
 	lastblink = last;
 
-	for (xev = (1<<actionfps_shift);;) { // main loop
+	xev = (1<<actionfps_shift);
+	while (1) { // main loop
+	//for (xev = (1<<actionfps_shift);;) { // main loop
 		FD_ZERO(&rfd);
 		FD_SET(ttyfd, &rfd);
 		FD_SET(xfd, &rfd);

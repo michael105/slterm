@@ -88,11 +88,6 @@ int kmap(KeySym k, uint state) {
 	return(0);
 }
 
-
-void keyboard_select(const Arg *dummy) {
-	win.mode ^= trt_kbdselect(-1, NULL, 0);
-}
-
 // sort the shortcuts, 
 // to be able to abort scanning through all of them for each key
 // gets callen at startup
@@ -137,6 +132,8 @@ void sort_shortcuts(){
 					*l1^=*l2; 
 					l1++; l2++;
 				} */ // doesnt work. ??? :( finally. my processor is faulty. 
+					  // (misc 24) - there seems to be a bug with the order of instruction execution
+					  // did have more trouble, also with rep mov et al
 				pt++;
 			}
 	};

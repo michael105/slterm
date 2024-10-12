@@ -2,7 +2,7 @@
 
 #include "x.h"
 
-#include "st.h"
+#include "term.h"
 
 
 #include <X11/X.h>
@@ -20,6 +20,14 @@
 Selection sel;
 XSelection xsel;
 
+static int sel_savedcursor;
+
+
+void keyboard_select(const Arg *dummy) {
+	win.mode ^= trt_kbdselect(-1, NULL, 0);
+	sel_savedcursor = xgetcursor();
+	xsetcursor(9); // empty block
+}
 
 
 void setsel(char *str, Time t) {
@@ -53,6 +61,7 @@ void selstart(int col, int row, int snap) {
 	if (sel.snap != 0) {
 		sel.mode = SEL_READY;
 	}
+	xsetcursor(2); // block
 	tsetdirt(sel.nb.y, sel.ne.y);
 }
 
@@ -101,11 +110,11 @@ void select_or_drawcursor(int selectsearch_mode, int type) {
 	int done = 0;
 
 	if (selectsearch_mode & 1) {
-		selextend(term->c.x, term->c.y, type, done);
+		selextend(term->cursor.x, term->cursor.y, type, done);
 		xsetsel(getsel());
-	} else {
-		xdrawcursor(term->c.x, term->c.y, term->line[term->c.y][term->c.x], term->ocx,
-				term->ocy, term->line[term->ocy][term->ocx]);
+	} else { //  
+		xdrawcursor(term->cursor.x, term->cursor.y, TLINE(term->cursor.y)[term->cursor.x], term->ocx,
+				term->ocy, TLINE(term->ocy)[term->ocx]);
 	}
 }
 
@@ -164,7 +173,7 @@ void search(int selectsearch_mode, Rune *target, int ptarget, int incr,
 	Rune *r;
 	int i, bound = (term->col * cu->y + cu->x) * (incr > 0) + incr;
 
-	for (i = term->col * term->c.y + term->c.x + incr; i != bound; i += incr) {
+	for (i = term->col * term->cursor.y + term->cursor.x + incr; i != bound; i += incr) {
 		for (r = target; r - target < ptarget; r++) {
 			if (*r ==
 					term->line[(i + r - target) / term->col][(i + r - target) % term->col]
@@ -183,7 +192,7 @@ void search(int selectsearch_mode, Rune *target, int ptarget, int incr,
 	}
 
 	if (i != bound) {
-		term->c.y = i / term->col, term->c.x = i % term->col;
+		term->cursor.y = i / term->col, term->cursor.x = i % term->col;
 		select_or_drawcursor(selectsearch_mode, type);
 	}
 }
@@ -407,20 +416,21 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 	switch (ksym) {
 		case -1:
 			in_use = 1;
-			cu.x = term->c.x, cu.y = term->c.y;
+			cu.x = term->cursor.x, cu.y = term->cursor.y;
 			set_notifmode(0, ksym);
 			return MODE_KBDSELECT;
 		case XK_s:
+		case XK_v:
 			if (selectsearch_mode & 1) {
 				selclear();
 			} else {
-				selstart(term->c.x, term->c.y, 0);
+				selstart(term->cursor.x, term->cursor.y, 0);
 			}
 			set_notifmode(selectsearch_mode ^= 1, ksym);
 			break;
 		case XK_t:
-			selextend(term->c.x, term->c.y, type ^= 3, i = 0); /* 2 fois */
-			selextend(term->c.x, term->c.y, type, i = 0);
+			selextend(term->cursor.x, term->cursor.y, type ^= 3, i = 0); /* 2 fois */
+			selextend(term->cursor.x, term->cursor.y, type, i = 0);
 			break;
 		case XK_slash:
 		case XK_KP_Divide:
@@ -431,16 +441,28 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			set_notifmode(15, ksym);
 			selectsearch_mode ^= 2;
 			break;
+		case XK_y:
+			if ( selectsearch_mode == 0 ){
+				selstart(0,term->cursor.y,0);
+				set_notifmode(selectsearch_mode = 1, ksym);
+				selextend(term->col-1, term->cursor.y, type, 0);
+				xsetsel(getsel());
+				break;
+			}
+			goto L_XK_Return;
+		case XK_q:
 		case XK_Escape:
 			if (!in_use) {
 				break;
 			}
 			selclear();
 		case XK_Return:
+			L_XK_Return:
 			set_notifmode(4, ksym);
-			term->c.x = cu.x, term->c.y = cu.y;
+			term->cursor.x = cu.x, term->cursor.y = cu.y;
 			select_or_drawcursor(selectsearch_mode = 0, type);
 			in_use = quant = 0;
+			xsetcursor( sel_savedcursor );
 			return MODE_KBDSELECT;
 		case XK_n:
 		case XK_N:
@@ -450,35 +472,44 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			}
 			break;
 		case XK_BackSpace:
-			term->c.x = 0;
+			term->cursor.x = 0;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_dollar:
-			term->c.x = term->col - 1;
+			term->cursor.x = term->col - 1;
+			select_or_drawcursor(selectsearch_mode, type);
+			break;
+		case XK_g:
+			term->cursor.x = 0, term->cursor.y = 0;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_Home:
-			term->c.x = 0, term->c.y = 0;
+			term->cursor.x = 0;
+			select_or_drawcursor(selectsearch_mode, type);
+			break;
+		case XK_G:
+			term->cursor.x = cu.x, term->cursor.y = cu.y;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_End:
-			term->c.x = cu.x, term->c.y = cu.y;
+			term->cursor.x = term->col-1;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
+
 		case XK_Page_Up:
 		case XK_Page_Down:
-			term->c.y = (ksym == XK_Prior) ? 0 : cu.y;
+			term->cursor.y = (ksym == XK_Prior) ? 0 : cu.y;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_exclam:
-			term->c.x = term->col >> 1;
+			term->cursor.x = term->col >> 1;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_asterisk:
 		case XK_KP_Multiply:
-			term->c.x = term->col >> 1;
+			term->cursor.x = term->col >> 1;
 		case XK_underscore:
-			term->c.y = cu.y >> 1;
+			term->cursor.y = cu.y >> 1;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		default:
@@ -496,7 +527,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 				break;
 			}
 
-			xy = (i & 1) ? &term->c.y : &term->c.x;
+			xy = (i & 1) ? &term->cursor.y : &term->cursor.x;
 			sens = (i & 2) ? 1 : -1;
 			bound = (i >> 1 ^ 1) ? 0 : (i ^ 3) ? term->col - 1 : term->bot;
 

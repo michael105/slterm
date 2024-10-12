@@ -13,7 +13,7 @@
 #include <X11/cursorfont.h>
 #include <X11/keysym.h>
 
-// Config options, C-Style syntax below
+// Config options
 
 // font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
 // defaultfont 
@@ -92,7 +92,7 @@ char *termname = "st-256color";
  * spaces per tab
  *
  * When you are changing this value, don't forget to adapt the Â»itÂ« value in
- * the st.info and appropriately install the st.info in the environment where
+ * the slterm.info and appropriately install the slterm.info in the environment where
  * you use this st version.
  *
  *	it#$tabspaces,
@@ -105,7 +105,7 @@ char *termname = "st-256color";
  */
 unsigned int tabspaces = 8;
 
-/* Terminal colors (16 first used in escape sequence) */
+
 // Outdated. the current table is below, colortablenames.
 // dgreen 036209
 // lgreen 00ff10
@@ -127,9 +127,9 @@ static const char *colorname[] = {
     "#cccccc", "#2e3440",
 };
 
-/* The table of the first 8 (32) colors. 
-	 Names are defined by xorg, and (should be) conformant with the css names.
-	 a table of colornames is in doc/colors.html.
+/* The table of the first 8 (32) colors, numbered 30..37
+	 Names are defined by xorg, and (should be) conformant with css names.
+	 a table of colornames is in doc/colornames.html, and colornames_gray.html.
  RGB in hexadecimal (#RRGGBB) is also possible.
  The table is oriented at the de facto xterm standard.
 
@@ -139,7 +139,7 @@ static const char *colorname[] = {
  > echo -e "\e[33;1m Text" shows text in red (bold)
  > echo -e "\e[33;1;2m Text" shows text in red (bold_faint)
  (30-37 is foreground,40-47 background color, according to 0..7)
- foregroundcolor 8-15 is color 0-7, bold.
+ foregroundcolor 8-15 (90..97) gets color 0-7, bold.
 
  colors 16 - 255 are colors used from xterm and calculated in colors.c/xdraw.c
   the algorithm to display faint and bold_faint colors is slightly modified
@@ -154,21 +154,29 @@ static const char* colortablenames[8][4] = {
 
 	{ "black",     	"gray50", 	"gray11",   	"darkslategray" },
 	{ "red3",      	"red",   	"darkred",  	"orangered" },
-	{ "green3", 		"green", 	"darkgreen",	"olive" },
-	{ "saddlebrown",	"yellow",	"#531818",  	"chocolate" },
-	{ "blue2",     	"#5050ff", 	"darkblue", 	"deepskyblue" },
+	{ "green3", 		"green", 	"darkgreen",	"PaleGreen" },
+	//{ "green3", 		"green", 	"darkgreen",	"olive" },
+	{ "saddlebrown",	"yellow",	"#531818",  	"orange" },
+	//{ "saddlebrown",	"yellow",	"#531818",  	"chocolate" },
+	{ "blue2",     	"#5050ff", 	"darkblue", 	"#00aaea" }, //"deepskyblue" },
 	{ "magenta3",  	"magenta", 	"darkmagenta",	"blueviolet" },
+	//{ "cyan3",     	"cyan", 		"#321680", 	"aquamarine" },
 	{ "cyan3",     	"cyan", 		"darkcyan", 	"aquamarine" },
-	{ "gray90",    	"white", 	"darkkhaki",	"silver" } };
+	{ "gray90",    	"white", 	"darkkhaki", 	"SlateGray3"  } 
+	// The default text color is "gray90" on "black"
 
-// the background colornames (40..47, and "\e[48;5;0..15m" )
+};
+
+// background colors (40..47, and 100..107 )
 static const char* bgcolornames[16] = { 
 
-	"black", "red", "green", "yellow", 
-	"blue", "magenta", "cyan", "white",
-	
-	"darkslategray", "OrangeRed", "LimeGreen", "gold", 
-	"blue4" , "magenta4", "turquoise4", "silver" 
+	"black", "DarkRed", "Green4", "saddlebrown", 
+	//"black", "OrangeRed", "Green4", "saddlebrown", 
+	"blue4" , "magenta4", "#321680", "silver",
+	//"blue4" , "magenta4", "turquoise4", "silver",
+
+	"darkslategray", "red", "green", "yellow", 
+	"blue", "magenta", "cyan", "white"
 
 };
 
@@ -177,21 +185,14 @@ static const char* bgcolornames[16] = {
 	 //"#532020", // brown
 	 //"#531818", // brown
 	 //"#562215", // brown
-    //"yellow3",
-    //"blue2",
-    //"magenta3",
-    //"cyan3",
-    //"gray90" } };
 	
 /*
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
 unsigned char defaultfg = 7;
-//unsigned int defaultfg = 7;
 unsigned char defaultbg = 0;
-//unsigned int defaultbg = 0;
-static unsigned char defaultcs = 255;
+static unsigned char defaultcs = 250;
 static unsigned char defaultrcs = 202;
 // Unfocused window
 static unsigned char unfocusedrcs = 46; //118;//226; 
@@ -214,7 +215,9 @@ static int ignoreselfg = 1;
  * 2: Block 
  * 4: Underline ("_")
  * 6: Bar ("|")
- * 7: Snowman ()
+ * 7: Block, and (X)
+ * 8: double underline
+ * 9: empty block
  */
 unsigned int cursorshape = 4;
 
@@ -234,6 +237,7 @@ static unsigned int mousebg = 0;
 
 /*
  * Xresources preferences to load at startup
+ * TODO: update this with colortablenames
  */
 #ifdef XRESOURCES
 ResourcePref resources[] = {
@@ -337,6 +341,20 @@ static MouseShortcut mshortcuts[] = {
 #define SETFONTMASK ShiftMask|Mod1Mask
 
 
+/*
+ The table of bound shortcuts and keys
+ Can be changed. 
+ The key names are in the according header file of xorg,
+ here: /usr/include/X11/keysymdef.h 
+ 
+ The first matching binding will be used,
+ the table is matched in its order here.
+ e.g.
+ Match Shift + PageUp
+ Match PageUp
+ 
+ 
+ */
 
 #ifndef extract_keyref
 Shortcut shortcuts[] = {
@@ -377,6 +395,7 @@ BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS ),
+BIND( XK_ANY_MOD, XK_space, kscrolldown, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS ),
 
@@ -390,6 +409,7 @@ BIND( TERMMOD, XK_V, clippaste, {.i = 0},ALLMODES ),
 BIND( TERMMOD, XK_Y, selpaste, {.i = 0},ALLMODES ),
 BIND( ShiftMask, XK_Insert, selpaste, {.i = 0},ALLMODES ),
 BIND( TERMMOD, XK_S, keyboard_select, { 0 },ALLMODES ),
+BIND( Mod1Mask, XK_s, keyboard_select, { 0 },ALLMODES ),
 
 BIND( TERMMOD, XK_Num_Lock, numlock, {.i = 0},ALLMODES ),
 
@@ -441,7 +461,10 @@ BIND( ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
 	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES ),
 
 BIND( ShiftMask, XK_BackSpace, retmark , { },ALLMODES ),
+BIND( ShiftMask, XK_ISO_Left_Tab, retmark, {}, ALLMODES ), // tab left <- to enter lessmode
 BIND( XK_ANY_MOD,XK_BackSpace, retmark , { },MODE_LESS ),
+BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=1 },MODE_LESS ), // tab -> to scroll down
+	// tab left or backspace and right cycle between set retmarks.
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
 //  Up and PageUp also scroll upwards
@@ -483,7 +506,7 @@ BIND( ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES ),
 #undef BIND
 
 /*
- * Special keys (change & recompile st.info accordingly)
+ * Special keys (change & recompile slterm.info accordingly)
  *
  * Mask value:
  * * Use XK_ANY_MOD to match the key no matter modifiers state
@@ -754,26 +777,6 @@ static uint selmasks[] = {
     [SEL_RECTANGULAR] = Mod1Mask,
 };
 
-/*
- * Printable characters in ASCII, used to estimate the advance width
- * of single wide characters.
- */
-#ifdef UTF8
-static char ascii_printable[]
-    = " !\"#$%&'()*+,-./0123456789:;<=>?"
-      "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
-      "`abcdefghijklmnopqrstuvwxyz{|}~";
-#else
-// no utf8, but using cp1250 (extended ascii)
-static char ascii_printable[]
-    = " !\"#$%&'()*+,-./0123456789:;<=>?"
-      "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
-      "`abcdefghijklmnopqrstuvwxyz{|}~"
-			"¡¢£¤¥¦§¨©ª«¬­®¯°±²³/µ¶·¸¹º»¼½¾¿À"
-			"ÁÂÃ}ÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕ{×ØÙÚÛ%ÝÞßà"
-			"áâã]åæçèéêëìíîï"
-			"ðñòóôõ[÷øùúû$ýþÿ";
-
 
 // select codepages
 // can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
@@ -822,7 +825,6 @@ int selected_codepage = 6;
 int selected_codepage = 2;
 #endif
 
-#endif
 
 #endif
 
