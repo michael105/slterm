@@ -1,6 +1,6 @@
 // Including all sources into a single file
 // leaves more possibilities for optimizations to the compiler.
-// Did try to split the huge st.c file,
+// Did try to split the huge term.c file,
 // but there are many globals left.
 // beware. it wasn't me.. ;misc 2021
 
@@ -13,7 +13,7 @@
 #include "includes.h"
 #include "globals.h"
 #include "arg.h"
-#include "st.h"
+#include "term.h"
 #include "x.h"
 #include "system.h"
 #include "tty.h"
@@ -33,10 +33,10 @@
 #include "globals.c"
 #include "statusbar.c"
 #include "arg.c"
-#include "st.c"
+#include "term.c"
 #include "controlchars.c"
 #include "charmaps.c"
-// termdraw needs to go after st.c .?
+// termdraw needs to go after term.c .?
 // otherweise delete and cursor keys do make trouble.
 // Not looking for the source now.
 #include "termdraw.c"

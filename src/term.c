@@ -35,8 +35,6 @@ static void csiparse(void);
 static void csireset(void);
 static int eschandle(uchar);
 static void strdump(void);
-static void term.handle(void);
-static void term.handle(void);
 static void strparse(void);
 static void strreset(void);
 

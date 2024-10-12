@@ -3,7 +3,7 @@
 
 
 #include "arg.h"
-#include "st.h"
+#include "term.h"
 #include "x.h"
 #include "fonts.h"
 #include "mem.h"

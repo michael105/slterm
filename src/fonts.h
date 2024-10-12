@@ -5,7 +5,7 @@
 #include <X11/Xft/Xft.h>
 
 #include "xevent.h"
-#include "st.h"
+#include "term.h"
 
 typedef XftGlyphFontSpec GlyphFontSpec;
 

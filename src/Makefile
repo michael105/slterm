@@ -9,14 +9,14 @@ include ../config.make
 
 
 SRC = base64.c mem.c slterm_shared.c slterm_src.c tty.c x.c main.c\
-			selection.c st.c  system.c utf8.c xevent.c fonts.c\
+			selection.c term.c  system.c utf8.c xevent.c fonts.c\
 			statusbar.c xdraw.c termdraw.c arg.c scroll.c charmaps.c mouse.c \
 			keyboard.c colors.c globals.c controlchars.c
 SRCO = base64 mem slterm tty x main  selection st  system utf8
 
 
-#SRC = st.c x.c utf8.c selection.c
-HEADER = st.h arg.h config.h utf8.h selection.h\
+#SRC = term.c x.c utf8.c selection.c
+HEADER = term.h arg.h config.h utf8.h selection.h\
 				 includes.h debug.h x.h fonts.h xevent.h statusbar.h\
 				 xdraw.h termdraw.h charmaps.h mouse.h keyboard.h scroll.h\
 				 globals.h colors.h controlchars.h
@@ -206,7 +206,7 @@ clean:
 dist: clean
 	mkdir -p slterm-$(VERSION)
 	cp -R FAQ LEGACY TODO LICENSE Makefile README \
-		slterm.info slterm.1 arg.h st.h $(SRC)\
+		slterm.info slterm.1 arg.h term.h $(SRC)\
 		slterm-$(VERSION)
 	tar -cf - slterm-$(VERSION) | gzip > slterm-$(VERSION).tar.gz
 	rm -rf slterm-$(VERSION)

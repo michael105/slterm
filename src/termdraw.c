@@ -2,7 +2,7 @@
 
 #include "termdraw.h"
 #include "utf8.h"
-#include "st.h"
+#include "term.h"
 
 /* macros */
 

@@ -2,7 +2,7 @@
 
 #include "x.h"
 
-#include "st.h"
+#include "term.h"
 
 
 #include <X11/X.h>

@@ -1,6 +1,6 @@
 
 #include "statusbar.h"
-#include "st.h"
+#include "term.h"
 #include "mem.h"
 #include "config.h"
 
