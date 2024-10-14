@@ -1,4 +1,4 @@
-// draw the cursor, 
+// cursor drawing and
 // cursor color functions
 //
 
@@ -37,7 +37,6 @@ Color *getcursorcolor( Glyph g, int cx, int cy ){
 		}
 
 	} 
-
 
 	return(col);
 }
@@ -176,15 +175,11 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					// lines at sides
 					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 							win.vborderpx + cy * win.ch, 1, win.ch);
-					//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+
 					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
 							win.vborderpx + cy * win.ch, 1, win.ch);
-					//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
-					// lower cursor part
-					//	XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-					//			(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
-					//	XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
-					//			win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
+					
+					// lower line
 					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 							win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
 
@@ -196,10 +191,10 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					// lower cursor part
 					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 								(win.vborderpx + cy * win.ch )+(win.ch*12)/16, 1, win.ch-win.ch*12/16 );
-								//(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
+
 					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
 								(win.vborderpx + cy * win.ch )+(win.ch*12)/16, 1, win.ch-win.ch*12/16 );
-								//win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
+
 					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 							win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
 
