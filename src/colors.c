@@ -38,10 +38,12 @@ Color* getcachecolor( uint fg, Glyph*g, uint winmode ){
 
 
 // Cache a color, fg: 0=bg, 1=fg, 2=cursor(fg)
-void cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){ 
-	if ( getcachecolor(fg,g,winmode) ){
+// Copies the color, and returns a pointer to the copy
+Color* cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){ 
+	Color *ret;
+	if ( (ret=getcachecolor(fg,g,winmode)) ){
 		//printf("double store\n");
-		return;
+		return( ret );
 	}
 	if ( cc_p == COLORCACHESIZE-1 ){
 		//printf("Free cachecolor\n");
@@ -54,6 +56,7 @@ void cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){
 	memcpy( cc_rc, color, sizeof(Color) );
 	cc_mode[0] = ( fg<<16 ) | ((winmode<<24)&0xff000000 ) | g->mode<<8 | ( fg==1?g->fg:g->bg);
 	//printf("cache: %d  %x\n",fg,cc_mode[cc_p]);
+	return(cc_rc);
 }
 
 

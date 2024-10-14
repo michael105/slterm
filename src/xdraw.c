@@ -313,12 +313,37 @@ Color* xdrawglyph(Glyph g, int x, int y) {
 	return( xdrawglyphfontspecs(&spec, g, numspecs, x, y) );
 }
 
+Color *getcursorcolor( Glyph g, int cx, int cy ){
+	Color *col;
+	Color drawcol;
+	if ( g.bg == defaultbg ){
+		col = &dc.col[defaultcs];
+	} else {
+		if ( !( col = getcachecolor( 2, &g, win.mode ) ) ){
+			col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+
+			// invert bgcolor
+			XRenderColor csc;
+			//#define ASB(c) csc.c = 0xff-col->color.c //~col->color.c
+#define ASB(c) csc.c = ~col->color.c
+			ASB(red);ASB(green);ASB(blue);
+#undef ASB
+			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+			col = cachecolor(2,&g,win.mode,&drawcol);
+			//col = &drawcol;
+		}
+
+	} 
+
+
+	return(col);
+}
 
 void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	Color drawcol;
 	static int focusinx, focusiny;
 	uchar tmp;
-	Color *col;
+	Color *col = 0;
 
 	// hide cursor in lessmode
 	if (inputmode&MODE_LESS && !(win.mode & MODE_KBDSELECT))
@@ -405,13 +430,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					drawcol = dc.col[1];
 					//printf("c\n");
 
-					// a cross
-					//XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw + win.cw/2 ,
-					//win.vborderpx + cy * win.ch+3, 1, win.ch-8);
-					//XftDrawRect(xw.draw, &drawcol, (win.hborderpx + cx * win.cw) + 2,
-					//win.vborderpx + cy * win.ch + (win.ch/2)-1, win.cw - 2, 1);
-					//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
-#if 0
+	#if 0
 					// upper line
 					XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
 							win.vborderpx + cy * win.ch, win.cw - 1, 1);
@@ -444,24 +463,8 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					focusinx=focusiny=0;
 					//drawcol = dc.col[defaultcs];
 
-					if ( g.bg == defaultbg ){
-						col = &dc.col[defaultcs];
-					} else {
-						if ( !( col = getcachecolor( 2, &g, win.mode ) ) ){
-						col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+					col = getcursorcolor( g, cx, cy );
 
-						// invert bgcolor
-						XRenderColor csc;
-//#define ASB(c) csc.c = 0xff-col->color.c //~col->color.c
-#define ASB(c) csc.c = ~col->color.c
-						ASB(red);ASB(green);ASB(blue);
-#undef ASB
-						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
-						cachecolor(2,&g,win.mode,&drawcol);
-						col = &drawcol;
-						}
-
-					} 
 					if ( win.cursor == 8 ){ // double underline
 						XftDrawRect(xw.draw, col, 
 							win.hborderpx + cx * win.cw,
@@ -506,17 +509,17 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 						col = &dc.col[defaultcs];
 					} else {
 						if ( !( col = getcachecolor( 2, &g, win.mode ) ) ){
-						col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
+							col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
 
-						// invert bgcolor
-						XRenderColor csc;
-//#define ASB(c) csc.c = 0xff-col->color.c //~col->color.c
+							// invert bgcolor
+							XRenderColor csc;
+							//#define ASB(c) csc.c = 0xff-col->color.c //~col->color.c
 #define ASB(c) csc.c = ~col->color.c
-						ASB(red);ASB(green);ASB(blue);
+							ASB(red);ASB(green);ASB(blue);
 #undef ASB
-						XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
-						cachecolor(2,&g,win.mode,&drawcol);
-						col = &drawcol;
+							XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+							cachecolor(2,&g,win.mode,&drawcol);
+							col = &drawcol;
 						}
 					}
 					// upper line
@@ -531,15 +534,53 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 							win.vborderpx + cy * win.ch, 1, win.ch);
 					//win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
 					// lower cursor part
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-							(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
-					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
-							win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
+					//	XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+					//			(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
+					//	XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
+					//			win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
 					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 							win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
 
+					break;
 
+			case 11: // 
+			case 10: // bar with two lines at the sides
+					col = getcursorcolor( g, cx, cy );
+					// lower cursor part
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+								(win.vborderpx + cy * win.ch )+(win.ch*12)/16, 1, win.ch-win.ch*12/16 );
+								//(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
+					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
+								(win.vborderpx + cy * win.ch )+(win.ch*12)/16, 1, win.ch-win.ch*12/16 );
+								//win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+							win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
+
+					if ( win.cursor == 10 ) 
+						break;
+			case 12:
+					if ( !col ) col = getcursorcolor( g, cx, cy );
+					// upper line
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+							win.vborderpx + cy * win.ch, win.cw - 1, 1);
+
+					// lines at sides
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
+						win.vborderpx + cy * win.ch, 1, win.ch-win.ch*12/16);
+					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
+						win.vborderpx + cy * win.ch, 1, win.ch-win.ch*12/16);
+					break;
+			case 13:  // unfinished
+					col = getcursorcolor( g, cx, cy );
+				// a cross
+					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw + win.cw/2 ,
+					win.vborderpx + cy * win.ch+3, 1, win.ch - win.ch*12/16);
+					XftDrawRect(xw.draw, col, (win.hborderpx + cx * win.cw) + 2,
+					win.vborderpx + cy * win.ch + (win.ch/2)-1, win.ch - win.ch*12/16, 1);
 				break;
+
+
+	
 		}
 	} else { // window hasn't the focus. 
 				//g.fg = unfocusedrcs;

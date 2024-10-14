@@ -330,7 +330,7 @@ void xsetmode(int set, unsigned int flags) {
 
 int xsetcursor(int cursor) {
 	DEFAULT(cursor, 1);
-	if (!BETWEEN(cursor, 0, 9))
+	if (!BETWEEN(cursor, 0, 12))
 		return 1;
 	win.cursor = cursor;
 	return 0;
