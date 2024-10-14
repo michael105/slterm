@@ -3,7 +3,7 @@
 #include "fonts.h"
 
 // Globals, used across several source files, 
-// and some global typedefs (type aliases)
+// global typedefs (type aliases), macros.
 // There might be globals left within other source files,
 // todo: keep them together here.
 
@@ -45,6 +45,33 @@ typedef unsigned short ushort;
 
 #endif
 
+
+
+#if (__SIZEOF_POINTER__==8)
+#define POINTER unsigned long
+#else
+#if (__SIZEOF_POINTER__==4)
+#define POINTER unsigned int
+#else
+#error 
+#endif
+#endif
+
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+#define MAX(a, b) ((a) < (b) ? (b) : (a))
+// Len in Bytes
+#define LEN(a) (sizeof(a) / sizeof(a)[0])
+// true, if x between a and b
+#define BETWEEN(x, a, b) ((a) <= (x) && (x) <= (b))
+// division, round upwards.
+#define DIVCEIL(n, d) (((n) + ((d)-1)) / (d))
+#define DEFAULT(a, b) (a) = (a) ? (a) : (b)
+// return x, if between a and b. else a or b.
+#define LIMIT(x, a, b) (x) = (x) < (a) ? (a) : (x) > (b) ? (b) : (x)
+
+#define TIMEDIFF(t1, t2)                                                       \
+  ((t1.tv_sec - t2.tv_sec) * 1000 + (t1.tv_nsec - t2.tv_nsec) / 1E6)
+#define MODBIT(x, set, bit) ((set) ? ((x) |= (bit)) : ((x) &= ~(bit)))
 
 extern char* argv0;
 
@@ -111,7 +138,7 @@ typedef struct {
 	//Line *helpscr;                                /* help screen */
 	TCursor cursor;                                /* cursor */
 	// TODO: strip cthist
-	int cthist; // current history, need 2cond buf for resizing
+	//int cthist; // current history, need 2cond buf for resizing
 	int row;                                  /* nb row */
 	int col;                                  /* nb col */
 	int colalloc; // allocated col. won't shrink, only enlarge. 
@@ -124,7 +151,7 @@ typedef struct {
 	int bot;                                  /* bottom scroll limit */
 	int mode;                                 /* terminal mode flags */
 	int esc;                                  /* escape state flags */
-	char trantbl[4];                          /* charset table translation */
+	char trantbl[4];                          /* charset table translation */ //unused
 	int charset;                              /* current charset */
 	int icharset;                             /* selected charset for sequence */
 	int *tabs;
@@ -155,8 +182,9 @@ static char ascii_printable[]
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~";
 #else
-// no utf8, but using extended ascii
-static char ascii_printable[]
+// no utf8, but using extended ascii.
+// unused.
+static char unused_ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
       "`abcdefghijklmnopqrstuvwxyz{|}~"

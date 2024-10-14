@@ -479,8 +479,8 @@ void tresize(int col, int row) {
 	int newline = 0;
 	int oldcol = 0;
 	int newcol = 0;
-	int newhist = !(term->cthist);
-	int oldhist = term->cthist;
+//	int newhist = !(term->cthist);
+//	int oldhist = term->cthist;
 	// delay here. Collect resize events
 	if ( term->circledhist  ){
 		oldline = (term->histi+1 > HISTSIZE ) ? 0 : (term->histi+1);
