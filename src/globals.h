@@ -102,6 +102,7 @@ typedef struct {
 	int cw;     /* char width  */
 	uint mode;   /* window state/mode flags */
 	int cursor; /* cursor style */
+	int cursor_attr[4]; // cursor attributes
 } TermWindow;
 
 extern TermWindow win;

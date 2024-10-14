@@ -15,6 +15,7 @@
 #include "arg.h"
 #include "term.h"
 #include "x.h"
+#include "xcursor.h"
 #include "system.h"
 #include "tty.h"
 #include "selection.h"

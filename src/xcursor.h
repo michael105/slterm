@@ -4,7 +4,9 @@
 #pragma once
 
 
-int xsetcursor(int cursor);
+int _xsetcursor(int cursor, int attr);
+#define __xsetcursor(_a,_b,...) _xsetcursor(_a,_b)
+#define xsetcursor(_cursor,...) __xsetcursor(_cursor,__VA_OPT__(__VA_ARGS__,) 0 )
 
 int xgetcursor();
 

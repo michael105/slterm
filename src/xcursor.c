@@ -5,11 +5,12 @@
 #include "xcursor.h"
 
 
-int xsetcursor(int cursor) {
+int _xsetcursor(int cursor, int attr) {
 	DEFAULT(cursor, 1);
 	if (!BETWEEN(cursor, 0, 12))
 		return 1;
 	win.cursor = cursor;
+	win.cursor_attr[0] = attr;
 	return 0;
 }
 
@@ -99,7 +100,10 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 		switch (win.cursor) {
 			case 7: /* st extension: snowman (U+2603) */
 				// g.u = 0x2603;
-				g.u = 'X';
+				if ( win.cursor_attr[0] )
+					g.u = win.cursor_attr[0];
+				else
+					g.u = 'X';
 				g.bg = 9;
 			case 0: /* Blinking Block */
 			case 1: /* Blinking Block */ // doesnt work out. I dislike blinking anyways.
@@ -123,6 +127,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			//}
 				xdrawglyph(g, cx, cy);
 				break;
+
 			case 3: /* Blinking Underline */
 			case 4: /* Steady Underline */
 			case 8: // double underline
@@ -160,6 +165,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 				}
 				break;
+
 			case 5: /* Blinking bar */
 			case 6: /* Steady bar */
 				col = getcursorcolor( g, cx, cy );
@@ -167,6 +173,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 				XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
 						win.vborderpx + (cy) * win.ch, cursorthickness, win.ch);
 				break;
+
 			case 9: // empty block, unfilled
 					col = getcursorcolor( g, cx, cy );
 					
@@ -202,6 +209,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 					if ( win.cursor == 10 ) 
 						break;
+
 			case 12:
 					if ( !col ) col = getcursorcolor( g, cx, cy );
 					// upper line
@@ -214,6 +222,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
 						win.vborderpx + cy * win.ch, 1, win.ch-win.ch*12/16);
 					break;
+
 			case 13:  // unfinished
 					col = getcursorcolor( g, cx, cy );
 				// a cross
