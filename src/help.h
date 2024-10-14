@@ -3,7 +3,7 @@
 // I guess, it's better to have a help screen always there,
 // when to load it (hopefully, when nothing did fuck up).
 // Especially, it's maybe 1/100 of the memory usage,
-// and furthermore quite possible shared anyways.
+// and furthermore quite possibly shared anyways.
 static char* helpcontents = "\
 \n\r\
 [36m     slterm - [00;35msl[36mim [00;35mt[36merminal emulator for X [0;0m\n\r\
@@ -68,8 +68,9 @@ scrollmarks and lessmode are disabled.\n\r\
 [1mScrolling:[0;0m\n\r\
 \n\r\
   Shift + Up/Down/PageUp/Pagedown: Scroll up/down\n\r\
-  Shift + Home/End: Scroll to top/bottom\n\r\
+  Shift + Home/End:  Scroll to top/bottom\n\r\
   Shift + Backspace: Scroll to the location of the last command (shell)\n\r\
+                      and enter lessmode\n\r\
 \n\r\
 \n\r\
 [1mClipboard:[0;0m\n\r\
@@ -218,8 +219,15 @@ All	 Shift+Alt          	 Insert     	 set_fontwidth 	\n\r\
 All	 Shift+Alt          	 Page_Down  	 zoom 	\n\r\
 All	 Shift+Alt          	 Page_Up    	 zoom 	\n\r\
 Help	 All                	 ALL_KEYS   	 dummy 	\n\r\
+Help	 All                	 Down       	 kscrolldown 	\n\r\
+Help	 All                	 End        	 scrolltobottom 	\n\r\
 Help	 All                	 Escape     	 showhelp 	\n\r\
+Help	 All                	 Home       	 scrolltotop 	\n\r\
+Help	 All                	 Page_Down  	 kscrolldown 	\n\r\
+Help	 All                	 Page_Up    	 kscrollup 	\n\r\
+Help	 All                	 Up         	 kscrollup 	\n\r\
 Help	 All                	 q          	 showhelp 	\n\r\
+Help	 All                	 space      	 kscrolldown 	\n\r\
 Less	 All                	 0          	 scrollmark 	\n\r\
 Less	 All                	 1          	 scrollmark 	\n\r\
 Less	 All                	 2          	 scrollmark 	\n\r\
@@ -247,7 +255,7 @@ Less	 Shift              	 Return     	 lessmode_toggle 	\n\r\
 [36m\n\r\
 ===============================================================================\n\r\
 \n\r\
-[37m(2019-2024 miSc, Michael 147 , started with the suckless st sources)\n\r\
+[37m(2019-2024 miSc, Michael 147, started with the suckless st sources)\n\r\
 [01;30m\n\r\
 License: MIT\n\r\
 Permission is hereby granted, free of charge, to any person obtaining a copy\n\r\

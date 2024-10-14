@@ -166,6 +166,7 @@ typedef struct {
 
 extern Term *term; 
 extern Term *p_help; 
+extern Term *p_help_storedterm; 
 extern Term *p_term; 
 extern Term *p_alt; 
 

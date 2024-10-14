@@ -362,8 +362,7 @@ Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
 
 BIND( ControlMask, XK_F1, showhelp, { 0},ALLMODES ),
-BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
-BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
+
 BIND( XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES ),
 BIND( ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES ),
 BIND( ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES ),
@@ -398,6 +397,19 @@ BIND( XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_space, kscrolldown, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS ),
+
+
+// help mode
+BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_space, kscrolldown, {.i = -1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_End, scrolltobottom, { },IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },IMODE_HELP ),
+
 
 		// abort precessing when in the help view. 
 BIND( XK_ANY_MOD, ALL_KEYS, dummy, {}, IMODE_HELP ),

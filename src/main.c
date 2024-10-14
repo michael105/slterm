@@ -80,14 +80,18 @@ void printhelp(){
 
 void usage(void) {
 	printversion();
-	die("\nusage: %s [-aiv] [-c class] [-f font] [-g geometry]"
+	die(	"\nusage:\n\n"
+			" slterm -H: show help\n"
+		  	"        -I: dump terminfo file\n"
+			"        -L display license\n\n"
+			" slterm [-aiv] [-c class] [-f font] [-g geometry]"
 			" [-n name] [-o file]\n"
-			"          [-T title] [-t title] [-w windowid]"
-			" [[-e] command [args ...]]\n"
-			"       %s [-aiv] [-c class] [-f font] [-g geometry]"
+			"        [-T title] [-t title] [-w windowid]"
+			" [[-e] command [args ...]]\n\n"
+			" slterm [-aiv] [-c class] [-f font] [-g geometry]"
 			" [-n name] [-o file]\n"
-			"          [-T title] [-t title] [-w windowid] -l line"
-			" [stty_args ...] [-x] [-v] [-V] [-X]\n",
+			"        [-T title] [-t title] [-w windowid] -l line"
+			" [stty_args ...] [-x] [-v] [-V] [-X]\n\n",
 			argv0, argv0);
 }
 
@@ -105,6 +109,21 @@ int main(int argc, char *argv[]) {
 		iofd = 1;
 
 		ARGBEGIN {
+#ifdef INCLUDETERMINFO
+			case 'I': // dump terminfo
+				write(STDOUT_FILENO, slterm_info, strlen(slterm_info) );
+				exit(0);
+#endif
+#ifdef INCLUDELICENSE
+			case 'L':
+				write(STDOUT_FILENO, slterm_license, strlen(slterm_license) );
+				exit(0);
+#endif
+#ifdef INCLUDEMANPAGE
+			case 'H':
+				write(STDOUT_FILENO, slterm_man, strlen(slterm_man) );
+				exit(0);
+#endif
 			case 'X':
 				if ( mlockall(MCL_CURRENT|MCL_FUTURE) ){
 					perror("Unable to lock memory pages into memory");
@@ -175,7 +194,7 @@ run:
 			opt_cmd = argv;
 
 		if (!opt_title)
-			opt_title = (opt_line || !opt_cmd) ? "st" : opt_cmd[0];
+			opt_title = (opt_line || !opt_cmd) ? "slterm" : opt_cmd[0];
 
 		//setlocale(LC_CTYPE, "");
 		XSetLocaleModifiers("");
