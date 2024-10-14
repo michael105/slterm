@@ -22,273 +22,59 @@ DESCRIPTION
 ===========
 
 **slterm** is a virtual terminal emulator for X
-It is a slimmed down fork of st (suckless.org),
-utf-8 and rgb support stripped for better performance,
-but with several additions and patches.
+
+It is a slimmed down descendant of st (suckless.org)
+with several additions and patches.
+
+utf-8 and rgb support are stripped for better performance and less memory usage.
 
 
-KEYS
-====
+USAGE
+=====
 
-**Ctrl-Shift-c**
-   Copy the selected text to the clipboard selection.
+The most important key combination might be
 
-**Ctrl-Shift-v**
-   Paste from the clipboard selection.
-
-**Ctrl-Shift-y**
-   Paste from primary selection (middle mouse button).
-
-**Ctrl+Shift+l**
-   Toggle "less mode": when enabled, Cursor Up/Down, PageUp/PageDown, Home/End
-   will scroll up / down, without holding Shift
-
-**Ctrl-Shift-s** 
-   Enter keyboard selection mode
-   (Described below, with a different key mapping)
-
-**Shift-PgUp/PgDown**
-   Scroll Up/Down a Page
-
-**Shift-Up/Down**
-   Scroll Up/Down three lines
-
-**Shift-Home/End**
-   Scroll to top / bottom
-
-**Break**
-   Send a break in the serial line. Break key is obtained in PC
-   keyboards pressing at the same time control and pause.
-
-**Ctrl-Print Screen**
-   Toggle if st should print to the *iofile.*
-
-**Shift-Print Screen**
-   Print the full screen to the *iofile.*
-
-**Print Screen**
-   Print the selection to the *iofile.*
-
-**Ctrl-Shift-Page Up**
-   Increase font size.
-
-**Ctrl-Shift-Page Down**
-   Decrease font size.
-
-**Ctrl-Shift-Home**
-   Reset to default font size.
-
-   
-Keybinding reference
-====================
-
-
-The keycombinations can be changed in config.h(recompile needed)
-
-
-Keystrokes 
-----------
-
-There are 3 different modes in slterm;
-regular mode, lessmode and selection mode.
-slterm is started in the regular mode.
-
-
-All modes:
-
-  * Ctrl+Shift + I: Inverse colors
-  * Ctrl+F1:    Show this help
-
-
-Set font width/size:
-
-  * Alt+Shift + Insert/Delete:   Enlarge/Shrink width
-  * Alt+Shift + PageUp/PageDown: Zoom in / out
-
-
-Select Codepage:
-
-  Ctrl+Win + 0 CP1250 
-           + 1 CP1251
-           + 2 CP1252 (this is mostly ANSI, and the 1. page of Unicode)
-           + 3 CP1253
-           + 4 CP437  (Old IBM codetable, borders and tables)
-           + 5 CP850  (DOS Standard table)
-           + 6 CP4002 (DOS Standard table)
-
-
-Regular mode:
-
-Scrolling:
-
-  * Shift + Up/Down/PageUp/Pagedown: Scroll up/down
-  * Shift + Home/End: Scroll to top/bottom
-  * Shift + Backspace: Scroll to the location of the last command (shell)
-
-
-Clipboard:
-
-  * Shift + Insert / Ctrl+Shift + y: Paste
-  * Ctrl+Shift + c: Copy 
-
-
-Scrollmarks:
-
-  * Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
-  * Ctrl + [0..9]:     Scroll to mark 0 - 9
-  * Shift + Backspace: Scroll to the last entered command (in shell)
+**Ctrl+F1** 
+  Show a help screen with all shortcuts.
 
 
 
-Lessmode:
 
-  Ctrl+Shift + Up/PageUp/l: Enter lessmode. 
+The usage of slterm differs from other terminal emulators by its different modes.
 
-  Scroll around with cursor keys, Home, End.
-  Backspace goes to the location of the last command in shell.
-  Exit with q/ESC
+In selection mode it is possible to select lines or areas (either by lines,
+or rectangular areas).
+enter with Alt+S, start selecting with v or s and the cursor keys, 
+switch between rectangular selection and line selection with t,
+copy to the clipboard with Enter.
+y selects the current line, yy (sort of vim binding) selects the current line
+and yanks it to the clipboard.
 
-  Shift+Backspace: Scroll to the location of the last entered command,
-    enter lessmode
+In lessmode it is possible to browse in the scrollback buffer via 
+the standard less like keybindings.
 
-  Shift+Enter: Execute command, enter lessmode when more than
-    one screen is displayed by the command.
+Ctrl+Shift Up/Down/PgUp/PdDown enter lessmode 
+Shift+Backspace enters lessmode and browses back to the last line, 
+a command has been entered.
 
-  * Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
-  *            [0..9]: Goto Scrollmark 0 - 9
+in lessmode, it is possible to browse between the marks of commands,
+comfirmed via enter, via Backspace or Tab left and Tab.
 
+Shift + Enter in Normal mode enters lessmode, if the output
+of a command is more than a screen.
 
-
-Selection Mode:
-
-  Ctrl+Shift + S: Enter selection mode
-
-  There are 3 submodes in selection mode:
-    - move mode : to set the start of the selection;
-    - select mode : to activate and set the end of the selection;
-    - input mode : to enter the search criteria.
-	
-
-  Shortcuts for move and select modes :
  
- *    h, j, k, l:    move cursor left/down/up/right (also with arrow keys)
- *    !, _, \*:       move cursor to the middle of the line/column/screen
- *    Backspace, $:  move cursor to the beginning/end of the line
- *    PgUp, PgDown:  move cursor to the beginning/end of the column
- *    Home, End:     move cursor to the top/bottom left corner of the screen
- *    /, ?:          activate input mode and search up/down
- *    n, N:          repeat last search, up/down
- *    s:             toggle move/selection mode
- *    t:             toggle regular/rectangular selection type
- *    Return:        quit keyboard_select, keeping the highlight of the selection
- *    Escape:        quit keyboard_select
-    
-    With h,j,k,l (also with arrow keys), you can use a quantifier.
-    Enter a number before hitting the appropriate key.
-    
+INSTALL
+=======
 
-  Shortcuts for input mode :
- 
- Return:       Return to the previous mode
- 
- 
+   If obtained from source, type make and make install.
 
-Full shortcut list 
-==================
-
-
-====      =========              ===            ========                
-Mode      Modifiers              Key            Function                 
---------------------------------------------------------
-All	 Control+Alt        	 0          	 set_scrollmark 	
-All	 Control+Alt        	 1          	 set_scrollmark 	
-All	 Control+Alt        	 2          	 set_scrollmark 	
-All	 Control+Alt        	 3          	 set_scrollmark 	
-All	 Control+Alt        	 4          	 set_scrollmark 	
-All	 Control+Alt        	 5          	 set_scrollmark 	
-All	 Control+Alt        	 6          	 set_scrollmark 	
-All	 Control+Alt        	 7          	 set_scrollmark 	
-All	 Control+Alt        	 8          	 set_scrollmark 	
-All	 Control+Alt        	 9          	 set_scrollmark 	
-All	 Control+Alt        	 Return     	 enterscroll 	
-All	 Control+Shift      	 C          	 clipcopy 	
-All	 Control+Shift      	 Down       	 lessmode_toggle 	
-All	 Control+Shift      	 Home       	 lessmode_toggle 	
-All	 Control+Shift      	 I          	 inverse_screen 	
-All	 Control+Shift      	 L          	 lessmode_toggle 	
-All	 Control+Shift      	 Num_Lock   	 numlock 	
-All	 Control+Shift      	 Page_Down  	 lessmode_toggle 	
-All	 Control+Shift      	 Page_Up    	 lessmode_toggle 	
-All	 Control+Shift      	 S          	 keyboard_select 	
-All	 Control+Shift      	 Up         	 lessmode_toggle 	
-All	 Control+Shift      	 V          	 clippaste 	
-All	 Control+Shift      	 Y          	 selpaste 	
-All	 All                	 Break      	 sendbreak 	
-All	 All                	 Print      	 printsel 	
-All	 All                	 Scroll_Lock 	 lessmode_toggle 	
-All	 Control            	 0          	 scrollmark 	
-All	 Control            	 1          	 scrollmark 	
-All	 Control            	 2          	 scrollmark 	
-All	 Control            	 3          	 scrollmark 	
-All	 Control            	 4          	 scrollmark 	
-All	 Control            	 5          	 scrollmark 	
-All	 Control            	 6          	 scrollmark 	
-All	 Control            	 7          	 scrollmark 	
-All	 Control            	 8          	 scrollmark 	
-All	 Control            	 9          	 scrollmark 	
-All	 Control            	 F1         	 showhelp 	
-All	 Control            	 Print      	 toggleprinter 	
-All	 Control+Win        	 0          	 set_charmap 	
-All	 Control+Win        	 1          	 set_charmap 	
-All	 Control+Win        	 2          	 set_charmap 	
-All	 Control+Win        	 3          	 set_charmap 	
-All	 Control+Win        	 4          	 set_charmap 	
-All	 Control+Win        	 5          	 set_charmap 	
-All	 Control+Win        	 6          	 set_charmap 	
-All	 Control+Win        	 7          	 set_charmap 	
-All	 Control+Win        	 8          	 set_charmap 	
-All	 Control+Win        	 9          	 set_charmap 	
-All	 Shift              	 BackSpace  	 retmark 	
-All	 Shift              	 Down       	 kscrolldown 	
-All	 Shift              	 End        	 scrolltobottom 	
-All	 Shift              	 Home       	 scrolltotop 	
-All	 Shift              	 Insert     	 selpaste 	
-All	 Shift              	 Page_Down  	 kscrolldown 	
-All	 Shift              	 Page_Up    	 kscrollup 	
-All	 Shift              	 Print      	 printscreen 	
-All	 Shift              	 Return     	 enterscroll 	
-All	 Shift              	 Up         	 kscrollup 	
-All	 Shift+Alt          	 Delete     	 set_fontwidth 	
-All	 Shift+Alt          	 End        	 set_fontwidth 	
-All	 Shift+Alt          	 Home       	 zoomreset 	
-All	 Shift+Alt          	 Insert     	 set_fontwidth 	
-All	 Shift+Alt          	 Page_Down  	 zoom 	
-All	 Shift+Alt          	 Page_Up    	 zoom 	
-Help	 All                	 ALL_KEYS   	 dummy 	
-Help	 All                	 Escape     	 showhelp 	
-Help	 All                	 q          	 showhelp 	
-Less	 All                	 0          	 scrollmark 	
-Less	 All                	 1          	 scrollmark 	
-Less	 All                	 2          	 scrollmark 	
-Less	 All                	 3          	 scrollmark 	
-Less	 All                	 4          	 scrollmark 	
-Less	 All                	 5          	 scrollmark 	
-Less	 All                	 6          	 scrollmark 	
-Less	 All                	 7          	 scrollmark 	
-Less	 All                	 8          	 scrollmark 	
-Less	 All                	 9          	 scrollmark 	
-Less	 All                	 BackSpace  	 retmark 	
-Less	 All                	 Down       	 kscrolldown 	
-Less	 All                	 End        	 scrolltobottom 	
-Less	 All                	 Escape     	 lessmode_toggle 	
-Less	 All                	 Home       	 scrolltotop 	
-Less	 All                	 Page_Down  	 kscrolldown 	
-Less	 All                	 Page_Up    	 kscrollup 	
-Less	 All                	 Up         	 kscrollup 	
-Less	 All                	 q          	 lessmode_toggle 	
-Less	 Shift              	 Return     	 lessmode_toggle 	
-
-
+   If you downloaded the statically linked binary,
+   - copy the binary to a suitable place (/usr/local/bin)
+   - install the terminal info file, if needed: (for curses) slterm -I > slterm.info; tic -sx slterm.info
+   If needed, download the man page (slterm.1) 
+   of the current version from github (github.com/michael105/slterm)
+   and copy into the appropiate directory.
 
 
 OPTIONS
@@ -301,7 +87,7 @@ OPTIONS
    defines the window class (default $TERM).
 
 **-f** *font*
-   defines the *font* to use when st is run.
+   defines the *font* to use when slterm is run.
 
 **-g** *geometry*
    defines the X11 geometry string. The form is
@@ -316,28 +102,28 @@ OPTIONS
 
 **-o** *iofile*
    writes all the I/O to *iofile.* This feature is useful when recording
-   st sessions. A value of "-" means standard output.
+   slterm sessions. A value of "-" means standard output.
 
 **-T** *title*
-   defines the window title (default 'st').
+   defines the window title (default 'slterm').
 
 **-t** *title*
-   defines the window title (default 'st').
+   defines the window title (default 'slterm').
 
 **-w** *windowid*
-   embeds st within the window identified by *windowid*
+   embeds slterm within the window identified by *windowid*
 
 **-l** *line*
    use a tty *line* instead of a pseudo terminal. *line* should be a
    (pseudo-)serial device (e.g. /dev/ttyS0 on Linux for serial port 0).
    When this flag is given remaining arguments are used as flags for
-   **stty(1).** By default st initializes the serial line to 8 bits, no
+   **stty(1).** By default slterm initializes the serial line to 8 bits, no
    parity, 1 stop bit and a 38400 baud rate. The speed is set by
-   appending it as last argument (e.g. 'st -l /dev/ttyS0 115200').
+   appending it as last argument (e.g. 'slterm -l /dev/ttyS0 115200').
    Arguments before the last one are **stty(1)** flags. If you want to
-   set odd parity on 115200 baud use for example 'st -l /dev/ttyS0
+   set odd parity on 115200 baud use for example 'slterm -l /dev/ttyS0
    parenb parodd 115200'. Set the number of bits by using for example
-   'st -l /dev/ttyS0 cs7 115200'. See **stty(1)** for more arguments and
+   'slterm -l /dev/ttyS0 cs7 115200'. See **stty(1)** for more arguments and
    cases.
 
 **-v**
@@ -347,7 +133,7 @@ OPTIONS
    prints version and compile information, then exits
 
 **-e** *command* **[** *arguments* **... ]**
-   st executes *command* instead of the shell. If this is used it **must
+   slterm executes *command* instead of the shell. If this is used it **must
    be the last option** on the command line, as in xterm / rxvt. This
    option is only intended for compatibility, and all the remaining
    arguments are used as a command even without it.
@@ -362,45 +148,6 @@ OPTIONS
    is swapped to disk. Worse, with flash disks also erasing
    the contents will not necessarily erase the written cells.
    This option locks all memory pages into ram.
-
-
-Keyboard selection mode
-=======================
-
-(Patch by Tonton Couillon - la dot luge at free dot fr)
-   
-When you run "keyboard\_select", you have 3 modes available:
-
-  - move mode:    to set the start of the selection;
-  - select mode:  to activate and set the end of the selection;
-  - input mode:   to enter the search criteria.
-
-Shortcuts for move and select modes:
-    
-(TODO: update keys)   
-:h, j, k, l:      move cursor left/down/up/right (also with arrow keys)
-:!, _, \*:        move cursor to the middle of the line/column/screen
-:Backspace, $:    move cursor to the beginning/end of the line
-:Home,end:        move cursor to the beginning/end of the row
-:PgUp,PgDown:     move cursor to the top/bottom of the screen
-:/, ?:            activate input mode and search up/down
-:n, N:            repeat last search, up/down
-:s,v:             toggle move/selection mode
-:y:               highlight current line and enter selectmode
-
-selectmode:
-:t:               toggle regular/rectangular selection type
-:Return,y:        quit keyboard_select, keeping the highlight of the selection
-:Escape:          quit keyboard_select
- 
-      
-
-With h,j,k,l (also with arrow keys), you can use a quantifier. Enter a
-number before hitting the appropriate key.
-
-Shortcuts for input mode:
-
-Return:       Return to the previous mode
 
 
 
@@ -419,9 +166,10 @@ AUTHORS
 The code is based on st, the suckless terminal emulator,
 fetched from git 1.1.2020, which was based on code from Aurelien Aptel.
 
-The patches to st had been provided by: 
+The patches to slterm had been provided by: 
 
 Tonton Couillon,
+dcat, 
 Jochen Sprickerhof,
 M Farkas-Dyck,
 Ivan Tham,
@@ -430,7 +178,6 @@ Matthias Schoth,
 Laslo Hunhold,
 Paride Legovini,
 Lorenzo Bracco,
-variable for config),
 Kamil Kleban,
 Avi Halachmi,
 Jacob Prosser,
@@ -448,7 +195,7 @@ Sai Praneeth Reddy
 LICENSE
 =======
 
-MIT, see the LICENSE file for the terms of redistribution.
+MIT, see the LICENSE file for the terms of redistribution or type slterm -L
 
 SEE ALSO
 ========
