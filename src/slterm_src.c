@@ -47,6 +47,7 @@
 #include "selection.c"
 #include "colors.c"
 #include "x.c"
+#include "xcursor.c"
 #include "xevent.c"
 #include "mouse.c"
 #include "keyboard.c"
