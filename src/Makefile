@@ -95,8 +95,8 @@ all: slterm man
 static:
 	gcc -o slterm slterm_src.c \
 		-I/usr/X11R6/include -I/usr/include/uuid -I/usr/include/freetype2 \
-		-I/usr/include/freetype2 -DVERSION=\"0.98\" -D_XOPEN_SOURCE=600 \
-		-DHISTSIZEBITS=14 -DENABLEDEBUG=0 -DDEBUG_INCLUDESRC \
+		-I/usr/include/freetype2 -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 \
+		-DHISTSIZEBITS=$(HISTSIZEBITS) -DENABLEDEBUG=0 -DDEBUG_INCLUDESRC \
 		-Wl,-O1,--gc-sections,--start-group -lxcb -lXau -lc -lXdmcp -lbsd \
 		-lXft -lfontconfig -lfreetype -lbz2 -lpng16 -lz -lexpat -luuid \
 		-lintl -liconv -lXrender -lX11  \

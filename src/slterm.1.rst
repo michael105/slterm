@@ -22,9 +22,11 @@ DESCRIPTION
 ===========
 
 **slterm** is a virtual terminal emulator for X
-It is a slimmed down fork of st (suckless.org),
-utf-8 and rgb support stripped for better performance,
+
+It is a slimmed down descendant of st (suckless.org)
 but with several additions and patches.
+
+utf-8 and rgb support are stripped for better performance.
 
 
 KEYS
@@ -97,7 +99,7 @@ slterm is started in the regular mode.
 All modes:
 
   * Ctrl+Shift + I: Inverse colors
-  * Ctrl+F1:    Show this help
+  * Ctrl+F1:    Show inline help
 
 
 Set font width/size:

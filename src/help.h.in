@@ -3,7 +3,7 @@
 // I guess, it's better to have a help screen always there,
 // when to load it (hopefully, when nothing did fuck up).
 // Especially, it's maybe 1/100 of the memory usage,
-// and furthermore quite possible shared anyways.
+// and furthermore quite possibly shared anyways.
 static char* helpcontents = "\
 \n\r\
 [36m     slterm - [00;35msl[36mim [00;35mt[36merminal emulator for X [0;0m\n\r\
