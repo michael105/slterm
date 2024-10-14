@@ -26,6 +26,7 @@
 	  (0..7 with attributes normal, bold, faint, bold_faint)
 	  and the first 16 background colors.
 	* Copy whole lines in the history with 'yy'
+	* Several nonstandard cursor shapes
 
 
 Statically linked binary, with all runtime dependencies (3.5M)
@@ -250,10 +251,9 @@ If you'd like to change anything, please edit config.h and config.make
 
 
 Switching back and forth from alt screen does reset the cursor position,
-but doesn't clear the screen.
+but doesn't clear the screen for remote ssh sessions.
 
-There might be some trouble with scrolling, when the history is circled.
-The trouble might be every HISTSIZE's line, default: 32768.
+Retmarks aren't accurate for every 65536 lines.
 
 No UTF8
 UTF-8 currently would need some work,
