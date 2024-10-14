@@ -109,8 +109,11 @@ int xloadfont(Font *f, FcPattern *pattern) {
 		}
 	}
 
-	//		XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
-	//						strlen(ascii_printable), &extents);
+#ifdef UTF8
+			XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
+							strlen(ascii_printable), &extents);
+#else
+			// todo the codepoints of the current charmap would be needed here.
 	char printable[255];
 	int p = 0;
 	for ( int a = 32; a<127; a++) 
@@ -122,6 +125,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 
 	XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)printable,
 			sizeof(printable), &extents);
+#endif
 
 
 

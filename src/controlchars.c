@@ -454,7 +454,7 @@ unknown:
 		case ' ':
 			switch (csiescseq.mode[1]) {
 				case 'q': /* DECSCUSR -- Set Cursor Style */
-					if (xsetcursor(csiescseq.arg[0])) {
+					if (xsetcursor(csiescseq.arg[0], csiescseq.arg[1] )) {
 						goto unknown;
 					}
 					break;

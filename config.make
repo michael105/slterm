@@ -13,19 +13,19 @@ FULLDEBUG := 0
 
 
 # version
-VERSION := 0.99.2rc1
+VERSION := 0.99.2.rc2
 
 # Set to 1 enable Xresource configuration
 # (in addition, slterm has to be started with the option "-x on")
 XRESOURCES := 0
 
 # utf8-support (currently abandoned. Will not work )
-UTF8 := 0
+#UTF8 := 0
 
 # Length of history, in bits, -> log(size in lines) ~ bits */
 # 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
-HISTSIZEBITS := 14
-#HISTSIZEBITS = 6
+HISTSIZEBITS := 16
+#HISTSIZEBITS = 7
 
 # opt Flag. -O2 might be save, -O3 sometimes gives troubles
 OPT_FLAG := -Os 

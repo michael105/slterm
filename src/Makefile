@@ -11,15 +11,13 @@ include ../config.make
 SRC = base64.c mem.c slterm_shared.c slterm_src.c tty.c x.c main.c\
 			selection.c term.c  system.c utf8.c xevent.c fonts.c\
 			statusbar.c xdraw.c termdraw.c arg.c scroll.c charmaps.c mouse.c \
-			keyboard.c colors.c globals.c controlchars.c
-SRCO = base64 mem slterm tty x main  selection st  system utf8
+			keyboard.c colors.c globals.c controlchars.c xcursor.c
 
 
-#SRC = term.c x.c utf8.c selection.c
 HEADER = term.h arg.h config.h utf8.h selection.h\
 				 includes.h debug.h x.h fonts.h xevent.h statusbar.h\
 				 xdraw.h termdraw.h charmaps.h mouse.h keyboard.h scroll.h\
-				 globals.h colors.h controlchars.h
+				 globals.h colors.h controlchars.h xcursor.h
 
 
 
@@ -97,8 +95,8 @@ all: slterm man
 static:
 	gcc -o slterm slterm_src.c \
 		-I/usr/X11R6/include -I/usr/include/uuid -I/usr/include/freetype2 \
-		-I/usr/include/freetype2 -DVERSION=\"0.98\" -D_XOPEN_SOURCE=600 \
-		-DHISTSIZEBITS=14 -DENABLEDEBUG=0 -DDEBUG_INCLUDESRC \
+		-I/usr/include/freetype2 -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 \
+		-DHISTSIZEBITS=$(HISTSIZEBITS) -DENABLEDEBUG=0 -DDEBUG_INCLUDESRC \
 		-Wl,-O1,--gc-sections,--start-group -lxcb -lXau -lc -lXdmcp -lbsd \
 		-lXft -lfontconfig -lfreetype -lbz2 -lpng16 -lz -lexpat -luuid \
 		-lintl -liconv -lXrender -lX11  \

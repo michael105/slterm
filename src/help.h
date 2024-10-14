@@ -247,7 +247,7 @@ Less	 Shift              	 Return     	 lessmode_toggle 	\n\r\
 [36m\n\r\
 ===============================================================================\n\r\
 \n\r\
-[37m(2019-2024 miSc, Michael 147, started with the suckless st sources)\n\r\
+[37m(2019-2024 miSc, Michael 147 , started with the suckless st sources)\n\r\
 [01;30m\n\r\
 License: MIT\n\r\
 Permission is hereby granted, free of charge, to any person obtaining a copy\n\r\
