@@ -2,6 +2,8 @@
 // cursor color functions
 //
 
+#include "xcursor.h"
+
 
 int xsetcursor(int cursor) {
 	DEFAULT(cursor, 1);
