@@ -1,6 +1,9 @@
 #ifndef utf8_h
 #define utf8_h
 
+#include <stddef.h>
+
+
 #ifdef UTF8
 typedef uint_least32_t Rune;
 #else

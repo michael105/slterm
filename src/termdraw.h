@@ -1,0 +1,38 @@
+#ifndef termdraw_h
+#define termdraw_h
+
+
+
+
+void ttywrite(const utfchar *, size_t, int);
+void tsetdirtattr(int);
+int tattrset(int);
+int twrite(const utfchar *, int, int);
+void tsetdirt(int, int);
+
+void tdeletechar(int);
+void tdeleteline(int);
+void tinsertblank(int);
+void tinsertblankline(int);
+void tdumpline(int);
+void tdump(void);
+
+void tprinter(char *s, size_t len);
+
+
+void tclearregion(int, int, int, int);
+
+void tfulldirt(void);
+
+
+
+void tputtab(int);
+void tputc(Rune);
+void tsetattr(int *, int);
+void tsetchar(Rune, Glyph *, int, int);
+
+
+
+
+#endif
+

@@ -1,0 +1,7 @@
+German umlauts,
+encoded with CP1252 (ANSI)
+
+ִײÜ
+הצü
+ß
+

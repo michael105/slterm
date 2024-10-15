@@ -1,7 +1,7 @@
 #include <sys/types.h>
 
 #include "utf8.h"
-#include "st.h"
+#include "term.h"
 
 #ifdef UTF8
 static uchar utfbyte[UTF_SIZ + 1] = {0x80,    0, 0xC0, 0xE0, 0xF0};

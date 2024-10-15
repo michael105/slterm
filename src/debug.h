@@ -348,7 +348,7 @@ extern "C" {
 #define warn(...) _warning( WARNING, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__ )
 #define warnif(when,...) {if ( when ) warn(__VA_ARGS__);}
 
-#define error(...) _error( SEVERE, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__ )
+#define derror(...) _error( SEVERE, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__ )
 #define fatal(...) _error( FATAL, __FILE__, __LINE__, __FUNCTION__, __VA_ARGS__ )
 #define errorif(when,...) {if ( when ) warning(__VA_ARGS__)}
 #define fatalif(when,...) {if ( when ) fatal(__VA_ARGS__)}
