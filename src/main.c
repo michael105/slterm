@@ -3,7 +3,7 @@
 //
 //
 
-#include "x.h"
+#include "xwindow.h"
 #include "xevent.h"
 #include "includes.h"
 #include "scroll.h"

@@ -4,7 +4,7 @@
 
 #include "arg.h"
 #include "term.h"
-#include "x.h"
+#include "xwindow.h"
 #include "fonts.h"
 #include "mem.h"
 #include "scroll.h"

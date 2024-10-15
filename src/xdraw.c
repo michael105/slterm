@@ -1,6 +1,6 @@
 #include "xdraw.h"
 
-#include "x.h"
+#include "xwindow.h"
 
 
 DC dc;

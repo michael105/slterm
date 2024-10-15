@@ -5,7 +5,7 @@
 
 #include "includes.h"
 #include "fonts.h"
-#include "x.h"
+#include "xwindow.h"
 #include "config.h"
 
 

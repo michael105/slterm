@@ -10,7 +10,7 @@
 #include "debug.h"
 #include "termdraw.h"
 #include "xevent.h"
-#include "x.h"
+#include "xwindow.h"
 
 void ttyhangup() {
 	/* Send SIGHUP to shell */

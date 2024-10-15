@@ -8,14 +8,14 @@
 include ../config.make
 
 
-SRC = base64.c mem.c slterm_shared.c slterm_src.c tty.c x.c main.c\
+SRC = base64.c mem.c slterm_shared.c slterm_src.c tty.c xwindow.c main.c\
 			selection.c term.c  system.c utf8.c xevent.c fonts.c\
 			statusbar.c xdraw.c termdraw.c arg.c scroll.c charmaps.c mouse.c \
 			keyboard.c colors.c globals.c controlchars.c xcursor.c
 
 
 HEADER = term.h arg.h config.h utf8.h selection.h\
-				 includes.h debug.h x.h fonts.h xevent.h statusbar.h\
+				 includes.h debug.h xwindow.h fonts.h xevent.h statusbar.h\
 				 xdraw.h termdraw.h charmaps.h mouse.h keyboard.h scroll.h\
 				 globals.h colors.h controlchars.h xcursor.h
 

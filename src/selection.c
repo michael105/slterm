@@ -1,6 +1,6 @@
 // selection.c
 
-#include "x.h"
+#include "xwindow.h"
 
 #include "term.h"
 

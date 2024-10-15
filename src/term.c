@@ -1,7 +1,7 @@
 /* See LICENSE for license details. */
 
 #include "term.h"
-#include "x.h"
+#include "xwindow.h"
 #include "selection.h"
 #include "scroll.h"
 #include "mem.h"
