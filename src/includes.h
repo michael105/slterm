@@ -26,6 +26,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <strings.h>
 
 #include <errno.h>
 #include <libgen.h>

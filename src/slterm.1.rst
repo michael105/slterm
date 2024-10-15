@@ -59,7 +59,7 @@ Scroll back to a bookmark with `Ctrl+0..9`
 lessmode
 --------
 
-In lessmode it is possible to browse in the scrollback buffer via 
+In lessmode it is possible to browse the scrollback buffer via 
 the standard less like keybindings.
 
 `Ctrl+Shift Up/Down/PgUp/PdDown` enter lessmode 
@@ -81,7 +81,9 @@ or rectangular areas).
 enter with `Alt+S`, start selecting with `v` or `s` and the cursor keys, 
 switch between rectangular selection and line selection with `t`,
 copy to the clipboard with `Enter`.
-`y` selects the current line, `yy` (sort of vim binding) selects the current line
+`y` selects the current line, hit `y` with a active selection yanks the
+selection to the clipboard and exits selection mode,
+`yy` (sort of vim binding) selects the current line
 and yanks it to the clipboard.
 
  

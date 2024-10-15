@@ -2,6 +2,10 @@ $YELLOW Keybinding reference $NORM
 
 The keycombinations can be changed in config.h(recompile needed)
 
+For other information please have a look into the man page,
+also accessible with 'slterm -H'
+
+
 $YELLOW Keystrokes $NORM
 
 ${GRAY}There are 4 different modes in slterm;
@@ -105,8 +109,12 @@ $BOLD${UL}${LGREEN}Selection Mode:$N
 					 (yy means yank the current line)
  /, ?:          activate input mode and search up/down
  n, N:          repeat last search, up/down
- s,v:           toggle move/selection mode
+
+ s:             toggle move/selection mode
+ v/V:           toggle move/selection mode, select regular/rectangular type
  t:             toggle regular/rectangular selection type
+
+ p:             quit keyboard_select, copy and paste selection
  Return:        quit keyboard_select, copy selection to clipboard
  Escape:        quit keyboard_select
  

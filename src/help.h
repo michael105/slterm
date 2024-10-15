@@ -31,6 +31,10 @@ A: 0=normal, 1=light, 2=dark\n\r\
 \n\r\
 The keycombinations can be changed in config.h(recompile needed)\n\r\
 \n\r\
+For other information please have a look into the man page,\n\r\
+also accessible with 'slterm -H'\n\r\
+\n\r\
+\n\r\
 [01;33m Keystrokes [0;0m\n\r\
 \n\r\
 [01;30mThere are 4 different modes in slterm;\n\r\
@@ -134,8 +138,12 @@ scrollmarks and lessmode are disabled.\n\r\
 					 (yy means yank the current line)\n\r\
  /, ?:          activate input mode and search up/down\n\r\
  n, N:          repeat last search, up/down\n\r\
- s,v:           toggle move/selection mode\n\r\
+\n\r\
+ s:             toggle move/selection mode\n\r\
+ v/V:           toggle move/selection mode, select regular/rectangular type\n\r\
  t:             toggle regular/rectangular selection type\n\r\
+\n\r\
+ p:             quit keyboard_select, copy and paste selection\n\r\
  Return:        quit keyboard_select, copy selection to clipboard\n\r\
  Escape:        quit keyboard_select\n\r\
  \n\r\
