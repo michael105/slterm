@@ -24,6 +24,7 @@ typedef struct {
 
 // save different inputmodes
 extern int inputmode;
+extern int help_storedinputmode;
 
 
 /* X modifiers */

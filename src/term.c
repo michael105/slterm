@@ -214,7 +214,9 @@ void showhelp(const Arg *a) {
 		Arg a = { .i=LESSMODE_ON };
 		lessmode_toggle( &a );
 
+		help_storedinputmode = inputmode;
 		inputmode = inputmode | IMODE_HELP;
+		inputmode = inputmode & ~(MODE_LESS);
 		//inputmode = inputmode | MODE_LESS | IMODE_HELP;
 		term->mode = term->mode | TMODE_HELP;
 		//enterscroll(&a);
@@ -223,7 +225,9 @@ void showhelp(const Arg *a) {
 		scrolltotop();
 
 	} else { //help is visible. toggle back to term.
-		inputmode = inputmode & ~(MODE_LESS | IMODE_HELP);
+		//inputmode = inputmode & ~(IMODE_HELP);
+		inputmode = help_storedinputmode;
+		//inputmode = inputmode & ~(MODE_LESS | IMODE_HELP);
 		showstatus(0,0);
 		term = p_help_storedterm;
 		Arg a = { .i=LESSMODE_OFF };
