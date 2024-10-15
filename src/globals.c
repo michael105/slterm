@@ -17,7 +17,7 @@ int enterlessmode;
 
 
 XWindow xw;
-TermWindow win;
+TermWindow twin;
 
 
 

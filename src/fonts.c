@@ -200,10 +200,10 @@ void xloadfonts(char *fontstr, double fontsize) {
 	}
 
 	/* Setting character width and height. */
-	win.cw = ceilf(dc.font.width * cwscale);
-	win.ch = ceilf(dc.font.height * chscale);
+	twin.cw = ceilf(dc.font.width * cwscale);
+	twin.ch = ceilf(dc.font.height * chscale);
 
-	borderpx = ceilf(((float)borderperc / 100) * win.cw);
+	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
 	FcPatternDel(pattern, FC_SLANT);
 	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
@@ -243,12 +243,12 @@ void xunloadfonts(void) {
 
 int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		int x, int y) {
-	float winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
+	float winx = twin.hborderpx + x * twin.cw, winy = twin.vborderpx + y * twin.ch,
 	xp, yp;
 	ushort mode, prevmode = USHRT_MAX;
 	Font *font = &dc.font;
 	int frcflags = FRC_NORMAL;
-	float runewidth = win.cw;
+	float runewidth = twin.cw;
 	//Rune rune;
 	uint rune;
 	FT_UInt glyphidx;
@@ -275,9 +275,9 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			font = &dc.font;
 			frcflags = FRC_NORMAL;
 #ifdef UTF8
-			runewidth = win.cw * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
+			runewidth = twin.cw * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
 #else
-			runewidth = win.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
+			runewidth = twin.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
 #endif
 			if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD)) {
 				font = &dc.ibfont;

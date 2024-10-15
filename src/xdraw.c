@@ -53,8 +53,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #else
 	int charlen = len;// * ((base.mode & ATTR_WIDE) ? 2 : 1);
 #endif
-	int winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
-		 width = charlen * win.cw;
+	int winx = twin.hborderpx + x * twin.cw, winy = twin.vborderpx + y * twin.ch,
+		 width = charlen * twin.cw;
 	Color *fg, *bg, revfg, revbg, truefg, truebg, *cltmp;
 	XRenderColor colfg, colbg;
 	XRectangle r;
@@ -73,15 +73,15 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	}
 
 	//get colors from cache, if present
-	if (  !(win.mode & MODE_FOCUSED) || IS_SET(MODE_REVERSE) ){
-		if ( ( bg =getcachecolor( 0, &base,win.mode ) ) )
+	if (  !(twin.mode & MODE_FOCUSED) || IS_SET(MODE_REVERSE) ){
+		if ( ( bg =getcachecolor( 0, &base,twin.mode ) ) )
 			bgcache = 1;
-		if ( ( fg =getcachecolor( 1, &base,win.mode ) ) )
+		if ( ( fg =getcachecolor( 1, &base,twin.mode ) ) )
 			fgcache = 1;
 	} else {
 		if ( base.mode& (ATTR_BOLD|ATTR_FAINT) ){
 			if ( base.fg>15 )
-				if ( ( fg =getcachecolor( 1, &base,win.mode ) ) )
+				if ( ( fg =getcachecolor( 1, &base,twin.mode ) ) )
 					fgcache = 1;
 		}
 	}
@@ -169,7 +169,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 #define CLFA 24000
 	// Change colors on focusout
-	if ( !(win.mode & MODE_FOCUSED) ){
+	if ( !(twin.mode & MODE_FOCUSED) ){
 		/*colfg.red = fg->color.red / 2;
 		  colfg.green = fg->color.green / 4 * 3;
 		  colfg.blue = fg->color.blue / 4 * 3;*/
@@ -237,7 +237,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		fg = bg; // top secret
 
 
-	if (base.mode & ATTR_BLINK && win.mode & MODE_BLINK){
+	if (base.mode & ATTR_BLINK && twin.mode & MODE_BLINK){
 		if ( base.mode & ATTR_REVERSE ){ // blink by reversing colors
 			cltmp = bg;
 			bg = fg;
@@ -247,28 +247,28 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	/* Intelligent cleaning up of the borders. */
 	if (x == 0) {
-		xclear(0, (y == 0) ? 0 : winy, win.vborderpx,
-				winy + win.ch +
-				((winy + win.ch >= win.vborderpx + win.th) ? win.h : 0));
+		xclear(0, (y == 0) ? 0 : winy, twin.vborderpx,
+				winy + twin.ch +
+				((winy + twin.ch >= twin.vborderpx + twin.th) ? twin.h : 0));
 	}
-	if (winx + width >= win.hborderpx + win.tw) {
+	if (winx + width >= twin.hborderpx + twin.tw) {
 		xclear(
-				winx + width, (y == 0) ? 0 : winy, win.w,
-				((winy + win.ch >= win.vborderpx + win.th) ? win.h : (winy + win.ch)));
+				winx + width, (y == 0) ? 0 : winy, twin.w,
+				((winy + twin.ch >= twin.vborderpx + twin.th) ? twin.h : (winy + twin.ch)));
 	}
 	if (y == 0)
-		xclear(winx, 0, winx + width, win.hborderpx);
-	if (winy + win.ch >= win.vborderpx + win.th)
-		xclear(winx, winy + win.ch, winx + width, win.h);
+		xclear(winx, 0, winx + width, twin.hborderpx);
+	if (winy + twin.ch >= twin.vborderpx + twin.th)
+		xclear(winx, winy + twin.ch, winx + width, twin.h);
 
 
 	/* Clean up the region we want to draw to. */
-	XftDrawRect(xw.draw, bg, winx, winy, width, win.ch);
+	XftDrawRect(xw.draw, bg, winx, winy, width, twin.ch);
 
 	/* Set the clip region because Xft is sometimes dirty. */
 	r.x = 0;
 	r.y = 0;
-	r.height = win.ch;
+	r.height = twin.ch;
 	r.width = width;
 	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
 
@@ -294,11 +294,11 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	// free colors, if allocated and not in one of the tables
 	if ( !fgcache && (fg == &revfg || fg == &revbg) && fg!=bg )
-		cachecolor( base.mode & ATTR_REVERSE? 0:1, &base, win.mode, fg );
+		cachecolor( base.mode & ATTR_REVERSE? 0:1, &base, twin.mode, fg );
 			//XftColorFree(xw.dpy, xw.vis, xw.cmap, &revfg);
 
 	if ( !bgcache && (bg == &revbg || bg == &revfg) )
-		cachecolor( base.mode & ATTR_REVERSE? 1:0, &base, win.mode, bg );
+		cachecolor( base.mode & ATTR_REVERSE? 1:0, &base, twin.mode, bg );
 		//	XftColorFree(xw.dpy, xw.vis, xw.cmap, &revbg);
 
 
@@ -316,7 +316,7 @@ Color* xdrawglyph(Glyph g, int x, int y) {
 int xstartdraw(void) { return IS_SET(MODE_VISIBLE); }
 
 void xfinishdraw(void) {
-	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, win.w, win.h, 0, 0);
+	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, twin.w, twin.h, 0, 0);
 	XSetForeground(xw.dpy, dc.gc,
 			dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg].pixel);
 }

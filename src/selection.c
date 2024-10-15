@@ -24,7 +24,7 @@ static int sel_savedcursor;
 
 
 void keyboard_select(const Arg *dummy) {
-	win.mode ^= trt_kbdselect(-1, NULL, 0);
+	twin.mode ^= trt_kbdselect(-1, NULL, 0);
 	sel_savedcursor = xgetcursor();
 	xsetcursor(11); // empty block
 }

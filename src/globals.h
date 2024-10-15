@@ -105,7 +105,7 @@ typedef struct {
 	int cursor_attr[4]; // cursor attributes
 } TermWindow;
 
-extern TermWindow win;
+extern TermWindow twin;
 
 // The xwindow data
 typedef struct {

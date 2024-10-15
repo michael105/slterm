@@ -267,7 +267,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 
 #define CLFA 24000
 	// Change colors on focusout
-	if ( !(win.mode & MODE_FOCUSED) ){
+	if ( !(twin.mode & MODE_FOCUSED) ){
 		/*colfg.red = fg->color.red / 2;
 		  colfg.green = fg->color.green / 4 * 3;
 		  colfg.blue = fg->color.blue / 4 * 3;*/
@@ -326,7 +326,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 		//				bg = &revbg;
 	}
 
-	if (base->mode & ATTR_BLINK && win.mode & MODE_BLINK)
+	if (base->mode & ATTR_BLINK && twin.mode & MODE_BLINK)
 		fg = bg;
 
 	if (base->mode & ATTR_INVISIBLE)

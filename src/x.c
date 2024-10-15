@@ -36,7 +36,7 @@ typedef struct {
 #ifdef IS_SET
 #undef IS_SET
 #endif
-#define IS_SET(flag) ((win.mode & (flag)) != 0)
+#define IS_SET(flag) ((twin.mode & (flag)) != 0)
 
 int xgeommasktogravity(int);
 void ximopen(Display *);
@@ -54,32 +54,32 @@ void cresize(int width, int height) {
 	int col, row;
 
 	if (width != 0)
-		win.w = width;
+		twin.w = width;
 	if (height != 0)
-		win.h = height;
+		twin.h = height;
 
-	col = (win.w - 2 * borderpx) / win.cw;
-	row = (win.h - 2 * borderpx) / win.ch;
+	col = (twin.w - 2 * borderpx) / twin.cw;
+	row = (twin.h - 2 * borderpx) / twin.ch;
 	col = MAX(1, col);
 	row = MAX(1, row);
 
-	win.hborderpx = (win.w - col * win.cw) / 2;
-	win.vborderpx = (win.h - row * win.ch) / 2;
+	twin.hborderpx = (twin.w - col * twin.cw) / 2;
+	twin.vborderpx = (twin.h - row * twin.ch) / 2;
 
 	tresize(col, row);
 	xresize(col, row);
-	ttyresize(win.tw, win.th);
+	ttyresize(twin.tw, twin.th);
 }
 
 void xresize(int col, int row) {
-	win.tw = col * win.cw;
-	win.th = row * win.ch;
+	twin.tw = col * twin.cw;
+	twin.th = row * twin.ch;
 
 	XFreePixmap(xw.dpy, xw.buf);
 	xw.buf =
-		XCreatePixmap(xw.dpy, xw.win, win.w, win.h, DefaultDepth(xw.dpy, xw.scr));
+		XCreatePixmap(xw.dpy, xw.win, twin.w, twin.h, DefaultDepth(xw.dpy, xw.scr));
 	XftDrawChange(xw.draw, xw.buf);
-	xclear(0, 0, win.w, win.h);
+	xclear(0, 0, twin.w, twin.h);
 
 	/* resize to new width */
 	xw.specbuf = xrealloc(xw.specbuf, col * sizeof(GlyphFontSpec));
@@ -101,18 +101,18 @@ void xhints(void) {
 	sizeh = XAllocSizeHints();
 
 	sizeh->flags = PSize | PResizeInc | PBaseSize | PMinSize;
-	sizeh->height = win.h;
-	sizeh->width = win.w;
+	sizeh->height = twin.h;
+	sizeh->width = twin.w;
 	sizeh->height_inc = 1;
 	sizeh->width_inc = 1;
 	sizeh->base_height = 2 * borderpx;
 	sizeh->base_width = 2 * borderpx;
-	sizeh->min_height = win.ch + 2 * borderpx;
-	sizeh->min_width = win.cw + 2 * borderpx;
+	sizeh->min_height = twin.ch + 2 * borderpx;
+	sizeh->min_width = twin.cw + 2 * borderpx;
 	if (xw.isfixed) {
 		sizeh->flags |= PMaxSize;
-		sizeh->min_width = sizeh->max_width = win.w;
-		sizeh->min_height = sizeh->max_height = win.h;
+		sizeh->min_width = sizeh->max_width = twin.w;
+		sizeh->min_height = sizeh->max_height = twin.h;
 	}
 	if (xw.gm & (XValue | YValue)) {
 		sizeh->flags |= USPosition | PWinGravity;
@@ -195,12 +195,12 @@ void xinit(int cols, int rows) {
 	xloadcolors();
 
 	/* adjust fixed window geometry */
-	win.w = 2 * win.hborderpx + cols * win.cw;
-	win.h = 2 * win.vborderpx + rows * win.ch;
+	twin.w = 2 * twin.hborderpx + cols * twin.cw;
+	twin.h = 2 * twin.vborderpx + rows * twin.ch;
 	if (xw.gm & XNegative)
-		xw.l += DisplayWidth(xw.dpy, xw.scr) - win.w - 2;
+		xw.l += DisplayWidth(xw.dpy, xw.scr) - twin.w - 2;
 	if (xw.gm & YNegative)
-		xw.t += DisplayHeight(xw.dpy, xw.scr) - win.h - 2;
+		xw.t += DisplayHeight(xw.dpy, xw.scr) - twin.h - 2;
 
 	/* Events */
 	xw.attrs.background_pixel = dc.col[defaultbg].pixel;
@@ -214,7 +214,7 @@ void xinit(int cols, int rows) {
 
 	if (!(opt_embed && (parent = strtol(opt_embed, NULL, 0))))
 		parent = XRootWindow(xw.dpy, xw.scr);
-	xw.win = XCreateWindow(xw.dpy, parent, xw.l, xw.t, win.w, win.h, 0,
+	xw.win = XCreateWindow(xw.dpy, parent, xw.l, xw.t, twin.w, twin.h, 0,
 			XDefaultDepth(xw.dpy, xw.scr), InputOutput, xw.vis,
 			CWBackPixel | CWBorderPixel | CWBitGravity |
 			CWEventMask | CWColormap,
@@ -224,9 +224,9 @@ void xinit(int cols, int rows) {
 	gcvalues.graphics_exposures = False;
 	dc.gc = XCreateGC(xw.dpy, parent, GCGraphicsExposures, &gcvalues);
 	xw.buf =
-		XCreatePixmap(xw.dpy, xw.win, win.w, win.h, DefaultDepth(xw.dpy, xw.scr));
+		XCreatePixmap(xw.dpy, xw.win, twin.w, twin.h, DefaultDepth(xw.dpy, xw.scr));
 	XSetForeground(xw.dpy, dc.gc, dc.col[defaultbg].pixel);
-	XFillRectangle(xw.dpy, xw.buf, dc.gc, 0, 0, win.w, win.h);
+	XFillRectangle(xw.dpy, xw.buf, dc.gc, 0, 0, twin.w, twin.h);
 
 	/* font spec buffer */
 	xw.specbuf = xmalloc(cols * sizeof(GlyphFontSpec));
@@ -264,7 +264,7 @@ void xinit(int cols, int rows) {
 	XChangeProperty(xw.dpy, xw.win, xw.netwmpid, XA_CARDINAL, 32, PropModeReplace,
 			(uchar *)&thispid, 1);
 
-	win.mode = MODE_NUMLOCK;
+	twin.mode = MODE_NUMLOCK;
 	resettitle();
 	xhints();
 	XMapWindow(xw.dpy, xw.win);
@@ -298,7 +298,7 @@ void xsettitle(char *p) {
 
 
 void xximspot(int x, int y) {
-	XPoint spot = {borderpx + x * win.cw, borderpx + (y + 1) * win.ch};
+	XPoint spot = {borderpx + x * twin.cw, borderpx + (y + 1) * twin.ch};
 	XVaNestedList attr = XVaCreateNestedList(0, XNSpotLocation, &spot, NULL);
 
 	XSetICValues(xw.xic, XNPreeditAttributes, attr, NULL);
@@ -311,9 +311,9 @@ void xsetpointermotion(int set) {
 }
 
 void xsetmode(int set, unsigned int flags) {
-	int mode = win.mode;
-	MODBIT(win.mode, set, flags);
-	if ((win.mode & MODE_REVERSE) != (mode & MODE_REVERSE))
+	int mode = twin.mode;
+	MODBIT(twin.mode, set, flags);
+	if ((twin.mode & MODE_REVERSE) != (mode & MODE_REVERSE))
 		redraw();
 }
 

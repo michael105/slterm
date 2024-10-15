@@ -13,7 +13,7 @@
 #undef IS_SET
 #endif
 // seems ok. is there a reason?
-#define IS_SET(flag) ((win.mode & (flag)) != 0)
+#define IS_SET(flag) ((twin.mode & (flag)) != 0)
 
 
 void SET(int flag);

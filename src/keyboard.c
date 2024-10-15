@@ -173,7 +173,7 @@ void kpress(XEvent *ev) {
 
 	if (IS_SET(MODE_KBDSELECT)) {
 		if (match(XK_NO_MOD, e->state) || (XK_Shift_L | XK_Shift_R) & e->state)
-			win.mode ^= trt_kbdselect(ksym, buf, len);
+			twin.mode ^= trt_kbdselect(ksym, buf, len);
 		return;
 	}
 
@@ -241,7 +241,7 @@ void kpress(XEvent *ev) {
 
 
 void numlock(const Arg *dummy) {
-	win.mode ^= MODE_NUMLOCK; 
+	twin.mode ^= MODE_NUMLOCK; 
 }
 
 /*

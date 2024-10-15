@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 #endif
 		xw.l = xw.t = 0;
 		xw.isfixed = False;
-		win.cursor = cursorshape;
+		twin.cursor = cursorshape;
 		iofd = 1;
 
 		ARGBEGIN {

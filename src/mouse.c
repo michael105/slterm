@@ -136,15 +136,15 @@ void bmotion(XEvent *e) {
 
 
 int evcol(XEvent *e) {
-	int x = e->xbutton.x - win.hborderpx;
-	LIMIT(x, 0, win.tw - 1);
-	return x / win.cw;
+	int x = e->xbutton.x - twin.hborderpx;
+	LIMIT(x, 0, twin.tw - 1);
+	return x / twin.cw;
 }
 
 int evrow(XEvent *e) {
-	int y = e->xbutton.y - win.vborderpx;
-	LIMIT(y, 0, win.th - 1);
-	return y / win.ch;
+	int y = e->xbutton.y - twin.vborderpx;
+	LIMIT(y, 0, twin.th - 1);
+	return y / twin.ch;
 }
 
 

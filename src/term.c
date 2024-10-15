@@ -175,7 +175,7 @@ void tswapscreen(void) {
 }
 
 void inverse_screen(){
-	win.mode ^= MODE_REVERSE;
+	twin.mode ^= MODE_REVERSE;
 	redraw();
 }
 
