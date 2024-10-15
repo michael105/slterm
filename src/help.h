@@ -50,6 +50,7 @@ scrollmarks and lessmode are disabled.\n\r\
 \n\r\
   Alt+Shift + Insert/Delete:   Enlarge/Shrink width\n\r\
   Alt+Shift + PageUp/PageDown: Zoom in / out\n\r\
+  Alt+Shift + Home:            Reset font display\n\r\
 \n\r\
 \n\r\
 [1mSelect Codepage:[0;0m\n\r\
@@ -70,13 +71,13 @@ scrollmarks and lessmode are disabled.\n\r\
   Shift + Up/Down/PageUp/Pagedown: Scroll up/down\n\r\
   Shift + Home/End:  Scroll to top/bottom\n\r\
   Shift + Backspace: Scroll to the location of the last command (shell)\n\r\
-                      and enter lessmode\n\r\
+                     and enter lessmode\n\r\
 \n\r\
 \n\r\
 [1mClipboard:[0;0m\n\r\
 \n\r\
-  Shift + Insert / Ctrl+Shift + y: Paste\n\r\
-  Ctrl+Shift + c: Copy \n\r\
+  Shift + Insert / Ctrl+Shift + y:  Paste\n\r\
+  Ctrl+Shift + c / mouse selection: Copy \n\r\
 \n\r\
 \n\r\
 [1mScrollmarks:[0;0m\n\r\
@@ -98,7 +99,9 @@ scrollmarks and lessmode are disabled.\n\r\
   Shift+Backspace/Tab left: Scroll to the location of the last entered command,\n\r\
     enter lessmode\n\r\
 \n\r\
-  Shift+Enter: Execute command, enter lessmode when more than\n\r\
+  Tab: Scroll downwards to the next entered command line\n\r\
+\n\r\
+  Shift+Enter: Execute command, enter lessmode if more than\n\r\
     one screen is displayed by the command.\n\r\
 \n\r\
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9\n\r\
@@ -146,7 +149,7 @@ scrollmarks and lessmode are disabled.\n\r\
  \n\r\
  \n\r\
 \n\r\
-[01;33m Full shortcut list [0;0m\n\r\
+[01;33m Shortcut list, without selection mode bindings [0;0m\n\r\
 \n\r\
 \n\r\
 Mode\t Modifiers\t\t Key\t\t Function\t Info\n\r\
