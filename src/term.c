@@ -231,7 +231,7 @@ void showhelp(const Arg *a) {
 		showstatus(0,0);
 		term = p_help_storedterm;
 		Arg a = { .i=LESSMODE_OFF };
-		lessmode_toggle( &a );
+		lessmode_toggle( &a ); // bugs else.
 		if ( ( p_help->row != term->row ) || ( p_help->col != term->col ))
 			tresize( p_help->col, p_help->row );
 	}
