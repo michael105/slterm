@@ -25,8 +25,8 @@
 	* Gradient custom 32 color palette for colors 0..7
 	  (0..7 with attributes normal, bold, faint, bold_faint)
 	  and the first 16 background colors.
-	* Copy whole lines in the history with 'yy'
-	* Several nonstandard cursor shapes
+	* Copy whole lines in the history with 'yy' in selection mode
+	* Several additional cursor shapes
 
 
 Statically linked binary, with all runtime dependencies (3.5M)
