@@ -37,9 +37,6 @@ typedef struct {
 #undef IS_SET
 #endif
 #define IS_SET(flag) ((win.mode & (flag)) != 0)
-#define TRUERED(x) (((x)&0xff0000) >> 8)
-#define TRUEGREEN(x) (((x)&0xff00))
-#define TRUEBLUE(x) (((x)&0xff) << 8)
 
 int xgeommasktogravity(int);
 void ximopen(Display *);
@@ -49,14 +46,6 @@ void xinit(int, int);
 void xresize(int, int);
 void xsetenv(void);
 void xseturgency(int);
-
-void usage(void);
-
-
-/* Globals */
-XWindow xw;
-TermWindow win;
-
 
 
 void resettitle(void) { xsettitle(NULL); }
@@ -100,7 +89,7 @@ void xresize(int col, int row) {
 
 void xhints(void) {
 #ifdef XRESOURCES
-	XClassHint class = {opt_name ? opt_name : "st", opt_class ? opt_class : "St"};
+	XClassHint class = {opt_name ? opt_name : "slterm", opt_class ? opt_class : "Slterm"};
 #else
 	XClassHint class = {opt_name ? opt_name : termname,
 		opt_class ? opt_class : termname};

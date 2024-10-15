@@ -15,6 +15,13 @@ Term *p_alt=0;
 int borderpx;
 int enterlessmode;
 
+
+XWindow xw;
+TermWindow win;
+
+
+
+
 // in selection.c
 //Selection sel;
 //XSelection xsel;

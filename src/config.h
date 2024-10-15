@@ -31,7 +31,7 @@ int fontspacing = 0;
 int borderperc = 40;
 
 /*
- * What program is execed by st depends of these precedence rules:
+ * What program is execed by slterm depends of these precedence rules:
  * 1: program passed with -e
  * 2: utmp option
  * 3: SHELL environment variable
@@ -63,7 +63,7 @@ static unsigned int tripleclicktimeout = 600;
 /* alt screens */
 int allowaltscreen = 1;
 
-/* frames per second st should at maximum draw to the screen */
+/* frames per second slterm should at maximum draw to the screen */
 /* set to log(framerate) ->   log(128) = 7; log(64) = 6; log(32) = 5 */
 #define xfps_shift 7
 #define actionfps_shift 5
@@ -86,14 +86,14 @@ static unsigned int cursorthickness = 2;
 static int bellvolume = 50;
 
 /* default TERM value */
-char *termname = "st-256color";
+char *termname = "slterm-256color";
 
 /*
  * spaces per tab
  *
  * When you are changing this value, don't forget to adapt the »it« value in
  * the slterm.info and appropriately install the slterm.info in the environment where
- * you use this st version.
+ * you use this slterm version.
  *
  *	it#$tabspaces,
  *
