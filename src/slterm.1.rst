@@ -99,7 +99,6 @@ INSTALL
      copy into the appropiate directory (/usr/local/share/man/man1)
 
 
-
 OPTIONS
 =======
 

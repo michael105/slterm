@@ -52,9 +52,9 @@ void updatestatus(){
 	if ( statusvisible ){
 		char buf[256];
 		//int p = sprintf(buf," -LESS-  %5d-%2d %5d %3d%% (%3d%%)", 
-		int p = sprintf(buf,"  %s  %5d-%2d %5d %3d%% (%3d%%)", p_status,
+		int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)", p_status,
 				term->histi-term->scr,term->histi-term->scr+term->row, 
-				term->histi+term->row, 
+				term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
 				((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 				((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1)
 				);

@@ -3,6 +3,7 @@
 
 // inputmode. switchable via lessmode_toggle GLBLMARK
 int inputmode = 1;
+int help_storedinputmode = 0;
 
 
 
