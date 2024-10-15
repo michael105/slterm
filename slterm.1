@@ -72,7 +72,7 @@ Set Bookmarks to the current line with \fICtrl+Shift+0..9\fP
 Scroll back to a bookmark with \fICtrl+0..9\fP
 .SS lessmode
 .sp
-In lessmode it is possible to browse in the scrollback buffer via
+In lessmode it is possible to browse the scrollback buffer via
 the standard less like keybindings.
 .sp
 \fICtrl+Shift Up/Down/PgUp/PdDown\fP enter lessmode
@@ -91,7 +91,9 @@ or rectangular areas).
 enter with \fIAlt+S\fP, start selecting with \fIv\fP or \fIs\fP and the cursor keys,
 switch between rectangular selection and line selection with \fIt\fP,
 copy to the clipboard with \fIEnter\fP\&.
-\fIy\fP selects the current line, \fIyy\fP (sort of vim binding) selects the current line
+\fIy\fP selects the current line, hit \fIy\fP with a active selection yanks the
+selection to the clipboard and exits selection mode,
+\fIyy\fP (sort of vim binding) selects the current line
 and yanks it to the clipboard.
 .SH INSTALL
 .INDENT 0.0
@@ -103,7 +105,7 @@ If you downloaded the statically linked binary,
 \- copy the binary to a suitable place (/usr/local/bin)
 \- install the terminal info file: (for curses) \fIslterm \-I | tic \-sx \-\fP
 \- If needed, download this man page in its man format(slterm.1)
-.IP "System Message: ERROR/3 (slterm.1.rst:, line 98)"
+.IP "System Message: ERROR/3 (slterm.1.rst:, line 100)"
 Unexpected indentation.
 .INDENT 0.0
 .INDENT 3.5
