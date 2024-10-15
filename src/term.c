@@ -186,10 +186,12 @@ void showhelp(const Arg *a) {
 	if ( p_help != term ){ // help is not visible now
 								  //p_term = term;
 		if ( !p_help ){ // displayed first time
+			p_help_storedterm = term;
 			tnew(term->col, term->row);
 			p_help = term;
 			twrite( helpcontents, strlen(helpcontents), 0 );
 		} else {
+			p_help_storedterm = term;
 			term = p_help;
 			if ( ( p_term->row != term->row ) || ( p_term->col != term->col )){
 				tresize( p_term->col, p_term->row );
@@ -209,10 +211,12 @@ void showhelp(const Arg *a) {
 				//twrite( helpcontents, strlen(helpcontents), 0 );
 			}
 		}
-		inputmode = inputmode | MODE_LESS | IMODE_HELP;
-		term->mode = term->mode | TMODE_HELP;
 		Arg a = { .i=LESSMODE_ON };
 		lessmode_toggle( &a );
+
+		inputmode = inputmode | IMODE_HELP;
+		//inputmode = inputmode | MODE_LESS | IMODE_HELP;
+		term->mode = term->mode | TMODE_HELP;
 		//enterscroll(&a);
 		showstatus(1,"-HELP- ( q to exit )");
 
@@ -221,7 +225,7 @@ void showhelp(const Arg *a) {
 	} else { //help is visible. toggle back to term.
 		inputmode = inputmode & ~(MODE_LESS | IMODE_HELP);
 		showstatus(0,0);
-		term = p_term;
+		term = p_help_storedterm;
 		Arg a = { .i=LESSMODE_OFF };
 		lessmode_toggle( &a );
 		if ( ( p_help->row != term->row ) || ( p_help->col != term->col ))

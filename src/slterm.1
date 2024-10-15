@@ -34,6 +34,8 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 (sl)im (term)inal
 .SH SYNOPSIS
 .sp
+\fBslterm\fP \fB\-I\fP \fB\-H\fP \fB\-L\fP \fB\-h\fP
+.sp
 \fBslterm\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
 [\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
 [\fB\-l\fP \fIline\fP] [\fB\-w\fP \fIwindowid\fP] [[\fB\-e\fP] \fIcommand\fP] [\fB\-X\fP]
@@ -47,355 +49,71 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 \fBslterm\fP is a virtual terminal emulator for X
 .sp
 It is a slimmed down descendant of st (suckless.org)
-but with several additions and patches.
+with several additions and patches.
 .sp
-utf\-8 and rgb support are stripped for better performance.
-.SH KEYS
+utf\-8 and rgb support are stripped for better performance and less memory usage.
+.SH USAGE
+.sp
+The most important key combination might be
 .INDENT 0.0
 .TP
-.B \fBCtrl\-Shift\-c\fP
-Copy the selected text to the clipboard selection.
-.TP
-.B \fBCtrl\-Shift\-v\fP
-Paste from the clipboard selection.
-.TP
-.B \fBCtrl\-Shift\-y\fP
-Paste from primary selection (middle mouse button).
-.TP
-.B \fBCtrl+Shift+l\fP
-Toggle "less mode": when enabled, Cursor Up/Down, PageUp/PageDown, Home/End
-will scroll up / down, without holding Shift
-.TP
-.B \fBCtrl\-Shift\-s\fP
-Enter keyboard selection mode
-(Described below, with a different key mapping)
-.TP
-.B \fBShift\-PgUp/PgDown\fP
-Scroll Up/Down a Page
-.TP
-.B \fBShift\-Up/Down\fP
-Scroll Up/Down three lines
-.TP
-.B \fBShift\-Home/End\fP
-Scroll to top / bottom
-.TP
-.B \fBBreak\fP
-Send a break in the serial line. Break key is obtained in PC
-keyboards pressing at the same time control and pause.
-.TP
-.B \fBCtrl\-Print Screen\fP
-Toggle if st should print to the \fIiofile.\fP
-.TP
-.B \fBShift\-Print Screen\fP
-Print the full screen to the \fIiofile.\fP
-.TP
-.B \fBPrint Screen\fP
-Print the selection to the \fIiofile.\fP
-.TP
-.B \fBCtrl\-Shift\-Page Up\fP
-Increase font size.
-.TP
-.B \fBCtrl\-Shift\-Page Down\fP
-Decrease font size.
-.TP
-.B \fBCtrl\-Shift\-Home\fP
-Reset to default font size.
+.B \fBCtrl+F1\fP
+Show a help screen with all shortcuts.
 .UNINDENT
-.SH KEYBINDING REFERENCE
 .sp
-The keycombinations can be changed in config.h(recompile needed)
-.SS Keystrokes
+The usage of slterm differs from other terminal emulators by its three different main modes.
+.SS normalmode
 .sp
-There are 3 different modes in slterm;
-regular mode, lessmode and selection mode.
-slterm is started in the regular mode.
+The codepage can be changed via hotkeys. (\fICtrl+Shift+0..9\fP).
 .sp
-All modes:
+Paste from the clipbard with \fIShift+Insert\fP\&.
+.sp
+Set Bookmarks to the current line with \fICtrl+Shift+0..9\fP
+Scroll back to a bookmark with \fICtrl+0..9\fP
+.SS lessmode
+.sp
+In lessmode it is possible to browse in the scrollback buffer via
+the standard less like keybindings.
+.sp
+\fICtrl+Shift Up/Down/PgUp/PdDown\fP enter lessmode
+\fIShift+Backspace\fP enters lessmode and browses back to the last line,
+a command has been entered.
+.sp
+in lessmode, it is possible to browse between the marks of commands,
+comfirmed with \fIEnter\fP in the shell via \fIBackspace\fP or \fITab left\fP and \fITab\fP\&.
+.sp
+\fIShift+Enter\fP in Normal mode enters lessmode, if the output
+of a command is more than a screen.
+.SS selectionmode
+.sp
+In selection mode it is possible to select lines or areas (either by lines,
+or rectangular areas).
+enter with \fIAlt+S\fP, start selecting with \fIv\fP or \fIs\fP and the cursor keys,
+switch between rectangular selection and line selection with \fIt\fP,
+copy to the clipboard with \fIEnter\fP\&.
+\fIy\fP selects the current line, \fIyy\fP (sort of vim binding) selects the current line
+and yanks it to the clipboard.
+.SH INSTALL
 .INDENT 0.0
 .INDENT 3.5
-.INDENT 0.0
-.IP \(bu 2
-Ctrl+Shift + I: Inverse colors
-.IP \(bu 2
-Ctrl+F1:    Show inline help
-.UNINDENT
-.UNINDENT
-.UNINDENT
+If obtained from source, edit the files config.make and config.h
+to customize slterm. Type \fImake\fP, and \fImake install\fP\&.
 .sp
-Set font width/size:
+If you downloaded the statically linked binary,
+\- copy the binary to a suitable place (/usr/local/bin)
+\- install the terminal info file: (for curses) \fIslterm \-I | tic \-sx \-\fP
+\- If needed, download this man page in its man format(slterm.1)
+.IP "System Message: ERROR/3 (slterm.1.rst:, line 98)"
+Unexpected indentation.
 .INDENT 0.0
 .INDENT 3.5
-.INDENT 0.0
-.IP \(bu 2
-Alt+Shift + Insert/Delete:   Enlarge/Shrink width
-.IP \(bu 2
-Alt+Shift + PageUp/PageDown: Zoom in / out
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Select Codepage:
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.TP
-.B Ctrl+Win + 0 CP1250
-.INDENT 7.0
-.IP \(bu 2
-1 CP1251
-.IP \(bu 2
-2 CP1252 (this is mostly ANSI, and the 1. page of Unicode)
-.IP \(bu 2
-3 CP1253
-.IP \(bu 2
-4 CP437  (Old IBM codetable, borders and tables)
-.IP \(bu 2
-5 CP850  (DOS Standard table)
-.IP \(bu 2
-6 CP4002 (DOS Standard table)
+from github (github.com/michael105/slterm),
+copy into the appropiate directory (/usr/local/share/man/man1)
 .UNINDENT
 .UNINDENT
 .UNINDENT
 .UNINDENT
-.sp
-Regular mode:
-.sp
-Scrolling:
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.IP \(bu 2
-Shift + Up/Down/PageUp/Pagedown: Scroll up/down
-.IP \(bu 2
-Shift + Home/End: Scroll to top/bottom
-.IP \(bu 2
-Shift + Backspace: Scroll to the location of the last command (shell)
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Clipboard:
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.IP \(bu 2
-Shift + Insert / Ctrl+Shift + y: Paste
-.IP \(bu 2
-Ctrl+Shift + c: Copy
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Scrollmarks:
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.IP \(bu 2
-Ctrl+Alt + [0..9]: Set Scrollmark 0 \- 9
-.IP \(bu 2
-Ctrl + [0..9]:     Scroll to mark 0 \- 9
-.IP \(bu 2
-Shift + Backspace: Scroll to the last entered command (in shell)
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Lessmode:
-.INDENT 0.0
-.INDENT 3.5
-Ctrl+Shift + Up/PageUp/l: Enter lessmode.
-.sp
-Scroll around with cursor keys, Home, End.
-Backspace goes to the location of the last command in shell.
-Exit with q/ESC
-.INDENT 0.0
-.TP
-.B Shift+Backspace: Scroll to the location of the last entered command,
-enter lessmode
-.TP
-.B Shift+Enter: Execute command, enter lessmode when more than
-one screen is displayed by the command.
-.UNINDENT
-.INDENT 0.0
-.IP \(bu 2
-Ctrl+Alt + [0..9]: Set Scrollmark 0 \- 9
-.IP \(bu 2
-[0..9]: Goto Scrollmark 0 \- 9
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Selection Mode:
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.INDENT 3.5
-Ctrl+Shift + S: Enter selection mode
-.INDENT 0.0
-.TP
-.B There are 3 submodes in selection mode:
-.INDENT 7.0
-.IP \(bu 2
-move mode : to set the start of the selection;
-.IP \(bu 2
-select mode : to activate and set the end of the selection;
-.IP \(bu 2
-input mode : to enter the search criteria.
-.UNINDENT
-.UNINDENT
-.sp
-Shortcuts for move and select modes :
-.UNINDENT
-.UNINDENT
-.INDENT 0.0
-.IP \(bu 2
-h, j, k, l:    move cursor left/down/up/right (also with arrow keys)
-.IP \(bu 2
-!, _, *:       move cursor to the middle of the line/column/screen
-.IP \(bu 2
-Backspace, $:  move cursor to the beginning/end of the line
-.IP \(bu 2
-PgUp, PgDown:  move cursor to the beginning/end of the column
-.IP \(bu 2
-Home, End:     move cursor to the top/bottom left corner of the screen
-.IP \(bu 2
-/, ?:          activate input mode and search up/down
-.IP \(bu 2
-n, N:          repeat last search, up/down
-.IP \(bu 2
-s:             toggle move/selection mode
-.IP \(bu 2
-t:             toggle regular/rectangular selection type
-.IP \(bu 2
-Return:        quit keyboard_select, keeping the highlight of the selection
-.IP \(bu 2
-Escape:        quit keyboard_select
-.UNINDENT
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.INDENT 3.5
-With h,j,k,l (also with arrow keys), you can use a quantifier.
-Enter a number before hitting the appropriate key.
-.UNINDENT
-.UNINDENT
-.sp
-Shortcuts for input mode :
-.UNINDENT
-.UNINDENT
-.sp
-Return:       Return to the previous mode
-.UNINDENT
-.UNINDENT
-.SH FULL SHORTCUT LIST
-.IP "System Message: ERROR/3 (slterm.1.rst:, line 202)"
-Malformed table.
-Bottom/header table border does not match top border.
-.INDENT 0.0
-.INDENT 3.5
-.sp
-.nf
-.ft C
-====      =========              ===            ========
-Mode      Modifiers              Key            Function
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
-All      Control+Alt             0               set_scrollmark
-All      Control+Alt             1               set_scrollmark
-All      Control+Alt             2               set_scrollmark
-All      Control+Alt             3               set_scrollmark
-All      Control+Alt             4               set_scrollmark
-All      Control+Alt             5               set_scrollmark
-All      Control+Alt             6               set_scrollmark
-All      Control+Alt             7               set_scrollmark
-All      Control+Alt             8               set_scrollmark
-All      Control+Alt             9               set_scrollmark
-All      Control+Alt             Return          enterscroll
-All      Control+Shift           C               clipcopy
-All      Control+Shift           Down            lessmode_toggle
-All      Control+Shift           Home            lessmode_toggle
-All      Control+Shift           I               inverse_screen
-All      Control+Shift           L               lessmode_toggle
-All      Control+Shift           Num_Lock        numlock
-All      Control+Shift           Page_Down       lessmode_toggle
-All      Control+Shift           Page_Up         lessmode_toggle
-All      Control+Shift           S               keyboard_select
-All      Control+Shift           Up              lessmode_toggle
-All      Control+Shift           V               clippaste
-All      Control+Shift           Y               selpaste
-All      All                     Break           sendbreak
-All      All                     Print           printsel
-All      All                     Scroll_Lock     lessmode_toggle
-All      Control                 0               scrollmark
-All      Control                 1               scrollmark
-All      Control                 2               scrollmark
-All      Control                 3               scrollmark
-All      Control                 4               scrollmark
-All      Control                 5               scrollmark
-All      Control                 6               scrollmark
-All      Control                 7               scrollmark
-All      Control                 8               scrollmark
-All      Control                 9               scrollmark
-All      Control                 F1              showhelp
-All      Control                 Print           toggleprinter
-All      Control+Win             0               set_charmap
-All      Control+Win             1               set_charmap
-All      Control+Win             2               set_charmap
-All      Control+Win             3               set_charmap
-All      Control+Win             4               set_charmap
-All      Control+Win             5               set_charmap
-All      Control+Win             6               set_charmap
-All      Control+Win             7               set_charmap
-All      Control+Win             8               set_charmap
-All      Control+Win             9               set_charmap
-All      Shift                   BackSpace       retmark
-All      Shift                   Down            kscrolldown
-All      Shift                   End             scrolltobottom
-All      Shift                   Home            scrolltotop
-All      Shift                   Insert          selpaste
-All      Shift                   Page_Down       kscrolldown
-All      Shift                   Page_Up         kscrollup
-All      Shift                   Print           printscreen
-All      Shift                   Return          enterscroll
-All      Shift                   Up              kscrollup
-All      Shift+Alt               Delete          set_fontwidth
-All      Shift+Alt               End             set_fontwidth
-All      Shift+Alt               Home            zoomreset
-All      Shift+Alt               Insert          set_fontwidth
-All      Shift+Alt               Page_Down       zoom
-All      Shift+Alt               Page_Up         zoom
-Help     All                     ALL_KEYS        dummy
-Help     All                     Escape          showhelp
-Help     All                     q               showhelp
-Less     All                     0               scrollmark
-Less     All                     1               scrollmark
-Less     All                     2               scrollmark
-Less     All                     3               scrollmark
-Less     All                     4               scrollmark
-Less     All                     5               scrollmark
-Less     All                     6               scrollmark
-Less     All                     7               scrollmark
-Less     All                     8               scrollmark
-Less     All                     9               scrollmark
-Less     All                     BackSpace       retmark
-Less     All                     Down            kscrolldown
-Less     All                     End             scrolltobottom
-Less     All                     Escape          lessmode_toggle
-Less     All                     Home            scrolltotop
-Less     All                     Page_Down       kscrolldown
-Less     All                     Page_Up         kscrollup
-Less     All                     Up              kscrollup
-Less     All                     q               lessmode_toggle
-Less     Shift                   Return          lessmode_toggle
-
-
-
-
-OPTIONS
-=======
-.ft P
-.fi
-.UNINDENT
-.UNINDENT
+.SH OPTIONS
 .INDENT 0.0
 .TP
 .B \fB\-a\fP
@@ -405,7 +123,7 @@ disable alternate screens in terminal
 defines the window class (default $TERM).
 .TP
 .B \fB\-f\fP \fIfont\fP
-defines the \fIfont\fP to use when st is run.
+defines the \fIfont\fP to use when slterm is run.
 .TP
 .B \fB\-g\fP \fIgeometry\fP
 defines the X11 geometry string. The form is
@@ -420,28 +138,28 @@ defines the window instance name (default $TERM).
 .TP
 .B \fB\-o\fP \fIiofile\fP
 writes all the I/O to \fIiofile.\fP This feature is useful when recording
-st sessions. A value of "\-" means standard output.
+slterm sessions. A value of "\-" means standard output.
 .TP
 .B \fB\-T\fP \fItitle\fP
-defines the window title (default \(aqst\(aq).
+defines the window title (default \(aqslterm\(aq).
 .TP
 .B \fB\-t\fP \fItitle\fP
-defines the window title (default \(aqst\(aq).
+defines the window title (default \(aqslterm\(aq).
 .TP
 .B \fB\-w\fP \fIwindowid\fP
-embeds st within the window identified by \fIwindowid\fP
+embeds slterm within the window identified by \fIwindowid\fP
 .TP
 .B \fB\-l\fP \fIline\fP
 use a tty \fIline\fP instead of a pseudo terminal. \fIline\fP should be a
 (pseudo\-)serial device (e.g. /dev/ttyS0 on Linux for serial port 0).
 When this flag is given remaining arguments are used as flags for
-\fBstty(1).\fP By default st initializes the serial line to 8 bits, no
+\fBstty(1).\fP By default slterm initializes the serial line to 8 bits, no
 parity, 1 stop bit and a 38400 baud rate. The speed is set by
-appending it as last argument (e.g. \(aqst \-l /dev/ttyS0 115200\(aq).
+appending it as last argument (e.g. \(aqslterm \-l /dev/ttyS0 115200\(aq).
 Arguments before the last one are \fBstty(1)\fP flags. If you want to
-set odd parity on 115200 baud use for example \(aqst \-l /dev/ttyS0
+set odd parity on 115200 baud use for example \(aqslterm \-l /dev/ttyS0
 parenb parodd 115200\(aq. Set the number of bits by using for example
-\(aqst \-l /dev/ttyS0 cs7 115200\(aq. See \fBstty(1)\fP for more arguments and
+\(aqslterm \-l /dev/ttyS0 cs7 115200\(aq. See \fBstty(1)\fP for more arguments and
 cases.
 .TP
 .B \fB\-v\fP
@@ -451,7 +169,7 @@ prints version information, then exits.
 prints version and compile information, then exits
 .TP
 .B \fB\-e\fP \fIcommand\fP \fB[\fP \fIarguments\fP \fB\&... ]\fP
-st executes \fIcommand\fP instead of the shell. If this is used it \fBmust
+slterm executes \fIcommand\fP instead of the shell. If this is used it \fBmust
 be the last option\fP on the command line, as in xterm / rxvt. This
 option is only intended for compatibility, and all the remaining
 arguments are used as a command even without it.
@@ -467,53 +185,6 @@ is swapped to disk. Worse, with flash disks also erasing
 the contents will not necessarily erase the written cells.
 This option locks all memory pages into ram.
 .UNINDENT
-.SH KEYBOARD SELECTION MODE
-.sp
-(Patch by Tonton Couillon \- la dot luge at free dot fr)
-.sp
-When you run "keyboard_select", you have 3 modes available:
-.INDENT 0.0
-.INDENT 3.5
-.INDENT 0.0
-.IP \(bu 2
-move mode:    to set the start of the selection;
-.IP \(bu 2
-select mode:  to activate and set the end of the selection;
-.IP \(bu 2
-input mode:   to enter the search criteria.
-.UNINDENT
-.UNINDENT
-.UNINDENT
-.sp
-Shortcuts for move and select modes:
-.sp
-(TODO: update keys)
-:h, j, k, l:      move cursor left/down/up/right (also with arrow keys)
-:!, _, *:        move cursor to the middle of the line/column/screen
-:Backspace, $:    move cursor to the beginning/end of the line
-:Home,end:        move cursor to the beginning/end of the row
-:PgUp,PgDown:     move cursor to the top/bottom of the screen
-:/, ?:            activate input mode and search up/down
-:n, N:            repeat last search, up/down
-:s,v:             toggle move/selection mode
-:y:               highlight current line and enter selectmode
-.sp
-selectmode:
-:t:               toggle regular/rectangular selection type
-:Return,y:        quit keyboard_select, keeping the highlight of the selection
-:Escape:          quit keyboard_select
-.sp
-With h,j,k,l (also with arrow keys), you can use a quantifier. Enter a
-number before hitting the appropriate key.
-.sp
-Shortcuts for input mode:
-.sp
-Return:       Return to the previous mode
-.SH CUSTOMIZATION
-.sp
-\fBslterm\fP can be customized by editing config.make and src/config.h,
-afterwards (re)compiling the source code, or by editing the Xresources init files and
-compiling slterm with Xresources enabled.
 .SH AUTHORS
 .sp
 (2020\-2024) Michael (misc147), www.github.com/michael105
@@ -521,7 +192,7 @@ compiling slterm with Xresources enabled.
 The code is based on st, the suckless terminal emulator,
 fetched from git 1.1.2020, which was based on code from Aurelien Aptel.
 .sp
-The patches to st had been provided by:
+The patches to slterm had been provided by:
 .sp
 Tonton Couillon,
 dcat,
@@ -546,7 +217,7 @@ Devin J. Pohly,
 Sai Praneeth Reddy
 .SH LICENSE
 .sp
-MIT, see the LICENSE file for the terms of redistribution.
+MIT, see the LICENSE file for the terms of redistribution or type slterm \-L
 .SH SEE ALSO
 .sp
 \fBtabbed\fP(1), \fButmp\fP(1), \fBstty\fP(1)

@@ -11,7 +11,7 @@
 // number of saved scroll marks, set with enter.
 // needs to be a power of 2.
 // memory usage is RETMARKCOUNT*4 bytes,
-// and the is scanned linear when browsing to the marks.
+// and the array is scanned linear when browsing to the marks.
 #define RETMARKCOUNT 512
 
 
@@ -93,7 +93,7 @@ typedef struct {
 extern DC dc;
 
 
-/* Purely graphic info */
+/* Display info of the text window */
 typedef struct {
 	int tw, th; /* tty width and height */
 	int w, h;   /* window width and height */
@@ -107,6 +107,7 @@ typedef struct {
 
 extern TermWindow win;
 
+// The xwindow data
 typedef struct {
 	Display *dpy;
 	Colormap cmap;
@@ -166,6 +167,7 @@ typedef struct {
 
 extern Term *term; 
 extern Term *p_help; 
+extern Term *p_help_storedterm; 
 extern Term *p_term; 
 extern Term *p_alt; 
 

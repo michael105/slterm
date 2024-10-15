@@ -13,11 +13,14 @@ FULLDEBUG := 0
 
 
 # version
-VERSION := 0.99.2.rc3
+VERSION := 0.99.2-rc3
 
 # Set to 1 enable Xresource configuration
 # (in addition, slterm has to be started with the option "-x on")
 XRESOURCES := 0
+
+# embed the terminfo and manual page (+12k)
+EMBEDRESOURCES := 1
 
 # utf8-support (currently abandoned. Will not work )
 #UTF8 := 0

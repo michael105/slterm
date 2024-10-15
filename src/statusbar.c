@@ -138,7 +138,7 @@ void showstatus(int show, char *status){
 
 // shows a small message at the bottom right corner
 void set_notifmode(int type, KeySym ksym) {
-	static char *lib[] = {" MOVE ", " SEL  "," LESS " };
+	static char *lib[] = {" MOVE ", "SELECT"," LESS " };
 	static Glyph *g, *deb, *fin;
 	static int col, bot;
 	col = term->col, bot = term->bot;

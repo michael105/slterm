@@ -31,7 +31,7 @@ int fontspacing = 0;
 int borderperc = 40;
 
 /*
- * What program is execed by st depends of these precedence rules:
+ * What program is execed by slterm depends of these precedence rules:
  * 1: program passed with -e
  * 2: utmp option
  * 3: SHELL environment variable
@@ -63,7 +63,7 @@ static unsigned int tripleclicktimeout = 600;
 /* alt screens */
 int allowaltscreen = 1;
 
-/* frames per second st should at maximum draw to the screen */
+/* frames per second slterm should at maximum draw to the screen */
 /* set to log(framerate) ->   log(128) = 7; log(64) = 6; log(32) = 5 */
 #define xfps_shift 7
 #define actionfps_shift 5
@@ -86,14 +86,14 @@ static unsigned int cursorthickness = 2;
 static int bellvolume = 50;
 
 /* default TERM value */
-char *termname = "st-256color";
+char *termname = "slterm-256color";
 
 /*
  * spaces per tab
  *
  * When you are changing this value, don't forget to adapt the »it« value in
  * the slterm.info and appropriately install the slterm.info in the environment where
- * you use this st version.
+ * you use this slterm version.
  *
  *	it#$tabspaces,
  *
@@ -192,7 +192,7 @@ static const char* bgcolornames[16] = {
  */
 unsigned char defaultfg = 7;
 unsigned char defaultbg = 0;
-static unsigned char defaultcs = 250;
+static unsigned char defaultcs = 15;
 static unsigned char defaultrcs = 202;
 // Unfocused window
 static unsigned char unfocusedrcs = 46; //118;//226; 
@@ -362,8 +362,7 @@ Shortcut shortcuts[] = {
 /*  { mask,       keysym,   function,  argument, INPUTMODE } */
 
 BIND( ControlMask, XK_F1, showhelp, { 0},ALLMODES ),
-BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
-BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
+
 BIND( XK_ANY_MOD, XK_Break, sendbreak, {.i = 0},ALLMODES ),
 BIND( ControlMask, XK_Print, toggleprinter, {.i = 0},ALLMODES ),
 BIND( ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES ),
@@ -398,6 +397,19 @@ BIND( XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_space, kscrolldown, {.i = -1},MODE_LESS ),
 BIND( XK_ANY_MOD, XK_End, scrolltobottom, { },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS ),
+
+
+// help mode
+BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Page_Down, kscrolldown, {.i = -1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_space, kscrolldown, {.i = -1},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_End, scrolltobottom, { },IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },IMODE_HELP ),
+
 
 		// abort precessing when in the help view. 
 BIND( XK_ANY_MOD, ALL_KEYS, dummy, {}, IMODE_HELP ),
