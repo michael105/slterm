@@ -118,11 +118,6 @@ enum escape_state {
 };
 
 
-enum selection_mode { SEL_IDLE = 0, SEL_EMPTY = 1, SEL_READY = 2 };
-
-enum selection_type { SEL_REGULAR = 1, SEL_RECTANGULAR = 2 };
-
-enum selection_snap { SNAP_WORD = 1, SNAP_LINE = 2 };
 
 #ifdef UTF8
 typedef uint_least32_t Rune;

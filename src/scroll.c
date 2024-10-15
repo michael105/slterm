@@ -159,12 +159,15 @@ void retmark(const Arg* a){
 			//printf("mark: %d   %d\n",t, term->retmarks[t] );
 			if ( (term->histi - term->retmarks[t] < term->scr) ){
 				term->scr=(term->histi-term->retmarks[t]);
+				term->retmark_scrolled = (term->current_retmark-t) & ( RETMARKCOUNT-1);
 				b = 0;
 				break;
 			}
 		}
-		if ( b )
+		if ( b ){
+			term->retmark_scrolled = 0;
 			scrolltobottom();
+		}
 
 	} else { // scroll backward
 		if ( term->histi<term->row){ // at the top
@@ -178,6 +181,7 @@ void retmark(const Arg* a){
 			//printf("mark: %d   %d\n",t, term->retmarks[t] );
 			if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] > term->scr) ){
 				term->scr=(term->histi-term->retmarks[t]);
+				term->retmark_scrolled = (term->current_retmark-t) & ( RETMARKCOUNT-1);
 				break;
 			}
 		}

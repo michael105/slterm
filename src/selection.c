@@ -26,7 +26,7 @@ static int sel_savedcursor;
 void keyboard_select(const Arg *dummy) {
 	win.mode ^= trt_kbdselect(-1, NULL, 0);
 	sel_savedcursor = xgetcursor();
-	xsetcursor(9); // empty block
+	xsetcursor(11); // empty block
 }
 
 
@@ -421,12 +421,31 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			return MODE_KBDSELECT;
 		case XK_s:
 		case XK_v:
+		case XK_V:
 			if (selectsearch_mode & 1) {
 				selclear();
+				xsetcursor(11); // empty block
 			} else {
 				selstart(term->cursor.x, term->cursor.y, 0);
 			}
 			set_notifmode(selectsearch_mode ^= 1, ksym);
+#if 1
+			if ( ksym == XK_V ){
+				if ( type ^ 3 ){
+					type ^= 3;
+					selextend(term->cursor.x, term->cursor.y, type, i = 0); /* 2 fois */
+					selextend(term->cursor.x, term->cursor.y, type, i = 0); /* 2 fois */
+				}
+			} 
+			if ( ksym == XK_v ){ 
+				if ( !(type ^ 3) ){
+					type ^= 3;
+					selextend(term->cursor.x, term->cursor.y, type, i = 0); /* 2 fois */
+					selextend(term->cursor.x, term->cursor.y, type, i = 0); /* 2 fois */
+				}
+			}   // well. patched. works.
+				 // type is static. and this enum doesn't seem to , whatever.
+#endif
 			break;
 		case XK_t:
 			selextend(term->cursor.x, term->cursor.y, type ^= 3, i = 0); /* 2 fois */
@@ -464,6 +483,17 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			in_use = quant = 0;
 			xsetcursor( sel_savedcursor );
 			return MODE_KBDSELECT;
+
+		case XK_p:
+			set_notifmode(4, ksym);
+			char *tmp = getsel(); 
+			term->cursor.x = cu.x, term->cursor.y = cu.y;
+			select_or_drawcursor(selectsearch_mode = 0, type);
+			in_use = quant = 0;
+			xsetcursor( sel_savedcursor );
+			ttywrite( tmp, strlen(tmp), 1 );
+			return MODE_KBDSELECT;
+
 		case XK_n:
 		case XK_N:
 			if (ptarget) {
