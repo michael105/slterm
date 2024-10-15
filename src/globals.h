@@ -127,7 +127,7 @@ typedef struct {
 } XWindow;
 
 
-extern XWindow xw;
+extern XWindow xwin;
 
 
 /* Internal representation of the screen */

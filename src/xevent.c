@@ -43,14 +43,14 @@ void run() {
 	XEvent ev;
 	int w = twin.w, h = twin.h;
 	fd_set rfd;
-	int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 0, dodraw = 0;
+	int xfd = XConnectionNumber(xwin.dpy), xev, blinkset = 0, dodraw = 0;
 	int ttyfd;
 	struct timespec drawtimeout, *tv = NULL, now, last, lastblink;
 	long deltatime;
 
 	/* Waiting for window mapping */
 	do {
-		XNextEvent(xw.dpy, &ev);
+		XNextEvent(xwin.dpy, &ev);
 		/*
 		 * This XFilterEvent call is required because of XOpenIM. It
 		 * does filter out the key event and some client message for
@@ -115,8 +115,8 @@ void run() {
 		}
 
 		if (dodraw) {
-			while (XPending(xw.dpy)) {
-				XNextEvent(xw.dpy, &ev);
+			while (XPending(xwin.dpy)) {
+				XNextEvent(xwin.dpy, &ev);
 				if (XFilterEvent(&ev, None))
 					continue;
 				if (handler[ev.type]) // process x events 
@@ -124,7 +124,7 @@ void run() {
 			}
 
 			draw();
-			XFlush(xw.dpy);
+			XFlush(xwin.dpy);
 
 			if (xev && !FD_ISSET(xfd, &rfd))
 				xev--;
@@ -176,14 +176,14 @@ void cmessage(XEvent *e) {
 	 * See xembed specs
 	 *  http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html
 	 */
-	if (e->xclient.message_type == xw.xembed && e->xclient.format == 32) {
+	if (e->xclient.message_type == xwin.xembed && e->xclient.format == 32) {
 		if (e->xclient.data.l[1] == XEMBED_FOCUS_IN) {
 			twin.mode |= MODE_FOCUSED;
 			xseturgency(0);
 		} else if (e->xclient.data.l[1] == XEMBED_FOCUS_OUT) {
 			twin.mode &= ~MODE_FOCUSED;
 		}
-	} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
+	} else if (e->xclient.data.l[0] == xwin.wmdeletewin) {
 		ttyhangup();
 		exit(0);
 	}
@@ -205,7 +205,7 @@ void focus(XEvent *ev) {
 	if (ev->type == FocusIn) {
 		if ( !( twin.mode & MODE_FOCUSED) ){
 			twin.mode |= MODE_FOCUSED;
-			XSetICFocus(xw.xic);
+			XSetICFocus(xwin.xic);
 			xseturgency(0);
 			if (IS_SET(MODE_FOCUS))
 				ttywrite("\033[I", 3, 0);
@@ -217,7 +217,7 @@ void focus(XEvent *ev) {
 	} else { // focus out
 		if ( ( twin.mode & MODE_FOCUSED) ){
 			twin.mode &= ~MODE_FOCUSED;
-			XUnsetICFocus(xw.xic);
+			XUnsetICFocus(xwin.xic);
 			if (IS_SET(MODE_FOCUS))
 				ttywrite("\033[O", 3, 0);
 			statusbar_focusout();
@@ -241,7 +241,7 @@ void unmap(XEvent *ev) { twin.mode &= ~MODE_VISIBLE; }
 
 void propnotify(XEvent *e) {
 	XPropertyEvent *xpev;
-	Atom clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+	Atom clipboard = XInternAtom(xwin.dpy, "CLIPBOARD", 0);
 
 	xpev = &e->xproperty;
 	if (xpev->state == PropertyNewValue &&

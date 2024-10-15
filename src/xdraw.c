@@ -9,7 +9,7 @@ DC dc;
  * Absolute coordinates.
  */
 void xclear(int x1, int y1, int x2, int y2) {
-	XftDrawRect(xw.draw, &dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg],
+	XftDrawRect(xwin.draw, &dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg],
 			x1, y1, x2 - x1, y2 - y1);
 }
 
@@ -17,7 +17,7 @@ void xclear(int x1, int y1, int x2, int y2) {
 void xdrawline(Line line, int x1, int y1, int x2) {
 	int i, x, ox, numspecs;
 	Glyph base, new;
-	XftGlyphFontSpec *specs = xw.specbuf;
+	XftGlyphFontSpec *specs = xwin.specbuf;
 
 	numspecs = xmakeglyphfontspecs(specs, &line[x1], x2 - x1, x1, y1);
 	i = ox = 0;
@@ -95,7 +95,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				colbg.green = TRUEGREEN(base.bg);
 				colbg.red = TRUERED(base.bg);
 				colbg.blue = TRUEBLUE(base.bg);
-				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &truebg);
+				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &truebg);
 				bg = &truebg;
 			} else {
 				bg = &dc.col[base.bg];
@@ -124,7 +124,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				colfg.red = TRUERED(base.fg);
 				colfg.green = TRUEGREEN(base.fg);
 				colfg.blue = TRUEBLUE(base.fg);
-				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
+				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &truefg);
 				fg = &truefg;
 			} else {
 				fg = &dc.col[base.fg];
@@ -147,7 +147,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 					cbold(green); //= fg->color.green * 2;
 					cbold(blue); //= fg->color.blue +  2;
 					colfg.alpha = fg->color.alpha;
-					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+					XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 					fg = &revfg;
 				}
 			}
@@ -158,7 +158,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				cfaint(green); //= fg->color.green * 2;
 				cfaint(blue); //= fg->color.blue +  2;
 				colfg.alpha = fg->color.alpha;//2;
-				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 				fg = &revfg;
 			}
 		}
@@ -178,7 +178,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			colfg.green = fg->color.green +13000;
 			colfg.blue = fg->color.blue;
 			colfg.alpha = fg->color.alpha;
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 			fg = &revfg;
 		}
 		if ( !bgcache && (bg->color.blue > CLFA) && (bg->color.red < CLFA) && (bg->color.green < CLFA) ){
@@ -186,7 +186,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			colbg.green = bg->color.green +CLFA;
 			colbg.blue = bg->color.blue;
 			colbg.alpha = bg->color.alpha;
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &revbg);
 			bg = &revbg;
 		}
 	}
@@ -205,7 +205,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #undef AS
 
 
-				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 				fg = &revfg;
 			}
 		}
@@ -218,7 +218,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #define ASB(c) colbg.c = ~bg->color.c
 				FOR_RGB(ASB);
 #undef ASB
-				XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &revbg);
 				bg = &revbg;
 			}
 		}
@@ -263,43 +263,43 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 
 	/* Clean up the region we want to draw to. */
-	XftDrawRect(xw.draw, bg, winx, winy, width, twin.ch);
+	XftDrawRect(xwin.draw, bg, winx, winy, width, twin.ch);
 
 	/* Set the clip region because Xft is sometimes dirty. */
 	r.x = 0;
 	r.y = 0;
 	r.height = twin.ch;
 	r.width = width;
-	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
+	XftDrawSetClipRectangles(xwin.draw, winx, winy, &r, 1);
 
 	//printf("spec %x\n",specs->glyph);
 	/* Render the glyphs. */
-	XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
+	XftDrawGlyphFontSpec(xwin.draw, fg, specs, len);
 
 	/* Render underline and strikethrough. */
 	if (base.mode & ATTR_UNDERLINE) {
-		XftDrawRect(xw.draw, fg, winx, winy + dc.font.ascent + 1, width, 1);
+		XftDrawRect(xwin.draw, fg, winx, winy + dc.font.ascent + 1, width, 1);
 		if (base.mode & ATTR_STRUCK) { // struck and underline - double underline
-			XftDrawRect(xw.draw, fg, winx, winy + dc.font.ascent + 3, width, 1);
+			XftDrawRect(xwin.draw, fg, winx, winy + dc.font.ascent + 3, width, 1);
 		} 
 	} else {
 		if (base.mode & ATTR_STRUCK) {
-			XftDrawRect(xw.draw, fg, winx, winy + 5*dc.font.ascent /8, width, 1);
-			//XftDrawRect(xw.draw, fg, winx, winy + 2 * dc.font.ascent / 3, width, 1);
+			XftDrawRect(xwin.draw, fg, winx, winy + 5*dc.font.ascent /8, width, 1);
+			//XftDrawRect(xwin.draw, fg, winx, winy + 2 * dc.font.ascent / 3, width, 1);
 		}
 	}
 
 	/* Reset clip to none. */
-	XftDrawSetClip(xw.draw, 0);
+	XftDrawSetClip(xwin.draw, 0);
 
 	// free colors, if allocated and not in one of the tables
 	if ( !fgcache && (fg == &revfg || fg == &revbg) && fg!=bg )
 		cachecolor( base.mode & ATTR_REVERSE? 0:1, &base, twin.mode, fg );
-			//XftColorFree(xw.dpy, xw.vis, xw.cmap, &revfg);
+			//XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, &revfg);
 
 	if ( !bgcache && (bg == &revbg || bg == &revfg) )
 		cachecolor( base.mode & ATTR_REVERSE? 1:0, &base, twin.mode, bg );
-		//	XftColorFree(xw.dpy, xw.vis, xw.cmap, &revbg);
+		//	XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, &revbg);
 
 
 	return(bg);
@@ -316,8 +316,8 @@ Color* xdrawglyph(Glyph g, int x, int y) {
 int xstartdraw(void) { return IS_SET(MODE_VISIBLE); }
 
 void xfinishdraw(void) {
-	XCopyArea(xw.dpy, xw.buf, xw.win, dc.gc, 0, 0, twin.w, twin.h, 0, 0);
-	XSetForeground(xw.dpy, dc.gc,
+	XCopyArea(xwin.dpy, xwin.buf, xwin.win, dc.gc, 0, 0, twin.w, twin.h, 0, 0);
+	XSetForeground(xwin.dpy, dc.gc,
 			dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg].pixel);
 }
 

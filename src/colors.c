@@ -47,7 +47,7 @@ Color* cachecolor( uint fg, Glyph*g, uint winmode, Color *color ){
 	}
 	if ( cc_p == COLORCACHESIZE-1 ){
 		//printf("Free cachecolor\n");
-		XftColorFree(xw.dpy, xw.vis, xw.cmap, &cc_rc[cc_p]);
+		XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, &cc_rc[cc_p]);
 		//cc_rc[cc_p] = cc_rc[0];
 	} else cc_p++;
 
@@ -74,12 +74,12 @@ int xloadcolor(int i, const char *name, Color *p_color) {
 				color.red = 0x0808 + 0x0a0a * (i - (6 * 6 * 6 + 16));
 				color.green = color.blue = color.red;
 			}
-			return XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &color, p_color);
+			return XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &color, p_color);
 		} else
 			name = colorname[i]; // color 0..16
 	}
 
-	return XftColorAllocName(xw.dpy, xw.vis, xw.cmap, name, p_color);
+	return XftColorAllocName(xwin.dpy, xwin.vis, xwin.cmap, name, p_color);
 }
 
 
@@ -94,7 +94,7 @@ void xloadcolors(void) {
 				  // there might be memory leaks
 				  // misc24
 		for (cp = dc.col; cp < &dc.col[dc.collen]; ++cp)
-			XftColorFree(xw.dpy, xw.vis, xw.cmap, cp);
+			XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, cp);
 	} else {
 		dc.collen = MAX(LEN(colorname), 256);
 		dc.col = xmalloc(dc.collen * sizeof(Color));
@@ -113,9 +113,9 @@ void xloadcolors(void) {
 	Color *p_color = dc.colortable;
 	for ( int a = 0; a<4; a++ ){
 		for ( int b = 0; b<8; b++ ){
-			 if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, colortablenames[b][a], p_color) ){
+			 if ( !XftColorAllocName(xwin.dpy, xwin.vis, xwin.cmap, colortablenames[b][a], p_color) ){
 				 printf( "Cannot load color: %s\n",colortablenames[b][a] );
-			 	if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, "gray", p_color) )
+			 	if ( !XftColorAllocName(xwin.dpy, xwin.vis, xwin.cmap, "gray", p_color) )
 				 	die( "Cannot load fallback \"gray\"\n" );
 			 }
 			 p_color++;
@@ -125,9 +125,9 @@ void xloadcolors(void) {
 	dc.bgcolors = xmalloc( 16*sizeof(Color) );
 	p_color = dc.bgcolors;
 	for ( int a = 0; a<16; a++ ){
-		if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, bgcolornames[a],p_color) ){
+		if ( !XftColorAllocName(xwin.dpy, xwin.vis, xwin.cmap, bgcolornames[a],p_color) ){
 			printf( "Cannot load color: %s\n",bgcolornames[a]);
-			if ( !XftColorAllocName(xw.dpy, xw.vis, xw.cmap, "gray", p_color) )
+			if ( !XftColorAllocName(xwin.dpy, xwin.vis, xwin.cmap, "gray", p_color) )
 				die( "Cannot load fallback \"gray\"\n" );
 		}
 		p_color++;
@@ -145,7 +145,7 @@ int xsetcolorname(int x, const char *name) {
 	if (!xloadcolor(x, name, &p_color))
 		return 1;
 
-	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
+	XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, &dc.col[x]);
 	dc.col[x] = p_color;
 
 	return 0;
@@ -174,7 +174,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 		colfg.red = TRUERED(base->fg);
 		colfg.green = TRUEGREEN(base->fg);
 		colfg.blue = TRUEBLUE(base->fg);
-		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
+		XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &truefg);
 		fg = &truefg;
 	} else {
 		fg = &dc.col[base->fg];
@@ -185,7 +185,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 		colbg.green = TRUEGREEN(base->bg);
 		colbg.red = TRUERED(base->bg);
 		colbg.blue = TRUEBLUE(base->bg);
-		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &truebg);
+		XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &truebg);
 		bg = &truebg;
 	} else {
 		bg = &dc.col[base->bg];
@@ -216,7 +216,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 		cbold(green); //= fg->color.green * 2;
 		cbold(blue); //= fg->color.blue +  2;
 		colfg.alpha = fg->color.alpha;
-		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+		XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 		fg = &revfg;
 		}
 	}
@@ -227,7 +227,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 		cfaint(green); //= fg->color.green * 2;
 		cfaint(blue); //= fg->color.blue +  2;
 		colfg.alpha = fg->color.alpha;//2;
-		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+		XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 		fg = &revfg;
 	}
 
@@ -244,7 +244,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 #undef AS
 
 
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 			fg = &revfg;
 		}
 
@@ -259,7 +259,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 #define ASB(c) colbg.c = ~bg->color.c
 			ASB(red);ASB(green);ASB(blue);
 #undef ASB
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &revbg);
 			bg = &revbg;
 		}
 	}
@@ -276,7 +276,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 			colfg.green = fg->color.green +13000;
 			colfg.blue = fg->color.blue;
 			colfg.alpha = fg->color.alpha;
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 			fg = &revfg;
 		}
 		if ( (bg->color.blue > CLFA) && (bg->color.red < CLFA) && (bg->color.green < CLFA) ){
@@ -284,7 +284,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 			colbg.green = bg->color.green +CLFA;
 			colbg.blue = bg->color.blue;
 			colbg.alpha = bg->color.alpha;
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colbg, &revbg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &revbg);
 			bg = &revbg;
 		}
 #if 0
@@ -293,7 +293,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 			colfg.green = fg->color.green;// +CLFA;
 			colfg.blue = fg->color.blue;
 			colfg.alpha = fg->color.alpha;
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 			fg = &revfg;
 		}
 		if ( (fg->color.blue > CLFA) && (fg->color.green < CLFA) ){
@@ -301,7 +301,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 			colfg.green = fg->color.green +CLFA;
 			colfg.blue = fg->color.blue;
 			colfg.alpha = fg->color.alpha;
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &revfg);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &revfg);
 			fg = &revfg;
 		}
 #endif

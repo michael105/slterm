@@ -34,7 +34,7 @@ Color *getcursorcolor( Glyph g, int cx, int cy ){
 #define ASB(c) csc.c = ~col->color.c
 			ASB(red);ASB(green);ASB(blue);
 #undef ASB
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &csc, &drawcol);
 			col = cachecolor(2,&g,twin.mode,&drawcol);
 			//col = &drawcol;
 		}
@@ -140,7 +140,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 					// underline
 					drawcol = dc.col[defaultcs];
-					XftDrawRect(xw.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + (cy + 1) * twin.ch - cursorthickness, twin.cw,
 							cursorthickness);
 
@@ -151,14 +151,14 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					col = getcursorcolor( g, cx, cy );
 
 					if ( twin.cursor == 8 ){ // double underline
-						XftDrawRect(xw.draw, col, 
+						XftDrawRect(xwin.draw, col, 
 							twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + (cy + 1) * twin.ch - 1, twin.cw, 1);
-						XftDrawRect(xw.draw, col, 
+						XftDrawRect(xwin.draw, col, 
 							twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + (cy + 1) * twin.ch - 3, twin.cw, 1);
 					} else { // underline
-						XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+						XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + (cy + 1) * twin.ch - cursorthickness, twin.cw,
 							cursorthickness);
 					}
@@ -170,7 +170,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			case 6: /* Steady bar */
 				col = getcursorcolor( g, cx, cy );
 				
-				XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+				XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 						twin.vborderpx + (cy) * twin.ch, cursorthickness, twin.ch);
 				break;
 
@@ -178,18 +178,18 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					col = getcursorcolor( g, cx, cy );
 					
 					// upper line
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + cy * twin.ch, twin.cw - 1, 1);
 
 					// lines at sides
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + cy * twin.ch, 1, twin.ch);
 
-					XftDrawRect(xw.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
 							twin.vborderpx + cy * twin.ch, 1, twin.ch);
 					
 					// lower line
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + (cy + 1) * twin.ch -1, twin.cw, 1);
 
 					break;
@@ -198,13 +198,13 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			case 10: // bar with two lines at the sides
 					col = getcursorcolor( g, cx, cy );
 					// lower cursor part
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 								(twin.vborderpx + cy * twin.ch )+(twin.ch*12)/16, 1, twin.ch-twin.ch*12/16 );
 
-					XftDrawRect(xw.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
 								(twin.vborderpx + cy * twin.ch )+(twin.ch*12)/16, 1, twin.ch-twin.ch*12/16 );
 
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + (cy + 1) * twin.ch -1, twin.cw, 1);
 
 					if ( twin.cursor == 10 ) 
@@ -213,22 +213,22 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			case 12:
 					if ( !col ) col = getcursorcolor( g, cx, cy );
 					// upper line
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + cy * twin.ch, twin.cw - 1, 1);
 
 					// lines at sides
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
 						twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch*12/16);
-					XftDrawRect(xw.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
 						twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch*12/16);
 					break;
 
 			case 13:  // unfinished
 					col = getcursorcolor( g, cx, cy );
 				// a cross
-					XftDrawRect(xw.draw, col, twin.hborderpx + cx * twin.cw + twin.cw/2 ,
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw + twin.cw/2 ,
 					twin.vborderpx + cy * twin.ch+3, 1, twin.ch - twin.ch*12/16);
-					XftDrawRect(xw.draw, col, (twin.hborderpx + cx * twin.cw) + 2,
+					XftDrawRect(xwin.draw, col, (twin.hborderpx + cx * twin.cw) + 2,
 					twin.vborderpx + cy * twin.ch + (twin.ch/2)-1, twin.ch - twin.ch*12/16, 1);
 				break;
 
@@ -238,19 +238,19 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	} else { // window hasn't the focus. 
 				//g.fg = unfocusedrcs;
 		drawcol = dc.col[unfocusedrcs];
-		XftDrawRect(xw.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
 				twin.vborderpx + cy * twin.ch, twin.cw - 1, 1);
-		XftDrawRect(xw.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
 				twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch/16*12);
-		XftDrawRect(xw.draw, &drawcol, twin.hborderpx + (cx + 1) * twin.cw - 1,
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + (cx + 1) * twin.cw - 1,
 				twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch/16*12);
 
 
-		XftDrawRect(xw.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
 				(twin.vborderpx + cy * twin.ch )+(twin.ch/16)*12, 1, twin.ch-twin.ch/16*12);
-		XftDrawRect(xw.draw, &drawcol, twin.hborderpx + (cx + 1) * twin.cw - 1,
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + (cx + 1) * twin.cw - 1,
 				twin.vborderpx + cy * twin.ch + (twin.ch/16)*12, 1, twin.ch-twin.ch/16*12);
-		XftDrawRect(xw.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
 				twin.vborderpx + (cy + 1) * twin.ch -1, twin.cw, 1);
 		focusinx = cx;
 		focusiny = cy;

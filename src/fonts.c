@@ -71,7 +71,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 		return 1;
 
 	FcConfigSubstitute(NULL, configured, FcMatchPattern);
-	XftDefaultSubstitute(xw.dpy, xw.scr, configured);
+	XftDefaultSubstitute(xwin.dpy, xwin.scr, configured);
 
 	match = FcFontMatch(NULL, configured, &result);
 	if (!match) {
@@ -79,7 +79,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 		return 1;
 	}
 
-	if (!(f->match = XftFontOpenPattern(xw.dpy, match))) {
+	if (!(f->match = XftFontOpenPattern(xwin.dpy, match))) {
 		FcPatternDestroy(configured);
 		FcPatternDestroy(match);
 		return 1;
@@ -110,7 +110,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 	}
 
 #ifdef UTF8
-			XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
+			XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)ascii_printable,
 							strlen(ascii_printable), &extents);
 #else
 			// todo the codepoints of the current charmap would be needed here.
@@ -123,7 +123,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 	printable[p] = 0;
 
 
-	XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)printable,
+	XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)printable,
 			sizeof(printable), &extents);
 #endif
 
@@ -224,7 +224,7 @@ void xloadfonts(char *fontstr, double fontsize) {
 }
 
 void xunloadfont(Font *f) {
-	XftFontClose(xw.dpy, f->match);
+	XftFontClose(xwin.dpy, f->match);
 	FcPatternDestroy(f->pattern);
 	if (f->set)
 		FcFontSetDestroy(f->set);
@@ -233,7 +233,7 @@ void xunloadfont(Font *f) {
 void xunloadfonts(void) {
 	/* Free the loaded fonts in the font cache.  */
 	while (frclen > 0)
-		XftFontClose(xw.dpy, frc[--frclen].font);
+		XftFontClose(xwin.dpy, frc[--frclen].font);
 
 	xunloadfont(&dc.font);
 	xunloadfont(&dc.bfont);
@@ -294,7 +294,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		//if ( rune>=0x80 )
 		//printf("rune: %x  \n",rune,glyphidx);
 		/* Lookup character index with default font. */
-		glyphidx = XftCharIndex(xw.dpy, font->match, rune);
+		glyphidx = XftCharIndex(xwin.dpy, font->match, rune);
 		if (glyphidx) {
 			//if ( rune>0x80 )
 			//printf("rune: %x  idx: %x\n",rune,glyphidx);
@@ -309,7 +309,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 		/* Fallback on font cache, search the font cache for match. */
 		for (f = 0; f < frclen; f++) {
-			glyphidx = XftCharIndex(xw.dpy, frc[f].font, rune);
+			glyphidx = XftCharIndex(xwin.dpy, frc[f].font, rune);
 			/* Everything correct. */
 			if (glyphidx && frc[f].flags == frcflags)
 				break;
@@ -350,14 +350,14 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 				frc = xrealloc(frc, frccap * sizeof(Fontcache));
 			}
 
-			frc[frclen].font = XftFontOpenPattern(xw.dpy, fontpattern);
+			frc[frclen].font = XftFontOpenPattern(xwin.dpy, fontpattern);
 			if (!frc[frclen].font)
 				die("XftFontOpenPattern failed seeking fallback font: %s\n",
 						strerror(errno));
 			frc[frclen].flags = frcflags;
 			frc[frclen].unicodep = rune;
 
-			glyphidx = XftCharIndex(xw.dpy, frc[frclen].font, rune);
+			glyphidx = XftCharIndex(xwin.dpy, frc[frclen].font, rune);
 
 			f = frclen;
 			frclen++;

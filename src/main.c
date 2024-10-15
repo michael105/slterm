@@ -61,7 +61,7 @@ void config_init(void) {
 	ResourcePref *p;
 
 	XrmInitialize();
-	resm = XResourceManagerString(xw.dpy);
+	resm = XResourceManagerString(xwin.dpy);
 	if (!resm)
 		return;
 
@@ -103,8 +103,8 @@ int shared_main(int argc, char *argv[]) {
 #else
 int main(int argc, char *argv[]) {
 #endif
-		xw.l = xw.t = 0;
-		xw.isfixed = False;
+		xwin.l = xwin.t = 0;
+		xwin.isfixed = False;
 		twin.cursor = cursorshape;
 		iofd = 1;
 
@@ -144,10 +144,10 @@ int main(int argc, char *argv[]) {
 				opt_font = EARGF(usage());
 				break;
 			case 'g':
-				xw.gm = XParseGeometry(EARGF(usage()), &xw.l, &xw.t, &cols, &rows);
+				xwin.gm = XParseGeometry(EARGF(usage()), &xwin.l, &xwin.t, &cols, &rows);
 				break;
 			case 'i':
-				xw.isfixed = 1;
+				xwin.isfixed = 1;
 				break;
 			case 'o':
 				opt_io = EARGF(usage());
@@ -200,7 +200,7 @@ run:
 		XSetLocaleModifiers("");
 
 #ifdef XRESOURCES
-		if (!(xw.dpy = XOpenDisplay(NULL)))
+		if (!(xwin.dpy = XOpenDisplay(NULL)))
 			die("Can't open display\n");
 
 		if (opt_xresources)

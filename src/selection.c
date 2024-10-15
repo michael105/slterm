@@ -37,8 +37,8 @@ void setsel(char *str, Time t) {
 	free(xsel.primary);
 	xsel.primary = str;
 
-	XSetSelectionOwner(xw.dpy, XA_PRIMARY, xw.win, t);
-	if (XGetSelectionOwner(xw.dpy, XA_PRIMARY) != xw.win)
+	XSetSelectionOwner(xwin.dpy, XA_PRIMARY, xwin.win, t);
+	if (XGetSelectionOwner(xwin.dpy, XA_PRIMARY) != xwin.win)
 		selclear();
 
 	clipcopy(NULL);
@@ -594,21 +594,21 @@ void clipcopy(const Arg *dummy) {
 
 	if (xsel.primary != NULL) {
 		xsel.clipboard = xstrdup(xsel.primary);
-		clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
-		XSetSelectionOwner(xw.dpy, clipboard, xw.win, CurrentTime);
+		clipboard = XInternAtom(xwin.dpy, "CLIPBOARD", 0);
+		XSetSelectionOwner(xwin.dpy, clipboard, xwin.win, CurrentTime);
 	}
 }
 
 void clippaste(const Arg *dummy) {
 	Atom clipboard;
 
-	clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
-	XConvertSelection(xw.dpy, clipboard, xsel.xtarget, clipboard, xw.win,
+	clipboard = XInternAtom(xwin.dpy, "CLIPBOARD", 0);
+	XConvertSelection(xwin.dpy, clipboard, xsel.xtarget, clipboard, xwin.win,
 			CurrentTime);
 }
 
 void selpaste(const Arg *dummy) {
-	XConvertSelection(xw.dpy, XA_PRIMARY, xsel.xtarget, XA_PRIMARY, xw.win,
+	XConvertSelection(xwin.dpy, XA_PRIMARY, xsel.xtarget, XA_PRIMARY, xwin.win,
 			CurrentTime);
 }
 
@@ -651,7 +651,7 @@ void selrequest(XEvent *e) {
 	/* reject */
 	xev.property = None;
 
-	xa_targets = XInternAtom(xw.dpy, "TARGETS", 0);
+	xa_targets = XInternAtom(xwin.dpy, "TARGETS", 0);
 	if (xsre->target == xa_targets) {
 		/* respond with the supported type */
 		string = xsel.xtarget;
@@ -663,7 +663,7 @@ void selrequest(XEvent *e) {
 		 * xith XA_STRING non ascii characters may be incorrect in the
 		 * requestor. It is not our problem, use utf8.
 		 */
-		clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+		clipboard = XInternAtom(xwin.dpy, "CLIPBOARD", 0);
 		if (xsre->selection == XA_PRIMARY) {
 			seltext = xsel.primary;
 		} else if (xsre->selection == clipboard) {
@@ -694,7 +694,7 @@ void selnotify(XEvent *e) {
 	uchar *data, *last, *repl;
 	Atom type, incratom, property = None;
 
-	incratom = XInternAtom(xw.dpy, "INCR", 0);
+	incratom = XInternAtom(xwin.dpy, "INCR", 0);
 
 	ofs = 0;
 	if (e->type == SelectionNotify)
@@ -706,7 +706,7 @@ void selnotify(XEvent *e) {
 		return;
 
 	do {
-		if (XGetWindowProperty(xw.dpy, xw.win, property, ofs, BUFSIZ / 4, False,
+		if (XGetWindowProperty(xwin.dpy, xwin.win, property, ofs, BUFSIZ / 4, False,
 					AnyPropertyType, &type, &format, &nitems, &rem,
 					&data)) {
 			fprintf(stderr, "Clipboard allocation failed\n");
@@ -720,8 +720,8 @@ void selnotify(XEvent *e) {
 			 * data has been transferred. We won't need to receive
 			 * PropertyNotify events anymore.
 			 */
-			MODBIT(xw.attrs.event_mask, 0, PropertyChangeMask);
-			XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
+			MODBIT(xwin.attrs.event_mask, 0, PropertyChangeMask);
+			XChangeWindowAttributes(xwin.dpy, xwin.win, CWEventMask, &xwin.attrs);
 		}
 
 		if (type == incratom) {
@@ -730,13 +730,13 @@ void selnotify(XEvent *e) {
 			 * when the selection owner does send us the next
 			 * chunk of data.
 			 */
-			MODBIT(xw.attrs.event_mask, 1, PropertyChangeMask);
-			XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
+			MODBIT(xwin.attrs.event_mask, 1, PropertyChangeMask);
+			XChangeWindowAttributes(xwin.dpy, xwin.win, CWEventMask, &xwin.attrs);
 
 			/*
 			 * Deleting the property is the transfer start signal.
 			 */
-			XDeleteProperty(xw.dpy, xw.win, (int)property);
+			XDeleteProperty(xwin.dpy, xwin.win, (int)property);
 			continue;
 		}
 
@@ -767,7 +767,7 @@ void selnotify(XEvent *e) {
 	 * Deleting the property again tells the selection owner to send the
 	 * next data chunk in the property.
 	 */
-	XDeleteProperty(xw.dpy, xw.win, (int)property);
+	XDeleteProperty(xwin.dpy, xwin.win, (int)property);
 }
 
 

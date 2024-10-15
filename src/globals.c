@@ -16,7 +16,7 @@ int borderpx;
 int enterlessmode;
 
 
-XWindow xw;
+XWindow xwin;
 TermWindow twin;
 
 

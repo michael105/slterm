@@ -169,7 +169,7 @@ void kpress(XEvent *ev) {
 	if (IS_SET(MODE_KBDLOCK))
 		return;
 
-	len = XmbLookupString(xw.xic, e, buf, sizeof buf, &ksym, &status);
+	len = XmbLookupString(xwin.xic, e, buf, sizeof buf, &ksym, &status);
 
 	if (IS_SET(MODE_KBDSELECT)) {
 		if (match(XK_NO_MOD, e->state) || (XK_Shift_L | XK_Shift_R) & e->state)
