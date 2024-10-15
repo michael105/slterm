@@ -64,6 +64,7 @@ void run() {
 		}
 	} while (ev.type != MapNotify);
 
+	// also start shell in ttynew. args are global. somewhere.
 	ttyfd = ttynew(opt_line, shell, opt_io, opt_cmd);
 	cresize(w, h);
 

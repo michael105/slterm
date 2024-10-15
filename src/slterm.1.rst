@@ -86,6 +86,33 @@ selection to the clipboard and exits selection mode,
 `yy` (sort of vim binding) selects the current line
 and yanks it to the clipboard.
 
+
+
+TERMINAL
+========
+
+slterm starts either the env variable SHELL, /bin/sh, or a command supplied with
+`slterm -e command`.
+
+Several Variables are set in the environment.
+
+The basic 8 colors, accesible in the shell as:
+$BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
+
+The can be combined with prefixes: L(ight), D(ark), LD(light-dark), BD(background).
+L: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE.
+
+Other text attributes are: $BOLD, $FAINT, $CURSIVE, $UNDERLINE, $BLINK, $REVERSE, $STRIKETHROUGH.
+
+The default foreground and background color and attributes can be reset with $NORMAL.
+
+
+Sending a bell to the terminal (echo -e "\007") sends 
+the according notification to the window manager.
+
+
+
+
  
 INSTALL
 =======

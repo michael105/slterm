@@ -95,6 +95,25 @@ copy to the clipboard with \fIEnter\fP\&.
 selection to the clipboard and exits selection mode,
 \fIyy\fP (sort of vim binding) selects the current line
 and yanks it to the clipboard.
+.SH TERMINAL
+.sp
+slterm starts either the env variable SHELL, /bin/sh, or a command supplied with
+\fIslterm \-e command\fP\&.
+.sp
+Several Variables are set in the environment.
+.sp
+The basic 8 colors, accesible in the shell as:
+$BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
+.sp
+The can be combined with prefixes: L(ight), D(ark), LD(light\-dark), BD(background).
+L: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE.
+.sp
+Other text attributes are: $BOLD, $FAINT, $CURSIVE, $UNDERLINE, $BLINK, $REVERSE, $STRIKETHROUGH.
+.sp
+The default foreground and background color and attributes can be reset with $NORMAL.
+.sp
+Sending a bell to the terminal (echo \-e "007") sends
+the according notification to the window manager.
 .SH INSTALL
 .INDENT 0.0
 .INDENT 3.5
@@ -105,7 +124,7 @@ If you downloaded the statically linked binary,
 \- copy the binary to a suitable place (/usr/local/bin)
 \- install the terminal info file: (for curses) \fIslterm \-I | tic \-sx \-\fP
 \- If needed, download this man page in its man format(slterm.1)
-.IP "System Message: ERROR/3 (slterm.1.rst:, line 100)"
+.IP "System Message: ERROR/3 (slterm.1.rst:, line 127)"
 Unexpected indentation.
 .INDENT 0.0
 .INDENT 3.5
