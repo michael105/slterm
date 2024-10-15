@@ -29,8 +29,13 @@
 	* Additional cursor shapes
 
 
-Statically linked binary, with all runtime dependencies (3.5M)
-[https://codeberg.org/misc1/-/packages/generic/slterm/0.98](https://codeberg.org/misc1/-/packages/generic/slterm/0.98)
+Statically linked binaries, with all runtime dependencies (3.5M)
+[https://codeberg.org/misc1/-/packages/generic/slterm/](https://codeberg.org/misc1/-/packages/generic/slterm/)
+
+shasum: 
+(v.0.99.2)
+eb138a954af517dbb603c627a8aedcf4c46595c7  slterm
+
 
 ---
 
