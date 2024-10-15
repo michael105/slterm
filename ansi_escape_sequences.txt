@@ -49,7 +49,7 @@ ATTRIBUTES
 6	blink
 7	reverse
 9	strikethrough
-21 double underline
+21	double underline
 
 
 attributes can be combined, also 1 and 2 (=bold_faint)

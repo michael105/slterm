@@ -65,6 +65,15 @@ void execsh(char *cmd, char **args) {
 		setenv("CYAN", "\e[36m", 1);
 		setenv("WHITE", "\e[37m", 1);
 
+		setenv("BROWN", "\e[33m", 1);
+		setenv("BGBROWN", "\e[43m", 1);
+		setenv("ORANGE", "\e[1;2;33m", 1);
+		setenv("ORANGERED", "\e[1;2;31m", 1);
+		setenv("GRAY", "\e[1;2;30m", 1);
+		setenv("PURPLE", "\e[1;2;35m", 1);
+		setenv("MINT", "\e[1;2;32m", 1);
+		setenv("TURQUOISE", "\e[1;2;36m", 1);
+
 		setenv("LBLACK", "\e[90m", 1);
 		setenv("LRED", "\e[91m", 1);
 		setenv("LGREEN", "\e[92m", 1);
@@ -118,7 +127,8 @@ void execsh(char *cmd, char **args) {
 		setenv("UNDERLINE","\e[4m",1);
 		setenv("BLINK","\e[6m",1);
 		setenv("REVERSE","\e[7m",1);
-		setenv("STRIKETHROUGH","\e[21m",1);
+		setenv("STRIKETHROUGH","\e[9m",1);
+		setenv("DOUBLEUNDERLINE","\e[21m",1);
 
 
 		signal(SIGCHLD, SIG_DFL);

@@ -91,10 +91,18 @@ and yanks it to the clipboard.
 TERMINAL
 ========
 
+
+slterm is mostly VT100 compatible, please look in question for the according manuals.
+Here only some of the vt100 or slterm additions are described.
+
 slterm starts either the env variable SHELL, /bin/sh, or a command supplied with
 `slterm -e command`.
 
-Several Variables are set in the environment.
+Several Variables are exported into the environment.
+
+
+Colors
+------
 
 The basic 8 colors, accesible in the shell as:
 $BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
@@ -102,13 +110,48 @@ $BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
 The can be combined with prefixes: L(ight), D(ark), LD(light-dark), BD(background).
 L: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE.
 
-Other text attributes are: $BOLD, $FAINT, $CURSIVE, $UNDERLINE, $BLINK, $REVERSE, $STRIKETHROUGH.
+These Colors cannot be combined: ORANGE, ORANGERED, BROWN, BGBROWN, PURPLE, GRAY, MINT, TURQUOISE
+
+Other text attributes are: $BOLD, $FAINT, $CURSIVE, $UNDERLINE, $BLINK, $REVERSE, $STRIKETHROUGH, $DOUBLEUNDERLINE.
+
+The text attributes can be combined, with some special combinations:
+BLINK and REVERSE blinks by reversing colors.
+STRIKETHROUGH and UNDERLINE get a double underline.
+
 
 The default foreground and background color and attributes can be reset with $NORMAL.
 
 
+255 Colors can be set with: 
+foreground: "\e[38;5;XXm", XX one of 0 - 255.
+background: "\e[48;5;XXm", XX one of 0 - 255.
+
+
+Cursor
+------
+
+There are several cursor shapes, set with: "\e[X q".
+X one of 0..12:
+
+1,2: block cursor
+3,4: underline
+5,6: vertical bar
+
+slterm additions:
+7:   'X'
+7;Y: Y is the ascii code of the char, used as cursor
+8:   double underline
+9:   empty block
+10:  underline, two lines at the sides
+11:  underline and overline, lines right and left
+12:  overline, lines right and left
+
+
+Bell
+----
+
 Sending a bell to the terminal (echo -e "\007") sends 
-the according notification to the window manager.
+the according notification (XBell) to the window manager.
 
 
 
