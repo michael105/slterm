@@ -192,7 +192,7 @@ static const char* bgcolornames[16] = {
  */
 unsigned char defaultfg = 7;
 unsigned char defaultbg = 0;
-static unsigned char defaultcs = 250;
+static unsigned char defaultcs = 15;
 static unsigned char defaultrcs = 202;
 // Unfocused window
 static unsigned char unfocusedrcs = 46; //118;//226; 

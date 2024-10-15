@@ -21,6 +21,7 @@ ${BOLD}Set font width/size:$N
 
   Alt+Shift + Insert/Delete:   Enlarge/Shrink width
   Alt+Shift + PageUp/PageDown: Zoom in / out
+  Alt+Shift + Home:            Reset font display
 
 
 ${BOLD}Select Codepage:$N
@@ -41,13 +42,13 @@ ${BOLD}Scrolling:$N
   Shift + Up/Down/PageUp/Pagedown: Scroll up/down
   Shift + Home/End:  Scroll to top/bottom
   Shift + Backspace: Scroll to the location of the last command (shell)
-                      and enter lessmode
+                     and enter lessmode
 
 
 ${BOLD}Clipboard:$N
 
-  Shift + Insert / Ctrl+Shift + y: Paste
-  Ctrl+Shift + c: Copy 
+  Shift + Insert / Ctrl+Shift + y:  Paste
+  Ctrl+Shift + c / mouse selection: Copy 
 
 
 ${BOLD}Scrollmarks:$N
@@ -69,7 +70,9 @@ $BOLD${UL}${LGREEN}Lessmode:$N
   Shift+Backspace/Tab left: Scroll to the location of the last entered command,
     enter lessmode
 
-  Shift+Enter: Execute command, enter lessmode when more than
+  Tab: Scroll downwards to the next entered command line
+
+  Shift+Enter: Execute command, enter lessmode if more than
     one screen is displayed by the command.
 
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
@@ -117,7 +120,7 @@ $BOLD${UL}${LGREEN}Selection Mode:$N
  
  
 
-${YELLOW} Full shortcut list $NORM
+${YELLOW} Shortcut list, without selection mode bindings $NORM
 
 
 Mode\t Modifiers\t\t Key\t\t Function\t Info

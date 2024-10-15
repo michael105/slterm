@@ -8,6 +8,9 @@
 SYNOPSIS
 ========
 
+
+**slterm** **-I** **-H** **-L** **-h** 
+
 **slterm** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
 [**-l** *line*] [**-w** *windowid*] [[**-e**] *command*] [**-X**] 
@@ -39,42 +42,61 @@ The most important key combination might be
 
 
 
+The usage of slterm differs from other terminal emulators by its three different main modes.
 
-The usage of slterm differs from other terminal emulators by its different modes.
 
-In selection mode it is possible to select lines or areas (either by lines,
-or rectangular areas).
-enter with Alt+S, start selecting with v or s and the cursor keys, 
-switch between rectangular selection and line selection with t,
-copy to the clipboard with Enter.
-y selects the current line, yy (sort of vim binding) selects the current line
-and yanks it to the clipboard.
+normalmode
+----------
+
+The codepage can be changed via hotkeys. (`Ctrl+Shift+0..9`).
+
+Paste from the clipbard with `Shift+Insert`.
+
+Set Bookmarks to the current line with `Ctrl+Shift+0..9`
+Scroll back to a bookmark with `Ctrl+0..9`
+
+
+lessmode
+--------
 
 In lessmode it is possible to browse in the scrollback buffer via 
 the standard less like keybindings.
 
-Ctrl+Shift Up/Down/PgUp/PdDown enter lessmode 
-Shift+Backspace enters lessmode and browses back to the last line, 
+`Ctrl+Shift Up/Down/PgUp/PdDown` enter lessmode 
+`Shift+Backspace` enters lessmode and browses back to the last line, 
 a command has been entered.
 
 in lessmode, it is possible to browse between the marks of commands,
-comfirmed via enter, via Backspace or Tab left and Tab.
+comfirmed with `Enter` in the shell via `Backspace` or `Tab left` and `Tab`.
 
-Shift + Enter in Normal mode enters lessmode, if the output
+`Shift+Enter` in Normal mode enters lessmode, if the output
 of a command is more than a screen.
+
+
+selectionmode
+-------------
+
+In selection mode it is possible to select lines or areas (either by lines,
+or rectangular areas).
+enter with `Alt+S`, start selecting with `v` or `s` and the cursor keys, 
+switch between rectangular selection and line selection with `t`,
+copy to the clipboard with `Enter`.
+`y` selects the current line, `yy` (sort of vim binding) selects the current line
+and yanks it to the clipboard.
 
  
 INSTALL
 =======
 
-   If obtained from source, type make and make install.
+   If obtained from source, edit the files config.make and config.h
+   to customize slterm. Type `make`, and `make install`.
 
    If you downloaded the statically linked binary,
    - copy the binary to a suitable place (/usr/local/bin)
-   - install the terminal info file, if needed: (for curses) slterm -I > slterm.info; tic -sx slterm.info
-   If needed, download the man page (slterm.1) 
-   of the current version from github (github.com/michael105/slterm)
-   and copy into the appropiate directory.
+   - install the terminal info file: (for curses) `slterm -I | tic -sx -` 
+   - If needed, download this man page in its man format(slterm.1) 
+     from github (github.com/michael105/slterm), 
+     copy into the appropiate directory (/usr/local/share/man/man1)
 
 
 OPTIONS
@@ -149,14 +171,6 @@ OPTIONS
    the contents will not necessarily erase the written cells.
    This option locks all memory pages into ram.
 
-
-
-CUSTOMIZATION
-=============
-
-**slterm** can be customized by editing config.make and src/config.h,
-afterwards (re)compiling the source code, or by editing the Xresources init files and 
-compiling slterm with Xresources enabled.
 
 AUTHORS
 =======
