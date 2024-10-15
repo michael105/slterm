@@ -29,6 +29,8 @@
 	* Additional cursor shapes
 
 
+	A statically linked binary with all dependencies is at
+	[https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
 	checksum of the decompressed slterm binary, 0.99.2
 	sha: eb138a954af517dbb603c627a8aedcf4c46595c7 
 	sha3: fe35caef6fa65bb58a2d6eb40067ff5bdb5664f0405598d917978553 
