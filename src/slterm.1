@@ -166,6 +166,28 @@ copy into the appropiate directory (/usr/local/share/man/man1)
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.SS CURSES
+.INDENT 0.0
+.INDENT 3.5
+To be used with curses, the installation of the terminfo database file is needed.
+slterm.terminfo is supplied in the sources, within the folder share.
+It can be installed with \fItic \-sx slterm.terminfo\fP\&.
+Alternatively, the termcap database "linux" seems to be mostly compatible.
+Set with export TERM=linux
+.sp
+The terminfo database of slterm is also displayed, when slterm was compiled with
+EMBEDRESOURCES. Type \fIslterm \-I\fP, to install: \fIslterm \-I | tic \-sx \-\fP\&.
+The key combination \fICtrl+Shift+Win+ALT+I\fP will dump the terminal info to
+the terminal as well, and can be used, to install the terminal info within
+a remote shell. ( type \fItic \-sx \-\fP, hit \fICtrl+Shift+Win+Alt+I\fP, and \fICtrl+D\fP )
+.sp
+Tic is the terminfo compiler, available from the curses distributions.
+There is a statically linked binary for linux, 64bit of tic at
+github.com/michael105/static\-bin
+(125kB, sha3sum: 510f25bdb35c437c0bc28690a6d292f128113144fee93cf37b01381c)
+Sources of tic and netbsd curses: github.com/oasislinux/netbsd\-curses/
+.UNINDENT
+.UNINDENT
 .SH OPTIONS
 .INDENT 0.0
 .TP

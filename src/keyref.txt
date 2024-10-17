@@ -96,3 +96,4 @@ Less	 All                	 Up         	 kscrollup
 Less	 All                	 q          	 lessmode_toggle 	
 Less	 All                	 space      	 kscrolldown 	
 Less	 Shift              	 Return     	 lessmode_toggle 	
+MODE_DEFAULT	 Control+Shift|Alt|Win 	 I          	 dump_terminfo 	

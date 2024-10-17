@@ -261,6 +261,7 @@ Less	 All                	 Up         	 kscrollup 	\n\r\
 Less	 All                	 q          	 lessmode_toggle 	\n\r\
 Less	 All                	 space      	 kscrolldown 	\n\r\
 Less	 Shift              	 Return     	 lessmode_toggle 	\n\r\
+MODE_DEFAULT	 Control+Shift|Alt|Win 	 I          	 dump_terminfo 	\n\r\
 \n\r\
 \n\r\
 [36m\n\r\
