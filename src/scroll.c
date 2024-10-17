@@ -236,7 +236,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 		if ( term->histi == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
 		// else segfaults. reproduce: man man; and scroll with a (now, since this is patched rotfl) unknown combination of commands.
 			printf("RETURN\n"); // xxx
-			//return;
+			//return; // ? strange. no segfaults anymore. 
 		}
 		//LIMIT(n, 0, term->bot - orig ); //xxx
 		LIMIT(n, 0, term->bot - orig + 1);

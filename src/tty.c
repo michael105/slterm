@@ -139,6 +139,7 @@ size_t ttyread(void) {
 	return ret;
 }
 
+// writes to the terminal / shell
 void ttywrite(const utfchar *s, size_t n, int may_echo) {
 	const utfchar *next;
 	Arg arg = (Arg){.i = term->scr};

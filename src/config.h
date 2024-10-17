@@ -86,6 +86,9 @@ static unsigned int cursorthickness = 2;
 static int bellvolume = 50;
 
 /* default TERM value */
+// used also for the identification of the capabilities to curses
+// this can be overriden in the shell by exporting a known terminal name,
+// e.g.: export TERM=xterm-256color
 char *termname = "slterm-256color";
 
 /*
@@ -218,6 +221,9 @@ static int ignoreselfg = 1;
  * 7: Block, and (X)
  * 8: double underline
  * 9: empty block
+ * 10: underline with sides
+ * 11: under- and overline with sides
+ * 12: overline with sides
  */
 unsigned int cursorshape = 4;
 
@@ -811,9 +817,9 @@ static uint selmasks[] = {
 // There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
 // the greek alphabet and several mathematical and logical chars.
 // It's what I do need for writing. 
-// There's a filter for the conversion to and from utf8,
-// within tools. (e4, and e42)
-// Numbered the cp e4000, according to the rfc's exxx is reserved for private 
+// There's a filter for the conversion to and from utf8 and between codepages,
+// within tools. 
+// Numbered the cp e4000, according to the rfc's 0xExxxx is reserved for private 
 // assignments. 
 
 // Finally, I created another codepage. Naming this cpe4002a,

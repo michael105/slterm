@@ -171,6 +171,29 @@ INSTALL
      copy into the appropiate directory (/usr/local/share/man/man1)
 
 
+CURSES
+------
+     
+   To be used with curses, the installation of the terminfo database file is needed.
+   slterm.terminfo is supplied in the sources, within the folder share.
+   It can be installed with `tic -sx slterm.terminfo`.
+   Alternatively, the termcap database "linux" seems to be mostly compatible.
+   Set with export TERM=linux
+
+   The terminfo database of slterm is also displayed, when slterm was compiled with
+   EMBEDRESOURCES. Type `slterm -I`, to install: `slterm -I | tic -sx -`.
+   The key combination `Ctrl+Shift+Win+ALT+I` will dump the terminal info to
+   the terminal as well, and can be used, to install the terminal info within
+   a remote shell. ( type `tic -sx -`, hit `Ctrl+Shift+Win+Alt+I`, and `Ctrl+D` )
+   
+
+   Tic is the terminfo compiler, available from the curses distributions.
+   There is a statically linked binary for linux, 64bit of tic at
+   github.com/michael105/static-bin 
+   (125kB, sha3sum: 510f25bdb35c437c0bc28690a6d292f128113144fee93cf37b01381c)
+   Sources of tic and netbsd curses: github.com/oasislinux/netbsd-curses/
+
+
 OPTIONS
 =======
 
