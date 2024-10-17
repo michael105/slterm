@@ -1,4 +1,4 @@
-const char* slterm_info = R"(slterm| slimterm,
+const char* slterm_terminfo = R"(slterm| slimterm,
 	acsc=+C\,D-A.B0E``aaffgghFiGjjkkllmmnnooppqqrrssttuuvvwwxxyyzz{{||}}~~,
 	am,
 	bce,

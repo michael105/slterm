@@ -95,7 +95,7 @@ char *termname = "slterm-256color";
  * spaces per tab
  *
  * When you are changing this value, don't forget to adapt the »it« value in
- * the slterm.info and appropriately install the slterm.info in the environment where
+ * the slterm.terminfo and appropriately install the slterm.terminfo in the environment where
  * you use this slterm version.
  *
  *	it#$tabspaces,
@@ -524,7 +524,7 @@ BIND( ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES ),
 #undef BIND
 
 /*
- * Special keys (change & recompile slterm.info accordingly)
+ * Special keys (change & recompile slterm.terminfo accordingly)
  *
  * Mask value:
  * * Use XK_ANY_MOD to match the key no matter modifiers state

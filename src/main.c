@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 		ARGBEGIN {
 #ifdef INCLUDETERMINFO
 			case 'I': // dump terminfo
-				write(STDOUT_FILENO, slterm_info, strlen(slterm_info) );
+				write(STDOUT_FILENO, slterm_terminfo, strlen(slterm_terminfo) );
 				exit(0);
 #endif
 #ifdef INCLUDELICENSE

@@ -32,7 +32,7 @@
 
 // embedded resources
 #ifdef INCLUDETERMINFO
-#include "slterm_info.h"
+#include "slterm_terminfo.h"
 #endif
 #ifdef INCLUDELICENSE
 #include "slterm_license.h"
