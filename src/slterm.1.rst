@@ -175,10 +175,10 @@ CURSES
 ------
      
    To be used with curses, the installation of the terminfo database file is needed.
-   slterm.terminfo is supplied in the sources, within the folder share.
+   slterm.terminfo is supplied in the sources, within the folder src.
    It can be installed with `tic -sx slterm.terminfo`.
    Alternatively, the termcap database "linux" seems to be mostly compatible.
-   Set with export TERM=linux
+   Set with `export TERM=linux`
 
    The terminfo database of slterm is also displayed, when slterm was compiled with
    EMBEDRESOURCES. Type `slterm -I`, to install: `slterm -I | tic -sx -`.
