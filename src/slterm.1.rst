@@ -41,7 +41,6 @@ The most important key combination might be
   Show a help screen with all shortcuts.
 
 
-
 The usage of slterm differs to other terminal emulators by its three different main modes.
 
 
@@ -85,13 +84,16 @@ selectionmode
 
 In selection mode it is possible to select lines or areas (either by lines,
 or rectangular areas).
-enter with `Alt+S`, start selecting with `v` or `s` and the cursor keys, 
+enter with `Alt+S`, start selecting with `v`, `s` or `V` (rectangular selection) 
+and the cursor keys, 
 switch between rectangular selection and line selection with `t`,
 copy to the clipboard with `Enter`.
-`y` selects the current line, hit `y` with a active selection yanks the
+`y` selects the current line, `y` with a active selection yanks the
 selection to the clipboard and exits selection mode,
 `yy` (sort of vim binding) selects the current line
 and yanks it to the clipboard.
+`p` copies the selection and pastes it into the terminal.
+`q` or `ESC` exit selection mode.
 
 
 
