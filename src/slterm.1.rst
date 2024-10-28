@@ -178,11 +178,11 @@ to customize slterm. Type `make`, and `make install`.
 
 If you downloaded the statically linked binary,
 
-- copy the binary to a suitable place (/usr/local/bin)
-- install the terminal info file: (for curses) `slterm -I | tic -sx -` 
-- If needed, download this man page in its man format(slterm.1) 
-  from github (github.com/michael105/slterm), 
-  copy into the appropiate directory (/usr/local/share/man/man1)
+1. copy the binary to a suitable place (/usr/local/bin)
+2. install the terminal info file: (for curses) `slterm -I | tic -sx -` 
+3. If needed, download this man page in its man format (slterm.1) 
+   from github (github.com/michael105/slterm), 
+   copy into the appropiate directory (/usr/local/share/man/man1)
 
 
 
@@ -212,69 +212,69 @@ CURSES
 OPTIONS
 =======
 
-**-a**
+-a
    disable alternate screens in terminal
 
-**-c** *class*
+-c class
    defines the window class (default $TERM).
 
-**-f** *font*
-   defines the *font* to use when slterm is run.
+-f font
+   defines the font to use when slterm is run.
 
-**-g** *geometry*
+-g geometry
    defines the X11 geometry string. The form is
    [=][<cols>{xX}<rows>][{+-}<xoffset>{+-}<yoffset>]. See
-   **XParseGeometry** (3) for further details.
+   XParseGeometry (3) for further details.
 
-**-i**
+-i
    will fixate the position given with the -g option.
 
-**-n** *name*
+-n name
    defines the window instance name (default $TERM).
 
-**-o** *iofile*
-   writes all the I/O to *iofile.* This feature is useful when recording
+-o iofile
+   writes all the I/O to iofile. This feature is useful when recording
    slterm sessions. A value of "-" means standard output.
 
-**-T** *title*
+-T title
    defines the window title (default 'slterm').
 
-**-t** *title*
+-t title
    defines the window title (default 'slterm').
 
-**-w** *windowid*
-   embeds slterm within the window identified by *windowid*
+-w windowid
+   embeds slterm within the window identified by windowid
 
-**-l** *line*
-   use a tty *line* instead of a pseudo terminal. *line* should be a
+-l line
+   use a tty line instead of a pseudo terminal. line should be a
    (pseudo-)serial device (e.g. /dev/ttyS0 on Linux for serial port 0).
    When this flag is given remaining arguments are used as flags for
-   **stty(1).** By default slterm initializes the serial line to 8 bits, no
+   stty(1). By default slterm initializes the serial line to 8 bits, no
    parity, 1 stop bit and a 38400 baud rate. The speed is set by
    appending it as last argument (e.g. 'slterm -l /dev/ttyS0 115200').
-   Arguments before the last one are **stty(1)** flags. If you want to
+   Arguments before the last one are stty(1) flags. If you want to
    set odd parity on 115200 baud use for example 'slterm -l /dev/ttyS0
    parenb parodd 115200'. Set the number of bits by using for example
-   'slterm -l /dev/ttyS0 cs7 115200'. See **stty(1)** for more arguments and
+   'slterm -l /dev/ttyS0 cs7 115200'. See stty(1) for more arguments and
    cases.
 
-**-v**
+-v
    prints version information, then exits.
 
-**-V** 
+-V 
    prints version and compile information, then exits
 
-**-e** *command* **[** *arguments* **... ]**
-   slterm executes *command* instead of the shell. If this is used it **must
-   be the last option** on the command line, as in xterm / rxvt. This
+-e command [ arguments ... ]
+   slterm executes command instead of the shell. If this is used it must
+   be the last option on the command line, as in xterm / rxvt. This
    option is only intended for compatibility, and all the remaining
    arguments are used as a command even without it.
 
-**-x**
+-x
    enable reading of the XResources database for the configuration
    slterm must have been compiled with the XRESOURCES flag in config.h.in set to 1
    
-**-X**
+-X
    lock all memory pages into memory, prevent swapping.
    Secrets could be revealed, also years later, if the memory
    is swapped to disk. Worse, with flash disks also erasing
