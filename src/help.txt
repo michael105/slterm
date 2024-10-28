@@ -47,6 +47,8 @@ ${BOLD}Scrolling:$N
   Shift + Home/End:  Scroll to top/bottom
   Shift + Backspace: Scroll to the location of the last command (shell)
                      and enter lessmode
+  Shift+Enter:       Execute command, enter lessmode if more than
+                     one screen is displayed by the command.
 
 
 ${BOLD}Clipboard:$N
@@ -76,12 +78,9 @@ $BOLD${UL}${LGREEN}Lessmode:$N
 
   Tab: Scroll downwards to the next entered command line
 
-  Shift+Enter: Execute command, enter lessmode if more than
-    one screen is displayed by the command.
-
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9
       Ctrl + [0..9]: Goto Scrollmark 0 - 9
-  Lessmode:  [0..9]: Goto Scrollmark 0 - 9
+  Lessmode:  [0..9]: Goto Retmark 1 - 10
 
 
 

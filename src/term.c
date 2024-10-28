@@ -179,7 +179,10 @@ void inverse_screen(){
 	redraw();
 }
 
-// TODO: show help screen. Too many keys to remember. misc.
+void quithelp( const Arg *a ){
+	showhelp( a );
+}
+
 void showhelp(const Arg *a) {
 	//printf("showhelp\n");
 
@@ -211,8 +214,7 @@ void showhelp(const Arg *a) {
 				//twrite( helpcontents, strlen(helpcontents), 0 );
 			}
 		}
-		Arg a = { .i=LESSMODE_ON };
-		lessmode_toggle( &a );
+		lessmode_toggle( ARGPi( LESSMODE_ON) );
 
 		help_storedinputmode = inputmode;
 		inputmode = inputmode | IMODE_HELP;
@@ -230,8 +232,7 @@ void showhelp(const Arg *a) {
 		//inputmode = inputmode & ~(MODE_LESS | IMODE_HELP);
 		showstatus(0,0);
 		term = p_help_storedterm;
-		Arg a = { .i=LESSMODE_OFF };
-		lessmode_toggle( &a ); // bugs else.
+		lessmode_toggle( ARGPi( LESSMODE_OFF ) ); // bugs else.
 		if ( ( p_help->row != term->row ) || ( p_help->col != term->col ))
 			tresize( p_help->col, p_help->row );
 	}

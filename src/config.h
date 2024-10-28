@@ -411,8 +411,8 @@ BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS ),
 
 
 // help mode
-BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
-BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_q, quithelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Escape, quithelp, { 0},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},IMODE_HELP ),

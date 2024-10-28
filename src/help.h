@@ -76,6 +76,8 @@ scrollmarks and lessmode are disabled.\n\r\
   Shift + Home/End:  Scroll to top/bottom\n\r\
   Shift + Backspace: Scroll to the location of the last command (shell)\n\r\
                      and enter lessmode\n\r\
+  Shift+Enter:       Execute command, enter lessmode if more than\n\r\
+                     one screen is displayed by the command.\n\r\
 \n\r\
 \n\r\
 [1mClipboard:[0;0m\n\r\
@@ -105,12 +107,9 @@ scrollmarks and lessmode are disabled.\n\r\
 \n\r\
   Tab: Scroll downwards to the next entered command line\n\r\
 \n\r\
-  Shift+Enter: Execute command, enter lessmode if more than\n\r\
-    one screen is displayed by the command.\n\r\
-\n\r\
   Ctrl+Alt + [0..9]: Set Scrollmark 0 - 9\n\r\
       Ctrl + [0..9]: Goto Scrollmark 0 - 9\n\r\
-  Lessmode:  [0..9]: Goto Scrollmark 0 - 9\n\r\
+  Lessmode:  [0..9]: Goto Retmark 1 - 10\n\r\
 \n\r\
 \n\r\
 \n\r\
@@ -232,12 +231,12 @@ All	 Shift+Alt          	 Page_Up    	 zoom 	\n\r\
 Help	 All                	 ALL_KEYS   	 dummy 	\n\r\
 Help	 All                	 Down       	 kscrolldown 	\n\r\
 Help	 All                	 End        	 scrolltobottom 	\n\r\
-Help	 All                	 Escape     	 showhelp 	\n\r\
+Help	 All                	 Escape     	 quithelp 	\n\r\
 Help	 All                	 Home       	 scrolltotop 	\n\r\
 Help	 All                	 Page_Down  	 kscrolldown 	\n\r\
 Help	 All                	 Page_Up    	 kscrollup 	\n\r\
 Help	 All                	 Up         	 kscrollup 	\n\r\
-Help	 All                	 q          	 showhelp 	\n\r\
+Help	 All                	 q          	 quithelp 	\n\r\
 Help	 All                	 space      	 kscrolldown 	\n\r\
 Less	 All                	 0          	 retmark 	\n\r\
 Less	 All                	 1          	 retmark 	\n\r\
