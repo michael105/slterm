@@ -1,6 +1,5 @@
 #pragma once
 
-#include "fonts.h"
 
 // Globals, used across several source files, 
 // global typedefs (type aliases), macros.
@@ -20,6 +19,19 @@ typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned short ushort;
 
+// callback argument
+typedef union {
+  int i;
+  unsigned int ui;
+  float f;
+  const void *v;
+  const char *s;
+} Arg;
+
+#define ARGP(_assign) &(Arg){ ._assign }
+#define ARGPi(_value) &(Arg){ .i= _value }
+
+#include "fonts.h"
 
 // ascii needs the whole 256 char table, 
 // therefore unsigned chars

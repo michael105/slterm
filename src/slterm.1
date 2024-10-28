@@ -129,42 +129,50 @@ background: "e[48;5;XXm", XX one of 0 \- 255.
 .sp
 There are several cursor shapes, set with: "e[X q".
 X one of 0..12:
-.sp
+.INDENT 0.0
+.IP \(bu 2
 1,2: block cursor
+.IP \(bu 2
 3,4: underline
+.IP \(bu 2
 5,6: vertical bar
-.sp
-slterm additions:
+.UNINDENT
+.SS slterm additions:
+.INDENT 0.0
+.IP \(bu 2
 7:   \(aqX\(aq
+.IP \(bu 2
 7;Y: Y is the ascii code of the char, used as cursor
+.IP \(bu 2
 8:   double underline
+.IP \(bu 2
 9:   empty block
+.IP \(bu 2
 10:  underline, two lines at the sides
+.IP \(bu 2
 11:  underline and overline, lines right and left
+.IP \(bu 2
 12:  overline, lines right and left
+.UNINDENT
 .SS Bell
 .sp
 Sending a bell to the terminal (echo \-e "007") sends
 the according notification (XBell) to the window manager.
 .SH INSTALL
-.INDENT 0.0
-.INDENT 3.5
+.sp
 If obtained from source, edit the files config.make and config.h
 to customize slterm. Type \fImake\fP, and \fImake install\fP\&.
 .sp
 If you downloaded the statically linked binary,
-\- copy the binary to a suitable place (/usr/local/bin)
-\- install the terminal info file: (for curses) \fIslterm \-I | tic \-sx \-\fP
-\- If needed, download this man page in its man format(slterm.1)
-.IP "System Message: ERROR/3 (slterm.1.rst:, line 170)"
-Unexpected indentation.
 .INDENT 0.0
-.INDENT 3.5
+.IP \(bu 2
+copy the binary to a suitable place (/usr/local/bin)
+.IP \(bu 2
+install the terminal info file: (for curses) \fIslterm \-I | tic \-sx \-\fP
+.IP \(bu 2
+If needed, download this man page in its man format(slterm.1)
 from github (github.com/michael105/slterm),
 copy into the appropiate directory (/usr/local/share/man/man1)
-.UNINDENT
-.UNINDENT
-.UNINDENT
 .UNINDENT
 .SS CURSES
 .INDENT 0.0

@@ -8,8 +8,6 @@
 //#define FULLDEBUG 5
 #include "debug.h"
 
-
-
 #include "includes.h"
 #include "globals.h"
 #include "arg.h"
@@ -41,7 +39,6 @@
 #ifdef INCLUDEMANPAGE
 #include "slterm_man.h"
 #endif
-
 
 
 #include "globals.c"

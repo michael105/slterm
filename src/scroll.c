@@ -167,7 +167,7 @@ void retmark(const Arg* a){
 	} else { // scroll backward
 		if ( term->histi<term->row){ // at the top
 			scrolltotop();
-			lessmode_toggle( &(Arg){ .i=LESSMODE_ON } );	
+			lessmode_toggle( ARGPi(LESSMODE_ON) );	
 			return;
 		}
 		
@@ -203,7 +203,7 @@ void retmark(const Arg* a){
 	selscroll(0, term->scr);
 	tfulldirt();
 	//updatestatus();
-	lessmode_toggle( &(Arg){.i=LESSMODE_ON} );
+	lessmode_toggle( ARGPi(LESSMODE_ON) );
 //	}
 }
 
@@ -331,9 +331,7 @@ void tscrollup(int orig, int n, int copyhist) {
 						term->scr=(term->histi)-term->scrollmarks[0];
 						selscroll(0, term->scr);
 						//tfulldirt();
-						Arg a; 
-						 a.i=LESSMODE_ON;
-					  lessmode_toggle(&a);
+					  lessmode_toggle(ARGP(i=LESSMODE_ON));
 						enterlessmode = 0;
 						//a.i=0;
 						//scrollmark(&a);
@@ -394,9 +392,8 @@ void lessmode_toggle(const Arg *a){
 
 	if ( a->i & ~LESSMODEMASK ){
 		//printf("scroll %d\n",a->i);
-		Arg d = { .i = SCROLLMASK & a->i };
 		//printf("scroll %d\n",d.i);
-		scroll(&d);
+		scroll(ARGP(i = SCROLLMASK & a->i ));
 	}
 
 		if ( inputmode & MODE_LESS ){ // enabled

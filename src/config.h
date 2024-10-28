@@ -4,6 +4,7 @@
 #define CONFIG_H
 
 #ifndef extract_keyref
+
 // Silence my syntaxcheckerplugin
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
@@ -89,6 +90,9 @@ static int bellvolume = 50;
 // used also for the identification of the capabilities to curses
 // this can be overriden in the shell by exporting a known terminal name,
 // e.g.: export TERM=xterm-256color
+// To make slterm known to curses et al, the terminfo capability file
+// (tic) needs to be installed: tix -sx slterm.terminfo or
+// slterm -I | tic -sx -
 char *termname = "slterm-256color";
 
 /*

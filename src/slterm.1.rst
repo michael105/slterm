@@ -55,6 +55,11 @@ Paste from the clipbard with `Shift+Insert`.
 Set Bookmarks to the current line with `Ctrl+Shift+0..9`
 Scroll back to a bookmark with `Ctrl+0..9`
 
+Retmarks are atomatically stored, and can be browsed to later.
+Every time, a command is entered with return, a retmark is stored.
+Switch into lessmode, and browse to the location of the
+last entered command with `Shift+backspace`.
+
 
 lessmode
 --------
@@ -68,6 +73,8 @@ a command has been entered.
 
 in lessmode, it is possible to browse between the marks of commands,
 comfirmed with `Enter` in the shell via `Backspace` or `Tab left` and `Tab`.
+`1` to `9` scroll back to the according num bered retmark.
+
 
 `Shift+Enter` in Normal mode enters lessmode, if the output
 of a command is more than a screen.
@@ -133,18 +140,22 @@ Cursor
 There are several cursor shapes, set with: "\e[X q".
 X one of 0..12:
 
-1,2: block cursor
-3,4: underline
-5,6: vertical bar
+* 1,2: block cursor
+* 3,4: underline
+* 5,6: vertical bar
+
 
 slterm additions:
-7:   'X'
-7;Y: Y is the ascii code of the char, used as cursor
-8:   double underline
-9:   empty block
-10:  underline, two lines at the sides
-11:  underline and overline, lines right and left
-12:  overline, lines right and left
+~~~~~~~~~~~~~~~~~
+
+
+* 7:   'X'
+* 7;Y: Y is the ascii code of the char, used as cursor
+* 8:   double underline
+* 9:   empty block
+* 10:  underline, two lines at the sides
+* 11:  underline and overline, lines right and left
+* 12:  overline, lines right and left
 
 
 Bell
@@ -160,15 +171,17 @@ the according notification (XBell) to the window manager.
 INSTALL
 =======
 
-   If obtained from source, edit the files config.make and config.h
-   to customize slterm. Type `make`, and `make install`.
+If obtained from source, edit the files config.make and config.h
+to customize slterm. Type `make`, and `make install`.
 
-   If you downloaded the statically linked binary,
-   - copy the binary to a suitable place (/usr/local/bin)
-   - install the terminal info file: (for curses) `slterm -I | tic -sx -` 
-   - If needed, download this man page in its man format(slterm.1) 
-     from github (github.com/michael105/slterm), 
-     copy into the appropiate directory (/usr/local/share/man/man1)
+If you downloaded the statically linked binary,
+
+- copy the binary to a suitable place (/usr/local/bin)
+- install the terminal info file: (for curses) `slterm -I | tic -sx -` 
+- If needed, download this man page in its man format(slterm.1) 
+  from github (github.com/michael105/slterm), 
+  copy into the appropiate directory (/usr/local/share/man/man1)
+
 
 
 CURSES
@@ -315,3 +328,5 @@ BUGS
 ====
 
 See the README in the distribution.
+
+
