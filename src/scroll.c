@@ -136,21 +136,11 @@ void set_retmark() {
 }
 
 void retmark(const Arg* a){
-	if (term==p_alt) return;
+	if (term==p_alt) return; // not usable in alt screen
 	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->row, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
 
-	Arg d = { .i=LESSMODE_ON };	
 
-	if ( a->i == 1 ){ // tab right in lessmode -> scrolling down
-
-		/*
-		int t = term->scroll_retmark;
-		term->scroll_retmark = (term->scroll_retmark+1) & (RETMARKCOUNT-1);
-		if ( term->scroll_retmark == ((term->current_retmark)&(RETMARKCOUNT-1)) ||
-				(term->retmarks[t]==0 && term->retmarks[term->scroll_retmark] == 0 )  )
-			term->scroll_retmark = t;
-		term->scr=(term->histi-term->retmarks[term->scroll_retmark]);
-		*/
+	if ( a->i == -1 ){ // tab right in lessmode -> scrolling down
 
 		// scanning could be optimized. (skip, and divide..)
 		int b = 1;
@@ -169,10 +159,15 @@ void retmark(const Arg* a){
 			scrolltobottom();
 		}
 
+	} else if ( a->i >= 1 ){ // number, scroll to retmark number x
+		int t = (term->current_retmark - a->i ) & (RETMARKCOUNT-1); 
+		term->scr=(term->histi-term->retmarks[t]);
+		term->retmark_scrolled = (term->current_retmark-t) & ( RETMARKCOUNT-1);
+
 	} else { // scroll backward
 		if ( term->histi<term->row){ // at the top
 			scrolltotop();
-			lessmode_toggle(&d);
+			lessmode_toggle( &(Arg){ .i=LESSMODE_ON } );	
 			return;
 		}
 		
@@ -208,7 +203,7 @@ void retmark(const Arg* a){
 	selscroll(0, term->scr);
 	tfulldirt();
 	//updatestatus();
-	lessmode_toggle(&d);
+	lessmode_toggle( &(Arg){.i=LESSMODE_ON} );
 //	}
 }
 

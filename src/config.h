@@ -459,6 +459,7 @@ BIND( BOOKMARKMASK, XK_8, scrollmark, { .i=8 },ALLMODES ),
 BIND( BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES ),
 BIND( BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES ),
 
+/* replaced with retmarks
 BIND( XK_ANY_MOD, XK_1, scrollmark, { .i=1 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_2, scrollmark, { .i=2 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_3, scrollmark, { .i=3 },MODE_LESS ),
@@ -468,7 +469,19 @@ BIND( XK_ANY_MOD, XK_6, scrollmark, { .i=6 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_7, scrollmark, { .i=7 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_8, scrollmark, { .i=8 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_9, scrollmark, { .i=9 },MODE_LESS ),
-BIND( XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS ),*/
+
+BIND( XK_ANY_MOD, XK_1, retmark, { .i=1 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_2, retmark, { .i=2 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_3, retmark, { .i=3 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_4, retmark, { .i=4 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_5, retmark, { .i=5 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_6, retmark, { .i=6 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_7, retmark, { .i=7 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_8, retmark, { .i=8 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_9, retmark, { .i=9 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_0, retmark, { .i=10 },MODE_LESS ),
+
 
 
 BIND( SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES ),
@@ -482,7 +495,7 @@ BIND( ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
 BIND( ShiftMask, XK_BackSpace, retmark , { },ALLMODES ),
 BIND( ShiftMask, XK_ISO_Left_Tab, retmark, {}, ALLMODES ), // tab left <- to enter lessmode
 BIND( XK_ANY_MOD,XK_BackSpace, retmark , { },MODE_LESS ),
-BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=1 },MODE_LESS ), // tab -> to scroll down
+BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=-1 },MODE_LESS ), // tab -> to scroll down
 	// tab left or backspace and right cycle between set retmarks.
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 

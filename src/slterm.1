@@ -170,10 +170,10 @@ copy into the appropiate directory (/usr/local/share/man/man1)
 .INDENT 0.0
 .INDENT 3.5
 To be used with curses, the installation of the terminfo database file is needed.
-slterm.terminfo is supplied in the sources, within the folder share.
+slterm.terminfo is supplied in the sources, within the folder src.
 It can be installed with \fItic \-sx slterm.terminfo\fP\&.
 Alternatively, the termcap database "linux" seems to be mostly compatible.
-Set with export TERM=linux
+Set with \fIexport TERM=linux\fP
 .sp
 The terminfo database of slterm is also displayed, when slterm was compiled with
 EMBEDRESOURCES. Type \fIslterm \-I\fP, to install: \fIslterm \-I | tic \-sx \-\fP\&.
