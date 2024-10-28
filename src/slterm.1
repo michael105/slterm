@@ -61,7 +61,7 @@ The most important key combination might be
 Show a help screen with all shortcuts.
 .UNINDENT
 .sp
-The usage of slterm differs from other terminal emulators by its three different main modes.
+The usage of slterm differs to other terminal emulators by its three different main modes.
 .SS normalmode
 .sp
 The codepage can be changed via hotkeys. (\fICtrl+Shift+0..9\fP).
@@ -70,6 +70,11 @@ Paste from the clipbard with \fIShift+Insert\fP\&.
 .sp
 Set Bookmarks to the current line with \fICtrl+Shift+0..9\fP
 Scroll back to a bookmark with \fICtrl+0..9\fP
+.sp
+Retmarks are atomatically stored, and can be browsed to later.
+Every time, a command is entered with return, a retmark is stored.
+Switch into lessmode, and browse to the location of the
+last entered command with \fIShift+backspace\fP\&.
 .SS lessmode
 .sp
 In lessmode it is possible to browse the scrollback buffer via
@@ -81,6 +86,7 @@ a command has been entered.
 .sp
 in lessmode, it is possible to browse between the marks of commands,
 comfirmed with \fIEnter\fP in the shell via \fIBackspace\fP or \fITab left\fP and \fITab\fP\&.
+\fI1\fP to \fI9\fP scroll back to the according numbered retmark.
 .sp
 \fIShift+Enter\fP in Normal mode enters lessmode, if the output
 of a command is more than a screen.
@@ -123,8 +129,12 @@ STRIKETHROUGH and UNDERLINE get a double underline.
 The default foreground and background color and attributes can be reset with $NORMAL.
 .sp
 255 Colors can be set with:
+.INDENT 0.0
+.IP \(bu 2
 foreground: "e[38;5;XXm", XX one of 0 \- 255.
+.IP \(bu 2
 background: "e[48;5;XXm", XX one of 0 \- 255.
+.UNINDENT
 .SS Cursor
 .sp
 There are several cursor shapes, set with: "e[X q".

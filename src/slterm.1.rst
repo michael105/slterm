@@ -42,7 +42,7 @@ The most important key combination might be
 
 
 
-The usage of slterm differs from other terminal emulators by its three different main modes.
+The usage of slterm differs to other terminal emulators by its three different main modes.
 
 
 normalmode
@@ -73,7 +73,7 @@ a command has been entered.
 
 in lessmode, it is possible to browse between the marks of commands,
 comfirmed with `Enter` in the shell via `Backspace` or `Tab left` and `Tab`.
-`1` to `9` scroll back to the according num bered retmark.
+`1` to `9` scroll back to the according numbered retmark.
 
 
 `Shift+Enter` in Normal mode enters lessmode, if the output
@@ -130,8 +130,9 @@ The default foreground and background color and attributes can be reset with $NO
 
 
 255 Colors can be set with: 
-foreground: "\e[38;5;XXm", XX one of 0 - 255.
-background: "\e[48;5;XXm", XX one of 0 - 255.
+
+- foreground: "\e[38;5;XXm", XX one of 0 - 255.
+- background: "\e[48;5;XXm", XX one of 0 - 255.
 
 
 Cursor
@@ -156,6 +157,7 @@ slterm additions:
 * 10:  underline, two lines at the sides
 * 11:  underline and overline, lines right and left
 * 12:  overline, lines right and left
+
 
 
 Bell
