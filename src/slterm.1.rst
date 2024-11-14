@@ -70,7 +70,7 @@ the standard less like keybindings.
 `Shift+Backspace` enters lessmode and browses back to the last line, 
 a command has been entered.
 
-in lessmode, it is possible to browse between the marks of commands,
+In lessmode, it is possible to browse between the marks of commands,
 comfirmed with `Enter` in the shell via `Backspace` or `Tab left` and `Tab`.
 `1` to `9` scroll back to the according numbered retmark.
 

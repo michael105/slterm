@@ -2,13 +2,6 @@
 #include "scroll.h"
 
 
-//int term->term->scrollmarks[12];
-//int term->retmarks[10];
-//static int cret=0;
-//static int circledret=0;
-//static int pret=0;
-
-
 void tsetscroll(int t, int b) {
 		LIMIT(t, 0, term->row - 1);
 		LIMIT(b, 0, term->row - 1);
