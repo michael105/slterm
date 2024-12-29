@@ -84,7 +84,7 @@ the standard less like keybindings.
 \fIShift+Backspace\fP enters lessmode and browses back to the last line,
 a command has been entered.
 .sp
-in lessmode, it is possible to browse between the marks of commands,
+In lessmode, it is possible to browse between the marks of commands,
 comfirmed with \fIEnter\fP in the shell via \fIBackspace\fP or \fITab left\fP and \fITab\fP\&.
 \fI1\fP to \fI9\fP scroll back to the according numbered retmark.
 .sp
@@ -94,13 +94,16 @@ of a command is more than a screen.
 .sp
 In selection mode it is possible to select lines or areas (either by lines,
 or rectangular areas).
-enter with \fIAlt+S\fP, start selecting with \fIv\fP or \fIs\fP and the cursor keys,
+enter with \fIAlt+S\fP, start selecting with \fIv\fP, \fIs\fP or \fIV\fP (rectangular selection)
+and the cursor keys,
 switch between rectangular selection and line selection with \fIt\fP,
 copy to the clipboard with \fIEnter\fP\&.
-\fIy\fP selects the current line, hit \fIy\fP with a active selection yanks the
+\fIy\fP selects the current line, \fIy\fP with a active selection yanks the
 selection to the clipboard and exits selection mode,
 \fIyy\fP (sort of vim binding) selects the current line
 and yanks it to the clipboard.
+\fIp\fP copies the selection and pastes it into the terminal.
+\fIq\fP or \fIESC\fP exit selection mode.
 .SH TERMINAL
 .sp
 slterm is mostly VT100 compatible, please look in question for the according manuals.
@@ -180,7 +183,7 @@ copy the binary to a suitable place (/usr/local/bin)
 .IP 2. 3
 install the terminal info file: (for curses) \fIslterm \-I | tic \-sx \-\fP
 .IP 3. 3
-If needed, download this man page in its man format(slterm.1)
+If needed, download this man page in its man format (slterm.1)
 from github (github.com/michael105/slterm),
 copy into the appropiate directory (/usr/local/share/man/man1)
 .UNINDENT

@@ -69,6 +69,11 @@ A statically linked binary with all dependencies is at
 	goto mark:  Ctrl+n
 	(lessmode): 'n' (number without modifier)
 
+	retmarks:  the positions within the terminal history is saved for
+              every line, entered with return.
+				  Go back: Shift+Backspace
+				  cycle (in lessmode): tab left/right, backspace
+
 
 ##### Hotkeys for font sizes and colors:
   
