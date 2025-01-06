@@ -90,7 +90,7 @@ endif
 endif
 
 ifeq "$(strip $(EMBEDFONT))" "1"
-$(info embed font)
+$(info embed fonts:)
 EMBEDFONTS := $(foreach file,$(wildcard embed/*.ttf),$(patsubst %.ttf,%_ttf.o,$(file)))
 #TMP := $(shell make -C embed)
 $(info $(EMBEDFONTS))
@@ -119,7 +119,7 @@ static: slterm_terminfo.h slterm_license.h compile.h $(EMBEDFONTS)
 		-Wl,--end-group -static -Os -s
 
 embed/%.o: embed/%.c
-	gcc -c $<
+	gcc -o $@ -c $<
 
 embed/%_ttf.c: embed/%.ttf
 	echo make $<  --- $@
