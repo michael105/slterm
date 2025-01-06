@@ -1,0 +1,18 @@
+The fonts LiberationMono_Bold and LiberationMono_BoldItalic,
+to be optionally embedded into the binary.
+
+It's better to install those fonts, if not already present.
+
+Anyways, to have a working font with the statically linked binary,
+they can be embedded. (+600kB)
+
+
+To include other fonts (schematically): 
+
+xxd -i font.ttf > font.c
+gcc -c font.c
+
+
+
+
+
