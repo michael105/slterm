@@ -7,12 +7,9 @@ Anyways, to have a working font with the statically linked binary,
 they can be embedded. (+600kB)
 
 
-To include other fonts (schematically): 
-
-xxd -i font.ttf > font.c
-gcc -c font.c
-
-
+The fonts bold and bold italic are empty files, since the regular font is already bold.
+For the attribute bold the color is changed to bright.
+The empty files are needed anyways.
 
 
 
