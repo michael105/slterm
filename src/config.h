@@ -16,9 +16,29 @@
 
 // Config options
 
-// font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
-// defaultfont 
-static char *font = "Monospace:pixelsize=13:Bold:antialias=true:autohint=true";
+/*
+ font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
+
+ the default regular font can be overwritten via command line 
+ e.g.: slterm -f 'Monospace:pixelsize=13:antialias=true'
+
+ To use embedded fonts, set EMBEDFONTS to 1 in config.make,
+ The attributes below are still used.
+ To change the embedded fonts, you need to change the files in src/embed/
+*/
+
+// regular font
+static char *regular_font = "Monospace:Bold:pixelsize=13:antialias=true:autohint=true";
+//static char *font = "Monospace:pixelsize=13:antialias=true:autohint=true";
+
+/* if fonts below are set, they are used, no matter of xresources or command line options
+ else, the appropiate weight and slant are added to "font" (italic,bold,bold italic) */
+static char *italic_font = 0;
+//static char *italic_font = "Monospace:Bold:Italic:pixelsize=13:antialias=true:autohint=true";
+// change only colors to bold, no different fonts
+static char *bold_font = 0;
+static char *bolditalic_font = 0;
+
 
 // more/less font width spacing
 // here, with utf8 enabled, -1 looks much better.
@@ -134,9 +154,10 @@ static const char *colorname[] = {
     "#cccccc", "#2e3440",
 };
 
-/* The table of the first 8 (32) colors, numbered 30..37
-	 Names are defined by xorg, and (should be) conformant with css names.
-	 a table of colornames is in doc/colornames.html, and colornames_gray.html.
+/* 
+ The table of the first 8 (32) colors, numbered 30..37
+ Names are defined by xorg, and (should be) conformant with css names.
+ a table of colornames is in doc/colornames.html, and colornames_gray.html.
  RGB in hexadecimal (#RRGGBB) is also possible.
  The table is oriented at the de facto xterm standard.
 
@@ -152,7 +173,7 @@ static const char *colorname[] = {
   the algorithm to display faint and bold_faint colors is slightly modified
   for better contrast.
  (todo: use colors 8-15 to switch to betacode (-> switch via vi syntax colorizing ))
- 	*/
+*/
 static const char* colortablenames[8][4] = { 
 #define GRADIENT(_normal,_bold,_faint,_bold_faint) { #_normal, #_bold, #_faint, #_bold_faint }
 

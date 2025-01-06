@@ -1,4 +1,4 @@
-# configuration 
+# build configuration 
 # More options to configure are in src/config.h
 
 # Set to 0
@@ -11,7 +11,6 @@ ENABLEDEBUG := 0
 # Dump all available debug
 FULLDEBUG := 0
 
-
 # version
 VERSION := 0.99.4
 
@@ -21,6 +20,9 @@ XRESOURCES := 0
 
 # embed the terminfo and manual page (+12k)
 EMBEDRESOURCES := 1
+
+# Embed fonts into the binary
+EMBEDFONT := 1
 
 # utf8-support (currently abandoned. Will not work )
 #UTF8 := 0

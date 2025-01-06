@@ -10,6 +10,9 @@
 typedef XftGlyphFontSpec GlyphFontSpec;
 
 
+extern char *usedfont;
+
+
 /* Font structure */
 #define Font Font_
 typedef struct {
@@ -35,8 +38,10 @@ typedef struct {
 		Rune unicodep;
 } Fontcache;
 
-
-extern char *usedfont;
+/* Fontcache is an array now. A new font will be appended to the array. */
+Fontcache *frc = NULL;
+int frclen = 0;
+int frccap = 0;
 
 
 // callbacks
@@ -44,7 +49,6 @@ void set_fontwidth( const Arg *a );
 void zoom(const Arg *);
 void zoomabs(const Arg *);
 void zoomreset(const Arg *);
-
 
 
 int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
