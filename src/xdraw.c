@@ -64,6 +64,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	// Look for the right color
 
 	/* Fallback on color display for attributes not supported by the font */
+	/*
 	if (base.mode & ATTR_ITALIC && base.mode & ATTR_BOLD) {
 		if (dc.ibfont.badslant || dc.ibfont.badweight)
 			base.fg = defaultattr;
@@ -71,6 +72,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			(base.mode & ATTR_BOLD && dc.bfont.badweight)) {
 		base.fg = defaultattr;
 	}
+	*/
 
 	//get colors from cache, if present
 	if (  !(twin.mode & MODE_FOCUSED) || IS_SET(MODE_REVERSE) ){

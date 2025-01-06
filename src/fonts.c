@@ -9,14 +9,15 @@
 #include "config.h"
 
 
+#if 0
+#define INCLUDED_FONT
+#include "font_ttf.h"
+#endif
+
 char *usedfont = NULL;
 double usedfontsize = 0;
 double defaultfontsize = 0;
 
-/* Fontcache is an array now. A new font will be appended to the array. */
-Fontcache *frc = NULL;
-int frclen = 0;
-int frccap = 0;
 
 
 // callbacks
@@ -54,12 +55,22 @@ void zoomreset(const Arg *arg) {
 
 
 
-int xloadfont(Font *f, FcPattern *pattern) {
+int _xloadfont(Font *f, FcPattern *pattern, const char* fontfile){
+	#define xloadfont(_font,_pattern,...) __xloadfont(_font,_pattern,__VA_OPT__(__VA_ARGS__,) 0 )
+	#define __xloadfont(_font,_pattern,_file,...) _xloadfont(_font,_pattern,_file)
 	FcPattern *configured;
 	FcPattern *match;
 	FcResult result;
 	XGlyphInfo extents;
 	int wantattr, haveattr;
+	char *s;
+
+	/*
+	FcPatternPrint( pattern );
+	char *s = FcNameUnparse( pattern );
+	printf( "name: %s\n", s );
+	free(s);
+	*/
 
 	/*
 	 * Manually configure instead of calling XftMatchFont
@@ -74,16 +85,36 @@ int xloadfont(Font *f, FcPattern *pattern) {
 	XftDefaultSubstitute(xwin.dpy, xwin.scr, configured);
 
 	match = FcFontMatch(NULL, configured, &result);
-	if (!match) {
+	if (!match && !fontfile ) {
 		FcPatternDestroy(configured);
 		return 1;
 	}
 
-	if (!(f->match = XftFontOpenPattern(xwin.dpy, match))) {
+	if ( fontfile ){
+		FcPatternDel( match, FC_FILE );
+		FcPatternAddString(match, FC_FILE, (const FcChar8 *) fontfile);
+	}
+//	FcPatternAddString(match, FC_FILE, (const FcChar8 *) "/home/micha/git/slterm/fonts/LiberationMono-Bold.ttf");
+
+
+#ifdef DEBUG
+	FcPatternPrint( match );
+	s = FcNameUnparse( match );
+	printf( "match name: %s\n", s );
+	free(s);
+#endif
+
+
+	//f->match = XftFontOpenName(xwin.dpy, 0, (const FcChar8*)"filename:/usr/share/fonts/liberation-fonts/LiberationMono-Bold.ttf");
+	//f->match = XftFontOpenName(xwin.dpy, 0, (const FcChar8*)"filename:/home/micha/git/slterm/fonts/LiberationMono-Bold.ttf:Liberation Sans");
+
+	f->match = XftFontOpenPattern(xwin.dpy, match);
+	if (!f->match) {
 		FcPatternDestroy(configured);
 		FcPatternDestroy(match);
 		return 1;
 	}
+
 
 	if ((XftPatternGetInteger(pattern, "slant", 0, &wantattr) ==
 				XftResultMatch)) {
@@ -95,7 +126,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 					XftResultMatch) ||
 				haveattr < wantattr) {
 			f->badslant = 1;
-			fputs("font slant does not match\n", stderr);
+			fputs("***** font slant does not match\n", stderr);
 		}
 	}
 
@@ -105,7 +136,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 					XftResultMatch) ||
 				haveattr != wantattr) {
 			f->badweight = 1;
-			fputs("font weight does not match\n", stderr);
+			fputs("***** font weight does not match\n", stderr);
 		}
 	}
 
@@ -113,13 +144,12 @@ int xloadfont(Font *f, FcPattern *pattern) {
 			XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)ascii_printable,
 							strlen(ascii_printable), &extents);
 #else
-			// todo the codepoints of the current charmap would be needed here.
 	char printable[255];
 	int p = 0;
 	for ( int a = 32; a<127; a++) 
-		printable[p++] = a;
+		printable[p++] = a; 
 	for ( int a = 128; a<256; a++) 
-		printable[p++] = a;
+		printable[p++] = charmap_convert(a,0); //a;
 	printable[p] = 0;
 
 
@@ -163,6 +193,8 @@ void xloadfonts(char *fontstr, double fontsize) {
 	else
 		pattern = FcNameParse((FcChar8 *)fontstr);
 
+
+
 	if (!pattern)
 		die("can't open font %s\n", fontstr);
 
@@ -189,6 +221,7 @@ void xloadfonts(char *fontstr, double fontsize) {
 		defaultfontsize = usedfontsize;
 	}
 
+	// load regular font
 	if (xloadfont(&dc.font, pattern))
 		die("can't open font %s\n", fontstr);
 
@@ -205,6 +238,8 @@ void xloadfonts(char *fontstr, double fontsize) {
 
 	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
+
+	// load italic, bold, bold italic
 	FcPatternDel(pattern, FC_SLANT);
 	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
 	if (xloadfont(&dc.ifont, pattern))
@@ -219,6 +254,7 @@ void xloadfonts(char *fontstr, double fontsize) {
 	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
 	if (xloadfont(&dc.bfont, pattern))
 		die("can't open font %s\n", fontstr);
+
 
 	FcPatternDestroy(pattern);
 }
