@@ -317,11 +317,6 @@ void xloadfonts(double fontsize) {
 			die("can't open font %s\n", fontstr);
 	}
 
-/*	FcPatternDel(pattern, FC_SLANT);
-	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
-	if (xloadfont(&dc.bfont, pattern))
-		die("can't open font %s\n", fontstr);
-*/
 
 	FcPatternDestroy(pattern);
 
