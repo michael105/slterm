@@ -245,7 +245,7 @@ void xloadfonts(double fontsize) {
   	 
   	 for ( int i = 0; i<4 ; i++ ){
   	 	if ( embfontlen[i]){ 
-  	 		printf("size: %d\n",embfontlen[i]);
+  	 		//printf("size: %d\n",embfontlen[i]);
   	 		strcpy( fname[i], "/tmp/slterm_XXXXXX.ttf" );
   	 		fd[i] = mkstemps( fname[i], 4 );
   	 		if ( fd[i] <= 0 ){
