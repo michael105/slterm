@@ -8,7 +8,11 @@
 #include "xwindow.h"
 #include "config.h"
 
-
+#if EMBEDFONT == 1
+	 #define SINFL_IMPLEMENTATION
+  	 #include "../tools/sinfl.h"
+#endif
+ 
 #if 0
 #define INCLUDED_FONT
 #include "font_ttf.h"
@@ -226,10 +230,9 @@ void xloadfonts(double fontsize) {
 	char fname[4][32] = { 0,0,0,0 };
 	
 #if EMBEDFONT == 1
-	
-  	 #include "embed/embed_font.h"
   	 #warning embedding fonts
-  	 
+  	 #include "embed/embed_font.h"
+
   	 int fd[4] = { 0,0,0,0 };
   	  char *embfont[4] = { 
   	 	slterm_font_ttfz, 
@@ -255,10 +258,10 @@ void xloadfonts(double fontsize) {
 
 	 {
 	 unsigned char buf[bufsize];
-	 unsigned long canary;
+	 unsigned long canary = 0xa23df1223;
 	 // if this test is done, it should work..
 	 // prevent compiler "optimizations" by using assembly
-	 asm( "mov 0xa23df1223,%0" :"=r"(canary) );
+	 asm( "" ::"m"(canary) );
   	 
   	 for ( int i = 0; i<4 ; i++ ){
   	 	if ( embfontlenz[i]){ 
@@ -270,8 +273,16 @@ void xloadfonts(double fontsize) {
   	 			fd[i] = 0;
   	 			*fname[i] = 0;
   	 		} else {
-  	 			write( fd[i], embfont[i], embfontlen[i] );
-  	 			fsync( fd[i] );
+				uint len = sinflate( buf, bufsize, embfont[i], embfontlenz[i] );
+				if ( len != embfontlen[i] ){
+					fprintf(stderr, "Error decompressing embedded font #%d\n",i);
+					close( fd[i] );
+					unlink(fname[i]);
+					*fname[i] = 0;
+				} else {
+	  	 			write( fd[i], buf, embfontlen[i] );
+  		 			fsync( fd[i] );
+				}
   	 		}
   	 	}
   	 } 
@@ -346,7 +357,7 @@ void xloadfonts(double fontsize) {
 		for ( int i = 0; i<4; i++ ){
 			if (fd[i])
 				close (fd[i]);
-			if ( fname[i] )
+			if ( *fname[i] )
 				unlink( fname[i] );
 		}
 	#endif
