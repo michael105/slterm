@@ -91,7 +91,7 @@ endif
 
 ifeq "$(strip $(EMBEDFONT))" "1"
 $(info embed fonts:)
-EMBEDFONTS := $(foreach file,$(wildcard embed/*.ttf),$(patsubst %.ttf,%_ttf.o,$(file)))
+EMBEDFONTS := $(foreach file,$(wildcard embed/*.ttf),$(patsubst %.ttf,%_ttfz.o,$(file)))
 #TMP := $(shell make -C embed)
 $(info $(EMBEDFONTS))
 else
@@ -122,11 +122,12 @@ embed/%.o: embed/%.c
 	gcc -o $@ -c $<
 
 embed/%_ttfz.c: embed/%.ttfz
-	echo make $<  --- $@
-	xxd -i $< > $@
+	echo $(subst embed/,,$<)
+	cd embed && xxd -i $(subst embed/,,$<) > $(subst embed/,,$@)
 
-embed/%_ttfz: embed/%.ttf
-	echo compressing $<  ->  $@
+
+embed/%.ttfz: embed/%.ttf
+	echo "compressing $<  ->  $@"
 	../tools/ttfz $< $@
 
 staticold:
@@ -167,7 +168,7 @@ with-utf8:
 #st: $(OBJ)
 # better go in one run. Gives way more room to the compiler for optimizations.
 
-slterm: $(SRC) $(HEADER) help.h ../config.make compile.h
+slterm: $(SRC) $(HEADER) help.h ../config.make compile.h $(EMBEDFONTS)
 	$(CC) -o slterm $(EMBEDFONTS) slterm_src.c $(STCFLAGS) $(STLDFLAGS) -DEMBEDFONT=$(EMBEDFONT)
 
 
