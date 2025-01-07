@@ -225,10 +225,10 @@ void xloadfonts(double fontsize) {
 	// names of temporary font files
 	char fname[4][32] = { 0,0,0,0 };
 	
-	#if EMBEDFONT == 1
+#if EMBEDFONT == 1
 	
   	 #include "embed/embed_font.h"
-  	 #warning embedding font
+  	 #warning embedding fonts
   	 
   	 int fd[4] = { 0,0,0,0 };
   	  char *embfont[4] = { 
@@ -280,7 +280,7 @@ void xloadfonts(double fontsize) {
 	 }
 	 }
   	 
-	#endif
+#endif
 
 	// load regular font
 	if (xloadfont(&dc.font, pattern, 0, fname[0] ))

@@ -121,9 +121,13 @@ static: slterm_terminfo.h slterm_license.h compile.h $(EMBEDFONTS)
 embed/%.o: embed/%.c
 	gcc -o $@ -c $<
 
-embed/%_ttf.c: embed/%.ttf
+embed/%_ttfz.c: embed/%.ttfz
 	echo make $<  --- $@
 	xxd -i $< > $@
+
+embed/%_ttfz: embed/%.ttf
+	echo compressing $<  ->  $@
+	../tools/ttfz $< $@
 
 staticold:
 	gcc -o slterm slterm_src.c \
