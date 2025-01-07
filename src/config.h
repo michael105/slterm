@@ -29,15 +29,25 @@
 
 // regular font
 static char *regular_font = "Monospace:Bold:pixelsize=13:antialias=true:autohint=true";
+//if not set
+int default_font_pixelsize = 14;
 //static char *font = "Monospace:pixelsize=13:antialias=true:autohint=true";
 
 /* if fonts below are set, they are used, no matter of xresources or command line options
- else, the appropiate weight and slant are added to "font" (italic,bold,bold italic) */
-static char *italic_font = 0;
-//static char *italic_font = "Monospace:Bold:Italic:pixelsize=13:antialias=true:autohint=true";
-// change only colors to bold, no different fonts
+ else, if set to 0, the appropiate weight and slant are added to "regular_font" 
+ (italic,bold,bold italic) when usexxxfont below is set to 1.
+The pixelsize as well as charwidth and height are set according to the regular font,
+pixelsize (if unset) defaults to 14.
+*/
+//static char *italic_font = 0;
+static char *italic_font = "Monospace:Bold:Italic:pixelsize=13:antialias=true:autohint=true";
 static char *bold_font = 0;
 static char *bolditalic_font = 0;
+
+// Whether to use another font, for bold/italic/bolditalic
+int useboldfont = 0;
+int useitalicfont = 1;
+int usebolditalicfont = 0;
 
 
 // more/less font width spacing

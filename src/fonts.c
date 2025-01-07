@@ -14,7 +14,7 @@
 #include "font_ttf.h"
 #endif
 
-char *usedfont = NULL;
+//char *usedfont = NULL;
 double usedfontsize = 0;
 double defaultfontsize = 0;
 
@@ -38,7 +38,7 @@ void zoom(const Arg *arg) {
 
 void zoomabs(const Arg *arg) {
 	xunloadfonts();
-	xloadfonts(usedfont, arg->f);
+	xloadfonts(arg->f);
 	cresize(0, 0);
 	redraw();
 	xhints();
@@ -184,10 +184,15 @@ int _xloadfont(Font *f, FcPattern *pattern, const char* fontfile){
 	return 0;
 }
 
-void xloadfonts(char *fontstr, double fontsize) {
+
+// load the configured fonts, with (optional) fontsize
+void xloadfonts(double fontsize) {
 	FcPattern *pattern;
 	double fontval;
 
+ 	// get fontstr, from commandline or config.h 
+	char* fontstr = (opt_font == NULL) ? regular_font : opt_font;
+	
 	if (fontstr[0] == '-')
 		pattern = XftXlfdParse(fontstr, False, False);
 	else
@@ -198,6 +203,7 @@ void xloadfonts(char *fontstr, double fontsize) {
 	if (!pattern)
 		die("can't open font %s\n", fontstr);
 
+	// determine the fontsize
 	if (fontsize > 1) {
 		FcPatternDel(pattern, FC_PIXEL_SIZE);
 		FcPatternDel(pattern, FC_SIZE);
@@ -212,20 +218,31 @@ void xloadfonts(char *fontstr, double fontsize) {
 			usedfontsize = -1;
 		} else {
 			/*
-			 * Default font size is 12, if none given. This is to
+			 * Default font size, if none given. This is to
 			 * have a known usedfontsize value.
 			 */
-			FcPatternAddDouble(pattern, FC_PIXEL_SIZE, 12);
-			usedfontsize = 12;
+			FcPatternAddDouble(pattern, FC_PIXEL_SIZE, default_font_pixelsize);
+			usedfontsize = default_font_pixelsize;
 		}
 		defaultfontsize = usedfontsize;
 	}
 
+
+	// names and fds of temporary font files
+	char *fname[4] = { 0,0,0,0 };
+	int fd[4] = { 0,0,0,0 };
+	
+#if EMBEDFONT == 1
+#warning embedding font
+
+
+#endif
+
 	// load regular font
-	if (xloadfont(&dc.font, pattern))
+	if (xloadfont(&dc.font, pattern, fname[0] ))
 		die("can't open font %s\n", fontstr);
 
-	if (usedfontsize < 0) {
+	if (usedfontsize < 0) { // determine the used fontsie as pixelsize of the regular font
 		FcPatternGetDouble(dc.font.match->pattern, FC_PIXEL_SIZE, 0, &fontval);
 		usedfontsize = fontval;
 		if (fontsize == 0)
@@ -237,6 +254,7 @@ void xloadfonts(char *fontstr, double fontsize) {
 	twin.ch = ceilf(dc.font.height * chscale);
 
 	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
+
 
 
 	// load italic, bold, bold italic

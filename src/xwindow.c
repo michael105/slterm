@@ -187,8 +187,8 @@ void xinit(int cols, int rows) {
 	if (!FcInit())
 		die("could not init fontconfig.\n");
 
-	usedfont = (opt_font == NULL) ? regular_font : opt_font;
-	xloadfonts(usedfont, 0);
+	//usedfont = (opt_font == NULL) ? regular_font : opt_font;
+	xloadfonts(0);
 
 	/* colors */
 	xwin.cmap = XDefaultColormap(xwin.dpy, xwin.scr);

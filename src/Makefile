@@ -112,7 +112,7 @@ static: slterm_terminfo.h slterm_license.h compile.h $(EMBEDFONTS)
 		-I/usr/X11R6/include -I/usr/include/uuid -I/usr/include/freetype2 \
 		-I/usr/include/freetype2 -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 \
 		-DHISTSIZEBITS=$(HISTSIZEBITS) -DENABLEDEBUG=0 -DDEBUG_INCLUDESRC \
-		-DINCLUDETERMINFO -DINCLUDEMANPAGE -DINCLUDELICENSE\
+		-DINCLUDETERMINFO -DINCLUDEMANPAGE -DINCLUDELICENSE -DEMBEDFONT=$(EMBEDFONT)\
 		-Wl,-O1,--gc-sections,--start-group -lxcb -lXau -lc -lXdmcp -lbsd \
 		-lXft -lfontconfig -lfreetype -lbz2 -lpng16 -lz -lexpat -luuid \
 		-lintl -liconv -lXrender -lX11  \
@@ -164,7 +164,7 @@ with-utf8:
 # better go in one run. Gives way more room to the compiler for optimizations.
 
 slterm: $(SRC) $(HEADER) help.h ../config.make compile.h
-	$(CC) -o slterm slterm_src.c $(STCFLAGS) $(STLDFLAGS) 
+	$(CC) -o slterm slterm_src.c $(STCFLAGS) $(STLDFLAGS) -DEMBEDFONT=$(EMBEDFONT)
 
 
 compile.h: 
@@ -192,7 +192,7 @@ shared: $(SRC) $(HEADER) libslterm.so slterm_shared.c
 #gcc -o slterm.shared slterm.c -lslterm -O3 
 	
 libslterm.so: $(SRC) $(HEADER) x.h
-	$(CC) -o libslterm.so -shared -fpic $(SRC) $(STCFLAGS) $(STLDFLAGS) -Dshared
+	$(CC) -o libslterm.so -shared -fpic $(SRC) $(STCFLAGS) $(STLDFLAGS) -Dshared -DEMBEDFONT=$(EMBEDFONT) 
 
 
 

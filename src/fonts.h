@@ -10,7 +10,7 @@
 typedef XftGlyphFontSpec GlyphFontSpec;
 
 
-extern char *usedfont;
+//extern char *usedfont;
 
 
 /* Font structure */
@@ -56,7 +56,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
 
 int xloadfont(Font *, FcPattern *);
 
-void xloadfonts(char *, double);
+void xloadfonts(double);
 void xunloadfont(Font *);
 void xunloadfonts(void);
 
