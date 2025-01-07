@@ -31,9 +31,10 @@
 
 // regular font
 static char *regular_font = "Liberation Mono:Bold:pixelsize=13:antialias=true:autohint=true";
-//if not set
-int default_font_pixelsize = 14;
 //static char *font = "Monospace:pixelsize=13:antialias=true:autohint=true";
+
+//if size not set 
+int default_font_pixelsize = 14;
 
 /* if fonts below are set, they are used, no matter of xresources or command line options
  else, if set to 0, the appropiate weight and slant are added to "regular_font" 
@@ -41,7 +42,6 @@ int default_font_pixelsize = 14;
 The pixelsize as well as charwidth and height are set according to the regular font,
 pixelsize (if unset) defaults to 14.
 */
-//static char *italic_font = 0;
 static char *italic_font = "Liberation Mono:Bold:Italic:pixelsize=13:antialias=true:autohint=true";
 static char *bold_font = 0;
 static char *bolditalic_font = 0;

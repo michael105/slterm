@@ -89,7 +89,7 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 		return 1;
 	}
 
-	if ( fontfile ){
+	if ( *fontfile ){
 		FcPatternDel( match, FC_FILE );
 		FcPatternAddString(match, FC_FILE, (const FcChar8 *) fontfile);
 	}
@@ -97,6 +97,7 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 
 
 #ifdef DEBUG
+//#if 1
 	FcPatternPrint( match );
 	s = FcNameUnparse( match );
 	printf( "match name: %s\n", s );
@@ -183,6 +184,11 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	return 0;
 }
 
+FcPattern *get_fcpattern( const char* fontstr ){
+	if (fontstr[0] == '-')
+		return( XftXlfdParse(fontstr, False, False) );
+	return( FcNameParse((FcChar8 *)fontstr) );
+}
 
 // load the configured fonts, with (optional) fontsize
 void xloadfonts(double fontsize) {
@@ -192,12 +198,12 @@ void xloadfonts(double fontsize) {
  	// get fontstr, from commandline or config.h 
 	char* fontstr = (opt_font == NULL) ? regular_font : opt_font;
 	
-	if (fontstr[0] == '-')
-		pattern = XftXlfdParse(fontstr, False, False);
-	else
-		pattern = FcNameParse((FcChar8 *)fontstr);
-
-
+	//if (fontstr[0] == '-')
+	//	pattern = XftXlfdParse(fontstr, False, False);
+	//else
+	//	pattern = FcNameParse((FcChar8 *)fontstr);
+	
+	pattern = get_fcpattern(fontstr);
 
 	if (!pattern)
 		die("can't open font %s\n", fontstr);
@@ -268,7 +274,7 @@ void xloadfonts(double fontsize) {
 
 	// load regular font
 	if (xloadfont(&dc.font, pattern, 0, fname[0] ))
-		die("can't open font %s\n", fontstr);
+		die("x can't open font %s\n", fontstr);
 
 	if (usedfontsize < 0) { // determine the used fontsie as pixelsize of the regular font
 		FcPatternGetDouble(dc.font.match->pattern, FC_PIXEL_SIZE, 0, &fontval);
@@ -284,8 +290,13 @@ void xloadfonts(double fontsize) {
 	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
 	if ( useboldfont ){
-		FcPatternDel(pattern, FC_WEIGHT);
-		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		if ( bold_font ){
+			FcPatternDestroy(pattern);
+			pattern = get_fcpattern(bold_font);
+		} else {
+			FcPatternDel(pattern, FC_WEIGHT);
+			FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		}
 		if (xloadfont(&dc.bfont, pattern, usedfontsize, fname[1] ))
 			die("can't open font %s\n", fontstr);
 		FcPatternDel(pattern, FC_WEIGHT);
@@ -293,9 +304,13 @@ void xloadfonts(double fontsize) {
 
 
 	if ( useitalicfont ){
-		// load italic, bold, bold italic
-		FcPatternDel(pattern, FC_SLANT);
-		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
+		if ( italic_font ){
+			FcPatternDestroy(pattern);
+			pattern = get_fcpattern(italic_font);
+		} else {
+			FcPatternDel(pattern, FC_SLANT);
+			FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
+		}
 		if (xloadfont(&dc.ifont, pattern, usedfontsize, fname[2] ))
 			die("can't open font %s\n", fontstr);
 	}
@@ -315,7 +330,6 @@ void xloadfonts(double fontsize) {
 */
 
 	FcPatternDestroy(pattern);
-
 
 	#if EMBEDFONT == 1
 		// remove fonts from tmp, if written
