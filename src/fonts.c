@@ -232,20 +232,37 @@ void xloadfonts(double fontsize) {
   	 
   	 int fd[4] = { 0,0,0,0 };
   	  char *embfont[4] = { 
-  	 	slterm_font_ttf, 
-  	 	slterm_font_bold_ttf, 
-  	 	slterm_font_italic_ttf, 
-  	 	slterm_font_bold_italic_ttf };
+  	 	slterm_font_ttfz, 
+  	 	slterm_font_bold_ttfz, 
+  	 	slterm_font_italic_ttfz, 
+  	 	slterm_font_bold_italic_ttfz };
+  	  unsigned int embfontlenz[4] = { 
+  	 	slterm_font_ttfz_len, 
+  	 	slterm_font_bold_ttfz_len, 
+  	 	slterm_font_italic_ttfz_len, 
+  	 	slterm_font_bold_italic_ttfz_len };
   	  unsigned int embfontlen[4] = { 
   	 	slterm_font_ttf_len, 
   	 	slterm_font_bold_ttf_len, 
   	 	slterm_font_italic_ttf_len, 
   	 	slterm_font_bold_italic_ttf_len };
   	 
+
+	  size_t bufsize = 128;
+  	 for ( int i = 0; i<4 ; i++ )
+		 if ( embfontlen[i]+128 > bufsize )
+		 	bufsize = embfontlen[i] + 128;
+
+	 {
+	 unsigned char buf[bufsize];
+	 unsigned long canary;
+	 // if this test is done, it should work..
+	 // prevent compiler "optimizations" by using assembly
+	 asm( "mov 0xa23df1223,%0" :"=r"(canary) );
   	 
   	 for ( int i = 0; i<4 ; i++ ){
-  	 	if ( embfontlen[i]){ 
-  	 		//printf("size: %d\n",embfontlen[i]);
+  	 	if ( embfontlenz[i]){ 
+  	 		printf("Decompress: %d -> %d\n",embfontlenz[i],embfontlen[i]);
   	 		strcpy( fname[i], "/tmp/slterm_XXXXXX.ttf" );
   	 		fd[i] = mkstemps( fname[i], 4 );
   	 		if ( fd[i] <= 0 ){
@@ -258,6 +275,10 @@ void xloadfonts(double fontsize) {
   	 		}
   	 	}
   	 } 
+	 if ( canary != 0xa23df1223 ){
+		 die("buffer overflow");
+	 }
+	 }
   	 
 	#endif
 
