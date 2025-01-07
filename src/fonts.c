@@ -261,11 +261,13 @@ void xloadfonts(double fontsize) {
 	 unsigned long canary = 0xa23df1223;
 	 // if this test is done, it should work..
 	 // prevent compiler "optimizations" by using assembly
-	 asm( "" ::"m"(canary) );
+	 asm( "" :"+m"(canary) );
   	 
   	 for ( int i = 0; i<4 ; i++ ){
   	 	if ( embfontlenz[i]){ 
-  	 		printf("Decompress: %d -> %d\n",embfontlenz[i],embfontlen[i]);
+#ifdef DEBUG
+  	 		printf("Decompress Font: %d -> %d\n",embfontlenz[i],embfontlen[i]);
+#endif
   	 		strcpy( fname[i], "/tmp/slterm_XXXXXX.ttf" );
   	 		fd[i] = mkstemps( fname[i], 4 );
   	 		if ( fd[i] <= 0 ){

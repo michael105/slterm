@@ -22,7 +22,7 @@ XRESOURCES := 0
 EMBEDRESOURCES := 1
 
 # Embed fonts into the binary
-EMBEDFONT := 1
+EMBEDFONT := 0
 
 # utf8-support (currently abandoned. Will not work )
 #UTF8 := 0

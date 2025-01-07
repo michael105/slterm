@@ -4,7 +4,12 @@
 
 
 all: man
+	cd tools && $(MAKE)
 	cd src && $(MAKE)
+
+static: 
+	cd tools && $(MAKE)
+	cd src && $(MAKE) static EMBEDFONT=1
 	
 #local (use config.in.loc)
 l: cd src && $(MAKE)

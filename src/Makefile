@@ -108,7 +108,7 @@ all: slterm man slterm_terminfo.h slterm_license.h slterm_man.h $(EMBEDFONTS)
 
 
 static: slterm_terminfo.h slterm_license.h compile.h $(EMBEDFONTS)
-	gcc -o slterm slterm_src.c \
+	gcc -o slterm $(EMBEDFONTS) slterm_src.c \
 		-I/usr/X11R6/include -I/usr/include/uuid -I/usr/include/freetype2 \
 		-I/usr/include/freetype2 -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 \
 		-DHISTSIZEBITS=$(HISTSIZEBITS) -DENABLEDEBUG=0 -DDEBUG_INCLUDESRC \
@@ -122,12 +122,12 @@ embed/%.o: embed/%.c
 	gcc -o $@ -c $<
 
 embed/%_ttfz.c: embed/%.ttfz
-	echo $(subst embed/,,$<)
-	cd embed && xxd -i $(subst embed/,,$<) > $(subst embed/,,$@)
+	@echo "$(notdir $<) -> $(@F)"
+	cd embed && xxd -i $(notdir $<) > $(@F)
 
 
 embed/%.ttfz: embed/%.ttf
-	echo "compressing $<  ->  $@"
+	@echo "compressing $<  ->  $@"
 	../tools/ttfz $< $@
 
 staticold:
