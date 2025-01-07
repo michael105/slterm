@@ -93,8 +93,6 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 		FcPatternDel( match, FC_FILE );
 		FcPatternAddString(match, FC_FILE, (const FcChar8 *) fontfile);
 	}
-//	FcPatternAddString(match, FC_FILE, (const FcChar8 *) "/home/micha/git/slterm/fonts/LiberationMono-Bold.ttf");
-
 
 #ifdef DEBUG
 //#if 1
@@ -104,9 +102,6 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	free(s);
 #endif
 
-
-	//f->match = XftFontOpenName(xwin.dpy, 0, (const FcChar8*)"filename:/usr/share/fonts/liberation-fonts/LiberationMono-Bold.ttf");
-	//f->match = XftFontOpenName(xwin.dpy, 0, (const FcChar8*)"filename:/home/micha/git/slterm/fonts/LiberationMono-Bold.ttf:Liberation Sans");
 
 	f->match = XftFontOpenPattern(xwin.dpy, match);
 	if (!f->match) {
