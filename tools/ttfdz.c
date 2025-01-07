@@ -35,6 +35,7 @@ int main( int argc, char **argv ){
 
 
 	out = calloc( size*8,1 ); // well. should work, for ttf fonts.
+	// This is for testing only, so.
 
    size_t len = sinflate( out, size*8, in, size ); 
 	if ( len == size*8 ){
@@ -60,7 +61,7 @@ int main( int argc, char **argv ){
 	fwrite( out, 1, len, fp );
 	fclose(fp);
 
-	printf("Decompressed: %s -> %s\n,%d -> %d\n", argv[1], argv[2], size, len );
+	printf("Decompressed:\n%s -> %s\n%d -> %d\n", argv[1], argv[2], size, len );
 
 	return(0);
 }

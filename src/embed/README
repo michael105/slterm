@@ -1,15 +1,29 @@
 The fonts LiberationMono_Bold and LiberationMono_BoldItalic,
 to be optionally embedded into the binary.
 
-It's better to install those fonts, if not already present.
+I suggest to install those fonts, if not already present.
 
 Anyways, to have a working font with the statically linked binary,
-they can be embedded. (+600kB)
+they can be embedded. (+400kB)
 
 
 The fonts bold and bold italic are empty files, since the regular font is already bold.
 For the attribute bold the color is changed to bright.
+(this behaviour can be changed in config.h)
+
 The empty files are needed anyways.
+
+
+The font files are compressed with tools/ttfz
+Decompress them with tools/ttfdz
+
+
+To change the embedded font, copy the font files into this directory, 
+compress them with ttfz, renaming to slterm_font.ttfz, ..
+update the size of the uncompressed ttf files in embed_fonts.h,
+and rerun make. (set EMBEDFONT := 1 in config.make)
+
+
 
 
 

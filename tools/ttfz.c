@@ -59,7 +59,7 @@ int main( int argc, char **argv ){
 	fwrite( out, 1, len, fp );
 	fclose(fp);
 
-	printf("Compressed: %s -> %s\n,%d -> %d\n", argv[1], argv[2], size, len );
+	printf("Compressed:\n%s -> %s\n%d -> %d\n", argv[1], argv[2], size, len );
 
 	return(0);
 }
