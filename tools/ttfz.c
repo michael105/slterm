@@ -1,6 +1,9 @@
 /*
-Compress file
-usage: szcomp infile outfile
+Compress font file (or other files)
+Error checking should be done separately,
+intended only for the build process of slterm.
+
+usage: ttfz infile outfile
 
 misc 2025, MIT License
 */
@@ -18,7 +21,7 @@ static struct sdefl sdefl;
 
 int main( int argc, char **argv ){
 	if ( argc!=3 ){
-		fprintf(stderr,"Usage: szcomp infile outfile\n");
+		fprintf(stderr,"Usage: ttfz infile outfile\n");
 		exit(22);
 	}
 
@@ -56,6 +59,7 @@ int main( int argc, char **argv ){
 	fwrite( out, 1, len, fp );
 	fclose(fp);
 
+	printf("Compressed: %s -> %s\n,%d -> %d\n", argv[1], argv[2], size, len );
 
 	return(0);
 }

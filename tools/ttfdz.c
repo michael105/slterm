@@ -1,6 +1,8 @@
 /*
-Decompress file
-usage: szdecomp infile outfile
+Decompress font file
+intended for testing only.
+
+usage: ttfdz infile outfile
 
 misc 2025, MIT License
 */
@@ -16,7 +18,7 @@ misc 2025, MIT License
 
 int main( int argc, char **argv ){
 	if ( argc!=3 ){
-		fprintf(stderr,"Usage: szdecomp infile outfile\n");
+		fprintf(stderr,"Usage: ttfdz infile outfile\n");
 		exit(22);
 	}
 
@@ -58,6 +60,7 @@ int main( int argc, char **argv ){
 	fwrite( out, 1, len, fp );
 	fclose(fp);
 
+	printf("Decompressed: %s -> %s\n,%d -> %d\n", argv[1], argv[2], size, len );
 
 	return(0);
 }
