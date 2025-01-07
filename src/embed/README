@@ -18,10 +18,10 @@ The font files are compressed with tools/ttfz
 Decompress them with tools/ttfdz
 
 
-To change the embedded font, copy the font files into this directory, 
-compress them with ttfz, renaming to slterm_font.ttfz, ..
+To change the embedded font, copy the ttf font files into this directory, 
+overwriting the existing ttf files,
 update the size of the uncompressed ttf files in embed_fonts.h,
-and rerun make. (set EMBEDFONT := 1 in config.make)
+and rerun make. (set EMBEDFONT := 1 in config.make, or `make static`)
 
 
 

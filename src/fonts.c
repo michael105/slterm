@@ -299,7 +299,7 @@ void xloadfonts(double fontsize) {
 	if (xloadfont(&dc.font, pattern, 0, fname[0] ))
 		die("x can't open font %s\n", fontstr);
 
-	if (usedfontsize < 0) { // determine the used fontsie as pixelsize of the regular font
+	if (usedfontsize < 0) { // determine the used fontsize as pixelsize of the regular font
 		FcPatternGetDouble(dc.font.match->pattern, FC_PIXEL_SIZE, 0, &fontval);
 		usedfontsize = fontval;
 		if (fontsize == 0)
