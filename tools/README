@@ -1,0 +1,8 @@
+contents:
+
+cpfilter (misc147), filter between different codepages
+
+szcomp, szdecomp, 
+	uses the sinfl/sdefl library of Micha Mettke, https://github.com/vurtun/lib
+	used to embed compressed fonts
+
