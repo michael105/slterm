@@ -169,7 +169,6 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 #else
 	//f->width=8;
 	f->width = DIVCEIL(extents.xOff, 96);
-	//f->width = DIVCEIL(extents.xOff, 96);
 #endif
 
 	f->width += fontspacing;
@@ -192,11 +191,6 @@ void xloadfonts(double fontsize) {
 
  	// get fontstr, from commandline or config.h 
 	char* fontstr = (opt_font == NULL) ? regular_font : opt_font;
-	
-	//if (fontstr[0] == '-')
-	//	pattern = XftXlfdParse(fontstr, False, False);
-	//else
-	//	pattern = FcNameParse((FcChar8 *)fontstr);
 	
 	pattern = get_fcpattern(fontstr);
 
@@ -312,8 +306,13 @@ void xloadfonts(double fontsize) {
 
 
 	if ( usebolditalicfont ){
-		FcPatternDel(pattern, FC_WEIGHT);
-		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		if ( bolditalic_font ){
+			FcPatternDestroy(pattern);
+			pattern = get_fcpattern(bolditalic_font);
+		} else {
+			FcPatternDel(pattern, FC_WEIGHT);
+			FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		}
 		if (xloadfont(&dc.ibfont, pattern, usedfontsize, fname[3]))
 			die("can't open font %s\n", fontstr);
 	}
