@@ -164,7 +164,7 @@ with-utf8:
 # better go in one run. Gives way more room to the compiler for optimizations.
 
 slterm: $(SRC) $(HEADER) help.h ../config.make compile.h
-	$(CC) -o slterm slterm_src.c $(STCFLAGS) $(STLDFLAGS) -DEMBEDFONT=$(EMBEDFONT)
+	$(CC) -o slterm $(EMBEDFONTS) slterm_src.c $(STCFLAGS) $(STLDFLAGS) -DEMBEDFONT=$(EMBEDFONT)
 
 
 compile.h: 

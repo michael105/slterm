@@ -55,9 +55,9 @@ void zoomreset(const Arg *arg) {
 
 
 
-int _xloadfont(Font *f, FcPattern *pattern, const char* fontfile){
-	#define xloadfont(_font,_pattern,...) __xloadfont(_font,_pattern,__VA_OPT__(__VA_ARGS__,) 0 )
-	#define __xloadfont(_font,_pattern,_file,...) _xloadfont(_font,_pattern,_file)
+int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile){
+	//#define xloadfont(_font,_pattern,...) __xloadfont(_font,_pattern,__VA_OPT__(__VA_ARGS__,) 0 )
+	//#define __xloadfont(_font,_pattern,_file,...) _xloadfont(_font,_pattern,_file)
 	FcPattern *configured;
 	FcPattern *match;
 	FcResult result;
@@ -65,12 +65,11 @@ int _xloadfont(Font *f, FcPattern *pattern, const char* fontfile){
 	int wantattr, haveattr;
 	char *s;
 
-	/*
-	FcPatternPrint( pattern );
-	char *s = FcNameUnparse( pattern );
-	printf( "name: %s\n", s );
-	free(s);
-	*/
+	if (pixelsize) {
+		FcPatternDel(pattern, FC_PIXEL_SIZE);
+		FcPatternDel(pattern, FC_SIZE);
+		FcPatternAddDouble(pattern, FC_PIXEL_SIZE, (double)pixelsize);
+	}
 
 	/*
 	 * Manually configure instead of calling XftMatchFont
@@ -228,18 +227,47 @@ void xloadfonts(double fontsize) {
 	}
 
 
-	// names and fds of temporary font files
-	char *fname[4] = { 0,0,0,0 };
-	int fd[4] = { 0,0,0,0 };
+	// names of temporary font files
+	char fname[4][32] = { 0,0,0,0 };
 	
-#if EMBEDFONT == 1
-#warning embedding font
-
-
-#endif
+	#if EMBEDFONT == 1
+	
+  	 #include "embed/embed_font.h"
+  	 #warning embedding font
+  	 
+  	 int fd[4] = { 0,0,0,0 };
+  	  char *embfont[4] = { 
+  	 	slterm_font_ttf, 
+  	 	slterm_font_bold_ttf, 
+  	 	slterm_font_italic_ttf, 
+  	 	slterm_font_bold_italic_ttf };
+  	  unsigned int embfontlen[4] = { 
+  	 	slterm_font_ttf_len, 
+  	 	slterm_font_bold_ttf_len, 
+  	 	slterm_font_italic_ttf_len, 
+  	 	slterm_font_bold_italic_ttf_len };
+  	 
+  	 
+  	 for ( int i = 0; i<4 ; i++ ){
+  	 	if ( embfontlen[i]){ 
+  	 		printf("size: %d\n",embfontlen[i]);
+  	 		strcpy( fname[i], "/tmp/slterm_XXXXXX.ttf" );
+  	 		fd[i] = mkstemps( fname[i], 4 );
+  	 		if ( fd[i] <= 0 ){
+  	 			fprintf(stderr,"Cannot create temporary file\n");
+  	 			fd[i] = 0;
+  	 			*fname[i] = 0;
+  	 		} else {
+  	 			write( fd[i], embfont[i], embfontlen[i] );
+  	 			fsync( fd[i] );
+  	 		}
+  	 	}
+  	 } 
+  	 
+	#endif
 
 	// load regular font
-	if (xloadfont(&dc.font, pattern, fname[0] ))
+	if (xloadfont(&dc.font, pattern, 0, fname[0] ))
 		die("can't open font %s\n", fontstr);
 
 	if (usedfontsize < 0) { // determine the used fontsie as pixelsize of the regular font
@@ -255,26 +283,50 @@ void xloadfonts(double fontsize) {
 
 	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
+	if ( useboldfont ){
+		FcPatternDel(pattern, FC_WEIGHT);
+		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		if (xloadfont(&dc.bfont, pattern, usedfontsize, fname[1] ))
+			die("can't open font %s\n", fontstr);
+		FcPatternDel(pattern, FC_WEIGHT);
+	}
 
 
-	// load italic, bold, bold italic
-	FcPatternDel(pattern, FC_SLANT);
-	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
-	if (xloadfont(&dc.ifont, pattern))
-		die("can't open font %s\n", fontstr);
+	if ( useitalicfont ){
+		// load italic, bold, bold italic
+		FcPatternDel(pattern, FC_SLANT);
+		FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
+		if (xloadfont(&dc.ifont, pattern, usedfontsize, fname[2] ))
+			die("can't open font %s\n", fontstr);
+	}
 
-	FcPatternDel(pattern, FC_WEIGHT);
-	FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
-	if (xloadfont(&dc.ibfont, pattern))
-		die("can't open font %s\n", fontstr);
 
-	FcPatternDel(pattern, FC_SLANT);
+	if ( usebolditalicfont ){
+		FcPatternDel(pattern, FC_WEIGHT);
+		FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		if (xloadfont(&dc.ibfont, pattern, usedfontsize, fname[3]))
+			die("can't open font %s\n", fontstr);
+	}
+
+/*	FcPatternDel(pattern, FC_SLANT);
 	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
 	if (xloadfont(&dc.bfont, pattern))
 		die("can't open font %s\n", fontstr);
-
+*/
 
 	FcPatternDestroy(pattern);
+
+
+	#if EMBEDFONT == 1
+		// remove fonts from tmp, if written
+		for ( int i = 0; i<4; i++ ){
+			if (fd[i])
+				close (fd[i]);
+			if ( fname[i] )
+				unlink( fname[i] );
+		}
+	#endif
+
 }
 
 void xunloadfont(Font *f) {
@@ -290,9 +342,12 @@ void xunloadfonts(void) {
 		XftFontClose(xwin.dpy, frc[--frclen].font);
 
 	xunloadfont(&dc.font);
-	xunloadfont(&dc.bfont);
-	xunloadfont(&dc.ifont);
-	xunloadfont(&dc.ibfont);
+	if ( useboldfont ) 
+		xunloadfont(&dc.bfont);
+	if ( useitalicfont ) 
+		xunloadfont(&dc.ifont);
+	if ( usebolditalicfont ) 
+		xunloadfont(&dc.ibfont);
 }
 
 int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
@@ -333,13 +388,13 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 #else
 			runewidth = twin.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
 #endif
-			if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD)) {
+			if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD) && usebolditalicfont ) {
 				font = &dc.ibfont;
 				frcflags = FRC_ITALICBOLD;
-			} else if (mode & ATTR_ITALIC) {
+			} else if (mode & ATTR_ITALIC && useitalicfont ) {
 				font = &dc.ifont;
 				frcflags = FRC_ITALIC;
-			} else if (mode & ATTR_BOLD) {
+			} else if (mode & ATTR_BOLD && useboldfont) {
 				font = &dc.bfont;
 				frcflags = FRC_BOLD;
 			}

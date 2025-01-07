@@ -25,10 +25,12 @@
  To use embedded fonts, set EMBEDFONTS to 1 in config.make,
  The attributes below are still used.
  To change the embedded fonts, you need to change the files in src/embed/
+
+ Only monospace fonts are supported.
 */
 
 // regular font
-static char *regular_font = "Monospace:Bold:pixelsize=13:antialias=true:autohint=true";
+static char *regular_font = "Liberation Mono:Bold:pixelsize=13:antialias=true:autohint=true";
 //if not set
 int default_font_pixelsize = 14;
 //static char *font = "Monospace:pixelsize=13:antialias=true:autohint=true";
@@ -40,14 +42,21 @@ The pixelsize as well as charwidth and height are set according to the regular f
 pixelsize (if unset) defaults to 14.
 */
 //static char *italic_font = 0;
-static char *italic_font = "Monospace:Bold:Italic:pixelsize=13:antialias=true:autohint=true";
+static char *italic_font = "Liberation Mono:Bold:Italic:pixelsize=13:antialias=true:autohint=true";
 static char *bold_font = 0;
 static char *bolditalic_font = 0;
 
 // Whether to use another font, for bold/italic/bolditalic
+#if 1
 int useboldfont = 0;
 int useitalicfont = 1;
 int usebolditalicfont = 0;
+#else
+int useboldfont = 1;
+int useitalicfont = 1;
+int usebolditalicfont = 1;
+#endif
+
 
 
 // more/less font width spacing

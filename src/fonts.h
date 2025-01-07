@@ -54,7 +54,7 @@ void zoomreset(const Arg *);
 int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
 
 
-int xloadfont(Font *, FcPattern *);
+int xloadfont(Font *, FcPattern *, int pixelsize, const char* filename);
 
 void xloadfonts(double);
 void xunloadfont(Font *);
