@@ -2,7 +2,7 @@
 
 
 // Exact size of the decompressed fonts in bytes.
-// Need to be set manually when changed
+// Need to be updated when the fonts are changed
 unsigned int slterm_font_ttf_len = 303656;
 unsigned int slterm_font_italic_ttf_len = 279668;
 unsigned int slterm_font_bold_ttf_len = 0;
