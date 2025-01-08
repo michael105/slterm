@@ -66,7 +66,7 @@ scrollmarks and lessmode are disabled.\n\r\
              3 CP1253\n\r\
              4 CP437  [01;30m(Old IBM codetable, borders and tables)[0;0m\n\r\
              5 CP850  [01;30m(DOS Standard table)[0;0m\n\r\
-             6 CP4002 [01;30m(DOS Standard table)[0;0m\n\r\
+             6 CP4002 [01;30m(Custom table, mix of 1252 and 437)[0;0m\n\r\
 \n\r\
 \n\r\
 [1m[4m[01;32mRegular mode:[0;0m\n\r\
