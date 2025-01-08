@@ -63,7 +63,7 @@ void updatestatus(){
 		//int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d", p_status,
 		int p = 0;
 		if ( stwidth > 32 + 19 ){
-			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d",
+			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
 					term->histi-term->scr,term->histi-term->scr+term->row, 
 					term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
@@ -72,8 +72,6 @@ void updatestatus(){
 					);
 
 			if ( stwidth > p+20 ){
-				buf[p++]=' ';
-
 				for ( int a=1; a<10; a++ ){
 					if ( term->scrollmarks[a] )
 						buf[p++] = a+'0';
@@ -86,7 +84,6 @@ void updatestatus(){
 					buf[p++] = ' ';
 			}
 
-
 		} else if ( stwidth > 20 + 16 ){ //TODO: other values (line number)
 			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
 					term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
@@ -98,7 +95,7 @@ void updatestatus(){
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1) );
 		}
 
-		printf("p: %d\n",p);
+		//printf("p: %d\n",p);
 		buf[p] = 0;
 
 		int bp = 256 - stwidth + p;
