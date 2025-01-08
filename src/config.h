@@ -18,15 +18,15 @@
 
 /*
  font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
+       and doc/fontconfig.txt
 
  the default regular font can be overwritten via command line 
  e.g.: slterm -f 'Monospace:pixelsize=13:antialias=true'
 
- To use embedded fonts, set EMBEDFONTS to 1 in config.make,
+ To use embedded fonts, set EMBEDFONT to 1 in config.make,
  The attributes below are still used.
  To change the embedded fonts, you need to change the files in src/embed/
 
- Only monospace fonts are supported.
 */
 
 // regular font
@@ -71,12 +71,12 @@ int fontspacing = 0;
 int borderperc = 40;
 
 /*
- * What program is execed by slterm depends of these precedence rules:
- * 1: program passed with -e
- * 2: utmp option
- * 3: SHELL environment variable
- * 4: value of shell in /etc/passwd
- * 5: value of shell in config.h
+ What program is execed by slterm depends of these precedence rules:
+ 1: program passed with -e
+ 2: utmp option
+ 3: SHELL environment variable
+ 4: value of shell in /etc/passwd
+ 5: value of shell in config.h
  */
 static char *shell = "/bin/sh";
 char *utmp = NULL;
@@ -90,9 +90,8 @@ static float cwscale = 1.0;
 static float chscale = 1.0;
 
 /*
- * word delimiter string
- *
- * More advanced example: L" `'\"()[]{}"
+ word delimiter string
+ More advanced example: L" `'\"()[]{}"
  */
 wchar_t *worddelimiters = L" ";
 
@@ -109,69 +108,44 @@ int allowaltscreen = 1;
 #define actionfps_shift 5
 
 /*
- * blinking timeout (set to 0 to disable blinking) for the terminal blinking
- * attribute.
+ blinking timeout (set to 0 to disable blinking) for the terminal blinking
+ attribute.
  */
 static unsigned int blinktimeout = 800;
 
-/*
- * thickness of underline and bar cursors
- */
+/* thickness of underline and bar cursors */
 static unsigned int cursorthickness = 2;
 
-/*
- * bell volume. It must be a value between -100 and 100. Use 0 for disabling
- * it
- */
+/* bell volume. It must be a value between -100 and 100. 0 to disable */
 static int bellvolume = 50;
 
-/* default TERM value */
-// used also for the identification of the capabilities to curses
-// this can be overriden in the shell by exporting a known terminal name,
-// e.g.: export TERM=xterm-256color
-// To make slterm known to curses et al, the terminfo capability file
-// (tic) needs to be installed: tix -sx slterm.terminfo or
-// slterm -I | tic -sx -
+/* 
+ default TERM value 
+ used also for the identification of the capabilities to curses
+ this can be overriden in the shell by exporting a known terminal name,
+ e.g.: export TERM=xterm-256color
+ To make slterm known to curses et al, the terminfo capability file
+ (tic) needs to be installed: tix -sx slterm.terminfo or
+ slterm -I | tic -sx -
+ */
 char *termname = "slterm-256color";
 
 /*
- * spaces per tab
- *
- * When you are changing this value, don't forget to adapt the »it« value in
- * the slterm.terminfo and appropriately install the slterm.terminfo in the environment where
- * you use this slterm version.
- *
- *	it#$tabspaces,
- *
- * Secondly make sure your kernel is not expanding tabs. When running `stty
- * -a` »tab0« should appear. You can tell the terminal to not expand tabs by
- *  running following command:
- *
- *	stty tabs
+ spaces per tab
+
+ When you are changing this value, don't forget to adapt the 'it' value in
+ the slterm.terminfo and appropriately install the slterm.terminfo in the environment where
+ you use this slterm version.
+
+	it#$tabspaces,
+
+ Secondly make sure your kernel is not expanding tabs. When running `stty
+ -a` tab0 should appear. You can tell the terminal to not expand tabs by
+ running following command:
+	stty tabs
  */
 unsigned int tabspaces = 8;
 
-
-// Outdated. the current table is below, colortablenames.
-// dgreen 036209
-// lgreen 00ff10
-// dblue 070060
-// dfblue 3c33aa
-static const char *colorname[] = {
-    /* 8 normal colors */
-    "black", "red3", "green3", //"brown3", // sort of brown (orange). brown is "brown" and faint..
-	"#592a1d", //"#532020", // brown //"#531818", // brown //"#562215", // brown //"yellow3",
-    "blue2", "magenta3", "cyan3", "gray90",
-    /* 8 bright colors */
-    "gray50", "red", "green", "yellow",
-    //"#5050ff", // light blue
-	 "#00aaea", // schweinchenblau
-    //"#5c5cff",
-    "magenta", "cyan", "white",
-    [255] = 0,
-    /* more colors can be added after 255 to use with DefaultXX */
-    "#cccccc", "#2e3440",
-};
 
 /* 
  The table of the first 8 (32) colors, numbered 30..37
@@ -233,10 +207,32 @@ static const char* bgcolornames[16] = {
 	 //"#531818", // brown
 	 //"#562215", // brown
 	
+// Outdated. the current table is colortablenames.
+// dgreen 036209
+// lgreen 00ff10
+// dblue 070060
+// dfblue 3c33aa
+static const char *colorname[] = {
+    /* 8 normal colors */
+    "black", "red3", "green3", //"brown3", // sort of brown (orange). brown is "brown" and faint..
+	"#592a1d", //"#532020", // brown //"#531818", // brown //"#562215", // brown //"yellow3",
+    "blue2", "magenta3", "cyan3", "gray90",
+    /* 8 bright colors */
+    "gray50", "red", "green", "yellow",
+    //"#5050ff", // light blue
+	 "#00aaea", // schweinchenblau
+    //"#5c5cff",
+    "magenta", "cyan", "white",
+    [255] = 0,
+    /* more colors can be added after 255 to use with DefaultXX */
+    "#cccccc", "#2e3440",
+};
+
+
 /*
- * Default colors (colorname index)
- * foreground, background, cursor, reverse cursor
- */
+ Default colors (colorname index)
+ foreground, background, cursor, reverse cursor
+*/
 unsigned char defaultfg = 7;
 unsigned char defaultbg = 0;
 static unsigned char defaultcs = 15;
@@ -258,37 +254,32 @@ unsigned int selectionfg = 7;
 static int ignoreselfg = 1;
 
 /*
- * Default shape of cursor
- * 2: Block 
- * 4: Underline ("_")
- * 6: Bar ("|")
- * 7: Block, and (X)
- * 8: double underline
- * 9: empty block
- * 10: underline with sides
- * 11: under- and overline with sides
- * 12: overline with sides
- */
+ Default shape of cursor
+ 2: Block 
+ 4: Underline ("_")
+ 6: Bar ("|")
+ 7: Block, and (X)
+ 8: double underline
+ 9: empty block
+ 10: underline with sides
+ 11: under- and overline with sides
+ 12: overline with sides
+*/
 unsigned int cursorshape = 4;
 
-/*
- * Default columns and rows numbers
- */
-
+/* Default columns and rows numbers */
 static unsigned int cols = 80;
 static unsigned int rows = 24;
 
-/*
- * Default colour and shape of the mouse cursor
- */
+/* Default colour and shape of the mouse cursor */
 static unsigned int mouseshape = XC_xterm;
 static unsigned int mousefg = 7;
 static unsigned int mousebg = 0;
 
 /*
- * Xresources preferences to load at startup
- * TODO: update this with colortablenames
- */
+ Xresources preferences to load at startup
+ TODO: update this with colortablenames
+*/
 #ifdef XRESOURCES
 ResourcePref resources[] = {
     { "font", STRING, &font },
@@ -324,22 +315,22 @@ ResourcePref resources[] = {
 };
 #endif
 /*
- * Color used to display font attributes when fontconfig selected a font which
- * doesn't match the ones requested.
- */
+ Color used to display font attributes when fontconfig selected a font which
+ doesn't match the ones requested.
+*/
 static unsigned int defaultattr = 11;
 
 /*
- * Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).
- * Note that if you want to use ShiftMask with selmasks, set this to an other
- * modifier, set to 0 to not use it.
- */
+ Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).
+ Note that if you want to use ShiftMask with selmasks, set this to an other
+ modifier, set to 0 to not use it.
+*/
 static uint forcemousemod = ShiftMask;
 
 /*
- * Internal mouse shortcuts.
- * Beware that overloading Button1 will disable the selection.
- */
+ Internal mouse shortcuts.
+ Beware that overloading Button1 will disable the selection.
+*/
 const unsigned int mousescrollincrement = 3;
 static MouseShortcut mshortcuts[] = {
     /* mask                 button   function        argument       release */
@@ -402,10 +393,7 @@ static MouseShortcut mshortcuts[] = {
  e.g.
  Match Shift + PageUp
  Match PageUp
- 
- 
  */
-
 #ifndef extract_keyref
 Shortcut shortcuts[] = {
 #endif
@@ -582,36 +570,36 @@ BIND( ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES ),
 #undef BIND
 
 /*
- * Special keys (change & recompile slterm.terminfo accordingly)
- *
- * Mask value:
- * * Use XK_ANY_MOD to match the key no matter modifiers state
- * * Use XK_NO_MOD to match the key alone (no modifiers)
- * appkey value:
- * * 0: no value
- * * > 0: keypad application mode enabled
- * *   = 2: term.numlock = 1
- * * < 0: keypad application mode disabled
- * appcursor value:
- * * 0: no value
- * * > 0: cursor application mode enabled
- * * < 0: cursor application mode disabled
- *
- * Be careful with the order of the definitions because st searches in
- * this table sequentially, so any XK_ANY_MOD must be in the last
- * position for a key.
- */
+ Special keys (change & recompile slterm.terminfo accordingly)
+
+ Mask value:
+   Use XK_ANY_MOD to match the key no matter modifiers state
+   Use XK_NO_MOD to match the key alone (no modifiers)
+ appkey value:
+   0: no value
+   > 0: keypad application mode enabled
+   = 2: term.numlock = 1
+   < 0: keypad application mode disabled
+ appcursor value:
+   0: no value
+   > 0: cursor application mode enabled
+   < 0: cursor application mode disabled
+
+ Be careful with the order of the definitions because st searches in
+ this table sequentially, so any XK_ANY_MOD must be in the last
+ position for a key.
+*/
 
 /*
- * If you want keys other than the X11 function keys (0xFD00 - 0xFFFF)
- * to be mapped below, add them to this array.
- */
+ If you want keys other than the X11 function keys (0xFD00 - 0xFFFF)
+ to be mapped below, add them to this array.
+*/
 static KeySym mappedkeys[] = { -1 };
 
 /*
- * State bits to ignore when matching key or button events.  By default,
- * numlock (Mod2Mask) and keyboard layout (XK_SWITCH_MOD) are ignored.
- */
+ State bits to ignore when matching key or button events.  By default,
+ numlock (Mod2Mask) and keyboard layout (XK_SWITCH_MOD) are ignored.
+*/
 static uint ignoremod = Mod2Mask|XK_SWITCH_MOD;
 
 #define K(key,mod,str,appkey,appcursor) { key,mod,str,sizeof(str)-1,appkey,appcursor }
@@ -843,49 +831,50 @@ static Key key[] = {
 #undef K
 
 /*
- * Selection types' masks.
- * Use the same masks as usual.
- * Button1Mask is always unset, to make masks match between ButtonPress.
- * ButtonRelease and MotionNotify.
- * If no match is found, regular selection is used.
- */
+ Selection types' masks.
+ Use the same masks as usual.
+ Button1Mask is always unset, to make masks match between ButtonPress.
+ ButtonRelease and MotionNotify.
+ If no match is found, regular selection is used.
+*/
 static uint selmasks[] = {
     [SEL_RECTANGULAR] = Mod1Mask,
 };
 
 
-// select codepages
-// can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
-//         cp1256,cp1257,cp1258,cpe4000,cpe4002a, 
-//         macintosh, atarist, mac_centraleurope
-// (macintosh = MacRoman)
-// other codepages could be added in charmaps.h
-// use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
-//
-// cp1252 is at the same time the DEC-MCS, ANSI, and Windows1252 default codepage.
-//
-// cp437 is the old ibm codepage, with those signs to draw borders and boxes.
-// (cp437 is uncomplete here, the "graphics mode" signs 0..0x1f are missing.
-// it's the old issue of the IBM PC1. Reinvented.)
-//
-// Me, I'm happy with CP1252, it has got umlauts, and yet every application
-// was able to work with the ansi code table without modifications. 
+/*
+ select codepages
+ can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
+         cp1256,cp1257,cp1258,cpe4000,cpe4002a, 
+         macintosh, atarist, mac_centraleurope
+ (macintosh = MacRoman)
+ other codepages could be added in charmaps.h
+ use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
 
-// Now, I did write a personal codepage, named cpe4000
-// There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
-// the greek alphabet and several mathematical and logical chars.
-// It's what I do need for writing. 
-// There's a filter for the conversion to and from utf8 and between codepages,
-// within tools. 
-// Numbered the cp e4000, according to the rfc's 0xExxxx is reserved for private 
-// assignments. 
+ cp1252 is at the same time the DEC-MCS, ANSI, and Windows1252 default codepage.
 
-// Finally, I created another codepage. Naming this cpe4002a,
-// but I regard the codepage as alpha, I'm going to change some things.
-// Got the box drawing chars at the same location as with cp437.
-// umlauts are there, at the locations of cp437/cp850
-// Several logical and mathematical operators and signs
+ cp437 is the old ibm codepage, with those signs to draw borders and boxes.
+ (cp437 is uncomplete here, the "graphics mode" signs 0..0x1f are missing.
+ it's the old issue of the IBM PC1. Reinvented.)
 
+ Me, I'm happy with CP1252, it has got umlauts, and yet every application
+ was able to work with the ansi code table without modifications. 
+
+ Now, I did write a personal codepage, named cpe4000
+ There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
+ the greek alphabet and several mathematical and logical chars.
+ It's what I do need for writing. 
+ There's a filter for the conversion to and from utf8 and between codepages,
+ within tools. 
+ Numbered the cp e4000, according to the rfc's 0xExxxx is reserved for private 
+ assignments. 
+
+ Finally, I created another codepage. Naming this cpe4002a,
+ but I regard the codepage as alpha, I'm going to change some things.
+ Got the box drawing chars at the same location as with cp437.
+ umlauts are there, at the locations of cp437/cp850
+ Several logical and mathematical operators and signs
+*/
 
 // assign to Ctrl+Win +                    0,       1,    2        3      4      5      6
 const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002a,
@@ -894,7 +883,7 @@ const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, 
 // the default codepage is cp1252
 // and assigned to Ctrl+Win+2
 
-#ifdef MISC //(my local copy)
+#ifdef MISC //my local copy
 int selected_codepage = 6;
 #else
 // the default codepage (cp1252)
