@@ -83,6 +83,8 @@ void xresize(int col, int row) {
 
 	/* resize to new width */
 	xwin.specbuf = xrealloc(xwin.specbuf, col * sizeof(GlyphFontSpec));
+
+	updatestatus();
 }
 
 

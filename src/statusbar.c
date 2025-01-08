@@ -50,31 +50,48 @@ void statusbar_focusout(){
 void updatestatus(){
 
 	if ( statusvisible ){
+
+		// currently shown number of cols
+		int stwidth = statuswidth;
+		if ( term->col != statuswidth )
+			stwidth = term->col;
+
 		char buf[512];
-		bzero(buf,512);
-		//int p = sprintf(buf," -LESS-  %5d-%2d %5d %3d%% (%3d%%)", 
-		int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d", p_status,
+		memset( buf, ' ', 256 );
+		//bzero(buf+256,256);
+
+		//int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d", p_status,
+		int p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d",
 				term->histi-term->scr,term->histi-term->scr+term->row, 
 				term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
 				((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 				((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1),
 				term->retmark_scrolled
 				);
-		buf[p]=' ';
 
-		for ( int a=1; a<10; a++ ){
-			if ( term->scrollmarks[a] )
-				buf[a+p] = a+'0';
-			else
-				buf[a+p] = ' ';
+		if ( stwidth > p+10 ){
+			buf[p++]=' ';
+
+			for ( int a=1; a<10; a++ ){
+				if ( term->scrollmarks[a] )
+					buf[p++] = a+'0';
+				else
+					buf[p++] = ' ';
+			}
+			if ( term->scrollmarks[0] )
+				buf[p++] = '0';
+			else 
+				buf[p++] = ' ';
 		}
-		if ( term->scrollmarks[0] )
-			buf[p+10] = '0';
-		else 
-			buf[p+10] = ' ';
-		buf[p+11] = 0;
 
-		setstatus(buf);
+		buf[p] = 0;
+
+		int bp = 256 - stwidth + p;
+		if ( bp <0 ) bp = 0;
+		if ( 256-bp > strlen(p_status) +3 )
+			memcpy( buf+bp+3, p_status, strlen(p_status) );
+
+		setstatus(buf+bp);
 	}
 }
 
@@ -88,6 +105,8 @@ void setstatus(char* status){
 		//statusbar = xrealloc(statusbar, term->colalloc * sizeof(Glyph));
 		statuswidth = term->colalloc;
 	}
+	if ( term->col != statuswidth )
+		statuswidth = term->col;
 
 #ifndef UTF8
 	Glyph g = { .fg = statusfg, .bg = statusbg, .mode = statusattr, .u = ' ' };
