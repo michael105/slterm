@@ -17,7 +17,6 @@ extern XSelection xsel;
 void selnotify(XEvent *);
 void selclear_(XEvent *);
 void selrequest(XEvent *);
-void mousesel(XEvent *, int);
 
 void clipcopy(const Arg *);
 void clippaste(const Arg *);

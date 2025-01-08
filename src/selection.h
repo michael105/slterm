@@ -36,9 +36,10 @@ extern Selection sel;
 
 
 
-// clipboard callbacks
+//  callbacks
 void keyboard_select(const Arg *);
 
+void mousesel(XEvent *, int);
 
 void selnormalize(void);
 void selscroll(int, int);

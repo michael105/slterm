@@ -51,22 +51,6 @@ void selpaste(const Arg *dummy) {
 }
 
 
-void mousesel(XEvent *e, int done) {
-	int type, seltype = SEL_REGULAR;
-	uint state = e->xbutton.state & ~(Button1Mask | forcemousemod);
-
-	for (type = 1; type < LEN(selmasks); ++type) {
-		if (match(selmasks[type], state)) {
-			seltype = type;
-			break;
-		}
-	}
-	selextend(evcol(e), evrow(e), seltype, done);
-	if (done)
-		setsel(getsel(), e->xbutton.time);
-}
-
-
 void xclipcopy(void) { clipcopy(NULL); }
 
 void selclear_(XEvent *e) { selclear(); }

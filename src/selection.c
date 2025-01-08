@@ -46,6 +46,23 @@ void selstart(int col, int row, int snap) {
 	tsetdirt(sel.nb.y, sel.ne.y);
 }
 
+
+void mousesel(XEvent *e, int done) {
+	int type, seltype = SEL_REGULAR;
+	uint state = e->xbutton.state & ~(Button1Mask | forcemousemod);
+
+	for (type = 1; type < LEN(selmasks); ++type) {
+		if (match(selmasks[type], state)) {
+			seltype = type;
+			break;
+		}
+	}
+	selextend(evcol(e), evrow(e), seltype, done);
+	if (done)
+		setsel(getsel(), e->xbutton.time);
+}
+
+
 void selextend(int col, int row, int type, int done) {
 	int oldey, oldex, oldsby, oldsey, oldtype;
 
