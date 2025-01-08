@@ -36,7 +36,7 @@ ${BOLD}Select Codepage:$N
              3 CP1253
              4 CP437  ${GRAY}(Old IBM codetable, borders and tables)$N
              5 CP850  ${GRAY}(DOS Standard table)$N
-             6 CP4002 ${GRAY}(DOS Standard table)$N
+             6 CP4002 ${GRAY}(Custom table, mix of 1252 and 437)$N
 
 
 $BOLD${UL}${LGREEN}Regular mode:$N
