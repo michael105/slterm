@@ -1,5 +1,6 @@
 # build configuration 
 # More options to configure are in src/config.h
+# This is a makefile, included by src/Makefile
 
 # Set to 0
 SHOWCONFIGINFO := 1
@@ -38,7 +39,6 @@ OPT_FLAG := -Os
 
 # Linker Flags
 #LINKER_FLAG = -g
-# Strip
 LINKER_FLAG := -Os -s 
 
 # paths
@@ -56,4 +56,11 @@ PKG_CONFIG := pkg-config
 # compiler and linker
 CC := gcc
 
+
+# my local preferences.
+ifdef MISC
+SHOWCONFIGINFO := 0
+EMBEDRESOURCES := 0
+EMBEDFONT := 0
+endif
 

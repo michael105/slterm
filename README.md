@@ -3,7 +3,7 @@
 
 
 	Slim (110kB linked shared) and fast terminal emulator for X11,
-	with minimal external dependencies (Xlib and Xft).
+	with minimal external dependencies (Xlib, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
 
@@ -284,7 +284,7 @@ corrected ret marks and scrollmarks
 
 
 
-(misc147 2020-2024 - github.com/michael105)
+(misc147 2020-2025 - github.com/michael105)
 
 
 Credits

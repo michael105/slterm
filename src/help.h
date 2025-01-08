@@ -8,7 +8,8 @@ static char* helpcontents = "\
 \n\r\
 [36m     slterm - [00;35msl[36mim [00;35mt[36merminal emulator for X [0;0m\n\r\
 \n\r\
-(Homepage: http://github.com/michael105/slterm)\n\r\
+http://github.com/michael105/slterm\n\r\
+Version: 0.99.5\n\r\
 \n\r\
 \n\r\
 [01;33m Help [0;0m\n\r\
@@ -266,7 +267,7 @@ MODE_DEFAULT	 Control+Shift|Alt|Win 	 I          	 dump_terminfo 	\n\r\
 [36m\n\r\
 ===============================================================================\n\r\
 \n\r\
-[37m(2019-2024 miSc, Michael 147, started with the suckless st sources)\n\r\
+[37m(2019-2025 miSc, Michael 147, started with the suckless st sources)\n\r\
 [01;30m\n\r\
 License: MIT\n\r\
 Permission is hereby granted, free of charge, to any person obtaining a copy\n\r\
