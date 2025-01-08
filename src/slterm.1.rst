@@ -287,12 +287,12 @@ OPTIONS
 AUTHORS
 =======
 
-(2020-2024) Michael (misc147), www.github.com/michael105
+(2020-2025) Michael (misc147), www.github.com/michael105
 
 The code is based on st, the suckless terminal emulator,
 fetched from git 1.1.2020, which was based on code from Aurelien Aptel.
 
-The patches to slterm had been provided by: 
+The included patches to st had been provided by: 
 
 Tonton Couillon,
 dcat, 
