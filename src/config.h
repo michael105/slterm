@@ -236,7 +236,7 @@ static const char *colorname[] = {
 unsigned char defaultfg = 7;
 unsigned char defaultbg = 0;
 static unsigned char defaultcs = 15;
-static unsigned char defaultrcs = 202;
+//static unsigned char defaultrcs = 202;
 // Unfocused window
 static unsigned char unfocusedrcs = 46; //118;//226; 
 
@@ -251,7 +251,7 @@ unsigned int selectionbg = 19;
 unsigned int selectionfg = 7;
 /* If 0 use selectionfg as foreground in order to have a uniform foreground-color */
 /* Else if 1 keep original foreground-color of each cell => more colors :) */
-static int ignoreselfg = 1;
+//static int ignoreselfg = 1;
 
 /*
  Default shape of cursor
@@ -318,7 +318,7 @@ ResourcePref resources[] = {
  Color used to display font attributes when fontconfig selected a font which
  doesn't match the ones requested.
 */
-static unsigned int defaultattr = 11;
+//static unsigned int defaultattr = 11;
 
 /*
  Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).

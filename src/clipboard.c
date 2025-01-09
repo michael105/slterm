@@ -15,11 +15,11 @@ XSelection xsel;
 
 // utf8 conversion ( again, simplified, misc147 )
 // converts from the current charmap to utf8
-uint to_utf8( char* obuf, const char* ibuf ){
-	char *ob = obuf;
+uint to_utf8( uchar* obuf, const uchar* ibuf ){
+	uchar *ob = obuf;
 	while ( *ibuf ){
 		//printf("c: %d\n",(uint) (*ibuf));
-		if ( *ibuf > 0 ){ // char < 128
+		if ( *ibuf <128 ){ // char < 128
 			*obuf = *ibuf;
 			obuf++;
 		} else {
@@ -57,8 +57,8 @@ uint to_utf8( char* obuf, const char* ibuf ){
 
 // converts from utf8 to the current charmap, 
 // unsupported chars are left as utf8
-uint from_utf8( char* obuf, const char* buf, uint len ){
-	char *ob = obuf;
+uint from_utf8( uchar* obuf, const uchar* buf, uint len ){
+	uchar *ob = obuf;
 	int a = 0;
 	while ( a<len ){
 		if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
@@ -201,8 +201,8 @@ void selrequest(XEvent *e) {
 #ifdef UTF8_CLIPBOARD
 			int len = strlen(seltext);
 			{
-				char buf[len*4+4];
-				int blen = to_utf8( buf, seltext );
+				uchar buf[len*4+4];
+				int blen = to_utf8( buf, (uchar*)seltext );
 			//	printf("seltext: %s\n",seltext);
 			//	printf("seltext utf8: %s\n",buf);
 			XChangeProperty(xsre->display, xsre->requestor, xsre->property,
@@ -301,9 +301,9 @@ void selnotify(XEvent *e) {
 		//printf("Paste: %s  \nsize: %d\n",data,last-data);
 		//convert from utf8 / different charmap here
 			{
-				char buf[last-data];
+				uchar buf[last-data];
 				int len = from_utf8( buf, data, last-data );
-				ttywrite((char *)buf, len, 1);
+				ttywrite(buf, len, 1);
 			}
 #else
 		ttywrite((char *)data, nitems * format / 8, 1);
