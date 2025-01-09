@@ -227,7 +227,7 @@ void xloadfonts(double fontsize) {
 
 
 	// names of temporary font files
-	char fname[4][32] = { 0,0,0,0 };
+	char fname[4][32] = { {0},{0},{0},{0} };
 	
 #if EMBEDFONT == 1
   	 #warning embedding fonts

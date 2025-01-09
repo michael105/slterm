@@ -201,6 +201,7 @@ static char ascii_printable[]
 #else
 // no utf8, but using extended ascii.
 // unused.
+/*
 static char unused_ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
@@ -209,6 +210,7 @@ static char unused_ascii_printable[]
 			"ÁÂÃ}ÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕ{×ØÙÚÛ%İŞßà"
 			"áâã]åæçèéêëìíîï"
 			"ğñòóôõ[÷øùúû$ışÿ";
+			*/
 #endif
 
 
