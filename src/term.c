@@ -389,12 +389,6 @@ void tsetmode(int priv, int set, int *args, int narg) {
 	}
 }
 
-void sendbreak(const Arg *arg) {
-	if (tcsendbreak(cmdfd, 0)) {
-		perror("Error sending break");
-	}
-}
-
 
 void tdefutf8(utfchar ascii) {
 #ifdef UTF8

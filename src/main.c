@@ -100,13 +100,13 @@ void usage(void) {
 #ifdef shared
 // share the whole text segment, including main
 int shared_main(int argc, char *argv[]) {
+		iofd = 1; // 
 #else
 int main(int argc, char *argv[]) {
 #endif
 		xwin.l = xwin.t = 0;
 		xwin.isfixed = False;
 		twin.cursor = cursorshape;
-		iofd = 1;
 
 		ARGBEGIN {
 #ifdef INCLUDETERMINFO

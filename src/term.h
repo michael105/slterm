@@ -167,7 +167,6 @@ void draw(void);
 
 void printscreen(const Arg *);
 void printsel(const Arg *);
-void sendbreak(const Arg *);
 void toggleprinter(const Arg *);
 void showhelp(const Arg *);
 void quithelp(const Arg *);

@@ -17,7 +17,6 @@ void tinsertblankline(int);
 void tdumpline(int);
 void tdump(void);
 
-void tprinter(char *s, size_t len);
 
 
 void tclearregion(int, int, int, int);

@@ -185,7 +185,8 @@ extern Term *p_term;
 extern Term *p_alt; 
 
 
-
+// pid of executed shell 
+extern pid_t shellpid;
 
 /*
 Printable characters in ASCII, used to estimate the advance width

@@ -582,14 +582,6 @@ void tsetattr(int *attr, int l) {
 
 void printscreen(const Arg *arg) { tdump(); }
 
-void tprinter(char *s, size_t len) {
-		if (iofd != -1 && xwrite(iofd, s, len) < 0) {
-				perror("Error writing to output file");
-				close(iofd);
-				iofd = -1;
-		}
-}
-
 void toggleprinter(const Arg *arg) { term->mode ^= MODE_PRINT; }
 
 
