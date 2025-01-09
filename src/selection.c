@@ -491,7 +491,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			select_or_drawcursor(selectsearch_mode = 0, type);
 			in_use = quant = 0;
 			xsetcursor( sel_savedcursor );
-			ttywrite( tmp, strlen(tmp), 1 );
+			ttywrite( (utfchar*)tmp, strlen(tmp), 1 );
 			return MODE_KBDSELECT;
 
 		case XK_n:

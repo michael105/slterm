@@ -356,12 +356,12 @@ void enterscroll(const Arg *a){
 		
 		term->scrollmarks[0] = term->histi+ term->row - ( term->row - term->cursor.y );
 		enterlessmode = term->row;
-		ttywrite("\n",1,1);
+		ttywrite((utfchar*)"\n",1,1);
 }
 
 void leavescroll(const Arg *a){
 		enterlessmode = 0;
-		ttywrite("\n",1,1);
+		ttywrite((utfchar*)"\n",1,1);
 }
 
 

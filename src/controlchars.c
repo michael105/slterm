@@ -305,7 +305,7 @@ unknown:
 			break;
 		case 'c': /* DA -- Device Attributes */
 			if (csiescseq.arg[0] == 0) {
-				ttywrite(vtiden, strlen(vtiden), 0);
+				ttywrite((utfchar*)vtiden, strlen(vtiden), 0);
 			}
 			break;
 		case 'C': /* CUF -- Cursor <n> Forward */
@@ -432,7 +432,7 @@ unknown:
 			if (csiescseq.arg[0] == 6) {
 				len =
 					snprintf(buf, sizeof(buf), "\033[%i;%iR", term->cursor.y + 1, term->cursor.x + 1);
-				ttywrite(buf, len, 0);
+				ttywrite((utfchar*)buf, len, 0);
 			}
 			break;
 		case 'r': /* DECSTBM -- Set Scrolling Region */
@@ -615,7 +615,7 @@ void tcontrolcode(uchar ascii) {
 		case 0x99: /* TODO: SGCI */
 			break;
 		case 0x9a: /* DECID -- Identify Terminal */
-			ttywrite(vtiden, strlen(vtiden), 0);
+			ttywrite((utfchar*)vtiden, strlen(vtiden), 0);
 			break;
 		case 0x9b: /* TODO: CSI */
 		case 0x9c: /* TODO: ST */
@@ -686,7 +686,7 @@ int eschandle(uchar ascii) {
 			}
 			break;
 		case 'Z': /* DECID -- Identify Terminal */
-			ttywrite(vtiden, strlen(vtiden), 0);
+			ttywrite((utfchar*)vtiden, strlen(vtiden), 0);
 			break;
 		case 'c': /* RIS -- Reset to initial state */
 			treset();

@@ -59,7 +59,7 @@ void mousereport(XEvent *e) {
 		return;
 	}
 
-	ttywrite(buf, len, 0);
+	ttywrite((utfchar*)buf, len, 0);
 }
 
 int mouseaction(XEvent *e, uint release) {

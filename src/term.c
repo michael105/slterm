@@ -53,7 +53,7 @@ static void tstrsequence(uchar);
 
 
 void tty_send_unicode(const Arg *arg){ 
-	char c = (char)arg->i;
+	utfchar c = (utfchar)arg->i;
 	ttywrite(&c, 1, 1); 
 }
 
@@ -192,7 +192,7 @@ void showhelp(const Arg *a) {
 			p_help_storedterm = term;
 			tnew(term->col, term->row);
 			p_help = term;
-			twrite( helpcontents, strlen(helpcontents), 0 );
+			twrite( (utfchar*)helpcontents, strlen(helpcontents), 0 );
 		} else {
 			p_help_storedterm = term;
 			term = p_help;

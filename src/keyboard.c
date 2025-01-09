@@ -14,7 +14,7 @@ int match(uint mask, uint state) {
 int kmap(KeySym k, uint state) {
 	Key *kp;
 	int i;
-	KeySym k2 = k;
+	//KeySym k2 = k;
 
 	dbg("Key: %d %c\n", k,k);
 	/* Check for mapped keys out of X11 function keys. */
@@ -53,7 +53,7 @@ int kmap(KeySym k, uint state) {
 						//goto CONT;
 					}
 				}
-				ttywrite("~",1,1); // drop utf8 here
+				ttywrite((utfchar*)"~",1,1); // drop utf8 here
 			}
 
 			return(0);
@@ -78,7 +78,7 @@ int kmap(KeySym k, uint state) {
 		if (IS_SET(MODE_APPCURSOR) ? kp->appcursor < 0 : kp->appcursor > 0)
 			continue;
 
-		ttywrite(kp->s, kp->len, 1);
+		ttywrite((utfchar*)kp->s, kp->len, 1);
 		return(1); // abort further handling
 	}
 //	if ( k2 != k ){ // translated from unicode to codepage
@@ -97,9 +97,9 @@ void sort_shortcuts(){
 	// keysym value stay in the same order. 	
 	// This is callen only once at startup. for about 100 elements.
 #define SIZE (sizeof(shortcuts)/sizeof(Shortcut))
-	uint cp[SIZE];
+	//uint cp[SIZE];
 	KeySym bing; //
-	uint pt = 0, p;  // 
+	uint pt = 0;  // 
 
 	for ( int a = 0; a<SIZE; a++ )
 		if ( !shortcuts[a].keysym )
@@ -128,6 +128,7 @@ void sort_shortcuts(){
 					"mov %%ecx,%1\n"
 					"mov %%eax,%0\n": 
 					"+m"(l1), "+m"(l2) : : "cc", "memory", "rcx", "rax" );
+					*/
 				/*	*l1^=*l2;
 					*l2^=*l1;
 					*l1^=*l2; 
@@ -160,7 +161,7 @@ void sort_shortcuts(){
 void kpress(XEvent *ev) {
 	XKeyEvent *e = &ev->xkey;
 	KeySym ksym;
-	unsigned char buf[32], *customkey;
+	unsigned char buf[32];
 	int len;
 	Rune c;
 	Status status;
@@ -169,17 +170,17 @@ void kpress(XEvent *ev) {
 	if (IS_SET(MODE_KBDLOCK))
 		return;
 
-	len = XmbLookupString(xwin.xic, e, buf, sizeof buf, &ksym, &status);
+	len = XmbLookupString(xwin.xic, e, (char*)buf, sizeof buf, &ksym, &status);
 
 	if (IS_SET(MODE_KBDSELECT)) {
 		if (match(XK_NO_MOD, e->state) || (XK_Shift_L | XK_Shift_R) & e->state)
-			twin.mode ^= trt_kbdselect(ksym, buf, len);
+			twin.mode ^= trt_kbdselect(ksym, (char*)buf, len);
 		return;
 	}
 
 
 	if ( IS_SET( MODE_ENTERSTRING ) ){
-		statusbar_kpress( &ksym, buf );
+		statusbar_kpress( &ksym, (char*)buf );
 		return;
 	}
 
@@ -228,7 +229,7 @@ void kpress(XEvent *ev) {
 		if (IS_SET(MODE_8BIT)) {
 			if (*buf < 0177) {
 				c = *buf | 0x80;
-				len = utf8encode(c, buf);
+				len = utf8encode(c, (char*)buf);
 			}
 		} else {
 			buf[1] = buf[0];

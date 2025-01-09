@@ -295,7 +295,7 @@ void selnotify(XEvent *e) {
 		}
 
 		if (IS_SET(MODE_BRCKTPASTE) && ofs == 0)
-			ttywrite("\033[200~", 6, 0);
+			ttywrite((utfchar*)"\033[200~", 6, 0);
 
 #ifdef UTF8_CLIPBOARD
 		//printf("Paste: %s  \nsize: %d\n",data,last-data);
@@ -310,7 +310,7 @@ void selnotify(XEvent *e) {
 #endif
 
 		if (IS_SET(MODE_BRCKTPASTE) && rem == 0)
-			ttywrite("\033[201~", 6, 0);
+			ttywrite((utfchar*)"\033[201~", 6, 0);
 		XFree(data);
 		/* number of 32-bit chunks returned */
 		ofs += nitems * format / 32;

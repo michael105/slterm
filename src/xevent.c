@@ -160,7 +160,7 @@ void run() {
 void toggle_winmode(int flag) { twin.mode ^= flag; }
 
 
-void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
+void ttysend(const Arg *arg) { ttywrite((utfchar*)arg->s, strlen(arg->s), 1); }
 
 
 
@@ -208,7 +208,7 @@ void focus(XEvent *ev) {
 			XSetICFocus(xwin.xic);
 			xseturgency(0);
 			if (IS_SET(MODE_FOCUS))
-				ttywrite("\033[I", 3, 0);
+				ttywrite((utfchar*)"\033[I", 3, 0);
 			statusbar_focusin();
 			dc.col[FCB] = tmp;
 			redraw();
@@ -219,7 +219,7 @@ void focus(XEvent *ev) {
 			twin.mode &= ~MODE_FOCUSED;
 			XUnsetICFocus(xwin.xic);
 			if (IS_SET(MODE_FOCUS))
-				ttywrite("\033[O", 3, 0);
+				ttywrite((utfchar*)"\033[O", 3, 0);
 			statusbar_focusout();
 			dc.col[FCB] = dc.col[7];
 			redraw();
