@@ -13,8 +13,8 @@ SYNOPSIS
 
 **slterm** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
-[**-l** *line*] [**-w** *windowid*] [[**-e**] *command*] [**-X**] 
-[*arguments*...]]
+[**-l** *line*] [**-w** *windowid*] [**-X**] 
+[[**-e**] *command*] [*arguments*...]]
 
 **slterm** [**-aivVx**] [**-c** *class*] [**-f** *font*] [**-g** *geometry*]
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
@@ -26,10 +26,13 @@ DESCRIPTION
 
 **slterm** is a virtual terminal emulator for X
 
-It is a slimmed down descendant of st (suckless.org)
-with several additions and patches.
+slterm is highly optimized for fast text output and slim memory usage,
+while having several addons like switchable codepages or advanced
+history browsing.
 
-utf-8 and rgb support are stripped for better performance and less memory usage.
+In favor of compatibility with terminal programs and performance utf8
+support is stripped. Communication with the x clipboard is however
+automatically converted from and to utf8.
 
 
 USAGE
@@ -194,7 +197,7 @@ CURSES
    To be used with curses, the installation of the terminfo database file is needed.
    slterm.terminfo is supplied in the sources, within the folder src.
    It can be installed with `tic -sx slterm.terminfo`.
-   Alternatively, the termcap database "linux" seems to be mostly compatible.
+   Alternatively, the termcap database "linux" is mostly compatible.
    Set with `export TERM=linux`
 
    The terminfo database of slterm is also displayed, when slterm was compiled with
@@ -204,15 +207,21 @@ CURSES
    a remote shell. ( type `tic -sx -`, hit `Ctrl+Shift+Win+Alt+I`, and `Ctrl+D` )
    
 
-   Tic is the terminfo compiler, available from the curses distributions.
+   Tic is the terminfo compiler, available from the curses distributions,
+   the netbsd tic implementation is supplied within tools/tic.
    There is a statically linked binary for linux, 64bit of tic at
    github.com/michael105/static-bin 
-   (125kB, sha3sum: 510f25bdb35c437c0bc28690a6d292f128113144fee93cf37b01381c)
    Sources of tic and netbsd curses: github.com/oasislinux/netbsd-curses/
 
 
 OPTIONS
 =======
+
+-h show short option usage
+
+-H Display this manpage as text
+
+-L show license
 
 -a
    disable alternate screens in terminal
@@ -222,6 +231,9 @@ OPTIONS
 
 -f font
    defines the font to use when slterm is run.
+   example: slterm -f 'Liberation Mono:Bold:pixelsize=13:antialias=true:autohint=true'
+   the parameters are described in the fontconfig documentation, 
+   an overview is supplied in doc/fontconfig.txt
 
 -g geometry
    defines the X11 geometry string. The form is
@@ -274,7 +286,7 @@ OPTIONS
 
 -x
    enable reading of the XResources database for the configuration
-   slterm must have been compiled with the XRESOURCES flag in config.h.in set to 1
+   slterm must had been compiled with the XRESOURCES flag in config.make set to 1
    
 -X
    lock all memory pages into memory, prevent swapping.

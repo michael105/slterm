@@ -79,16 +79,22 @@ endif
 
 ifeq "$(strip $(SHOWCONFIGINFO))" "1"
 ifndef RECURSE
-$(info Unconfigured - trying default config)
-$(info If this doesn't work, please edit config.h for the configuration.)
-$(info After that run as usually)
-$(info 'make')
-$(info 'sudo make install')
-$(info The installation goes into /usr/local by default)
-$(info and might be neccessary for the installation of the terminfo file;)
-$(info or install only the terminfo file.)
-$(info 'tic -sx slterm.terminfo')
-$(info )
+
+define UNCINFO
+
+Unconfigured - trying default config
+If this doesn't work, please edit config.h for the configuration.
+After that run as usually
+'make'
+'sudo make install'
+The installation goes into /usr/local by default
+and might be neccessary for the installation of the terminfo file;
+or install only the terminfo file.
+'tic -sx src/slterm.terminfo'
+
+endef
+
+$(info $(UNCINFO))
 endif
 endif
 

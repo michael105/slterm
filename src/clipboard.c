@@ -13,7 +13,7 @@ XSelection xsel;
 
 #ifdef UTF8_CLIPBOARD
 
-// utf8 conversion (again, simplified)
+// utf8 conversion ( again, simplified, misc147 )
 // converts from the current charmap to utf8
 uint to_utf8( char* obuf, const char* ibuf ){
 	char *ob = obuf;
