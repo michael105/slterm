@@ -1,5 +1,5 @@
 
-
+// convert runes from current charmap to unicode
 static inline uint charmap_convert(uint rune,uint attribute){
 	// 1252 / dec-mcs / ansi
 	//if ( rune > 0x7f && (rune < 0xA0) )
@@ -16,8 +16,6 @@ static inline uint charmap_convert(uint rune,uint attribute){
 	//	return( rune+(0x1D44e - 0x40) );
 	//}
 
-
-
 	return(rune);
 }
 
@@ -31,6 +29,17 @@ void create_unicode_table(){
 			uni_to_cp[codepage[selected_codepage][a]]= a+128;
 }
 
+char unicode_to_charmap( uint uc ){
+	if ( uc < UNITABLE ){
+		if ( uni_to_cp[uc] )
+			return( uni_to_cp[uc] );
+	} else {
+		// search our charmap table
+		// currently not needed, all unicode points are below UNITABLE (=0x2600)
+	}
+
+	return(0);
+}
 
 // callback, called by keystroke
 void set_charmap(const Arg *a){

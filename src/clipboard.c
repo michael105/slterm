@@ -5,6 +5,91 @@
 
 XSelection xsel;
 
+// utf8 conversion (again, simplified)
+// converts from the current charmap to utf8
+uint to_utf8( char* obuf, const char* ibuf ){
+	char *ob = obuf;
+	while ( *ibuf ){
+		//printf("c: %d\n",(uint) (*ibuf));
+		if ( *ibuf > 0 ){
+			*obuf = *ibuf;
+			obuf++;
+		} else {
+			uint uc = charmap_convert( (uchar)*ibuf, 0 );
+			//printf("%d\n",uc);
+			int p = 2;
+
+			//if ( !valid_uc_utf8(uc) )
+			//	goto ERR_UTF8;
+			// invalid values (rfc3629
+			// spare that. We do only have our chartable.
+
+			char initb=(char)0xc0;
+			if ( uc >= 65536 ){
+				obuf[3] = (uc & 0x3f) | 0x80;
+				initb >>= (char)1;
+				uc >>= 6;
+				p++;
+			}
+			if ( uc >= 2048 ){
+				obuf[2] = (uc & 0x3f) | 0x80;
+				initb >>= (char)1;
+				uc >>= 6;
+				p++;
+			}
+			obuf[1] = (uc & 0x3f) | 0x80;
+			obuf[0] = (uc>>6) | initb;
+			obuf += p;
+		}
+		ibuf++;
+	}
+	*obuf = 0;
+	return( obuf-ob );
+}
+
+// converts from utf8 to the current charmap, unsupported
+// chars are left as utf8
+uint from_utf8( char* obuf, const char* buf, uint len ){
+	char *ob = obuf;
+	int a = 0;
+	while ( a<len ){
+		int tmp = a;
+		// convert utf8
+		if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
+			uint uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
+			if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
+				a++;
+			} else if ( (a+2<len) && ( (buf[a+2] & 0xc0) == 0x80 ) ){ 
+				uc = ( uc << 6 ) | (buf[a+2] & 0x3f);
+				if ( (buf[a] & 0xf0) == 0xe0 ){ // initial Byte 3Byte utf8
+					a+=2;
+				} else if ( (a+3<len) && ( (buf[a+3] & 0xc0) == 0x80 ) ){ 
+					if ( (buf[a] & 0xf8) == 0xf0 ){ // 4byte
+						uc = ((uc<<6) & 0x1FFFFF ) | ( buf[a+3] & 0x3f );
+						a+=3;
+					}
+				}
+			} 
+			// need to check, keep utf8, if char is not present
+			*obuf = unicode_to_charmap( uc );
+			if ( *obuf == 0 ){
+				while( tmp <= a ){
+					*obuf++ = buf[tmp];
+					tmp++;
+				}
+			} else {
+				obuf++;
+			}
+		} else {
+			*obuf++ = buf[a];
+		}
+		a++;
+	}
+	*obuf = 0;
+
+	return(obuf - ob);
+}
+
 void setsel(char *str, Time t) {
 	if (!str)
 		return;
@@ -23,7 +108,6 @@ void setsel(char *str, Time t) {
 void xsetsel(char *str) { setsel(str, CurrentTime); }
 
 
-
 void clipcopy(const Arg *dummy) {
 	Atom clipboard;
 
@@ -31,7 +115,13 @@ void clipcopy(const Arg *dummy) {
 	xsel.clipboard = NULL;
 
 	if (xsel.primary != NULL) {
+		//printf( "clipcopy: %s\n",xsel.primary);
+		//convert to utf8
 		xsel.clipboard = xstrdup(xsel.primary);
+	// convert to utf8 here? ( case of charmaps changes.. )
+		//xsel.clipboard = xmalloc( strlen( xsel.primary) * 4 + 4 );
+		//to_utf8( xsel.clipboard, xsel.primary );
+
 		clipboard = XInternAtom(xwin.dpy, "CLIPBOARD", 0);
 		XSetSelectionOwner(xwin.dpy, clipboard, xwin.win, CurrentTime);
 	}
@@ -95,10 +185,27 @@ void selrequest(XEvent *e) {
 			return;
 		}
 		if (seltext != NULL) {
+
+#ifdef UTF8_CLIPBOARD
+			int len = strlen(seltext);
+			{
+				char buf[len*4+4];
+				int blen = to_utf8( buf, seltext );
+			//	printf("seltext: %s\n",seltext);
+			//	printf("seltext utf8: %s\n",buf);
 			XChangeProperty(xsre->display, xsre->requestor, xsre->property,
-					xsre->target, 8, PropModeReplace, (uchar *)seltext,
-					strlen(seltext));
+					xsre->target, 8, PropModeReplace, 
+					 (uchar*)buf, blen );
+					//(uchar *)seltext, strlen(seltext));
 			xev.property = xsre->property;
+			}
+#else
+			XChangeProperty(xsre->display, xsre->requestor, xsre->property,
+					xsre->target, 8, PropModeReplace, 
+					(uchar *)seltext, strlen(seltext));
+			xev.property = xsre->property;
+#endif
+
 		}
 	}
 
@@ -177,7 +284,18 @@ void selnotify(XEvent *e) {
 
 		if (IS_SET(MODE_BRCKTPASTE) && ofs == 0)
 			ttywrite("\033[200~", 6, 0);
+
+#ifdef UTF8_CLIPBOARD
+		//printf("Paste: %s  \nsize: %d\n",data,last-data);
+		//convert from utf8 / different charmap here
+			{
+				char buf[last-data];
+				int len = from_utf8( buf, data, last-data );
+				ttywrite((char *)buf, len, 1);
+			}
+#else
 		ttywrite((char *)data, nitems * format / 8, 1);
+#endif
 		if (IS_SET(MODE_BRCKTPASTE) && rem == 0)
 			ttywrite("\033[201~", 6, 0);
 		XFree(data);

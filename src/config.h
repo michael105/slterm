@@ -890,6 +890,11 @@ int selected_codepage = 6;
 int selected_codepage = 2;
 #endif
 
+// convert the x clipboard to and from utf8, when yanking/pasting
+#ifndef UTF8 // wouldn't be useful
+#define UTF8_CLIPBOARD
+#endif
+
 
 #endif
 
