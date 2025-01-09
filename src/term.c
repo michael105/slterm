@@ -427,7 +427,7 @@ void tdectest(utfchar c) {
 
 
 void tresize(int col, int row) {
-	int i, j;
+	int i;
 	int minrow = MIN(row, term->row);
 	int mincol = MIN(col, term->col);
 	int *bp;
@@ -478,7 +478,7 @@ void tresize(int col, int row) {
 	term->dirty = xrealloc(term->dirty, row * sizeof(*term->dirty));
 	term->tabs = xrealloc(term->tabs, term->colalloc * sizeof(*term->tabs));
 
-	int oldline = 0;
+	/* int oldline = 0;
 	int newline = 0;
 	int oldcol = 0;
 	int newcol = 0;
@@ -488,8 +488,9 @@ void tresize(int col, int row) {
 	if ( term->circledhist  ){
 		oldline = (term->histi+1 > HISTSIZE ) ? 0 : (term->histi+1);
 	}
-	term->cursor.attr.u = ' '; 
 	dbg2(AC_YELLOW "oldline: %d  term->histi: %d  term->col: %d col: %d" AC_NORM,oldline,term->histi, term->col, col);
+	*/
+	term->cursor.attr.u = ' '; 
 #if 0
 
 	if ( oldline != term->histi ){

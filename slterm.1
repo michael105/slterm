@@ -38,8 +38,8 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .sp
 \fBslterm\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
 [\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
-[\fB\-l\fP \fIline\fP] [\fB\-w\fP \fIwindowid\fP] [[\fB\-e\fP] \fIcommand\fP] [\fB\-X\fP]
-[\fIarguments\fP\&...]]
+[\fB\-l\fP \fIline\fP] [\fB\-w\fP \fIwindowid\fP] [\fB\-X\fP]
+[[\fB\-e\fP] \fIcommand\fP] [\fIarguments\fP\&...]]
 .sp
 \fBslterm\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
 [\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
@@ -48,10 +48,13 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .sp
 \fBslterm\fP is a virtual terminal emulator for X
 .sp
-It is a slimmed down descendant of st (suckless.org)
-with several additions and patches.
+slterm is highly optimized for fast text output and slim memory usage,
+while having several addons like switchable codepages or advanced
+history browsing.
 .sp
-utf\-8 and rgb support are stripped for better performance and less memory usage.
+In favor of compatibility with terminal programs and performance utf8
+support is stripped. Communication with the x clipboard is however
+automatically converted from and to utf8.
 .SH USAGE
 .sp
 The most important key combination might be
@@ -193,7 +196,7 @@ copy into the appropiate directory (/usr/local/share/man/man1)
 To be used with curses, the installation of the terminfo database file is needed.
 slterm.terminfo is supplied in the sources, within the folder src.
 It can be installed with \fItic \-sx slterm.terminfo\fP\&.
-Alternatively, the termcap database "linux" seems to be mostly compatible.
+Alternatively, the termcap database "linux" is mostly compatible.
 Set with \fIexport TERM=linux\fP
 .sp
 The terminfo database of slterm is also displayed, when slterm was compiled with
@@ -202,14 +205,20 @@ The key combination \fICtrl+Shift+Win+ALT+I\fP will dump the terminal info to
 the terminal as well, and can be used, to install the terminal info within
 a remote shell. ( type \fItic \-sx \-\fP, hit \fICtrl+Shift+Win+Alt+I\fP, and \fICtrl+D\fP )
 .sp
-Tic is the terminfo compiler, available from the curses distributions.
+Tic is the terminfo compiler, available from the curses distributions,
+the netbsd tic implementation is supplied within tools/tic.
 There is a statically linked binary for linux, 64bit of tic at
 github.com/michael105/static\-bin
-(125kB, sha3sum: 510f25bdb35c437c0bc28690a6d292f128113144fee93cf37b01381c)
 Sources of tic and netbsd curses: github.com/oasislinux/netbsd\-curses/
 .UNINDENT
 .UNINDENT
 .SH OPTIONS
+.sp
+\-h show short option usage
+.sp
+\-H Display this manpage as text
+.sp
+\-L show license
 .INDENT 0.0
 .TP
 .B \-a
@@ -220,6 +229,9 @@ defines the window class (default $TERM).
 .TP
 .BI \-f \ font
 defines the font to use when slterm is run.
+example: slterm \-f \(aqLiberation Mono:Bold:pixelsize=13:antialias=true:autohint=true\(aq
+the parameters are described in the fontconfig documentation,
+an overview is supplied in doc/fontconfig.txt
 .TP
 .BI \-g \ geometry
 defines the X11 geometry string. The form is
@@ -276,7 +288,7 @@ arguments are used as a command even without it.
 .TP
 .B \-x
 enable reading of the XResources database for the configuration
-slterm must have been compiled with the XRESOURCES flag in config.h.in set to 1
+slterm must had been compiled with the XRESOURCES flag in config.make set to 1
 .TP
 .B \-X
 lock all memory pages into memory, prevent swapping.

@@ -63,13 +63,13 @@ void redraw(void) {
 
 
 int twrite(const utfchar *buf, int buflen, int show_ctrl) {
-		int charsize;
 		Rune u;
 		int n;
 
 		dbg("twrite0 buflen: %d buf[0]: %c  show_ctrl: %d", buflen, buf[0], show_ctrl);
 
 #ifdef UTF8
+		int charsize = 0;
 		for (n = 0; n < buflen; n += charsize) { // misc dfq
 				if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
 						// process a complete utf8 char
@@ -124,7 +124,6 @@ void tputtab(int n) {
 
 void tputc(Rune u) {
 		char c[UTF_SIZ];
-		int control;
 		int width, len;
 		Glyph *gp;
 //	if ( u>=0x80 )
@@ -135,6 +134,7 @@ void tputc(Rune u) {
 		c[0] = u;
 		width = len = 1;
 #else 
+		int control;
 		if (!IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
 				c[0] = u;
 				width = len = 1;
@@ -299,8 +299,7 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 }
 
 void tclearregion(int x1, int y1, int x2, int y2) {
-		int x, y;
-		Glyph *gp;
+		int y;
 
 		if (x1 > x2) {
 				SWAPint(x1,x2);
@@ -325,6 +324,8 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 				memset32( &term->line[y][x1].intG, term->cursor.attr.intG, (x2-x1)+1 ); // memset64 or comp
 				dbg("ok\n");
 #else
+		Glyph *gp;
+		int x;
 				//printf("y: %d, x1: %d, x2: %d\n", y, x1, x2); // xxx
 				for (x = x1; x <= x2; x++) { //misc copy longs (64bit)or,better: memset. mmx/sse?
 						//if (selected(x, y)) { // room for optimization. only ask once, when no selection

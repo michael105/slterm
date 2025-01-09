@@ -47,7 +47,8 @@ typedef union {
 
 #else
 
-#define utfchar unsigned char
+#define utfchar char
+//#define utfchar unsigned char
 #define UTF_INVALID 0xff
 #define UTF_SIZ 1
 

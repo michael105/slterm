@@ -67,7 +67,6 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	FcResult result;
 	XGlyphInfo extents;
 	int wantattr, haveattr;
-	char *s;
 
 	if (pixelsize) {
 		FcPatternDel(pattern, FC_PIXEL_SIZE);
