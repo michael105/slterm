@@ -487,7 +487,7 @@ void strhandle(void) {
 				case 52:
 					if (narg > 2) {
 						dec = base64dec(strescseq.args[2]);
-						if (dec) {
+						if (dec) { // misc ?? this could make trouble, in theory
 							xsetsel(dec);
 							xclipcopy();
 						} else {

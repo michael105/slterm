@@ -1,4 +1,6 @@
 // selection.c
+//
+// selection mode, and mouse selection
 
 #include "xwindow.h"
 

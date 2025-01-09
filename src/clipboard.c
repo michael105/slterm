@@ -1,9 +1,17 @@
 // clipboard handling
 //
 
+// todo: Ctrl+Alt+y : copy output of last command to clipboard
+//  			-> in lessmode: copy output of the current retmark
+//       ... : copy current screen to clipboard
+//     make utf8 conversion switchable? 
+
 #include "clipboard.h"
 
 XSelection xsel;
+
+
+#ifdef UTF8_CLIPBOARD
 
 // utf8 conversion (again, simplified)
 // converts from the current charmap to utf8
@@ -11,7 +19,7 @@ uint to_utf8( char* obuf, const char* ibuf ){
 	char *ob = obuf;
 	while ( *ibuf ){
 		//printf("c: %d\n",(uint) (*ibuf));
-		if ( *ibuf > 0 ){
+		if ( *ibuf > 0 ){ // char < 128
 			*obuf = *ibuf;
 			obuf++;
 		} else {
@@ -22,7 +30,7 @@ uint to_utf8( char* obuf, const char* ibuf ){
 			//if ( !valid_uc_utf8(uc) )
 			//	goto ERR_UTF8;
 			// invalid values (rfc3629
-			// spare that. We do only have our chartable.
+			// sparing that. We do only have the unicode points of our chartable
 
 			char initb=(char)0xc0;
 			if ( uc >= 65536 ){
@@ -47,15 +55,15 @@ uint to_utf8( char* obuf, const char* ibuf ){
 	return( obuf-ob );
 }
 
-// converts from utf8 to the current charmap, unsupported
-// chars are left as utf8
+// converts from utf8 to the current charmap, 
+// unsupported chars are left as utf8
 uint from_utf8( char* obuf, const char* buf, uint len ){
 	char *ob = obuf;
 	int a = 0;
 	while ( a<len ){
-		int tmp = a;
-		// convert utf8
 		if ( (a+1<len) && ( (buf[a+1] & 0xc0) == 0x80 ) ){ 
+			// is utf8, convert 
+			int tmp = a;
 			uint uc = ( (buf[a] & 0x1f) << 6 ) | (buf[a+1] & 0x3f);
 			if ( (buf[a] & 0xe0) == 0xc0 ){ // initial Byte 2Byte utf8
 				a++;
@@ -69,7 +77,9 @@ uint from_utf8( char* obuf, const char* buf, uint len ){
 						a+=3;
 					}
 				}
-			} 
+			} else { // either end of buf, no utf8, or utf8 error
+				uc = 0;
+			}
 			// need to check, keep utf8, if char is not present
 			*obuf = unicode_to_charmap( uc );
 			if ( *obuf == 0 ){
@@ -89,6 +99,8 @@ uint from_utf8( char* obuf, const char* buf, uint len ){
 
 	return(obuf - ob);
 }
+#endif
+
 
 void setsel(char *str, Time t) {
 	if (!str)
@@ -296,6 +308,7 @@ void selnotify(XEvent *e) {
 #else
 		ttywrite((char *)data, nitems * format / 8, 1);
 #endif
+
 		if (IS_SET(MODE_BRCKTPASTE) && rem == 0)
 			ttywrite("\033[201~", 6, 0);
 		XFree(data);

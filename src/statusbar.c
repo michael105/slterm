@@ -210,7 +210,7 @@ void set_notifmode(int type, KeySym ksym) {
 	drawregion(0, bot, col, bot + 1);
 }
 
-
+// for the mode MODE_ENTERSTRING
 void statusbar_kpress( KeySym *ks, char *buf ){
 
 }
