@@ -108,6 +108,7 @@ and yanks it to the clipboard.
 all modes
 ---------
 
+::
    Ctrl+Shift + I: Inverse colors
    Ctrl+F1:    Show this help
    
