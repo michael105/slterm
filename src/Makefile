@@ -8,6 +8,14 @@
 include ../config.make
 
 
+# my local preferences.
+ifdef MISC
+SHOWCONFIGINFO := 0
+EMBEDRESOURCES := 0
+EMBEDFONT := 0
+endif
+
+
 SRC = base64.c mem.c slterm_shared.c slterm_src.c tty.c xwindow.c main.c\
 			selection.c term.c  system.c utf8.c xevent.c fonts.c\
 			statusbar.c xdraw.c termdraw.c arg.c scroll.c charmaps.c mouse.c \

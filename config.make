@@ -57,10 +57,4 @@ PKG_CONFIG := pkg-config
 CC := gcc
 
 
-# my local preferences.
-ifdef MISC
-SHOWCONFIGINFO := 0
-EMBEDRESOURCES := 0
-EMBEDFONT := 0
-endif
 
