@@ -233,7 +233,7 @@ void xloadfonts(double fontsize) {
   	 #include "embed/embed_font.h"
 
   	 int fd[4] = { 0,0,0,0 };
-  	  char *embfont[4] = { 
+  	  uchar *embfont[4] = { 
   	 	slterm_font_ttfz, 
   	 	slterm_font_bold_ttfz, 
   	 	slterm_font_italic_ttfz, 
@@ -256,42 +256,47 @@ void xloadfonts(double fontsize) {
 		 	bufsize = embfontlen[i] + 128;
 
 	 {
-	 unsigned char buf[bufsize];
-	 unsigned long canary = 0xa23df1223;
-	 // if this test is done, it should work..
-	 // prevent compiler "optimizations" by using assembly
-	 asm( "" :"+m"(canary) );
-  	 
-  	 for ( int i = 0; i<4 ; i++ ){
-  	 	if ( embfontlenz[i]){ 
+		struct { 
+			unsigned char buf[bufsize];
+		 	unsigned long canary;
+		} s; 
+		s.canary = 0xa23df1223;
+		
+		 // prevent compiler "optimizations" by using (portable) assembly,
+		 // demonstrating the power of void
+		 // a warning: volatile is useless. the keyword just doesn't work. (sometimes..)
+		 asm( "" :"+m"(s.canary) );
+
+		 for ( int i = 0; i<4 ; i++ ){
+			 if ( embfontlenz[i]){ 
 #ifdef DEBUG
-  	 		printf("Decompress Font: %d -> %d\n",embfontlenz[i],embfontlen[i]);
+				 printf("Decompress Font: %d -> %d\n",embfontlenz[i],embfontlen[i]);
 #endif
-  	 		strcpy( fname[i], "/tmp/slterm_XXXXXX.ttf" );
-  	 		fd[i] = mkstemps( fname[i], 4 );
-  	 		if ( fd[i] <= 0 ){
-  	 			fprintf(stderr,"Cannot create temporary file\n");
-  	 			fd[i] = 0;
-  	 			*fname[i] = 0;
-  	 		} else {
-				uint len = sinflate( buf, bufsize, embfont[i], embfontlenz[i] );
-				if ( len != embfontlen[i] ){
-					fprintf(stderr, "Error decompressing embedded font #%d\n",i);
-					close( fd[i] );
-					unlink(fname[i]);
-					*fname[i] = 0;
-				} else {
-	  	 			write( fd[i], buf, embfontlen[i] );
-  		 			fsync( fd[i] );
-				}
-  	 		}
-  	 	}
-  	 } 
-	 if ( canary != 0xa23df1223 ){
-		 die("buffer overflow");
+				 strcpy( fname[i], "/tmp/slterm_XXXXXX.ttf" );
+				 fd[i] = mkstemps( fname[i], 4 );
+				 if ( fd[i] <= 0 ){
+					 fprintf(stderr,"Cannot create temporary file\n");
+					 fd[i] = 0;
+					 *fname[i] = 0;
+				 } else {
+					 uint len = sinflate( s.buf, bufsize, embfont[i], embfontlenz[i] );
+					 if ( len != embfontlen[i] ){
+						 fprintf(stderr, "Error decompressing embedded font #%d\n",i);
+						 close( fd[i] );
+						 unlink(fname[i]);
+						 *fname[i] = 0;
+					 } else {
+						 write( fd[i], s.buf, embfontlen[i] );
+						 fsync( fd[i] );
+					 }
+				 }
+			 }
+		 } 
+		 if ( s.canary != 0xa23df1223 ){
+			 die("buffer overflow");
+		 }
 	 }
-	 }
-  	 
+
 #endif
 
 	// load regular font
