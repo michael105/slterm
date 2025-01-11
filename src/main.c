@@ -96,6 +96,19 @@ void usage(void) {
 }
 
 
+void missingfontname( const char* option ){
+	fprintf(stderr, "Missing font name for option %s\n"
+			"Usage: slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname] [other options]\n",
+			option );
+	fprintf(stderr, "\nThe fontname format is specified in the fontconfig documentation,\n"
+			"http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
+			"A list of attributes is in doc/fontconfig.txt.\n"
+			"Supply 0 to disable bold, italic or bolditalic fonts,\n"
+			"using colors only for the text rendering of the different attributes.\n"
+			"\n");
+	exit(1);
+}
+
 
 #ifdef shared
 // share the whole text segment, including main
@@ -109,6 +122,14 @@ int main(int argc, char *argv[]) {
 	twin.cursor = cursorshape;
 
 #define EARGF(_unneeded)  ({ if ( ! *++argv ){ fprintf(stderr, "missing option for %s\n", argv[-1] ); usage(); }; *argv; }) 
+
+
+#define ARGFONT(_type) ({ if ( ! *++argv ) missingfontname( argv[-1] ); \
+		if ( **argv == '0' ){ _type##_font = 0; use##_type##font=0; } \
+		else { _type##_font = *argv; use##_type##font=1; } \
+		*argv; })
+
+	int useregularfont; // dummy
 
 	while ( *++argv && argv[0][0] == '-'  ){
 		for ( char *opt = *argv+1; *opt; opt++ ){
@@ -146,7 +167,16 @@ int main(int argc, char *argv[]) {
 					*argv++;
 					goto run;
 				case 'f':
-					opt_font = EARGF(usage());
+					switch ( *++opt ){
+						case 'R':
+						case 'b': ARGFONT(bold); break;
+						case 'i': ARGFONT(italic); break;
+						case 'I': ARGFONT(bolditalic); break;
+
+						case 'r':
+						default:
+						opt_font = ARGFONT(regular);
+					}
 					break;
 				case 'g':
 					xwin.gm = XParseGeometry(EARGF(usage()), &xwin.l, &xwin.t, &cols, &rows);
