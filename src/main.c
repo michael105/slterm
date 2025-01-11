@@ -80,12 +80,12 @@ void printhelp(){
 
 void fontusage(){
 	fprintf(stderr, 
-			"slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname] [other options]\n"
-			"\nThe fontname format is specified in the fontconfig documentation,\n"
-			"http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
-			"A list of attributes is in doc/fontconfig.txt.\n"
-			"Supply 0 to disable bold, italic or bolditalic fonts,\n"
-			"using colors only for the text rendering of the different attributes.\n"
+			" slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname] [other options]\n"
+			"\n   The fontname format is specified in the fontconfig documentation,\n"
+			"   http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
+			"   A list of attributes is in doc/fontconfig.txt\n"
+			"   Supply 0 to disable bold, italic or bolditalic fonts,\n"
+			"   using colors only for the text rendering of the different fonts.\n"
 			"\n");
 }
 
@@ -231,6 +231,8 @@ int main(int argc, char *argv[]) {
 							"UTF8: "__UTF8__"\n"
 							__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
 					exit(0);
+				case 255: // silence unused var warning
+					printf( "%d",useregularfont );
 				default:
 					usage();
 			}
