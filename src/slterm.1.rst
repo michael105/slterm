@@ -67,24 +67,25 @@ last entered command with `Shift+backspace`.
 
 lessmode
 --------
+::
 
-In lessmode it is possible to browse the scrollback buffer via 
-the standard less like keybindings.
-
-`Ctrl+Shift Up/Down/PgUp/PdDown` enter lessmode 
-`Shift+Backspace` enters lessmode and browses back to the last line, 
-a command has been entered.
-
-In lessmode, it is possible to browse between the marks of commands,
-comfirmed with `Enter` in the shell via `Backspace`/`Tab left` and `Tab`.
-`1` to `9` scroll back to the according numbered retmark.
-
-
-`Shift+Enter` in Normal mode enters lessmode, if the output
-of a command is more than a screen.
-
-`q` leaves lessmode and switches to normalmode again.
-
+ In lessmode it is possible to browse the scrollback buffer via 
+ the standard less like keybindings.
+ 
+ `Ctrl+Shift Up/Down/PgUp/PdDown` enter lessmode 
+ `Shift+Backspace` enters lessmode and browses back to the last line, 
+ a command has been entered.
+ 
+ In lessmode, it is possible to browse between the marks of commands,
+ comfirmed with `Enter` in the shell via `Backspace`/`Tab left` and `Tab`.
+ `1` to `9` scroll back to the according numbered retmark.
+ 
+ 
+ `Shift+Enter` in Normal mode enters lessmode, if the output
+ of a command is more than a screen.
+ 
+ `q` leaves lessmode and switches to normalmode again.
+ 
 
 
 selectionmode
