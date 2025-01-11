@@ -54,4 +54,25 @@ int _handle_controlchars( Rune u );
 #endif
 
 
+static void tdefutf8(utfchar);
+static void tdeftran(utfchar);
+static void tsetmode(int, int, int *, int);
+
+static void tstrsequence(uchar);
+static void tcontrolcode(uchar);
+
+
+static void csidump(void);
+static void csihandle(void);
+static void csiparse(void);
+static void csireset(void);
+static int eschandle(uchar);
+
+static void strdump(void);
+static void strparse(void);
+static void strreset(void);
+
+
+
+
 

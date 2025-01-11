@@ -28,28 +28,14 @@
 	a = (void*)((POINTER)a ^ (POINTER)b);}
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
-
-static void csidump(void);
-static void csihandle(void);
-static void csiparse(void);
-static void csireset(void);
-static int eschandle(uchar);
-static void strdump(void);
-static void strparse(void);
-static void strreset(void);
-
 static void tcursor(int);
 static void tmoveto(int, int);
 static void tmoveato(int, int);
 static void treset(void);
 static void tswapscreen(void);
-static void tsetmode(int, int, int *, int);
-static void tcontrolcode(uchar);
+
 static void tdectest(utfchar);
-static void tdefutf8(utfchar);
 static int32_t tdefcolor(int *, int *, int);
-static void tdeftran(utfchar);
-static void tstrsequence(uchar);
 
 
 void tty_send_unicode(const Arg *arg){ 
@@ -261,158 +247,6 @@ void tmoveto(int x, int y) {
 	term->cursor.x = LIMIT(x, 0, term->col - 1);
 	term->cursor.y = LIMIT(y, miny, maxy);
 }
-
-void tsetmode(int priv, int set, int *args, int narg) {
-	int alt, *lim;
-
-	for (lim = args + narg; args < lim; ++args) {
-		if (priv) {
-			switch (*args) {
-				case 1: /* DECCKM -- Cursor key */
-					xsetmode(set, MODE_APPCURSOR);
-					break;
-				case 5: /* DECSCNM -- Reverse video */
-					xsetmode(set, MODE_REVERSE);
-					break;
-				case 6: /* DECOM -- Origin */
-					MODBIT(term->cursor.state, set, CURSOR_ORIGIN);
-					tmoveato(0, 0);
-					break;
-				case 7: /* DECAWM -- Auto wrap */
-					MODBIT(term->mode, set, MODE_WRAP);
-					break;
-				case 0:  /* Error (IGNORED) */
-				case 2:  /* DECANM -- ANSI/VT52 (IGNORED) */
-				case 3:  /* DECCOLM -- Column  (IGNORED) */
-				case 4:  /* DECSCLM -- Scroll (IGNORED) */
-				case 8:  /* DECARM -- Auto repeat (IGNORED) */
-				case 18: /* DECPFF -- Printer feed (IGNORED) */
-				case 19: /* DECPEX -- Printer extent (IGNORED) */
-				case 42: /* DECNRCM -- National characters (IGNORED) */
-				case 12: /* att610 -- Start blinking cursor (IGNORED) */
-					break;
-				case 25: /* DECTCEM -- Text Cursor Enable Mode */
-					xsetmode(!set, MODE_HIDE);
-					break;
-				case 9: /* X10 mouse compatibility mode */
-					xsetpointermotion(0);
-					xsetmode(0, MODE_MOUSE);
-					xsetmode(set, MODE_MOUSEX10);
-					break;
-				case 1000: /* 1000: report button press */
-					xsetpointermotion(0);
-					xsetmode(0, MODE_MOUSE);
-					xsetmode(set, MODE_MOUSEBTN);
-					break;
-				case 1002: /* 1002: report motion on button press */
-					xsetpointermotion(0);
-					xsetmode(0, MODE_MOUSE);
-					xsetmode(set, MODE_MOUSEMOTION);
-					break;
-				case 1003: /* 1003: enable all mouse motions */
-					xsetpointermotion(set);
-					xsetmode(0, MODE_MOUSE);
-					xsetmode(set, MODE_MOUSEMANY);
-					break;
-				case 1004: /* 1004: send focus events to tty */
-					xsetmode(set, MODE_FOCUS);
-					break;
-				case 1006: /* 1006: extended reporting mode */
-					xsetmode(set, MODE_MOUSESGR);
-					break;
-				case 1034:
-					xsetmode(set, MODE_8BIT);
-					break;
-				case 1049: /* swap screen & set/restore cursor as xterm */
-					if (!allowaltscreen) {
-						break;
-					}
-					tcursor((set) ? CURSOR_SAVE : CURSOR_LOAD);
-					/* FALLTHROUGH */
-				case 47: /* swap screen */
-				case 1047:
-					if (!allowaltscreen) {
-						break;
-					}
-					alt = IS_SET(MODE_ALTSCREEN);
-					if (alt) {
-						tclearregion(0, 0, term->col - 1, term->row - 1);
-					}
-					if (set ^ alt) { /* set is always 1 or 0 */
-						tswapscreen();
-					}
-					if (*args != 1049) {
-						break;
-					}
-					/* FALLTHROUGH */
-				case 1048:
-					tcursor((set) ? CURSOR_SAVE : CURSOR_LOAD);
-					break;
-				case 2004: /* 2004: bracketed paste mode */
-					xsetmode(set, MODE_BRCKTPASTE);
-					break;
-					/* Not implemented mouse modes. See comments there. */
-				case 1001: /* mouse highlight mode; can hang the
-								  terminal by design when implemented. */
-				case 1005: /* UTF-8 mouse mode; will confuse
-								  applications not supporting UTF-8
-								  and luit. */
-				case 1015: /* urxvt mangled mouse mode; incompatible
-								  and can be mistaken for other control
-								  codes. */
-					break;
-				default:
-					fprintf(stderr, "erresc: unknown private set/reset mode %d\n", *args);
-					break;
-			}
-		} else {
-			switch (*args) {
-				case 0: /* Error (IGNORED) */
-					break;
-				case 2:
-					xsetmode(set, MODE_KBDLOCK);
-					break;
-				case 4: /* IRM -- Insertion-replacement */
-					MODBIT(term->mode, set, MODE_INSERT);
-					break;
-				case 12: /* SRM -- Send/Receive */
-					MODBIT(term->mode, !set, MODE_ECHO);
-					break;
-				case 20: /* LNM -- Linefeed/new line */
-					MODBIT(term->mode, set, MODE_CRLF);
-					break;
-				default:
-					fprintf(stderr, "erresc: unknown set/reset mode %d\n", *args);
-					break;
-			}
-		}
-	}
-}
-
-
-void tdefutf8(utfchar ascii) {
-#ifdef UTF8
-	if (ascii == 'G')
-		term->mode |= MODE_UTF8;
-	else
-		if (ascii == '@') {
-			term->mode &= ~MODE_UTF8;
-		}
-#endif
-}
-
-void tdeftran(utfchar ascii) {
-	static char cs[] = "0B";
-	static int vcs[] = {CS_GRAPHIC0, CS_USA};
-	char *p;
-
-	if ((p = strchr(cs, ascii)) == NULL) {
-		fprintf(stderr, "esc unhandled charset: ESC ( %c\n", ascii);
-	} else {
-		term->trantbl[term->icharset] = vcs[p - cs];
-	}
-}
-
 void tdectest(utfchar c) {
 	int x, y;
 
