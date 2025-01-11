@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
 		else { _type##_font = *argv; use##_type##font=1; } \
 		*argv; })
 
-	int useregularfont; // dummy
+	int useregularfont=1; // dummy
 
 	while ( *++argv && argv[0][0] == '-'  ){
 		for ( char *opt = *argv+1; *opt; opt++ ){
@@ -231,7 +231,7 @@ int main(int argc, char *argv[]) {
 							"UTF8: "__UTF8__"\n"
 							__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
 					exit(0);
-				case 255: // silence unused var warning
+				case 127: // silence unused var warning
 					printf( "%d",useregularfont );
 				default:
 					usage();
