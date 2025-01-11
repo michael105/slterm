@@ -259,7 +259,7 @@ void dummy( const Arg *a){
 
 void dump_terminfo( const Arg *a){
 #ifdef INCLUDETERMINFO
-				ttywrite(slterm_terminfo, strlen(slterm_terminfo),1 );
+				ttywrite((utfchar*)slterm_terminfo, strlen(slterm_terminfo),1 );
 #endif
 }
 
