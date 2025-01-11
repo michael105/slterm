@@ -10,7 +10,7 @@
 
 #include "includes.h"
 #include "globals.h"
-#include "arg.h"
+//#include "arg.h"
 #include "term.h"
 #include "xwindow.h"
 #include "xcursor.h"
@@ -44,7 +44,7 @@
 
 #include "globals.c"
 #include "statusbar.c"
-#include "arg.c"
+//#include "arg.c"
 #include "term.c"
 #include "controlchars.c"
 #include "charmaps.c"

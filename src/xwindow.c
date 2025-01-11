@@ -2,7 +2,6 @@
 #include "includes.h"
 
 
-#include "arg.h"
 #include "term.h"
 #include "xwindow.h"
 #include "fonts.h"
