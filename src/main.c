@@ -71,15 +71,28 @@ void config_init(void) {
 #endif
 
 void printversion(){
-	printf( "slterm version " VERSION "\n" );
+	fprintf( stderr, "slterm version " VERSION "\n" );
 }
 
 void printhelp(){
 }
 
+
+void fontusage(){
+	fprintf(stderr, 
+			"slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname] [other options]\n"
+			"\nThe fontname format is specified in the fontconfig documentation,\n"
+			"http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
+			"A list of attributes is in doc/fontconfig.txt.\n"
+			"Supply 0 to disable bold, italic or bolditalic fonts,\n"
+			"using colors only for the text rendering of the different attributes.\n"
+			"\n");
+}
+
+
 void usage(void) {
 	printversion();
-	die(	"\nusage:\n\n"
+	fprintf(stderr,"\nusage:\n\n"
 			" slterm -H: show help\n"
 		  	"        -I: dump terminfo file\n"
 			"        -L display license\n\n"
@@ -91,21 +104,19 @@ void usage(void) {
 			" [-n name] [-o file]\n"
 			"[-x] [-v] [-V] [-X]\n"
 			"        [-T title] [-t title] [-w windowid] -l line"
-			" [stty_args ...]\n\n",
-			argv0, argv0);
+			" [stty_args ...]\n\n"
+			);
+	fontusage();
+	
+	fprintf(stderr," 20xx-2019 st, suckless.\n 2020-2025 forked as slterm by misc147, github.com/michael105, MIT license\n\n");
+
+	exit(1);
 }
 
-
 void missingfontname( const char* option ){
-	fprintf(stderr, "Missing font name for option %s\n"
-			"Usage: slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname] [other options]\n",
+	fprintf(stderr, "Missing font name for option %s\nUsage: ",
 			option );
-	fprintf(stderr, "\nThe fontname format is specified in the fontconfig documentation,\n"
-			"http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
-			"A list of attributes is in doc/fontconfig.txt.\n"
-			"Supply 0 to disable bold, italic or bolditalic fonts,\n"
-			"using colors only for the text rendering of the different attributes.\n"
-			"\n");
+	fontusage();
 	exit(1);
 }
 
@@ -120,6 +131,7 @@ int main(int argc, char *argv[]) {
 	xwin.l = xwin.t = 0;
 	xwin.isfixed = False;
 	twin.cursor = cursorshape;
+	argv0 = *argv;
 
 #define EARGF(_unneeded)  ({ if ( ! *++argv ){ fprintf(stderr, "missing option for %s\n", argv[-1] ); usage(); }; *argv; }) 
 
@@ -164,7 +176,7 @@ int main(int argc, char *argv[]) {
 				case 'e':
 					//if (argc > 0)
 					//	--argc, ++argv;
-					*argv++;
+					argv++;
 					goto run;
 				case 'f':
 					switch ( *++opt ){
