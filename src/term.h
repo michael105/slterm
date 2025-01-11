@@ -16,6 +16,21 @@
 #define ATTRCMP(a, b)                                                          \
   ((a).mode != (b).mode || (a).fg != (b).fg || (a).bg != (b).bg)
 
+
+// get pointer to a line.
+//
+// todo: rewrite the whole history buffer.
+// concept:  
+// 	drop t->line and t->hist
+// 	use t->buf instead.
+// 	pos from 0 to UINT_MAX.
+// 		-> only 2 pointers needed: current pos, and scrolled pos.
+// 		fetch and write buffer by limiting to &(HISTSIZE-1).
+// 		when scrolling, obviously limit to currentpos & (HISTSIZE-1).
+// 		funny enough, overflowing UINT_MAX won't be a problem.
+// 	use absolute values in TLINE(line) ( add pos + scroll to line, &(HISTSIZE-1) )
+// 	use negative - no, positive, since we need in theory scroll up to UINT_NAX lines - 
+// 	values for scroll to scroll. scrolling to 0 = pos.
 #define TLINE(y)                                                               \
   ((y) < term->scr                                                              \
        ? term->hist[(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
@@ -31,7 +46,7 @@
 #endif
 
 #if (HISTSIZEBITS>20)
-#error You most possibly do not want a history with a length > 1.000.000 ?
+#error You most possibly do not want a history with a length > 1.000.000 
 #error Either change HISTSIZEBITS accordingly, or edit the sources
 #endif
 
@@ -105,18 +120,6 @@ enum charset {
   CS_GER,
   CS_FIN
 };
-
-enum escape_state {
-  ESC_START = 1,
-  ESC_CSI = 2,
-  ESC_STR = 4, /* OSC, PM, APC */
-  ESC_ALTCHARSET = 8,
-  ESC_STR_END = 16, /* a final string was encountered */
-  ESC_TEST = 32,    /* Enter in test mode */
-  ESC_UTF8 = 64,
-  ESC_DCS = 128,
-};
-
 
 
 #ifdef UTF8

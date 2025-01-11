@@ -22,6 +22,19 @@
 #define STR_ARG_SIZ ESC_ARG_SIZ
 
 
+enum escape_state {
+  ESC_START = 1,
+  ESC_CSI = 2,
+  ESC_STR = 4, /* OSC, PM, APC */
+  ESC_ALTCHARSET = 8,
+  ESC_STR_END = 16, /* a final string was encountered */
+  ESC_TEST = 32,    /* Enter in test mode */
+  ESC_UTF8 = 64,
+  ESC_DCS = 128,
+};
+
+
+
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
 typedef struct {
