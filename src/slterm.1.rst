@@ -77,7 +77,8 @@ lessmode
  a command has been entered.
  
  In lessmode, it is possible to browse between the marks of commands,
- comfirmed with `Enter` in the shell via `Backspace`/`Tab left` and `Tab`.
+ comfirmed with `Enter` in the shell via `Backspace`/`Tab left` 
+ and `Tab`.
  `1` to `9` scroll back to the according numbered retmark.
  
  
@@ -92,12 +93,13 @@ selectionmode
 -------------
 ::
 
- In selection mode it is possible to select lines or areas (either by lines,
- or rectangular areas).
- enter with `Alt+S`, start selecting with `v`, `s` or `V` (rectangular selection) 
- and the cursor keys, 
+ In selection mode it is possible to select lines or areas 
+ (either by lines, or rectangular areas).
+ enter with `Alt+S`, start selecting with `v`, `s` or 
+ `V` (rectangular selection) and the cursor keys, 
  switch between rectangular selection and line selection with `t`,
  copy to the clipboard with `Enter`.
+
  `y` selects the current line, `y` with a active selection yanks the
  selection to the clipboard and exits selection mode,
  `yy` (sort of vim binding) selects the current line
@@ -127,7 +129,7 @@ all modes
  4 CP437  Old IBM codetable, borders and tables
  5 CP850  DOS Standard table
  6 CP4002 Custom table, mix of 1252 and 437, 
-           with German umlauts and box drawing chars
+          with German umlauts and box drawing chars
 
 
 TERMINAL

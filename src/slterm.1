@@ -78,35 +78,85 @@ Retmarks are atomatically stored, and can be browsed to later.
 Every time, a command is entered with return, a retmark is stored.
 Switch into lessmode, and browse to the location of the
 last entered command with \fIShift+backspace\fP\&.
-.SS lessmode
 .sp
+\fICtrl+Shift\fP + \fIUp\fP/\fIDown\fP/\fIPageUp\fP/\fIPageDown\fP switch to lessmode.
+.SS lessmode
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
 In lessmode it is possible to browse the scrollback buffer via
 the standard less like keybindings.
-.sp
-\fICtrl+Shift Up/Down/PgUp/PdDown\fP enter lessmode
-\fIShift+Backspace\fP enters lessmode and browses back to the last line,
+
+\(gaCtrl+Shift Up/Down/PgUp/PdDown\(ga enter lessmode
+\(gaShift+Backspace\(ga enters lessmode and browses back to the last line,
 a command has been entered.
-.sp
+
 In lessmode, it is possible to browse between the marks of commands,
-comfirmed with \fIEnter\fP in the shell via \fIBackspace\fP or \fITab left\fP and \fITab\fP\&.
-\fI1\fP to \fI9\fP scroll back to the according numbered retmark.
-.sp
-\fIShift+Enter\fP in Normal mode enters lessmode, if the output
+comfirmed with \(gaEnter\(ga in the shell via \(gaBackspace\(ga/\(gaTab left\(ga
+and \(gaTab\(ga.
+\(ga1\(ga to \(ga9\(ga scroll back to the according numbered retmark.
+
+
+\(gaShift+Enter\(ga in Normal mode enters lessmode, if the output
 of a command is more than a screen.
+
+\(gaq\(ga leaves lessmode and switches to normalmode again.
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .SS selectionmode
+.INDENT 0.0
+.INDENT 3.5
 .sp
-In selection mode it is possible to select lines or areas (either by lines,
-or rectangular areas).
-enter with \fIAlt+S\fP, start selecting with \fIv\fP, \fIs\fP or \fIV\fP (rectangular selection)
-and the cursor keys,
-switch between rectangular selection and line selection with \fIt\fP,
-copy to the clipboard with \fIEnter\fP\&.
-\fIy\fP selects the current line, \fIy\fP with a active selection yanks the
+.nf
+.ft C
+In selection mode it is possible to select lines or areas
+(either by lines, or rectangular areas).
+enter with \(gaAlt+S\(ga, start selecting with \(gav\(ga, \(gas\(ga or
+\(gaV\(ga (rectangular selection) and the cursor keys,
+switch between rectangular selection and line selection with \(gat\(ga,
+copy to the clipboard with \(gaEnter\(ga.
+
+\(gay\(ga selects the current line, \(gay\(ga with a active selection yanks the
 selection to the clipboard and exits selection mode,
-\fIyy\fP (sort of vim binding) selects the current line
+\(gayy\(ga (sort of vim binding) selects the current line
 and yanks it to the clipboard.
-\fIp\fP copies the selection and pastes it into the terminal.
-\fIq\fP or \fIESC\fP exit selection mode.
+\(gap\(ga copies the selection and pastes it into the terminal.
+\(gaq\(ga or \(gaESC\(ga exit selection mode.
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SS all modes
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+Ctrl+Shift + I: Inverse colors
+Ctrl+F1:    Show this help
+
+Set font width/size:
+Alt+Shift + Insert/Delete:   Enlarge/Shrink width
+Alt+Shift + PageUp/PageDown: Zoom in / out
+Alt+Shift + Home:            Reset font display
+
+Select Codepage: \(gaCtrl+Win\(ga +
+0 CP1250
+1 CP1251
+2 CP1252 this is mostly ANSI, and the 1. page of Unicode
+3 CP1253
+4 CP437  Old IBM codetable, borders and tables
+5 CP850  DOS Standard table
+6 CP4002 Custom table, mix of 1252 and 437,
+         with German umlauts and box drawing chars
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .SH TERMINAL
 .sp
 slterm is mostly VT100 compatible, please look in question for the according manuals.
@@ -118,8 +168,10 @@ slterm starts either the env variable SHELL, /bin/sh, or a command supplied with
 Several Variables are exported into the environment.
 .SS Colors
 .sp
-The basic 8 colors, accesible in the shell as:
+The basic 8 colors, accessable in the shell as:
 $BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
+.sp
+> echo $RED red text
 .sp
 The can be combined with prefixes: L(ight), D(ark), LD(light\-dark), BD(background).
 L: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE.
@@ -137,13 +189,13 @@ The default foreground and background color and attributes can be reset with $NO
 255 Colors can be set with:
 .INDENT 0.0
 .IP \(bu 2
-foreground: "e[38;5;XXm", XX one of 0 \- 255.
+foreground: echo \-e "e[38;5;XXm", XX one of 0 \- 255.
 .IP \(bu 2
-background: "e[48;5;XXm", XX one of 0 \- 255.
+background: echo \-e "e[48;5;XXm", XX one of 0 \- 255.
 .UNINDENT
 .SS Cursor
 .sp
-There are several cursor shapes, set with: "e[X q".
+There are several cursor shapes, set with: echo \-e "e[X q".
 X one of 0..12:
 .INDENT 0.0
 .IP \(bu 2
@@ -185,11 +237,16 @@ If you downloaded the statically linked binary,
 copy the binary to a suitable place (/usr/local/bin)
 .IP 2. 3
 install the terminal info file: (for curses) \fIslterm \-I | tic \-sx \-\fP
+( the netbsd version of tic, the terminal info compiler,  is supplied as source in
+tools/tic, and should be compatible with other curses versions )
 .IP 3. 3
 If needed, download this man page in its man format (slterm.1)
 from github (github.com/michael105/slterm),
 copy into the appropiate directory (/usr/local/share/man/man1)
 .UNINDENT
+.sp
+Interestingly, the statically linked binary seems to use even less memory
+than the shared binary.
 .SS CURSES
 .INDENT 0.0
 .INDENT 3.5
