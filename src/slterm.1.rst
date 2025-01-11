@@ -62,6 +62,8 @@ Every time, a command is entered with return, a retmark is stored.
 Switch into lessmode, and browse to the location of the
 last entered command with `Shift+backspace`.
 
+`Ctrl+Shift` + `Up`/`Down`/`PageUp`/`PageDown` switch to lessmode.
+
 
 lessmode
 --------
@@ -74,12 +76,15 @@ the standard less like keybindings.
 a command has been entered.
 
 In lessmode, it is possible to browse between the marks of commands,
-comfirmed with `Enter` in the shell via `Backspace` or `Tab left` and `Tab`.
+comfirmed with `Enter` in the shell via `Backspace`/`Tab left` and `Tab`.
 `1` to `9` scroll back to the according numbered retmark.
 
 
 `Shift+Enter` in Normal mode enters lessmode, if the output
 of a command is more than a screen.
+
+`q` leaves lessmode and switches to normalmode again.
+
 
 
 selectionmode
@@ -100,6 +105,30 @@ and yanks it to the clipboard.
 
 
 
+all modes
+---------
+
+Ctrl+Shift + I: Inverse colors
+(Anymod)+F1:    Show this help
+
+
+Set font width/size:
+Alt+Shift + Insert/Delete:   Enlarge/Shrink width
+Alt+Shift + PageUp/PageDown: Zoom in / out
+Alt+Shift + Home:            Reset font display
+
+
+Select Codepage: `Ctrl+Win` + 
+0 CP1250
+1 CP1251
+2 CP1252 (this is mostly ANSI, and the 1. page of Unicode)
+3 CP1253
+4 CP437  (Old IBM codetable, borders and tables)
+5 CP850  (DOS Standard table)
+6 CP4002 (Custom table, mix of 1252 and 437)
+
+
+
 TERMINAL
 ========
 
@@ -116,8 +145,11 @@ Several Variables are exported into the environment.
 Colors
 ------
 
-The basic 8 colors, accesible in the shell as:
+The basic 8 colors, accessable in the shell as:
 $BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
+
+> echo $RED red text
+
 
 The can be combined with prefixes: L(ight), D(ark), LD(light-dark), BD(background).
 L: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE.
@@ -136,14 +168,14 @@ The default foreground and background color and attributes can be reset with $NO
 
 255 Colors can be set with: 
 
-- foreground: "\e[38;5;XXm", XX one of 0 - 255.
-- background: "\e[48;5;XXm", XX one of 0 - 255.
+- foreground: echo -e "\e[38;5;XXm", XX one of 0 - 255.
+- background: echo -e "\e[48;5;XXm", XX one of 0 - 255.
 
 
 Cursor
 ------
 
-There are several cursor shapes, set with: "\e[X q".
+There are several cursor shapes, set with: echo -e "\e[X q".
 X one of 0..12:
 
 * 1,2: block cursor
