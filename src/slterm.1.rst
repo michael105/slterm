@@ -89,19 +89,20 @@ of a command is more than a screen.
 
 selectionmode
 -------------
+::
 
-In selection mode it is possible to select lines or areas (either by lines,
-or rectangular areas).
-enter with `Alt+S`, start selecting with `v`, `s` or `V` (rectangular selection) 
-and the cursor keys, 
-switch between rectangular selection and line selection with `t`,
-copy to the clipboard with `Enter`.
-`y` selects the current line, `y` with a active selection yanks the
-selection to the clipboard and exits selection mode,
-`yy` (sort of vim binding) selects the current line
-and yanks it to the clipboard.
-`p` copies the selection and pastes it into the terminal.
-`q` or `ESC` exit selection mode.
+ In selection mode it is possible to select lines or areas (either by lines,
+ or rectangular areas).
+ enter with `Alt+S`, start selecting with `v`, `s` or `V` (rectangular selection) 
+ and the cursor keys, 
+ switch between rectangular selection and line selection with `t`,
+ copy to the clipboard with `Enter`.
+ `y` selects the current line, `y` with a active selection yanks the
+ selection to the clipboard and exits selection mode,
+ `yy` (sort of vim binding) selects the current line
+ and yanks it to the clipboard.
+ `p` copies the selection and pastes it into the terminal.
+ `q` or `ESC` exit selection mode.
 
 
 
@@ -109,22 +110,23 @@ all modes
 ---------
 ::
 
-   Ctrl+Shift + I: Inverse colors
-   Ctrl+F1:    Show this help
-   
-   Set font width/size:
-   Alt+Shift + Insert/Delete:   Enlarge/Shrink width
-   Alt+Shift + PageUp/PageDown: Zoom in / out
-   Alt+Shift + Home:            Reset font display
-   
-   Select Codepage: `Ctrl+Win` + 
-   0 CP1250
-   1 CP1251
-   2 CP1252 (this is mostly ANSI, and the 1. page of Unicode)
-   3 CP1253
-   4 CP437  (Old IBM codetable, borders and tables)
-   5 CP850  (DOS Standard table)
-   6 CP4002 (Custom table, mix of 1252 and 437)
+ Ctrl+Shift + I: Inverse colors
+ Ctrl+F1:    Show this help
+ 
+ Set font width/size:
+ Alt+Shift + Insert/Delete:   Enlarge/Shrink width
+ Alt+Shift + PageUp/PageDown: Zoom in / out
+ Alt+Shift + Home:            Reset font display
+ 
+ Select Codepage: `Ctrl+Win` + 
+ 0 CP1250
+ 1 CP1251
+ 2 CP1252 this is mostly ANSI, and the 1. page of Unicode
+ 3 CP1253
+ 4 CP437  Old IBM codetable, borders and tables
+ 5 CP850  DOS Standard table
+ 6 CP4002 Custom table, mix of 1252 and 437, 
+           with German umlauts and box drawing chars
 
 
 TERMINAL
