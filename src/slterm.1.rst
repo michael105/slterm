@@ -108,15 +108,14 @@ and yanks it to the clipboard.
 all modes
 ---------
 
+```
 Ctrl+Shift + I: Inverse colors
-(Anymod)+F1:    Show this help
-
+Ctrl+F1:    Show this help
 
 Set font width/size:
 Alt+Shift + Insert/Delete:   Enlarge/Shrink width
 Alt+Shift + PageUp/PageDown: Zoom in / out
 Alt+Shift + Home:            Reset font display
-
 
 Select Codepage: `Ctrl+Win` + 
 0 CP1250
@@ -126,7 +125,7 @@ Select Codepage: `Ctrl+Win` +
 4 CP437  (Old IBM codetable, borders and tables)
 5 CP850  (DOS Standard table)
 6 CP4002 (Custom table, mix of 1252 and 437)
-
+```
 
 
 TERMINAL
@@ -216,11 +215,18 @@ to customize slterm. Type `make`, and `make install`.
 If you downloaded the statically linked binary,
 
 1. copy the binary to a suitable place (/usr/local/bin)
+
 2. install the terminal info file: (for curses) `slterm -I | tic -sx -` 
+   ( the netbsd version of tic, the terminal info compiler,  is supplied as source in 
+   tools/tic, and should be compatible with other curses versions )
+
 3. If needed, download this man page in its man format (slterm.1) 
    from github (github.com/michael105/slterm), 
    copy into the appropiate directory (/usr/local/share/man/man1)
 
+
+Interestingly, the statically linked binary seems to use even less memory 
+than the shared binary. 
 
 
 CURSES
