@@ -10,7 +10,7 @@
 
 #if EMBEDFONT == 1
 	 #define SINFL_IMPLEMENTATION
-  	 #include "../tools/sinfl.h"
+  	 #include "sinfl.h"
 #endif
  
 #if 0
