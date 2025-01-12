@@ -38,7 +38,6 @@ automatically converted from and to utf8.
 USAGE
 =====
 
-The most important key combination might be
 
 **Ctrl+F1** 
   Show a help screen with all shortcuts.
@@ -49,20 +48,21 @@ The usage of slterm differs to other terminal emulators by its three different m
 
 normalmode
 ----------
+::
 
-The codepage can be changed via hotkeys. (`Ctrl+Shift+0..9`).
-
-Paste from the clipbard with `Shift+Insert`.
-
-Set Bookmarks to the current line with `Ctrl+Shift+0..9`
-Scroll back to a bookmark with `Ctrl+0..9`
-
-Retmarks are atomatically stored, and can be browsed to later.
-Every time, a command is entered with return, a retmark is stored.
-Switch into lessmode, and browse to the location of the
-last entered command with `Shift+backspace`.
-
-`Ctrl+Shift` + `Up`/`Down`/`PageUp`/`PageDown` switch to lessmode.
+ The codepage can be changed via hotkeys. (`Ctrl+Shift+0..9`).
+ 
+ Paste from the clipbard with `Shift+Insert`.
+ 
+ Set Bookmarks to the current line with `Ctrl+Shift+0..9`
+ Scroll back to a bookmark with `Ctrl+0..9`
+ 
+ Retmarks are atomatically stored, and can be browsed to later.
+ Every time, a command is entered with return, a retmark is stored.
+ Switch into lessmode, and browse to the location of the
+ last entered command with `Shift+backspace`.
+ 
+ `Ctrl+Shift` + `Up`/`Down`/`PageUp`/`PageDown` switch to lessmode.
 
 
 lessmode
