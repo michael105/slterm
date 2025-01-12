@@ -3,6 +3,8 @@
 // need to check, in which files they are used.
 
 
+// pid of executed shell 
+pid_t shellpid;
 
 Term *term=0;
 Term *p_term=0;
@@ -16,8 +18,8 @@ int borderpx;
 int enterlessmode;
 
 
-XWindow xw;
-TermWindow win;
+XWindow xwin;
+TermWindow twin;
 
 
 

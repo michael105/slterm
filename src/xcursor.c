@@ -9,13 +9,13 @@ int _xsetcursor(int cursor, int attr) {
 	DEFAULT(cursor, 1);
 	if (!BETWEEN(cursor, 0, 12))
 		return 1;
-	win.cursor = cursor;
-	win.cursor_attr[0] = attr;
+	twin.cursor = cursor;
+	twin.cursor_attr[0] = attr;
 	return 0;
 }
 
 int xgetcursor(){
-	return(win.cursor);
+	return(twin.cursor);
 }
 
 
@@ -25,7 +25,7 @@ Color *getcursorcolor( Glyph g, int cx, int cy ){
 	if ( g.bg == defaultbg ){
 		col = &dc.col[defaultcs];
 	} else {
-		if ( !( col = getcachecolor( 2, &g, win.mode ) ) ){
+		if ( !( col = getcachecolor( 2, &g, twin.mode ) ) ){
 			col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
 
 			// invert bgcolor
@@ -34,8 +34,8 @@ Color *getcursorcolor( Glyph g, int cx, int cy ){
 #define ASB(c) csc.c = ~col->color.c
 			ASB(red);ASB(green);ASB(blue);
 #undef ASB
-			XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &csc, &drawcol);
-			col = cachecolor(2,&g,win.mode,&drawcol);
+			XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &csc, &drawcol);
+			col = cachecolor(2,&g,twin.mode,&drawcol);
 			//col = &drawcol;
 		}
 
@@ -51,7 +51,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	Color *col = 0;
 
 	// hide cursor in lessmode
-	if (inputmode&MODE_LESS && !(win.mode & MODE_KBDSELECT))
+	if (inputmode&MODE_LESS && !(twin.mode & MODE_KBDSELECT))
 		return;
 
 	//printf("xdrawcursor: %d %d, %d %d, %d\n",cx,cy,ox,oy, term->scr);
@@ -97,11 +97,11 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	/* draw text cursor */
 	if (IS_SET(MODE_FOCUSED)) {
 
-		switch (win.cursor) {
+		switch (twin.cursor) {
 			case 7: /* st extension: snowman (U+2603) */
 				// g.u = 0x2603;
-				if ( win.cursor_attr[0] )
-					g.u = win.cursor_attr[0];
+				if ( twin.cursor_attr[0] )
+					g.u = twin.cursor_attr[0];
 				else
 					g.u = 'X';
 				g.bg = 9;
@@ -119,7 +119,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			//if ( g.bg == defaultbg ){
 			//	g.bg = defaultcs;
 			//} else {
-				//if ( (win.cursor==2) || !( win.mode & MODE_BLINK )){
+				//if ( (twin.cursor==2) || !( twin.mode & MODE_BLINK )){
 					tmp = g.fg;
 					g.fg = g.bg;
 					g.bg = tmp;
@@ -140,8 +140,8 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 					// underline
 					drawcol = dc.col[defaultcs];
-					XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-							win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
+					XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + (cy + 1) * twin.ch - cursorthickness, twin.cw,
 							cursorthickness);
 
 				} else { // draw cursor as underline
@@ -150,16 +150,16 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 
 					col = getcursorcolor( g, cx, cy );
 
-					if ( win.cursor == 8 ){ // double underline
-						XftDrawRect(xw.draw, col, 
-							win.hborderpx + cx * win.cw,
-							win.vborderpx + (cy + 1) * win.ch - 1, win.cw, 1);
-						XftDrawRect(xw.draw, col, 
-							win.hborderpx + cx * win.cw,
-							win.vborderpx + (cy + 1) * win.ch - 3, win.cw, 1);
+					if ( twin.cursor == 8 ){ // double underline
+						XftDrawRect(xwin.draw, col, 
+							twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + (cy + 1) * twin.ch - 1, twin.cw, 1);
+						XftDrawRect(xwin.draw, col, 
+							twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + (cy + 1) * twin.ch - 3, twin.cw, 1);
 					} else { // underline
-						XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-							win.vborderpx + (cy + 1) * win.ch - cursorthickness, win.cw,
+						XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + (cy + 1) * twin.ch - cursorthickness, twin.cw,
 							cursorthickness);
 					}
 
@@ -170,27 +170,27 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			case 6: /* Steady bar */
 				col = getcursorcolor( g, cx, cy );
 				
-				XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-						win.vborderpx + (cy) * win.ch, cursorthickness, win.ch);
+				XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+						twin.vborderpx + (cy) * twin.ch, cursorthickness, twin.ch);
 				break;
 
 			case 9: // empty block, unfilled
 					col = getcursorcolor( g, cx, cy );
 					
 					// upper line
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-							win.vborderpx + cy * win.ch, win.cw - 1, 1);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + cy * twin.ch, twin.cw - 1, 1);
 
 					// lines at sides
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-							win.vborderpx + cy * win.ch, 1, win.ch);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + cy * twin.ch, 1, twin.ch);
 
-					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
-							win.vborderpx + cy * win.ch, 1, win.ch);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
+							twin.vborderpx + cy * twin.ch, 1, twin.ch);
 					
 					// lower line
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-							win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + (cy + 1) * twin.ch -1, twin.cw, 1);
 
 					break;
 
@@ -198,38 +198,38 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			case 10: // bar with two lines at the sides
 					col = getcursorcolor( g, cx, cy );
 					// lower cursor part
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-								(win.vborderpx + cy * win.ch )+(win.ch*12)/16, 1, win.ch-win.ch*12/16 );
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+								(twin.vborderpx + cy * twin.ch )+(twin.ch*12)/16, 1, twin.ch-twin.ch*12/16 );
 
-					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
-								(win.vborderpx + cy * win.ch )+(win.ch*12)/16, 1, win.ch-win.ch*12/16 );
+					XftDrawRect(xwin.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
+								(twin.vborderpx + cy * twin.ch )+(twin.ch*12)/16, 1, twin.ch-twin.ch*12/16 );
 
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-							win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + (cy + 1) * twin.ch -1, twin.cw, 1);
 
-					if ( win.cursor == 10 ) 
+					if ( twin.cursor == 10 ) 
 						break;
 
 			case 12:
 					if ( !col ) col = getcursorcolor( g, cx, cy );
 					// upper line
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-							win.vborderpx + cy * win.ch, win.cw - 1, 1);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+							twin.vborderpx + cy * twin.ch, twin.cw - 1, 1);
 
 					// lines at sides
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw,
-						win.vborderpx + cy * win.ch, 1, win.ch-win.ch*12/16);
-					XftDrawRect(xw.draw, col, win.hborderpx + (cx + 1) * win.cw - 1,
-						win.vborderpx + cy * win.ch, 1, win.ch-win.ch*12/16);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw,
+						twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch*12/16);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + (cx + 1) * twin.cw - 1,
+						twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch*12/16);
 					break;
 
 			case 13:  // unfinished
 					col = getcursorcolor( g, cx, cy );
 				// a cross
-					XftDrawRect(xw.draw, col, win.hborderpx + cx * win.cw + win.cw/2 ,
-					win.vborderpx + cy * win.ch+3, 1, win.ch - win.ch*12/16);
-					XftDrawRect(xw.draw, col, (win.hborderpx + cx * win.cw) + 2,
-					win.vborderpx + cy * win.ch + (win.ch/2)-1, win.ch - win.ch*12/16, 1);
+					XftDrawRect(xwin.draw, col, twin.hborderpx + cx * twin.cw + twin.cw/2 ,
+					twin.vborderpx + cy * twin.ch+3, 1, twin.ch - twin.ch*12/16);
+					XftDrawRect(xwin.draw, col, (twin.hborderpx + cx * twin.cw) + 2,
+					twin.vborderpx + cy * twin.ch + (twin.ch/2)-1, twin.ch - twin.ch*12/16, 1);
 				break;
 
 
@@ -238,20 +238,20 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 	} else { // window hasn't the focus. 
 				//g.fg = unfocusedrcs;
 		drawcol = dc.col[unfocusedrcs];
-		XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-				win.vborderpx + cy * win.ch, win.cw - 1, 1);
-		XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-				win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
-		XftDrawRect(xw.draw, &drawcol, win.hborderpx + (cx + 1) * win.cw - 1,
-				win.vborderpx + cy * win.ch, 1, win.ch-win.ch/16*12);
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+				twin.vborderpx + cy * twin.ch, twin.cw - 1, 1);
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+				twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch/16*12);
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + (cx + 1) * twin.cw - 1,
+				twin.vborderpx + cy * twin.ch, 1, twin.ch-twin.ch/16*12);
 
 
-		XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-				(win.vborderpx + cy * win.ch )+(win.ch/16)*12, 1, win.ch-win.ch/16*12);
-		XftDrawRect(xw.draw, &drawcol, win.hborderpx + (cx + 1) * win.cw - 1,
-				win.vborderpx + cy * win.ch + (win.ch/16)*12, 1, win.ch-win.ch/16*12);
-		XftDrawRect(xw.draw, &drawcol, win.hborderpx + cx * win.cw,
-				win.vborderpx + (cy + 1) * win.ch -1, win.cw, 1);
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+				(twin.vborderpx + cy * twin.ch )+(twin.ch/16)*12, 1, twin.ch-twin.ch/16*12);
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + (cx + 1) * twin.cw - 1,
+				twin.vborderpx + cy * twin.ch + (twin.ch/16)*12, 1, twin.ch-twin.ch/16*12);
+		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
+				twin.vborderpx + (cy + 1) * twin.ch -1, twin.cw, 1);
 		focusinx = cx;
 		focusiny = cy;
 	}

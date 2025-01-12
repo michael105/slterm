@@ -4,6 +4,7 @@
 #define CONFIG_H
 
 #ifndef extract_keyref
+
 // Silence my syntaxcheckerplugin
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
@@ -15,9 +16,48 @@
 
 // Config options
 
-// font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
-// defaultfont 
-static char *font = "Monospace:pixelsize=13:Bold:antialias=true:autohint=true";
+/*
+ font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
+       and doc/fontconfig.txt
+
+ the default regular font can be overwritten via command line 
+ e.g.: slterm -f 'Monospace:pixelsize=13:antialias=true'
+
+ To use embedded fonts, set EMBEDFONT to 1 in config.make,
+ The attributes below are still used.
+ To change the embedded fonts, you need to change the files in src/embed/
+
+*/
+
+// regular font
+static char *regular_font = "Liberation Mono:Bold:pixelsize=13:antialias=true:autohint=true";
+//static char *font = "Monospace:pixelsize=13:antialias=true:autohint=true";
+
+//if size not set 
+int default_font_pixelsize = 14;
+
+/* if fonts below are set, they are used, no matter of xresources or command line options
+ else, if set to 0, the appropiate weight and slant are added to "regular_font" 
+ (italic,bold,bold italic) when usexxxfont below is set to 1.
+The pixelsize as well as charwidth and height are set according to the regular font,
+pixelsize (if unset) defaults to 14.
+*/
+static char *italic_font = "Liberation Mono:Bold:Italic:pixelsize=13:antialias=true:autohint=true";
+static char *bold_font = 0;
+static char *bolditalic_font = 0;
+
+// Whether to use another font, for bold/italic/bolditalic
+#if 1
+int useboldfont = 0;
+int useitalicfont = 1;
+int usebolditalicfont = 0;
+#else
+int useboldfont = 1;
+int useitalicfont = 1;
+int usebolditalicfont = 1;
+#endif
+
+
 
 // more/less font width spacing
 // here, with utf8 enabled, -1 looks much better.
@@ -31,12 +71,12 @@ int fontspacing = 0;
 int borderperc = 40;
 
 /*
- * What program is execed by slterm depends of these precedence rules:
- * 1: program passed with -e
- * 2: utmp option
- * 3: SHELL environment variable
- * 4: value of shell in /etc/passwd
- * 5: value of shell in config.h
+ What program is execed by slterm depends of these precedence rules:
+ 1: program passed with -e
+ 2: utmp option
+ 3: SHELL environment variable
+ 4: value of shell in /etc/passwd
+ 5: value of shell in config.h
  */
 static char *shell = "/bin/sh";
 char *utmp = NULL;
@@ -50,9 +90,8 @@ static float cwscale = 1.0;
 static float chscale = 1.0;
 
 /*
- * word delimiter string
- *
- * More advanced example: L" `'\"()[]{}"
+ word delimiter string
+ More advanced example: L" `'\"()[]{}"
  */
 wchar_t *worddelimiters = L" ";
 
@@ -69,67 +108,49 @@ int allowaltscreen = 1;
 #define actionfps_shift 5
 
 /*
- * blinking timeout (set to 0 to disable blinking) for the terminal blinking
- * attribute.
+ blinking timeout (set to 0 to disable blinking) for the terminal blinking
+ attribute.
  */
 static unsigned int blinktimeout = 800;
 
-/*
- * thickness of underline and bar cursors
- */
+/* thickness of underline and bar cursors */
 static unsigned int cursorthickness = 2;
 
-/*
- * bell volume. It must be a value between -100 and 100. Use 0 for disabling
- * it
- */
+/* bell volume. It must be a value between -100 and 100. 0 to disable */
 static int bellvolume = 50;
 
-/* default TERM value */
+/* 
+ default TERM value 
+ used also for the identification of the capabilities to curses
+ this can be overriden in the shell by exporting a known terminal name,
+ e.g.: export TERM=xterm-256color
+ To make slterm known to curses et al, the terminfo capability file
+ (tic) needs to be installed: tix -sx slterm.terminfo or
+ slterm -I | tic -sx -
+ */
 char *termname = "slterm-256color";
 
 /*
- * spaces per tab
- *
- * When you are changing this value, don't forget to adapt the »it« value in
- * the slterm.info and appropriately install the slterm.info in the environment where
- * you use this slterm version.
- *
- *	it#$tabspaces,
- *
- * Secondly make sure your kernel is not expanding tabs. When running `stty
- * -a` »tab0« should appear. You can tell the terminal to not expand tabs by
- *  running following command:
- *
- *	stty tabs
+ spaces per tab
+
+ When you are changing this value, don't forget to adapt the 'it' value in
+ the slterm.terminfo and appropriately install the slterm.terminfo in the environment where
+ you use this slterm version.
+
+	it#$tabspaces,
+
+ Secondly make sure your kernel is not expanding tabs. When running `stty
+ -a` tab0 should appear. You can tell the terminal to not expand tabs by
+ running following command:
+	stty tabs
  */
 unsigned int tabspaces = 8;
 
 
-// Outdated. the current table is below, colortablenames.
-// dgreen 036209
-// lgreen 00ff10
-// dblue 070060
-// dfblue 3c33aa
-static const char *colorname[] = {
-    /* 8 normal colors */
-    "black", "red3", "green3", //"brown3", // sort of brown (orange). brown is "brown" and faint..
-	"#592a1d", //"#532020", // brown //"#531818", // brown //"#562215", // brown //"yellow3",
-    "blue2", "magenta3", "cyan3", "gray90",
-    /* 8 bright colors */
-    "gray50", "red", "green", "yellow",
-    //"#5050ff", // light blue
-	 "#00aaea", // schweinchenblau
-    //"#5c5cff",
-    "magenta", "cyan", "white",
-    [255] = 0,
-    /* more colors can be added after 255 to use with DefaultXX */
-    "#cccccc", "#2e3440",
-};
-
-/* The table of the first 8 (32) colors, numbered 30..37
-	 Names are defined by xorg, and (should be) conformant with css names.
-	 a table of colornames is in doc/colornames.html, and colornames_gray.html.
+/* 
+ The table of the first 8 (32) colors, numbered 30..37
+ Names are defined by xorg, and (should be) conformant with css names.
+ a table of colornames is in doc/colornames.html, and colornames_gray.html.
  RGB in hexadecimal (#RRGGBB) is also possible.
  The table is oriented at the de facto xterm standard.
 
@@ -145,7 +166,7 @@ static const char *colorname[] = {
   the algorithm to display faint and bold_faint colors is slightly modified
   for better contrast.
  (todo: use colors 8-15 to switch to betacode (-> switch via vi syntax colorizing ))
- 	*/
+*/
 static const char* colortablenames[8][4] = { 
 #define GRADIENT(_normal,_bold,_faint,_bold_faint) { #_normal, #_bold, #_faint, #_bold_faint }
 
@@ -186,14 +207,36 @@ static const char* bgcolornames[16] = {
 	 //"#531818", // brown
 	 //"#562215", // brown
 	
+// Outdated. the current table is colortablenames.
+// dgreen 036209
+// lgreen 00ff10
+// dblue 070060
+// dfblue 3c33aa
+static const char *colorname[] = {
+    /* 8 normal colors */
+    "black", "red3", "green3", //"brown3", // sort of brown (orange). brown is "brown" and faint..
+	"#592a1d", //"#532020", // brown //"#531818", // brown //"#562215", // brown //"yellow3",
+    "blue2", "magenta3", "cyan3", "gray90",
+    /* 8 bright colors */
+    "gray50", "red", "green", "yellow",
+    //"#5050ff", // light blue
+	 "#00aaea", // schweinchenblau
+    //"#5c5cff",
+    "magenta", "cyan", "white",
+    [255] = 0,
+    /* more colors can be added after 255 to use with DefaultXX */
+    "#cccccc", "#2e3440",
+};
+
+
 /*
- * Default colors (colorname index)
- * foreground, background, cursor, reverse cursor
- */
+ Default colors (colorname index)
+ foreground, background, cursor, reverse cursor
+*/
 unsigned char defaultfg = 7;
 unsigned char defaultbg = 0;
 static unsigned char defaultcs = 15;
-static unsigned char defaultrcs = 202;
+//static unsigned char defaultrcs = 202;
 // Unfocused window
 static unsigned char unfocusedrcs = 46; //118;//226; 
 
@@ -208,37 +251,35 @@ unsigned int selectionbg = 19;
 unsigned int selectionfg = 7;
 /* If 0 use selectionfg as foreground in order to have a uniform foreground-color */
 /* Else if 1 keep original foreground-color of each cell => more colors :) */
-static int ignoreselfg = 1;
+//static int ignoreselfg = 1;
 
 /*
- * Default shape of cursor
- * 2: Block 
- * 4: Underline ("_")
- * 6: Bar ("|")
- * 7: Block, and (X)
- * 8: double underline
- * 9: empty block
- */
+ Default shape of cursor
+ 2: Block 
+ 4: Underline ("_")
+ 6: Bar ("|")
+ 7: Block, and (X)
+ 8: double underline
+ 9: empty block
+ 10: underline with sides
+ 11: under- and overline with sides
+ 12: overline with sides
+*/
 unsigned int cursorshape = 4;
 
-/*
- * Default columns and rows numbers
- */
-
+/* Default columns and rows numbers */
 static unsigned int cols = 80;
 static unsigned int rows = 24;
 
-/*
- * Default colour and shape of the mouse cursor
- */
+/* Default colour and shape of the mouse cursor */
 static unsigned int mouseshape = XC_xterm;
 static unsigned int mousefg = 7;
 static unsigned int mousebg = 0;
 
 /*
- * Xresources preferences to load at startup
- * TODO: update this with colortablenames
- */
+ Xresources preferences to load at startup
+ TODO: update this with colortablenames
+*/
 #ifdef XRESOURCES
 ResourcePref resources[] = {
     { "font", STRING, &font },
@@ -274,22 +315,22 @@ ResourcePref resources[] = {
 };
 #endif
 /*
- * Color used to display font attributes when fontconfig selected a font which
- * doesn't match the ones requested.
- */
-static unsigned int defaultattr = 11;
+ Color used to display font attributes when fontconfig selected a font which
+ doesn't match the ones requested.
+*/
+//static unsigned int defaultattr = 11;
 
 /*
- * Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).
- * Note that if you want to use ShiftMask with selmasks, set this to an other
- * modifier, set to 0 to not use it.
- */
+ Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).
+ Note that if you want to use ShiftMask with selmasks, set this to an other
+ modifier, set to 0 to not use it.
+*/
 static uint forcemousemod = ShiftMask;
 
 /*
- * Internal mouse shortcuts.
- * Beware that overloading Button1 will disable the selection.
- */
+ Internal mouse shortcuts.
+ Beware that overloading Button1 will disable the selection.
+*/
 const unsigned int mousescrollincrement = 3;
 static MouseShortcut mshortcuts[] = {
     /* mask                 button   function        argument       release */
@@ -352,10 +393,7 @@ static MouseShortcut mshortcuts[] = {
  e.g.
  Match Shift + PageUp
  Match PageUp
- 
- 
  */
-
 #ifndef extract_keyref
 Shortcut shortcuts[] = {
 #endif
@@ -369,6 +407,7 @@ BIND( ShiftMask, XK_Print, printscreen, {.i = 0},ALLMODES ),
 BIND( XK_ANY_MOD, XK_Print, printsel, {.i = 0},ALLMODES ),
 BIND( TERMMOD, XK_I, inverse_screen, {},ALLMODES ),
 
+BIND(ControlMask|ShiftMask|Mod1Mask|Mod4Mask, XK_I, dump_terminfo, {}, MODE_DEFAULT ),
 		// Change font size/width
 BIND( SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES ),
     //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES ),
@@ -400,8 +439,8 @@ BIND( XK_ANY_MOD, XK_Home, scrolltotop, { },MODE_LESS ),
 
 
 // help mode
-BIND( XK_ANY_MOD, XK_q, showhelp, { 0},IMODE_HELP ),
-BIND( XK_ANY_MOD, XK_Escape, showhelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_q, quithelp, { 0},IMODE_HELP ),
+BIND( XK_ANY_MOD, XK_Escape, quithelp, { 0},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Up, kscrollup, {.i = 1},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Down, kscrolldown, {.i = 1},IMODE_HELP ),
 BIND( XK_ANY_MOD, XK_Page_Up, kscrollup, {.i = -1},IMODE_HELP ),
@@ -452,6 +491,7 @@ BIND( BOOKMARKMASK, XK_8, scrollmark, { .i=8 },ALLMODES ),
 BIND( BOOKMARKMASK, XK_9, scrollmark, { .i=9 },ALLMODES ),
 BIND( BOOKMARKMASK, XK_0, scrollmark, { .i=0 },ALLMODES ),
 
+/* replaced with retmarks
 BIND( XK_ANY_MOD, XK_1, scrollmark, { .i=1 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_2, scrollmark, { .i=2 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_3, scrollmark, { .i=3 },MODE_LESS ),
@@ -461,7 +501,19 @@ BIND( XK_ANY_MOD, XK_6, scrollmark, { .i=6 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_7, scrollmark, { .i=7 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_8, scrollmark, { .i=8 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_9, scrollmark, { .i=9 },MODE_LESS ),
-BIND( XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_0, scrollmark, { .i=0 },MODE_LESS ),*/
+
+BIND( XK_ANY_MOD, XK_1, retmark, { .i=1 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_2, retmark, { .i=2 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_3, retmark, { .i=3 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_4, retmark, { .i=4 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_5, retmark, { .i=5 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_6, retmark, { .i=6 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_7, retmark, { .i=7 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_8, retmark, { .i=8 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_9, retmark, { .i=9 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_0, retmark, { .i=10 },MODE_LESS ),
+
 
 
 BIND( SETBOOKMARKMASK, XK_Return, enterscroll, { .i=11 },ALLMODES ),
@@ -475,7 +527,7 @@ BIND( ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
 BIND( ShiftMask, XK_BackSpace, retmark , { },ALLMODES ),
 BIND( ShiftMask, XK_ISO_Left_Tab, retmark, {}, ALLMODES ), // tab left <- to enter lessmode
 BIND( XK_ANY_MOD,XK_BackSpace, retmark , { },MODE_LESS ),
-BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=1 },MODE_LESS ), // tab -> to scroll down
+BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=-1 },MODE_LESS ), // tab -> to scroll down
 	// tab left or backspace and right cycle between set retmarks.
 
 // "less mode" enter with Ctrl+shift+ Cursor/Page up/down 
@@ -518,36 +570,36 @@ BIND( ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES ),
 #undef BIND
 
 /*
- * Special keys (change & recompile slterm.info accordingly)
- *
- * Mask value:
- * * Use XK_ANY_MOD to match the key no matter modifiers state
- * * Use XK_NO_MOD to match the key alone (no modifiers)
- * appkey value:
- * * 0: no value
- * * > 0: keypad application mode enabled
- * *   = 2: term.numlock = 1
- * * < 0: keypad application mode disabled
- * appcursor value:
- * * 0: no value
- * * > 0: cursor application mode enabled
- * * < 0: cursor application mode disabled
- *
- * Be careful with the order of the definitions because st searches in
- * this table sequentially, so any XK_ANY_MOD must be in the last
- * position for a key.
- */
+ Special keys (change & recompile slterm.terminfo accordingly)
+
+ Mask value:
+   Use XK_ANY_MOD to match the key no matter modifiers state
+   Use XK_NO_MOD to match the key alone (no modifiers)
+ appkey value:
+   0: no value
+   > 0: keypad application mode enabled
+   = 2: term.numlock = 1
+   < 0: keypad application mode disabled
+ appcursor value:
+   0: no value
+   > 0: cursor application mode enabled
+   < 0: cursor application mode disabled
+
+ Be careful with the order of the definitions because st searches in
+ this table sequentially, so any XK_ANY_MOD must be in the last
+ position for a key.
+*/
 
 /*
- * If you want keys other than the X11 function keys (0xFD00 - 0xFFFF)
- * to be mapped below, add them to this array.
- */
+ If you want keys other than the X11 function keys (0xFD00 - 0xFFFF)
+ to be mapped below, add them to this array.
+*/
 static KeySym mappedkeys[] = { -1 };
 
 /*
- * State bits to ignore when matching key or button events.  By default,
- * numlock (Mod2Mask) and keyboard layout (XK_SWITCH_MOD) are ignored.
- */
+ State bits to ignore when matching key or button events.  By default,
+ numlock (Mod2Mask) and keyboard layout (XK_SWITCH_MOD) are ignored.
+*/
 static uint ignoremod = Mod2Mask|XK_SWITCH_MOD;
 
 #define K(key,mod,str,appkey,appcursor) { key,mod,str,sizeof(str)-1,appkey,appcursor }
@@ -779,49 +831,50 @@ static Key key[] = {
 #undef K
 
 /*
- * Selection types' masks.
- * Use the same masks as usual.
- * Button1Mask is always unset, to make masks match between ButtonPress.
- * ButtonRelease and MotionNotify.
- * If no match is found, regular selection is used.
- */
+ Selection types' masks.
+ Use the same masks as usual.
+ Button1Mask is always unset, to make masks match between ButtonPress.
+ ButtonRelease and MotionNotify.
+ If no match is found, regular selection is used.
+*/
 static uint selmasks[] = {
     [SEL_RECTANGULAR] = Mod1Mask,
 };
 
 
-// select codepages
-// can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
-//         cp1256,cp1257,cp1258,cpe4000,cpe4002a, 
-//         macintosh, atarist, mac_centraleurope
-// (macintosh = MacRoman)
-// other codepages could be added in charmaps.h
-// use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
-//
-// cp1252 is at the same time the DEC-MCS, ANSI, and Windows1252 default codepage.
-//
-// cp437 is the old ibm codepage, with those signs to draw borders and boxes.
-// (cp437 is uncomplete here, the "graphics mode" signs 0..0x1f are missing.
-// it's the old issue of the IBM PC1. Reinvented.)
-//
-// Me, I'm happy with CP1252, it has got umlauts, and yet every application
-// was able to work with the ansi code table without modifications. 
+/*
+ select codepages
+ can be: cp437, cp850, cp1250,cp1251,cp1252,cp1253,cp1255,
+         cp1256,cp1257,cp1258,cpe4000,cpe4002a, 
+         macintosh, atarist, mac_centraleurope
+ (macintosh = MacRoman)
+ other codepages could be added in charmaps.h
+ use Ctrl+Win+ [1..9] to switch to the other codepages on the fly.
 
-// Now, I did write a personal codepage, named cpe4000
-// There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
-// the greek alphabet and several mathematical and logical chars.
-// It's what I do need for writing. 
-// There's a filter for the conversion to and from utf8,
-// within tools. (e4, and e42)
-// Numbered the cp e4000, according to the rfc's exxx is reserved for private 
-// assignments. 
+ cp1252 is at the same time the DEC-MCS, ANSI, and Windows1252 default codepage.
 
-// Finally, I created another codepage. Naming this cpe4002a,
-// but I regard the codepage as alpha, I'm going to change some things.
-// Got the box drawing chars at the same location as with cp437.
-// umlauts are there, at the locations of cp437/cp850
-// Several logical and mathematical operators and signs
+ cp437 is the old ibm codepage, with those signs to draw borders and boxes.
+ (cp437 is uncomplete here, the "graphics mode" signs 0..0x1f are missing.
+ it's the old issue of the IBM PC1. Reinvented.)
 
+ Me, I'm happy with CP1252, it has got umlauts, and yet every application
+ was able to work with the ansi code table without modifications. 
+
+ Now, I did write a personal codepage, named cpe4000
+ There are Umlauts, sz, box drawing chars ( at the places of the cp437 / 850),
+ the greek alphabet and several mathematical and logical chars.
+ It's what I do need for writing. 
+ There's a filter for the conversion to and from utf8 and between codepages,
+ within tools. 
+ Numbered the cp e4000, according to the rfc's 0xExxxx is reserved for private 
+ assignments. 
+
+ Finally, I created another codepage. Naming this cpe4002a,
+ but I regard the codepage as alpha, I'm going to change some things.
+ Got the box drawing chars at the same location as with cp437.
+ umlauts are there, at the locations of cp437/cp850
+ Several logical and mathematical operators and signs
+*/
 
 // assign to Ctrl+Win +                    0,       1,    2        3      4      5      6
 const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, cp850, cpe4002a,
@@ -830,11 +883,16 @@ const short unsigned int* codepage[] = { cp1250, cp1251, cp1252, cp1253, cp437, 
 // the default codepage is cp1252
 // and assigned to Ctrl+Win+2
 
-#ifdef MISC //(my local copy)
+#ifdef MISC //my local copy
 int selected_codepage = 6;
 #else
 // the default codepage (cp1252)
 int selected_codepage = 2;
+#endif
+
+// convert the x clipboard to and from utf8, when yanking/pasting
+#ifndef UTF8 // wouldn't be useful
+#define UTF8_CLIPBOARD
 #endif
 
 

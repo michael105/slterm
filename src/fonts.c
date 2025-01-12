@@ -5,18 +5,23 @@
 
 #include "includes.h"
 #include "fonts.h"
-#include "x.h"
+#include "xwindow.h"
 #include "config.h"
 
+#if EMBEDFONT == 1
+	 #define SINFL_IMPLEMENTATION
+  	 #include "sinfl.h"
+#endif
+ 
+#if 0
+#define INCLUDED_FONT
+#include "font_ttf.h"
+#endif
 
-char *usedfont = NULL;
+//char *usedfont = NULL;
 double usedfontsize = 0;
 double defaultfontsize = 0;
 
-/* Fontcache is an array now. A new font will be appended to the array. */
-Fontcache *frc = NULL;
-int frclen = 0;
-int frccap = 0;
 
 
 // callbacks
@@ -37,7 +42,7 @@ void zoom(const Arg *arg) {
 
 void zoomabs(const Arg *arg) {
 	xunloadfonts();
-	xloadfonts(usedfont, arg->f);
+	xloadfonts(arg->f);
 	cresize(0, 0);
 	redraw();
 	xhints();
@@ -54,12 +59,20 @@ void zoomreset(const Arg *arg) {
 
 
 
-int xloadfont(Font *f, FcPattern *pattern) {
+int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile){
+	//#define xloadfont(_font,_pattern,...) __xloadfont(_font,_pattern,__VA_OPT__(__VA_ARGS__,) 0 )
+	//#define __xloadfont(_font,_pattern,_file,...) _xloadfont(_font,_pattern,_file)
 	FcPattern *configured;
 	FcPattern *match;
 	FcResult result;
 	XGlyphInfo extents;
 	int wantattr, haveattr;
+
+	if (pixelsize) {
+		FcPatternDel(pattern, FC_PIXEL_SIZE);
+		FcPatternDel(pattern, FC_SIZE);
+		FcPatternAddDouble(pattern, FC_PIXEL_SIZE, (double)pixelsize);
+	}
 
 	/*
 	 * Manually configure instead of calling XftMatchFont
@@ -71,19 +84,35 @@ int xloadfont(Font *f, FcPattern *pattern) {
 		return 1;
 
 	FcConfigSubstitute(NULL, configured, FcMatchPattern);
-	XftDefaultSubstitute(xw.dpy, xw.scr, configured);
+	XftDefaultSubstitute(xwin.dpy, xwin.scr, configured);
 
 	match = FcFontMatch(NULL, configured, &result);
-	if (!match) {
+	if (!match && !fontfile ) {
 		FcPatternDestroy(configured);
 		return 1;
 	}
 
-	if (!(f->match = XftFontOpenPattern(xw.dpy, match))) {
+	if ( *fontfile ){
+		FcPatternDel( match, FC_FILE );
+		FcPatternAddString(match, FC_FILE, (const FcChar8 *) fontfile);
+	}
+
+#ifdef DEBUG
+//#if 1
+	FcPatternPrint( match );
+	s = FcNameUnparse( match );
+	printf( "match name: %s\n", s );
+	free(s);
+#endif
+
+
+	f->match = XftFontOpenPattern(xwin.dpy, match);
+	if (!f->match) {
 		FcPatternDestroy(configured);
 		FcPatternDestroy(match);
 		return 1;
 	}
+
 
 	if ((XftPatternGetInteger(pattern, "slant", 0, &wantattr) ==
 				XftResultMatch)) {
@@ -95,7 +124,7 @@ int xloadfont(Font *f, FcPattern *pattern) {
 					XftResultMatch) ||
 				haveattr < wantattr) {
 			f->badslant = 1;
-			fputs("font slant does not match\n", stderr);
+			fputs("***** font slant does not match\n", stderr);
 		}
 	}
 
@@ -105,25 +134,24 @@ int xloadfont(Font *f, FcPattern *pattern) {
 					XftResultMatch) ||
 				haveattr != wantattr) {
 			f->badweight = 1;
-			fputs("font weight does not match\n", stderr);
+			fputs("***** font weight does not match\n", stderr);
 		}
 	}
 
 #ifdef UTF8
-			XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)ascii_printable,
+			XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)ascii_printable,
 							strlen(ascii_printable), &extents);
 #else
-			// todo the codepoints of the current charmap would be needed here.
 	char printable[255];
 	int p = 0;
 	for ( int a = 32; a<127; a++) 
-		printable[p++] = a;
+		printable[p++] = a; 
 	for ( int a = 128; a<256; a++) 
-		printable[p++] = a;
+		printable[p++] = charmap_convert(a,0); //a;
 	printable[p] = 0;
 
 
-	XftTextExtentsUtf8(xw.dpy, f->match, (const FcChar8 *)printable,
+	XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)printable,
 			sizeof(printable), &extents);
 #endif
 
@@ -144,7 +172,6 @@ int xloadfont(Font *f, FcPattern *pattern) {
 #else
 	//f->width=8;
 	f->width = DIVCEIL(extents.xOff, 96);
-	//f->width = DIVCEIL(extents.xOff, 96);
 #endif
 
 	f->width += fontspacing;
@@ -154,18 +181,26 @@ int xloadfont(Font *f, FcPattern *pattern) {
 	return 0;
 }
 
-void xloadfonts(char *fontstr, double fontsize) {
+FcPattern *get_fcpattern( const char* fontstr ){
+	if (fontstr[0] == '-')
+		return( XftXlfdParse(fontstr, False, False) );
+	return( FcNameParse((FcChar8 *)fontstr) );
+}
+
+// load the configured fonts, with (optional) fontsize
+void xloadfonts(double fontsize) {
 	FcPattern *pattern;
 	double fontval;
 
-	if (fontstr[0] == '-')
-		pattern = XftXlfdParse(fontstr, False, False);
-	else
-		pattern = FcNameParse((FcChar8 *)fontstr);
+ 	// get fontstr, from commandline or config.h 
+	char* fontstr = (opt_font == NULL) ? regular_font : opt_font;
+	
+	pattern = get_fcpattern(fontstr);
 
 	if (!pattern)
 		die("can't open font %s\n", fontstr);
 
+	// determine the fontsize
 	if (fontsize > 1) {
 		FcPatternDel(pattern, FC_PIXEL_SIZE);
 		FcPatternDel(pattern, FC_SIZE);
@@ -180,19 +215,95 @@ void xloadfonts(char *fontstr, double fontsize) {
 			usedfontsize = -1;
 		} else {
 			/*
-			 * Default font size is 12, if none given. This is to
+			 * Default font size, if none given. This is to
 			 * have a known usedfontsize value.
 			 */
-			FcPatternAddDouble(pattern, FC_PIXEL_SIZE, 12);
-			usedfontsize = 12;
+			FcPatternAddDouble(pattern, FC_PIXEL_SIZE, default_font_pixelsize);
+			usedfontsize = default_font_pixelsize;
 		}
 		defaultfontsize = usedfontsize;
 	}
 
-	if (xloadfont(&dc.font, pattern))
-		die("can't open font %s\n", fontstr);
 
-	if (usedfontsize < 0) {
+	// names of temporary font files
+	char fname[4][32] = { {0},{0},{0},{0} };
+	
+#if EMBEDFONT == 1
+  	 #warning embedding fonts
+  	 #include "embed/embed_font.h"
+
+  	 int fd[4] = { 0,0,0,0 };
+  	  uchar *embfont[4] = { 
+  	 	slterm_font_ttfz, 
+  	 	slterm_font_bold_ttfz, 
+  	 	slterm_font_italic_ttfz, 
+  	 	slterm_font_bold_italic_ttfz };
+  	  unsigned int embfontlenz[4] = { 
+  	 	slterm_font_ttfz_len, 
+  	 	slterm_font_bold_ttfz_len, 
+  	 	slterm_font_italic_ttfz_len, 
+  	 	slterm_font_bold_italic_ttfz_len };
+  	  unsigned int embfontlen[4] = { 
+  	 	slterm_font_ttf_len, 
+  	 	slterm_font_bold_ttf_len, 
+  	 	slterm_font_italic_ttf_len, 
+  	 	slterm_font_bold_italic_ttf_len };
+  	 
+
+	  size_t bufsize = 128;
+  	 for ( int i = 0; i<4 ; i++ )
+		 if ( embfontlen[i]+128 > bufsize )
+		 	bufsize = embfontlen[i] + 128;
+
+	 {
+		struct { 
+			unsigned char buf[bufsize];
+		 	unsigned long canary;
+		} s; 
+		s.canary = 0xa23df1223;
+		
+		 // prevent compiler "optimizations" by using (portable) assembly,
+		 // demonstrating the power of void
+		 // a warning: volatile is useless. the keyword just doesn't work. (sometimes..)
+		 asm( "" :"+m"(s.canary) );
+
+		 for ( int i = 0; i<4 ; i++ ){
+			 if ( embfontlenz[i]){ 
+#ifdef DEBUG
+				 printf("Decompress Font: %d -> %d\n",embfontlenz[i],embfontlen[i]);
+#endif
+				 strcpy( fname[i], "/tmp/slterm_XXXXXX.ttf" );
+				 fd[i] = mkstemps( fname[i], 4 );
+				 if ( fd[i] <= 0 ){
+					 fprintf(stderr,"Cannot create temporary file\n");
+					 fd[i] = 0;
+					 *fname[i] = 0;
+				 } else {
+					 uint len = sinflate( s.buf, bufsize, embfont[i], embfontlenz[i] );
+					 if ( len != embfontlen[i] ){
+						 fprintf(stderr, "Error decompressing embedded font #%d\n",i);
+						 close( fd[i] );
+						 unlink(fname[i]);
+						 *fname[i] = 0;
+					 } else {
+						 write( fd[i], s.buf, embfontlen[i] );
+						 fsync( fd[i] );
+					 }
+				 }
+			 }
+		 } 
+		 if ( s.canary != 0xa23df1223 ){
+			 die("buffer overflow");
+		 }
+	 }
+
+#endif
+
+	// load regular font
+	if (xloadfont(&dc.font, pattern, 0, fname[0] ))
+		die("x can't open font %s\n", fontstr);
+
+	if (usedfontsize < 0) { // determine the used fontsize as pixelsize of the regular font
 		FcPatternGetDouble(dc.font.match->pattern, FC_PIXEL_SIZE, 0, &fontval);
 		usedfontsize = fontval;
 		if (fontsize == 0)
@@ -200,31 +311,67 @@ void xloadfonts(char *fontstr, double fontsize) {
 	}
 
 	/* Setting character width and height. */
-	win.cw = ceilf(dc.font.width * cwscale);
-	win.ch = ceilf(dc.font.height * chscale);
+	twin.cw = ceilf(dc.font.width * cwscale);
+	twin.ch = ceilf(dc.font.height * chscale);
 
-	borderpx = ceilf(((float)borderperc / 100) * win.cw);
+	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
-	FcPatternDel(pattern, FC_SLANT);
-	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
-	if (xloadfont(&dc.ifont, pattern))
-		die("can't open font %s\n", fontstr);
+	if ( useboldfont ){
+		if ( bold_font ){
+			FcPatternDestroy(pattern);
+			pattern = get_fcpattern(bold_font);
+		} else {
+			FcPatternDel(pattern, FC_WEIGHT);
+			FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		}
+		if (xloadfont(&dc.bfont, pattern, usedfontsize, fname[1] ))
+			die("can't open font %s\n", fontstr);
+		FcPatternDel(pattern, FC_WEIGHT);
+	}
 
-	FcPatternDel(pattern, FC_WEIGHT);
-	FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
-	if (xloadfont(&dc.ibfont, pattern))
-		die("can't open font %s\n", fontstr);
 
-	FcPatternDel(pattern, FC_SLANT);
-	FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ROMAN);
-	if (xloadfont(&dc.bfont, pattern))
-		die("can't open font %s\n", fontstr);
+	if ( useitalicfont ){
+		if ( italic_font ){
+			FcPatternDestroy(pattern);
+			pattern = get_fcpattern(italic_font);
+		} else {
+			FcPatternDel(pattern, FC_SLANT);
+			FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
+		}
+		if (xloadfont(&dc.ifont, pattern, usedfontsize, fname[2] ))
+			die("can't open font %s\n", fontstr);
+	}
+
+
+	if ( usebolditalicfont ){
+		if ( bolditalic_font ){
+			FcPatternDestroy(pattern);
+			pattern = get_fcpattern(bolditalic_font);
+		} else {
+			FcPatternDel(pattern, FC_WEIGHT);
+			FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
+		}
+		if (xloadfont(&dc.ibfont, pattern, usedfontsize, fname[3]))
+			die("can't open font %s\n", fontstr);
+	}
+
 
 	FcPatternDestroy(pattern);
+
+	#if EMBEDFONT == 1
+		// remove fonts from tmp, if written
+		for ( int i = 0; i<4; i++ ){
+			if (fd[i])
+				close (fd[i]);
+			if ( *fname[i] )
+				unlink( fname[i] );
+		}
+	#endif
+
 }
 
 void xunloadfont(Font *f) {
-	XftFontClose(xw.dpy, f->match);
+	XftFontClose(xwin.dpy, f->match);
 	FcPatternDestroy(f->pattern);
 	if (f->set)
 		FcFontSetDestroy(f->set);
@@ -233,22 +380,25 @@ void xunloadfont(Font *f) {
 void xunloadfonts(void) {
 	/* Free the loaded fonts in the font cache.  */
 	while (frclen > 0)
-		XftFontClose(xw.dpy, frc[--frclen].font);
+		XftFontClose(xwin.dpy, frc[--frclen].font);
 
 	xunloadfont(&dc.font);
-	xunloadfont(&dc.bfont);
-	xunloadfont(&dc.ifont);
-	xunloadfont(&dc.ibfont);
+	if ( useboldfont ) 
+		xunloadfont(&dc.bfont);
+	if ( useitalicfont ) 
+		xunloadfont(&dc.ifont);
+	if ( usebolditalicfont ) 
+		xunloadfont(&dc.ibfont);
 }
 
 int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		int x, int y) {
-	float winx = win.hborderpx + x * win.cw, winy = win.vborderpx + y * win.ch,
+	float winx = twin.hborderpx + x * twin.cw, winy = twin.vborderpx + y * twin.ch,
 	xp, yp;
 	ushort mode, prevmode = USHRT_MAX;
 	Font *font = &dc.font;
 	int frcflags = FRC_NORMAL;
-	float runewidth = win.cw;
+	float runewidth = twin.cw;
 	//Rune rune;
 	uint rune;
 	FT_UInt glyphidx;
@@ -275,17 +425,17 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			font = &dc.font;
 			frcflags = FRC_NORMAL;
 #ifdef UTF8
-			runewidth = win.cw * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
+			runewidth = twin.cw * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
 #else
-			runewidth = win.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
+			runewidth = twin.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
 #endif
-			if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD)) {
+			if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD) && usebolditalicfont ) {
 				font = &dc.ibfont;
 				frcflags = FRC_ITALICBOLD;
-			} else if (mode & ATTR_ITALIC) {
+			} else if (mode & ATTR_ITALIC && useitalicfont ) {
 				font = &dc.ifont;
 				frcflags = FRC_ITALIC;
-			} else if (mode & ATTR_BOLD) {
+			} else if (mode & ATTR_BOLD && useboldfont) {
 				font = &dc.bfont;
 				frcflags = FRC_BOLD;
 			}
@@ -294,7 +444,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		//if ( rune>=0x80 )
 		//printf("rune: %x  \n",rune,glyphidx);
 		/* Lookup character index with default font. */
-		glyphidx = XftCharIndex(xw.dpy, font->match, rune);
+		glyphidx = XftCharIndex(xwin.dpy, font->match, rune);
 		if (glyphidx) {
 			//if ( rune>0x80 )
 			//printf("rune: %x  idx: %x\n",rune,glyphidx);
@@ -309,7 +459,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 		/* Fallback on font cache, search the font cache for match. */
 		for (f = 0; f < frclen; f++) {
-			glyphidx = XftCharIndex(xw.dpy, frc[f].font, rune);
+			glyphidx = XftCharIndex(xwin.dpy, frc[f].font, rune);
 			/* Everything correct. */
 			if (glyphidx && frc[f].flags == frcflags)
 				break;
@@ -350,14 +500,14 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 				frc = xrealloc(frc, frccap * sizeof(Fontcache));
 			}
 
-			frc[frclen].font = XftFontOpenPattern(xw.dpy, fontpattern);
+			frc[frclen].font = XftFontOpenPattern(xwin.dpy, fontpattern);
 			if (!frc[frclen].font)
 				die("XftFontOpenPattern failed seeking fallback font: %s\n",
 						strerror(errno));
 			frc[frclen].flags = frcflags;
 			frc[frclen].unicodep = rune;
 
-			glyphidx = XftCharIndex(xw.dpy, frc[frclen].font, rune);
+			glyphidx = XftCharIndex(xwin.dpy, frc[frclen].font, rune);
 
 			f = frclen;
 			frclen++;

@@ -8,17 +8,16 @@
 //#define FULLDEBUG 5
 #include "debug.h"
 
-
-
 #include "includes.h"
 #include "globals.h"
-#include "arg.h"
+//#include "arg.h"
 #include "term.h"
-#include "x.h"
+#include "xwindow.h"
 #include "xcursor.h"
 #include "system.h"
 #include "tty.h"
 #include "selection.h"
+#include "clipboard.h"
 #include "xevent.h"
 #include "mouse.h"
 #include "keyboard.h"
@@ -32,7 +31,7 @@
 
 // embedded resources
 #ifdef INCLUDETERMINFO
-#include "slterm_info.h"
+#include "slterm_terminfo.h"
 #endif
 #ifdef INCLUDELICENSE
 #include "slterm_license.h"
@@ -42,11 +41,17 @@
 #include "slterm_man.h"
 #endif
 
-
+// embedded resources
+#ifdef INCLUDETERMINFO
+#include "slterm_info.h"
+#endif
+#ifdef INCLUDELICENSE
+#include "slterm_license.h"
+#endif
 
 #include "globals.c"
 #include "statusbar.c"
-#include "arg.c"
+//#include "arg.c"
 #include "term.c"
 #include "controlchars.c"
 #include "charmaps.c"
@@ -59,8 +64,9 @@
 #include "mem.c"
 #include "base64.c"
 #include "selection.c"
+#include "clipboard.c"
 #include "colors.c"
-#include "x.c"
+#include "xwindow.c"
 #include "xcursor.c"
 #include "xevent.c"
 #include "mouse.c"

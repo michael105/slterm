@@ -7,15 +7,6 @@ extern void (*handler[LASTEvent])(XEvent *);
 
 //void tty_send_unicode(const Arg *arg);
 
-// callback argument
-typedef union {
-  int i;
-  unsigned int ui;
-  float f;
-  const void *v;
-  const char *s;
-} Arg;
-
 
 /* XEMBED messages */
 #define XEMBED_FOCUS_IN 4

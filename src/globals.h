@@ -1,11 +1,23 @@
 #pragma once
 
-#include "fonts.h"
 
 // Globals, used across several source files, 
 // global typedefs (type aliases), macros.
 // There might be globals left within other source files,
 // todo: keep them together here.
+
+
+// parsed commandline options
+char *argv0;
+char *opt_class = NULL;
+char **opt_cmd = NULL;
+char *opt_embed = NULL;
+char *opt_font = NULL;
+char *opt_io = NULL;
+char *opt_line = NULL;
+char *opt_name = NULL;
+char *opt_title = NULL;
+char opt_xresources;
 
 
 // number of saved scroll marks, set with enter.
@@ -20,6 +32,19 @@ typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned short ushort;
 
+// callback argument
+typedef union {
+  int i;
+  unsigned int ui;
+  float f;
+  const void *v;
+  const char *s;
+} Arg;
+
+#define ARGP(_assign) &(Arg){ ._assign }
+#define ARGPi(_value) &(Arg){ .i= _value }
+
+#include "fonts.h"
 
 // ascii needs the whole 256 char table, 
 // therefore unsigned chars
@@ -35,6 +60,7 @@ typedef unsigned short ushort;
 
 #else
 
+//#define utfchar char
 #define utfchar unsigned char
 #define UTF_INVALID 0xff
 #define UTF_SIZ 1
@@ -105,7 +131,7 @@ typedef struct {
 	int cursor_attr[4]; // cursor attributes
 } TermWindow;
 
-extern TermWindow win;
+extern TermWindow twin;
 
 // The xwindow data
 typedef struct {
@@ -127,7 +153,7 @@ typedef struct {
 } XWindow;
 
 
-extern XWindow xw;
+extern XWindow xwin;
 
 
 /* Internal representation of the screen */
@@ -173,7 +199,8 @@ extern Term *p_term;
 extern Term *p_alt; 
 
 
-
+// pid of executed shell 
+extern pid_t shellpid;
 
 /*
 Printable characters in ASCII, used to estimate the advance width
@@ -188,6 +215,7 @@ static char ascii_printable[]
 #else
 // no utf8, but using extended ascii.
 // unused.
+/*
 static char unused_ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"
       "@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
@@ -196,6 +224,7 @@ static char unused_ascii_printable[]
 			"ÁÂÃ}ÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕ{×ØÙÚÛ%İŞßà"
 			"áâã]åæçèéêëìíîï"
 			"ğñòóôõ[÷øùúû$ışÿ";
+			*/
 #endif
 
 

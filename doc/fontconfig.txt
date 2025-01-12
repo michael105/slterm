@@ -1,0 +1,56 @@
+
+Copied from the documentation of fontconfig
+
+
+Font Pattern, possible settings
+
+  --------------------------------------------------------------
+
+  antialias       Bool    Whether glyphs can be antialiased
+  aspect          Double  Stretches glyphs horizontally before hinting
+  autohint        Bool    Use autohinter instead of normal hinter
+  capability      String  List of layout capabilities in the font
+  charset         CharSet Unicode chars encoded by the font
+  color           Bool    Whether any glyphs have color
+  decorative      Bool    Whether the style is a decorative variant
+  dpi             Double  Target dots per inch
+  embeddedbitmap  Bool    Use the embedded bitmap instead of the outline
+  embolden        Bool    Rasterizer should synthetically embolden the font
+  family          String  Font family names
+  familylang      String  Languages corresponding to each family
+  file            String  The filename holding the font
+  fontfeatures    String  List of the feature tags in OpenType to be enabled
+  fontformat      String  String name of the font format
+  fontversion     Int     Version number of the font
+  foundry         String  Font foundry name
+  ftface          FT_Face Use the specified FreeType face object
+  fullname        String  Font full names (often includes style)
+  fullnamelang    String  Languages corresponding to each fullname
+  globaladvance   Bool    Use font global advance data (deprecated)
+  hinting         Bool    Whether the rasterizer should use hinting
+  hintstyle       Int     Automatic hinting style
+  index           Int     The index of the font within the file
+  lang            String  List of RFC-3066-style languages this font supports
+  lcdfilter       Int     Type of LCD filter
+  minspace        Bool    Eliminate leading from line spacing
+  namelang        String  Language name, default value of familylang, stylelang, fullnamelang
+  outline         Bool    Whether the glyphs are outlines
+  pixelsize       Double  Pixel size
+  postscriptname  String  Font family name in PostScript
+  prgname         String  String  Name of the running program
+  rasterizer      String  Which rasterizer is in use (deprecated)
+  rgba            Int     unknown, rgb, bgr, vrgb, vbgr, none - subpixel geometry
+  scalable        Bool    Whether glyphs can be scaled
+  scale           Double  Scale factor for point->pixel conversions (deprecated)
+  size            Double  Point size
+  slant           Int     Italic, oblique or roman
+  spacing         Int     Proportional, dual-width, monospace or charcell
+  style           String  Font style. Overrides weight and slant
+  stylelang       String  Languages corresponding to each style
+  verticallayout  Bool    Use vertical layout
+  weight          Int     Light, medium, demibold, bold or black
+  width           Int     Condensed, normal or expanded
+
+
+
+

@@ -3,17 +3,17 @@
 
 
 	Slim (110kB linked shared) and fast terminal emulator for X11,
-	with minimal external dependencies (Xlib and Xft).
+	with minimal external dependencies (Xlib, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
 
 
-##### Addons and modifications:
+##### Features
 
    * Lessmode: scroll around with less like keybindings
    * Hit shift+backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
-	* Tab and Tab left to jump in scrollmode to the locations of entered commands
+	* Tab and Tab left to jump in lessmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
@@ -68,6 +68,11 @@ A statically linked binary with all dependencies is at
 	set mark:   Ctrl+Alt+n (n=0..9)
 	goto mark:  Ctrl+n
 	(lessmode): 'n' (number without modifier)
+
+	retmarks:  the positions within the terminal history is saved for
+              every line, entered with return.
+				  Go back: Shift+Backspace
+				  cycle (in lessmode): tab left/right, backspace
 
 
 ##### Hotkeys for font sizes and colors:
@@ -279,7 +284,7 @@ corrected ret marks and scrollmarks
 
 
 
-(misc147 2020-2024 - github.com/michael105)
+(misc147 2020-2025 - github.com/michael105)
 
 
 Credits

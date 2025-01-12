@@ -41,16 +41,16 @@ void (*handler[LASTEvent])(XEvent *) = {
 // the main event loop
 void run() {
 	XEvent ev;
-	int w = win.w, h = win.h;
+	int w = twin.w, h = twin.h;
 	fd_set rfd;
-	int xfd = XConnectionNumber(xw.dpy), xev, blinkset = 0, dodraw = 0;
+	int xfd = XConnectionNumber(xwin.dpy), xev, blinkset = 0, dodraw = 0;
 	int ttyfd;
 	struct timespec drawtimeout, *tv = NULL, now, last, lastblink;
 	long deltatime;
 
 	/* Waiting for window mapping */
 	do {
-		XNextEvent(xw.dpy, &ev);
+		XNextEvent(xwin.dpy, &ev);
 		/*
 		 * This XFilterEvent call is required because of XOpenIM. It
 		 * does filter out the key event and some client message for
@@ -64,6 +64,7 @@ void run() {
 		}
 	} while (ev.type != MapNotify);
 
+	// also start shell in ttynew. args are global. somewhere.
 	ttyfd = ttynew(opt_line, shell, opt_io, opt_cmd);
 	cresize(w, h);
 
@@ -87,7 +88,7 @@ void run() {
 			if (blinktimeout) {
 				blinkset = tattrset(ATTR_BLINK);
 				if (!blinkset)
-					MODBIT(win.mode, 0, MODE_BLINK);
+					MODBIT(twin.mode, 0, MODE_BLINK);
 			}
 		}
 
@@ -103,7 +104,7 @@ void run() {
 		dodraw = 0;
 		if (blinktimeout && TIMEDIFF(now, lastblink) > blinktimeout) {
 			tsetdirtattr(ATTR_BLINK);
-			win.mode ^= MODE_BLINK; // read in xdraw.
+			twin.mode ^= MODE_BLINK; // read in xdraw.
 			lastblink = now;
 			dodraw = 1;
 		}
@@ -114,8 +115,8 @@ void run() {
 		}
 
 		if (dodraw) {
-			while (XPending(xw.dpy)) {
-				XNextEvent(xw.dpy, &ev);
+			while (XPending(xwin.dpy)) {
+				XNextEvent(xwin.dpy, &ev);
 				if (XFilterEvent(&ev, None))
 					continue;
 				if (handler[ev.type]) // process x events 
@@ -123,7 +124,7 @@ void run() {
 			}
 
 			draw();
-			XFlush(xw.dpy);
+			XFlush(xwin.dpy);
 
 			if (xev && !FD_ISSET(xfd, &rfd))
 				xev--;
@@ -156,15 +157,15 @@ void run() {
 		}
 	}
 }
-void toggle_winmode(int flag) { win.mode ^= flag; }
+void toggle_winmode(int flag) { twin.mode ^= flag; }
 
 
-void ttysend(const Arg *arg) { ttywrite(arg->s, strlen(arg->s), 1); }
+void ttysend(const Arg *arg) { ttywrite((utfchar*)arg->s, strlen(arg->s), 1); }
 
 
 
 void resize(XEvent *e) {
-	if (e->xconfigure.width == win.w && e->xconfigure.height == win.h)
+	if (e->xconfigure.width == twin.w && e->xconfigure.height == twin.h)
 		return;
 
 	cresize(e->xconfigure.width, e->xconfigure.height);
@@ -175,14 +176,14 @@ void cmessage(XEvent *e) {
 	 * See xembed specs
 	 *  http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html
 	 */
-	if (e->xclient.message_type == xw.xembed && e->xclient.format == 32) {
+	if (e->xclient.message_type == xwin.xembed && e->xclient.format == 32) {
 		if (e->xclient.data.l[1] == XEMBED_FOCUS_IN) {
-			win.mode |= MODE_FOCUSED;
+			twin.mode |= MODE_FOCUSED;
 			xseturgency(0);
 		} else if (e->xclient.data.l[1] == XEMBED_FOCUS_OUT) {
-			win.mode &= ~MODE_FOCUSED;
+			twin.mode &= ~MODE_FOCUSED;
 		}
-	} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
+	} else if (e->xclient.data.l[0] == xwin.wmdeletewin) {
 		ttyhangup();
 		exit(0);
 	}
@@ -202,23 +203,23 @@ void focus(XEvent *ev) {
 	}
 
 	if (ev->type == FocusIn) {
-		if ( !( win.mode & MODE_FOCUSED) ){
-			win.mode |= MODE_FOCUSED;
-			XSetICFocus(xw.xic);
+		if ( !( twin.mode & MODE_FOCUSED) ){
+			twin.mode |= MODE_FOCUSED;
+			XSetICFocus(xwin.xic);
 			xseturgency(0);
 			if (IS_SET(MODE_FOCUS))
-				ttywrite("\033[I", 3, 0);
+				ttywrite((utfchar*)"\033[I", 3, 0);
 			statusbar_focusin();
 			dc.col[FCB] = tmp;
 			redraw();
 		}
 
 	} else { // focus out
-		if ( ( win.mode & MODE_FOCUSED) ){
-			win.mode &= ~MODE_FOCUSED;
-			XUnsetICFocus(xw.xic);
+		if ( ( twin.mode & MODE_FOCUSED) ){
+			twin.mode &= ~MODE_FOCUSED;
+			XUnsetICFocus(xwin.xic);
 			if (IS_SET(MODE_FOCUS))
-				ttywrite("\033[O", 3, 0);
+				ttywrite((utfchar*)"\033[O", 3, 0);
 			statusbar_focusout();
 			dc.col[FCB] = dc.col[7];
 			redraw();
@@ -233,14 +234,14 @@ void expose(XEvent *ev) { redraw(); }
 void visibility(XEvent *ev) {
 	XVisibilityEvent *e = &ev->xvisibility;
 
-	MODBIT(win.mode, e->state != VisibilityFullyObscured, MODE_VISIBLE);
+	MODBIT(twin.mode, e->state != VisibilityFullyObscured, MODE_VISIBLE);
 }
 
-void unmap(XEvent *ev) { win.mode &= ~MODE_VISIBLE; }
+void unmap(XEvent *ev) { twin.mode &= ~MODE_VISIBLE; }
 
 void propnotify(XEvent *e) {
 	XPropertyEvent *xpev;
-	Atom clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+	Atom clipboard = XInternAtom(xwin.dpy, "CLIPBOARD", 0);
 
 	xpev = &e->xproperty;
 	if (xpev->state == PropertyNewValue &&

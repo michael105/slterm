@@ -3,13 +3,12 @@
 //
 //
 
-#include "x.h"
+#include "xwindow.h"
 #include "xevent.h"
 #include "includes.h"
 #include "scroll.h"
 #include "selection.h"
 #include "system.h"
-#include "arg.h"
 #include "compile.h"
 #include "config.h"
 
@@ -61,7 +60,7 @@ void config_init(void) {
 	ResourcePref *p;
 
 	XrmInitialize();
-	resm = XResourceManagerString(xw.dpy);
+	resm = XResourceManagerString(xwin.dpy);
 	if (!resm)
 		return;
 
@@ -72,15 +71,28 @@ void config_init(void) {
 #endif
 
 void printversion(){
-	printf( "slterm version " VERSION "\n" );
+	fprintf( stderr, "slterm version " VERSION "\n" );
 }
 
 void printhelp(){
 }
 
+
+void fontusage(){
+	fprintf(stderr, 
+			" slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname] [other options]\n"
+			"\n   The fontname format is specified in the fontconfig documentation,\n"
+			"   http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
+			"   A list of attributes is in doc/fontconfig.txt\n"
+			"   Supply 0 to disable bold, italic or bolditalic fonts,\n"
+			"   using colors only for the text rendering of the different fonts.\n"
+			"\n");
+}
+
+
 void usage(void) {
 	printversion();
-	die(	"\nusage:\n\n"
+	fprintf(stderr,"\nusage:\n\n"
 			" slterm -H: show help\n"
 		  	"        -I: dump terminfo file\n"
 			"        -L display license\n\n"
@@ -90,134 +102,173 @@ void usage(void) {
 			" [[-e] command [args ...]]\n\n"
 			" slterm [-aiv] [-c class] [-f font] [-g geometry]"
 			" [-n name] [-o file]\n"
+			"[-x] [-v] [-V] [-X]\n"
 			"        [-T title] [-t title] [-w windowid] -l line"
-			" [stty_args ...] [-x] [-v] [-V] [-X]\n\n",
-			argv0, argv0);
+			" [stty_args ...]\n\n"
+			);
+	fontusage();
+	
+	fprintf(stderr," Original author Aurelien Aptel. 20xx-2019 st, suckless.\n 2020-2025 fork, slterm, misc147 github.com/michael105, MIT license\n\n");
+
+	exit(1);
 }
 
+void missingfontname( const char* option ){
+	fprintf(stderr, "Missing font name for option %s\nUsage: ",
+			option );
+	fontusage();
+	exit(1);
+}
 
 
 #ifdef shared
 // share the whole text segment, including main
 int shared_main(int argc, char *argv[]) {
+		iofd = 1; // 
 #else
 int main(int argc, char *argv[]) {
 #endif
-		xw.l = xw.t = 0;
-		xw.isfixed = False;
-		win.cursor = cursorshape;
-		iofd = 1;
+	xwin.l = xwin.t = 0;
+	xwin.isfixed = False;
+	twin.cursor = cursorshape;
+	argv0 = *argv;
 
-		ARGBEGIN {
+#define EARGF(_unneeded)  ({ if ( ! *++argv ){ fprintf(stderr, "missing option for %s\n", argv[-1] ); usage(); }; *argv; }) 
+
+
+#define ARGFONT(_type) ({ if ( ! *++argv ) missingfontname( argv[-1] ); \
+		if ( **argv == '0' ){ _type##_font = 0; use##_type##font=0; } \
+		else { _type##_font = *argv; use##_type##font=1; } \
+		*argv; })
+
+	int useregularfont=1; // dummy
+
+	while ( *++argv && argv[0][0] == '-'  ){
+		for ( char *opt = *argv+1; *opt; opt++ ){
+			switch ( *opt ){
 #ifdef INCLUDETERMINFO
-			case 'I': // dump terminfo
-				write(STDOUT_FILENO, slterm_info, strlen(slterm_info) );
-				exit(0);
+				case 'I': // dump terminfo
+					write(STDOUT_FILENO, slterm_terminfo, strlen(slterm_terminfo) );
+					exit(0);
 #endif
 #ifdef INCLUDELICENSE
-			case 'L':
-				write(STDOUT_FILENO, slterm_license, strlen(slterm_license) );
-				exit(0);
+				case 'L':
+					write(STDOUT_FILENO, slterm_license, strlen(slterm_license) );
+					exit(0);
 #endif
 #ifdef INCLUDEMANPAGE
-			case 'H':
-				write(STDOUT_FILENO, slterm_man, strlen(slterm_man) );
-				exit(0);
+				case 'H':
+					write(STDOUT_FILENO, slterm_man, strlen(slterm_man) );
+					exit(0);
 #endif
-			case 'X':
-				if ( mlockall(MCL_CURRENT|MCL_FUTURE) ){
-					perror("Unable to lock memory pages into memory");
-					exit(errno);
-				}
-				break;
-			case 'a':
-				allowaltscreen = 0;
-				break;
-			case 'c':
-				opt_class = EARGF(usage());
-				break;
-			case 'e':
-				if (argc > 0)
-					--argc, ++argv;
-				goto run;
-			case 'f':
-				opt_font = EARGF(usage());
-				break;
-			case 'g':
-				xw.gm = XParseGeometry(EARGF(usage()), &xw.l, &xw.t, &cols, &rows);
-				break;
-			case 'i':
-				xw.isfixed = 1;
-				break;
-			case 'o':
-				opt_io = EARGF(usage());
-				break;
-			case 'l':
-				opt_line = EARGF(usage());
-				break;
-			case 'n':
-				opt_name = EARGF(usage());
-				break;
-			case 't':
-			case 'T':
-				opt_title = EARGF(usage());
-				break;
-			case 'w':
-				opt_embed = EARGF(usage());
-				break;
-			case 'x':
-				opt_xresources = 1;
-				break;
-			case 'v':
-				printversion();
-				exit(0);
-			case 'V':
-				printversion();
-				printf( "\nCompiled " __COMPILEDATE__ "\n"
-						__UNAME__ "\n"
-						"CC: "__CC__" "__CC_VERSION__"\n\n"
-						"Compileflags:\n"
-						__OPT_FLAG__ "\n"
-						"HISTORY: %d\n"
-						"DEBUGLEVEL: "__ENABLEDEBUG__"\n"
-						"XRESOURCES: "__XRESOURCES__"\n"
-						"UTF8: "__UTF8__"\n"
-						__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
-				exit(0);
-			default:
-				usage();
+				case 'X':
+					if ( mlockall(MCL_CURRENT|MCL_FUTURE) ){
+						perror("Unable to lock memory pages into memory");
+						exit(errno);
+					}
+					break;
+				case 'a':
+					allowaltscreen = 0;
+					break;
+				case 'c':
+					opt_class = EARGF(usage());
+					break;
+				case 'e':
+					//if (argc > 0)
+					//	--argc, ++argv;
+					argv++;
+					goto run;
+				case 'f':
+					switch ( *++opt ){
+						case 'R':
+						case 'b': ARGFONT(bold); break;
+						case 'i': ARGFONT(italic); break;
+						case 'I': ARGFONT(bolditalic); break;
+
+						case 'r':
+						default:
+						opt_font = ARGFONT(regular);
+					}
+					break;
+				case 'g':
+					xwin.gm = XParseGeometry(EARGF(usage()), &xwin.l, &xwin.t, &cols, &rows);
+					break;
+				case 'i':
+					xwin.isfixed = 1;
+					break;
+				case 'o':
+					opt_io = EARGF(usage());
+					break;
+				case 'l':
+					opt_line = EARGF(usage());
+					break;
+				case 'n':
+					opt_name = EARGF(usage());
+					break;
+				case 't':
+				case 'T':
+					opt_title = EARGF(usage());
+					break;
+				case 'w':
+					opt_embed = EARGF(usage());
+					break;
+				case 'x':
+					opt_xresources = 1;
+					break;
+				case 'v':
+					printversion();
+					exit(0);
+				case 'V':
+					printversion();
+					printf( "\nCompiled " __COMPILEDATE__ "\n"
+							__UNAME__ "\n"
+							"CC: "__CC__" "__CC_VERSION__"\n\n"
+							"Compileflags:\n"
+							__OPT_FLAG__ "\n"
+							"HISTORY: %d\n"
+							"DEBUGLEVEL: "__ENABLEDEBUG__"\n"
+							"XRESOURCES: "__XRESOURCES__"\n"
+							"UTF8: "__UTF8__"\n"
+							__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
+					exit(0);
+				case 127: // silence unused var warning
+					printf( "%d",useregularfont );
+				default:
+					usage();
+			}
 		}
-		ARGEND;
+	}
 
 run:
-		if (argc > 0) /* eat all remaining arguments */
-			opt_cmd = argv;
+	//if (argc > 0) /* eat all remaining arguments */
+	if ( *argv )
+		opt_cmd = argv;
 
-		if (!opt_title)
-			opt_title = (opt_line || !opt_cmd) ? "slterm" : opt_cmd[0];
+	if (!opt_title)
+		opt_title = (opt_line || !opt_cmd) ? "slterm" : opt_cmd[0];
 
-		//setlocale(LC_CTYPE, "");
-		XSetLocaleModifiers("");
+	//setlocale(LC_CTYPE, "");
+	XSetLocaleModifiers("");
 
 #ifdef XRESOURCES
-		if (!(xw.dpy = XOpenDisplay(NULL)))
-			die("Can't open display\n");
+	if (!(xwin.dpy = XOpenDisplay(NULL)))
+		die("Can't open display\n");
 
-		if (opt_xresources)
-			config_init();
+	if (opt_xresources)
+		config_init();
 #endif
 
-		cols = MAX(cols, 1);
-		rows = MAX(rows, 1);
-		tnew(cols, rows);
-		xinit(cols, rows);
-		xsetenv();
-		selinit();
+	cols = MAX(cols, 1);
+	rows = MAX(rows, 1);
+	tnew(cols, rows);
+	xinit(cols, rows);
+	xsetenv();
+	selinit();
 
-		create_unicode_table(); // unicode to current cp table
-		sort_shortcuts();	
+	create_unicode_table(); // unicode to current cp table
+	sort_shortcuts();	
 
-		run();
+	run();
 
-		return 0;
-	}
+	return 0;
+}

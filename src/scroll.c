@@ -2,13 +2,6 @@
 #include "scroll.h"
 
 
-//int term->term->scrollmarks[12];
-//int term->retmarks[10];
-//static int cret=0;
-//static int circledret=0;
-//static int pret=0;
-
-
 void tsetscroll(int t, int b) {
 		LIMIT(t, 0, term->row - 1);
 		LIMIT(b, 0, term->row - 1);
@@ -136,21 +129,11 @@ void set_retmark() {
 }
 
 void retmark(const Arg* a){
-	if (term==p_alt) return;
+	if (term==p_alt) return; // not usable in alt screen
 	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->row, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
 
-	Arg d = { .i=LESSMODE_ON };	
 
-	if ( a->i == 1 ){ // tab right in lessmode -> scrolling down
-
-		/*
-		int t = term->scroll_retmark;
-		term->scroll_retmark = (term->scroll_retmark+1) & (RETMARKCOUNT-1);
-		if ( term->scroll_retmark == ((term->current_retmark)&(RETMARKCOUNT-1)) ||
-				(term->retmarks[t]==0 && term->retmarks[term->scroll_retmark] == 0 )  )
-			term->scroll_retmark = t;
-		term->scr=(term->histi-term->retmarks[term->scroll_retmark]);
-		*/
+	if ( a->i == -1 ){ // tab right in lessmode -> scrolling down
 
 		// scanning could be optimized. (skip, and divide..)
 		int b = 1;
@@ -169,10 +152,15 @@ void retmark(const Arg* a){
 			scrolltobottom();
 		}
 
+	} else if ( a->i >= 1 ){ // number, scroll to retmark number x
+		int t = (term->current_retmark - a->i ) & (RETMARKCOUNT-1); 
+		term->scr=(term->histi-term->retmarks[t]);
+		term->retmark_scrolled = (term->current_retmark-t) & ( RETMARKCOUNT-1);
+
 	} else { // scroll backward
 		if ( term->histi<term->row){ // at the top
 			scrolltotop();
-			lessmode_toggle(&d);
+			lessmode_toggle( ARGPi(LESSMODE_ON) );	
 			return;
 		}
 		
@@ -208,7 +196,7 @@ void retmark(const Arg* a){
 	selscroll(0, term->scr);
 	tfulldirt();
 	//updatestatus();
-	lessmode_toggle(&d);
+	lessmode_toggle( ARGPi(LESSMODE_ON) );
 //	}
 }
 
@@ -236,7 +224,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 		if ( term->histi == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
 		// else segfaults. reproduce: man man; and scroll with a (now, since this is patched rotfl) unknown combination of commands.
 			printf("RETURN\n"); // xxx
-			//return;
+			//return; // ? strange. no segfaults anymore. 
 		}
 		//LIMIT(n, 0, term->bot - orig ); //xxx
 		LIMIT(n, 0, term->bot - orig + 1);
@@ -336,9 +324,7 @@ void tscrollup(int orig, int n, int copyhist) {
 						term->scr=(term->histi)-term->scrollmarks[0];
 						selscroll(0, term->scr);
 						//tfulldirt();
-						Arg a; 
-						 a.i=LESSMODE_ON;
-					  lessmode_toggle(&a);
+					  lessmode_toggle(ARGP(i=LESSMODE_ON));
 						enterlessmode = 0;
 						//a.i=0;
 						//scrollmark(&a);
@@ -370,12 +356,12 @@ void enterscroll(const Arg *a){
 		
 		term->scrollmarks[0] = term->histi+ term->row - ( term->row - term->cursor.y );
 		enterlessmode = term->row;
-		ttywrite("\n",1,1);
+		ttywrite((utfchar*)"\n",1,1);
 }
 
 void leavescroll(const Arg *a){
 		enterlessmode = 0;
-		ttywrite("\n",1,1);
+		ttywrite((utfchar*)"\n",1,1);
 }
 
 
@@ -399,9 +385,8 @@ void lessmode_toggle(const Arg *a){
 
 	if ( a->i & ~LESSMODEMASK ){
 		//printf("scroll %d\n",a->i);
-		Arg d = { .i = SCROLLMASK & a->i };
 		//printf("scroll %d\n",d.i);
-		scroll(&d);
+		scroll(ARGP(i = SCROLLMASK & a->i ));
 	}
 
 		if ( inputmode & MODE_LESS ){ // enabled

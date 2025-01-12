@@ -22,6 +22,19 @@
 #define STR_ARG_SIZ ESC_ARG_SIZ
 
 
+enum escape_state {
+  ESC_START = 1,
+  ESC_CSI = 2,
+  ESC_STR = 4, /* OSC, PM, APC */
+  ESC_ALTCHARSET = 8,
+  ESC_STR_END = 16, /* a final string was encountered */
+  ESC_TEST = 32,    /* Enter in test mode */
+  ESC_UTF8 = 64,
+  ESC_DCS = 128,
+};
+
+
+
 /* CSI Escape sequence structs */
 /* ESC '[' [[ [<priv>] <arg> [;]] <mode> [<mode>]] */
 typedef struct {
@@ -52,6 +65,27 @@ int handle_controlchars( Rune u, uint decoded_len, char* decoded_char );
 int _handle_controlchars( Rune u );
 #define handle_controlchars( _rune, ... ) _handle_controlchars( _rune )
 #endif
+
+
+static void tdefutf8(utfchar);
+static void tdeftran(utfchar);
+static void tsetmode(int, int, int *, int);
+
+static void tstrsequence(uchar);
+static void tcontrolcode(uchar);
+
+
+static void csidump(void);
+static void csihandle(void);
+static void csiparse(void);
+static void csireset(void);
+static int eschandle(uchar);
+
+static void strdump(void);
+static void strparse(void);
+static void strreset(void);
+
+
 
 
 

@@ -1,4 +1,4 @@
-#include "x.h"
+#include "xwindow.h"
 
 
 int main(int argc, char *argv[]){
