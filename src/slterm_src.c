@@ -41,13 +41,6 @@
 #include "slterm_man.h"
 #endif
 
-// embedded resources
-#ifdef INCLUDETERMINFO
-#include "slterm_info.h"
-#endif
-#ifdef INCLUDELICENSE
-#include "slterm_license.h"
-#endif
 
 #include "globals.c"
 #include "statusbar.c"
