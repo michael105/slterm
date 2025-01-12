@@ -140,9 +140,16 @@ slterm is mostly VT100 compatible, please look in question for the according man
 Here only some of the vt100 or slterm additions are described.
 
 slterm starts either the env variable SHELL, /bin/sh, or a command supplied with
-`slterm -e command`.
+`slterm [-e] command options`.
 
-Several Variables are exported into the environment.
+All `options` are forwarded to command without changes.
+
+The already set environmental variables are kept, 
+further variables are exported into the environment:
+
+COLUMNS, LINES, TERMCAP, LOGNAME, USER, SHELL, HOME, TERM.
+
+Color Ansi escapesequences are set.
 
 
 Colors
@@ -154,8 +161,8 @@ $BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
 > echo $RED red text
 
 
-The can be combined with prefixes: L(ight), D(ark), LD(light-dark), BD(background).
-L: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE.
+They can be combined with prefixes: L(ight), D(ark), LD(light-dark), BG(background), BGL(ight background).
+Example: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE, BGLCYAN.
 
 These Colors cannot be combined: ORANGE, ORANGERED, BROWN, BGBROWN, PURPLE, GRAY, MINT, TURQUOISE
 
@@ -271,11 +278,18 @@ OPTIONS
 -c class
    defines the window class (default $TERM).
 
--f font
+-f font 
    defines the font to use when slterm is run.
    example: slterm -f 'Liberation Mono:Bold:pixelsize=13:antialias=true:autohint=true'
    the parameters are described in the fontconfig documentation, 
    an overview is supplied in doc/fontconfig.txt
+
+-fb boldfont 
+-fi italicfont
+-fI bolditalicfont
+   Set bold/italic/bolditalic fonts.
+   Supply '0' to disable the according font and to display
+   the text attributes by color changes only
 
 -g geometry
    defines the X11 geometry string. The form is
@@ -344,7 +358,7 @@ AUTHORS
 (2020-2025) Michael (misc147), www.github.com/michael105
 
 The code is based on st, the suckless terminal emulator,
-fetched from git 1.1.2020, which was based on code from Aurelien Aptel.
+fetched from git 1.1.2020, which was originally written by Aurelien Aptel.
 
 The included patches to st had been provided by: 
 
