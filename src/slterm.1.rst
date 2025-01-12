@@ -284,9 +284,7 @@ OPTIONS
    the parameters are described in the fontconfig documentation, 
    an overview is supplied in doc/fontconfig.txt
 
--fb boldfont 
--fi italicfont
--fI bolditalicfont
+-fb boldfont -fi italicfont -fI bolditalicfont
     Set bold/italic/bolditalic fonts.
     Supply '0' to disable the according font and to display
     the text attributes by color changes only
