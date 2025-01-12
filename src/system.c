@@ -44,7 +44,7 @@ void execsh(char *cmd, char **args) {
 		unsetenv("TERMCAP");
 		setenv("LOGNAME", pw->pw_name, 1);
 		setenv("USER", pw->pw_name, 1);
-		//setenv("SHELL", sh, 1);
+		setenv("SHELL", sh, 1);
 		setenv("HOME", pw->pw_dir, 1);
 		setenv("TERM", termname, 1);
 

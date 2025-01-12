@@ -5,7 +5,7 @@
 
 #ifndef extract_keyref
 
-// Silence my syntaxcheckerplugin
+// Silence syntaxcheckerplugin
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xft/Xft.h>
@@ -897,8 +897,10 @@ int selected_codepage = 2;
 
 
 // environment variables, exported to the shell
+// besides SHELL, USER, HOME, TERM, COLUMNS, LINES, TERMCAP 
+// which are determined and set in system.c 
 const char *export_env[][2] = {
-   { "SHELL", "sh"},
+
 		// display chars 128-255 in less
    { "LESSCHARSET", "dos"}, 
 
@@ -908,6 +910,7 @@ const char *export_env[][2] = {
    { "LC_ALL", "C"},
 		
 
+	// color ansi escape sequences
    { "NORM", "\e[0;37;40m"},
 
    { "BLACK", "\e[30m"},

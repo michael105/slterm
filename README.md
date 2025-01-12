@@ -13,7 +13,7 @@
    * Lessmode: scroll around with less like keybindings
    * Hit shift+backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
-	* Tab and Tab left to jump in lessmode to the locations of entered commands
+	* Retmarks: Tab/Backspace to jump in lessmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
@@ -24,9 +24,10 @@
    * secure mode, option -X: lock all pages into memory, prevent swapping
 	* Gradient custom 32 color palette for colors 0..7
 	  (0..7 with attributes normal, bold, faint, bold_faint)
-	  and the first 16 background colors.
+	  and the first 16 background colors
 	* Copy whole lines in the history with 'yy' in selection mode
 	* Additional cursor shapes
+	* utf8 clipboard conversion
 
 
 Statically linked binaries with all dependencies are at
@@ -192,11 +193,16 @@ into smaller pieces. Hopefully hacking st is in the future a little bit more con
 
 ---
 
+
 ### Requirements for compiling
 
+- make
+- gcc
 - Xlib headers
-- Xft headers
+- Xft freetype2 headers
 - pkgconf (pkgconfig)
+- optional, to embed resources: rst2man, xdd
+
 
 ### Install
 
