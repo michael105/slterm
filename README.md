@@ -29,7 +29,7 @@
 	* Additional cursor shapes
 
 
-Statically linked binaries with all dependencies is at
+Statically linked binaries with all dependencies are at
 [https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
 
 
