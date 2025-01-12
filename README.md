@@ -29,7 +29,7 @@
 	* Additional cursor shapes
 
 
-Statically linked binaries with all dependencies is at
+Statically linked binaries with all dependencies are at
 [https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
 
 
@@ -127,29 +127,9 @@ Statically linked binaries with all dependencies is at
 `Ctrl+F1`
    
     Show inline help, and the reference of keybindings
-    `Anymod` can be any combination of modification keys (Ctrl, Alt,..)
-    Added to show the internal help, also when e.g. F1 has been
-	 bound to the window manager
-
-  
    
 	Cursor and configurable cursorcolor for unfocused windows,
 	cursor gets highlighted on focus in
-
-
-#### Slim resource usage:
-
-  Colors restricted to a 256 color palette per default.
-        (Saving 6 Bytes per Glyph)
-
-	Keep the history and terminal contents on resize events
-		(Doesn't erase wider lines, when shrinking)
-		No scrollback "behind" the current history anymore (Bugfix)
-
-	Delayed allocation of the history buffer. 
-
-		Saves up to tenths or even hundreds of MB, 
-		depending on the terminal's width and history size
 
 
 ___
