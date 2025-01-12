@@ -287,9 +287,9 @@ OPTIONS
 -fb boldfont 
 -fi italicfont
 -fI bolditalicfont
-   Set bold/italic/bolditalic fonts.
-   Supply '0' to disable the according font and to display
-   the text attributes by color changes only
+    Set bold/italic/bolditalic fonts.
+    Supply '0' to disable the according font and to display
+    the text attributes by color changes only
 
 -g geometry
    defines the X11 geometry string. The form is

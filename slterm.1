@@ -56,8 +56,6 @@ In favor of compatibility with terminal programs and performance utf8
 support is stripped. Communication with the x clipboard is however
 automatically converted from and to utf8.
 .SH USAGE
-.sp
-The most important key combination might be
 .INDENT 0.0
 .TP
 .B \fBCtrl+F1\fP
@@ -66,20 +64,28 @@ Show a help screen with all shortcuts.
 .sp
 The usage of slterm differs to other terminal emulators by its three different main modes.
 .SS normalmode
+.INDENT 0.0
+.INDENT 3.5
 .sp
-The codepage can be changed via hotkeys. (\fICtrl+Shift+0..9\fP).
-.sp
-Paste from the clipbard with \fIShift+Insert\fP\&.
-.sp
-Set Bookmarks to the current line with \fICtrl+Shift+0..9\fP
-Scroll back to a bookmark with \fICtrl+0..9\fP
-.sp
+.nf
+.ft C
+The codepage can be changed via hotkeys. (\(gaCtrl+Shift+0..9\(ga).
+
+Paste from the clipbard with \(gaShift+Insert\(ga.
+
+Set Bookmarks to the current line with \(gaCtrl+Shift+0..9\(ga
+Scroll back to a bookmark with \(gaCtrl+0..9\(ga
+
 Retmarks are atomatically stored, and can be browsed to later.
 Every time, a command is entered with return, a retmark is stored.
 Switch into lessmode, and browse to the location of the
-last entered command with \fIShift+backspace\fP\&.
-.sp
-\fICtrl+Shift\fP + \fIUp\fP/\fIDown\fP/\fIPageUp\fP/\fIPageDown\fP switch to lessmode.
+last entered command with \(gaShift+backspace\(ga.
+
+\(gaCtrl+Shift\(ga + \(gaUp\(ga/\(gaDown\(ga/\(gaPageUp\(ga/\(gaPageDown\(ga switch to lessmode.
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .SS lessmode
 .INDENT 0.0
 .INDENT 3.5
@@ -163,9 +169,16 @@ slterm is mostly VT100 compatible, please look in question for the according man
 Here only some of the vt100 or slterm additions are described.
 .sp
 slterm starts either the env variable SHELL, /bin/sh, or a command supplied with
-\fIslterm \-e command\fP\&.
+\fIslterm [\-e] command options\fP\&.
 .sp
-Several Variables are exported into the environment.
+All \fIoptions\fP are forwarded to command without changes.
+.sp
+The already set environmental variables are kept,
+further variables are exported into the environment:
+.sp
+COLUMNS, LINES, TERMCAP, LOGNAME, USER, SHELL, HOME, TERM.
+.sp
+Color Ansi escapesequences are set.
 .SS Colors
 .sp
 The basic 8 colors, accessable in the shell as:
@@ -173,8 +186,8 @@ $BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
 .sp
 > echo $RED red text
 .sp
-The can be combined with prefixes: L(ight), D(ark), LD(light\-dark), BD(background).
-L: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE.
+They can be combined with prefixes: L(ight), D(ark), LD(light\-dark), BG(background), BGL(ight background).
+Example: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE, BGLCYAN.
 .sp
 These Colors cannot be combined: ORANGE, ORANGERED, BROWN, BGBROWN, PURPLE, GRAY, MINT, TURQUOISE
 .sp
@@ -289,6 +302,21 @@ defines the font to use when slterm is run.
 example: slterm \-f \(aqLiberation Mono:Bold:pixelsize=13:antialias=true:autohint=true\(aq
 the parameters are described in the fontconfig documentation,
 an overview is supplied in doc/fontconfig.txt
+.UNINDENT
+.sp
+\-fb boldfont
+\-fi italicfont
+\-fI bolditalicfont
+.IP "System Message: ERROR/3 (slterm.1.rst:, line 290)"
+Unexpected indentation.
+.INDENT 0.0
+.INDENT 3.5
+Set bold/italic/bolditalic fonts.
+Supply \(aq0\(aq to disable the according font and to display
+the text attributes by color changes only
+.UNINDENT
+.UNINDENT
+.INDENT 0.0
 .TP
 .BI \-g \ geometry
 defines the X11 geometry string. The form is
@@ -359,7 +387,7 @@ This option locks all memory pages into ram.
 (2020\-2025) Michael (misc147), www.github.com/michael105
 .sp
 The code is based on st, the suckless terminal emulator,
-fetched from git 1.1.2020, which was based on code from Aurelien Aptel.
+fetched from git 1.1.2020, which was originally written by Aurelien Aptel.
 .sp
 The included patches to st had been provided by:
 .sp
