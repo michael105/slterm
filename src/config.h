@@ -76,10 +76,14 @@ int usebolditalicfont = 1;
 
 
 
-//static int borderpx = 4;
+
 
 // The terminal's borderwidth in percent of a char's width
+// if set to 0, borderpx is not changed
 int borderperc = 40;
+
+// the borderwidth in pixel. borderpc is used to calculate borderpx, if set.
+int borderpx = 0;
 
 /*
  What program is execed by slterm depends of these precedence rules:
@@ -400,7 +404,7 @@ static MouseShortcut mshortcuts[] = {
 #ifndef extract_keyref
 Shortcut shortcuts[] = {
 #endif
-/*  { mask,       keysym,   function,  argument, INPUTMODE } */
+/*  ( mask,       keysym,   function,  argument, INPUTMODE ) */
 
 BIND( ControlMask, XK_F1, showhelp, { 0},ALLMODES ),
 

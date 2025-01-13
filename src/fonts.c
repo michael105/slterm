@@ -328,7 +328,8 @@ void xloadfonts(double fontsize) {
 	twin.cw = ceilf(dc.font.width * cwscale);
 	twin.ch = ceilf(dc.font.height * chscale);
 
-	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
+	if ( borderperc != 0 )
+		borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
 	if ( useboldfont ){
 		if ( bold_font ){

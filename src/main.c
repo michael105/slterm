@@ -144,7 +144,8 @@ int main(int argc, char *argv[]) {
 	int useregularfont=1; // dummy
 
 	while ( *++argv && argv[0][0] == '-'  ){
-		for ( char *opt = *argv+1; *opt; *opt && opt++ ){
+		for ( char *opt = *argv; *opt && *++opt; ){
+		//for ( char *opt = *argv+1; *opt; *opt ? opt++:0 ){
 			switch ( *opt ){
 #ifdef INCLUDETERMINFO
 				case 'I': // dump terminfo
@@ -174,8 +175,6 @@ int main(int argc, char *argv[]) {
 					opt_class = EARGF(usage());
 					break;
 				case 'e':
-					//if (argc > 0)
-					//	--argc, ++argv;
 					argv++;
 					goto run;
 				case 'f':
@@ -234,6 +233,7 @@ int main(int argc, char *argv[]) {
 				case 127: // silence unused var warning
 					printf( "%d",useregularfont );
 				default:
+					fprintf( stderr, "Unknown option: %c\n\n", *opt );
 					usage();
 			}
 		}
