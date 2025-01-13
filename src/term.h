@@ -155,16 +155,6 @@ typedef struct {
 
 typedef Glyph *Line;
 
-typedef struct {
-  Glyph attr; /* current char attributes */ //the rune is set to ' ' (empty)
-	// Possibly there should be a difference between space ' ' and empty?
-	// evtl render spaces and tabs visually? 
-  int x;
-  int y;
-  char state;
-} TCursor;
-
-
 void redraw(void);
 void draw(void);
 

@@ -20,17 +20,17 @@ void kscrolldown(const Arg *a) {
 		int n = a->i;
 
 		dbg2("kscrolldown, n: %d, guard: %x\n",n, term->guard);
-		if (n < 0) {
+		if (n < 0) { // scroll a page
 				n = term->row + n;
 		}
 
-		if (n > term->scr) {
+		if (n > term->scr) {  // at the bottom ( bottom: scr=0 )
 				n = term->scr;
 		}
 		dbg2("kscrolldown2, n: %d\n",n);
 
 		if (term->scr > 0) {
-				term->scr -= n;
+				term->scr -= n; 
 				selscroll(0, -n);
 				tfulldirt();
 				updatestatus();
@@ -51,7 +51,7 @@ void scrolltotop(){
 	//printf("totop\n");
 		term->scr=HISTSIZE;
 		if ( (term->circledhist==0) && (term->scr>term->histi ) )
-				term->scr=term->histi;
+				term->scr=term->histi; // 
 		selscroll(0, term->scr);
 		tfulldirt();
 		updatestatus();
@@ -63,7 +63,7 @@ void kscrollup(const Arg *a) {
 
 		dbg2("kscrollup, n: %d, term->histi: %d, term->row: %d scr: %d\n",
 						n, term->histi, term->row, term->scr);
-		if (n < 0) {
+		if (n < 0) { // scroll a page upwards
 				n = term->row + n;
 		}
 		dbg2("kscrollup2, n: %d\n",n);
@@ -132,6 +132,8 @@ void retmark(const Arg* a){
 	if (term==p_alt) return; // not usable in alt screen
 	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->row, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
 
+	// rewrite that. (count curentretmark from 0 to UINT_MAX. Limit bits when
+	// accessing the array. ->retmark_scrolled can be set absolute.
 
 	if ( a->i == -1 ){ // tab right in lessmode -> scrolling down
 
@@ -141,8 +143,8 @@ void retmark(const Arg* a){
 				t = (t+1) & ( RETMARKCOUNT-1 ) ){
 			//printf("mark: %d   %d\n",t, term->retmarks[t] );
 			if ( (term->histi - term->retmarks[t] < term->scr) ){
-				term->scr=(term->histi-term->retmarks[t]);
-				term->retmark_scrolled = (term->current_retmark-t) & ( RETMARKCOUNT-1);
+				term->scr=(term->histi - term->retmarks[t]);
+				term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 				b = 0;
 				break;
 			}
@@ -168,8 +170,8 @@ void retmark(const Arg* a){
 				t = (t-1) & ( RETMARKCOUNT-1 ) ){
 			//printf("mark: %d   %d\n",t, term->retmarks[t] );
 			if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] > term->scr) ){
-				term->scr=(term->histi-term->retmarks[t]);
-				term->retmark_scrolled = (term->current_retmark-t) & ( RETMARKCOUNT-1);
+				term->scr=(term->histi - term->retmarks[t]);
+				term->retmark_scrolled = (term->current_retmark - t) & ( RETMARKCOUNT-1);
 				break;
 			}
 		}
@@ -223,7 +225,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 		//printf("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d term->bot: %d\n",orig,n, term->histi, term->scr, copyhist, term->bot);
 		if ( term->histi == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
 		// else segfaults. reproduce: man man; and scroll with a (now, since this is patched rotfl) unknown combination of commands.
-			printf("RETURN\n"); // xxx
+			//printf("RETURN\n"); // xxx
 			//return; // ? strange. no segfaults anymore. 
 		}
 		//LIMIT(n, 0, term->bot - orig ); //xxx

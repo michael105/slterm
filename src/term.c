@@ -43,6 +43,11 @@ void tty_send_unicode(const Arg *arg){
 	ttywrite(&c, 1, 1); 
 }
 
+void check_canary(){
+	asm( "" : "+m"(term->guard));
+	if ( term->guard != 0xf0f0f0f0 )
+		die("term->guard modified");
+}
 
 // initiate new terminal window and buffers
 void tnew(int col, int row) {
@@ -64,6 +69,7 @@ void tnew(int col, int row) {
 	term->current_retmark = 0;
 
 	term->guard = 0xf0f0f0f0;
+	asm( "" : "+m"(term->guard));
 	tresize(col,row);
 	treset();
 }

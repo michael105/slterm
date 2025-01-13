@@ -133,6 +133,17 @@ typedef struct {
 
 extern TermWindow twin;
 
+
+typedef struct {
+  Glyph attr; /* current char attributes */ //the rune is set to ' ' (empty)
+	// Possibly there should be a difference between space ' ' and empty?
+	// evtl render spaces and tabs visually? 
+  int x;
+  int y;
+  char state;
+} TCursor;
+
+
 // The xwindow data
 typedef struct {
 	Display *dpy;
@@ -160,29 +171,31 @@ extern XWindow xwin;
 typedef struct {
 	// todo: remove alt and hist[1], histsize should be smaller for help and alt screens
 	Line hist[HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
-	int guard;
+	int guard; // canary, debugging hist
 	Line *line;                               /* screen */
-	//Line *alt;                                /* alternate screen */
-	//Line *helpscr;                                /* help screen */
-	TCursor cursor;                                /* cursor */
-	// TODO: strip cthist
-	//int cthist; // current history, need 2cond buf for resizing
-	int row;                                  /* nb row */
-	int col;                                  /* nb col */
+	int row;                                  // number of rows visible
+	int col;                                  // number of cols visible
 	int colalloc; // allocated col. won't shrink, only enlarge. 
-	int histi;                                /* history index */ // points to the bottom of the terminal
-	int scr;                                  /* scroll back */
-	int *dirty;                               /* dirtyness of lines */
-	int ocx;                                  /* old cursor col */
-	int ocy;                                  /* old cursor row */
+	int histi;    /* history index */ // points to the bottom of the terminal
+	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top
+				  // scr=0 : scroll to the bottom
+
 	int top;                                  /* top    scroll limit */
 	int bot;                                  /* bottom scroll limit */
+	// top / bot: when only parts of the screen are scrolled (scroll areas set)
+			 
+	int *dirty;                               /* dirtyness of lines */
+
+	TCursor cursor;                                /* cursor */
+	int ocx;                                  /* old cursor col */
+	int ocy;                                  /* old cursor row */
 	int mode;                                 /* terminal mode flags */
 	int esc;                                  /* escape state flags */
 	char trantbl[4];                          /* charset table translation */ //unused
 	int charset;                              /* current charset */
 	int icharset;                             /* selected charset for sequence */
 	int *tabs;
+
 	int scrollmarks[12];
 	int retmarks[RETMARKCOUNT];
 	int current_retmark; // current retmark. retmarks are stored circular.
