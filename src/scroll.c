@@ -125,7 +125,7 @@ void set_retmark() {
 	term->current_retmark = (term->current_retmark + 1) & (RETMARKCOUNT-1);
 	term->scroll_retmark = term->current_retmark;
 	//updatestatus();
-	//printf("Setretmark: n:%d histi:%d scr:%d\n", 0, term->histi, term->scr );
+	//printf("Setretmark: n:%d histi:%d scr:%d  cursor: %d\n", term->current_retmark, term->histi, term->scr, term->cursor.y );
 }
 
 void retmark(const Arg* a){
@@ -141,11 +141,12 @@ void retmark(const Arg* a){
 		int b = 1;
 		for ( int t = (term->current_retmark +1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
 				t = (t+1) & ( RETMARKCOUNT-1 ) ){
-			//printf("mark: %d   %d\n",t, term->retmarks[t] );
+			//if ( (term->retmarks[t] < term->histi - term->scr) ){
 			if ( (term->histi - term->retmarks[t] < term->scr) ){
 				term->scr=(term->histi - term->retmarks[t]);
 				term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 				b = 0;
+			//printf("mark: %d   %d\n",t, term->retmarks[t] );
 				break;
 			}
 		}
@@ -157,7 +158,7 @@ void retmark(const Arg* a){
 	} else if ( a->i >= 1 ){ // number, scroll to retmark number x
 		int t = (term->current_retmark - a->i ) & (RETMARKCOUNT-1); 
 		term->scr=(term->histi-term->retmarks[t]);
-		term->retmark_scrolled = (term->current_retmark-t) & ( RETMARKCOUNT-1);
+		term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 
 	} else { // scroll backward
 		if ( term->histi<term->row){ // at the top
