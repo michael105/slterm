@@ -444,6 +444,8 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		//if ( rune>=0x80 )
 		//printf("rune: %x  \n",rune,glyphidx);
 		/* Lookup character index with default font. */
+
+		// todo: cache that. ( besser auch die charmap )
 		glyphidx = XftCharIndex(xwin.dpy, font->match, rune);
 		if (glyphidx) {
 			//if ( rune>0x80 )
@@ -455,9 +457,14 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			xp += runewidth;
 			numspecs++;
 			continue;
+		} else {
+			// todo: load chars when loading the font, spare that
+			// the table is limited to ascii 255
+			fprintf(stderr,"rune missing in font, unicode: %x  ascii: %x\n",rune,glyphs[i].u);
 		}
 
 		/* Fallback on font cache, search the font cache for match. */
+		// TODO: reverse that. "cache" fonts in a table indexed by ascii
 		for (f = 0; f < frclen; f++) {
 			glyphidx = XftCharIndex(xwin.dpy, frc[f].font, rune);
 			/* Everything correct. */
@@ -471,6 +478,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 		/* Nothing was found. Use fontconfig to find matching font. */
 		if (f >= frclen) {
+			fprintf(stderr,"Not cached\n");
 			if (!font->set)
 				font->set = FcFontSort(0, font->pattern, 1, 0, &fcres);
 			fcsets[0] = font->set;
@@ -487,12 +495,16 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 			FcCharSetAddChar(fccharset, rune);
 			FcPatternAddCharSet(fcpattern, FC_CHARSET, fccharset);
-			FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
+			//FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
 
 			FcConfigSubstitute(0, fcpattern, FcMatchPattern);
 			FcDefaultSubstitute(fcpattern);
 
+		//FcPatternDel(fcpattern, FC_FAMILY);
+			//FcPatternDel(fcpattern, FC_WEIGHT);
+
 			fontpattern = FcFontSetMatch(0, fcsets, 1, fcpattern, &fcres);
+			//fontpattern = FcFontMatch(NULL, fcpattern, &fcres);
 
 			/* Allocate memory for the new cache entry. */
 			if (frclen >= frccap) {
@@ -508,6 +520,18 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			frc[frclen].unicodep = rune;
 
 			glyphidx = XftCharIndex(xwin.dpy, frc[frclen].font, rune);
+
+			fprintf(stderr,"found idx: %d\nfrclen: %d\n",glyphidx,frclen);
+			// misc. ok. memeory leak. frclen, if runes aren't found.
+			// todo: write a rune buffer for codepoints and fonts.
+
+			if ( glyphidx ){
+				FcPatternPrint( fcpattern );
+
+
+
+
+			}
 
 			f = frclen;
 			frclen++;
