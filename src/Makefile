@@ -18,13 +18,13 @@ endif
 
 SRC = base64.c mem.c slterm_shared.c slterm_src.c tty.c xwindow.c main.c\
 			selection.c term.c  system.c utf8.c xevent.c fonts.c\
-			statusbar.c xdraw.c termdraw.c scroll.c charmaps.c mouse.c \
+			statusbar.c xdraw.c termdraw.c scroll.c charmaps.c xmouse.c \
 			keyboard.c colors.c globals.c controlchars.c xcursor.c xclipboard.c
 
 
 HEADER = term.h config.h utf8.h selection.h\
 				 includes.h debug.h xwindow.h fonts.h xevent.h statusbar.h\
-				 xdraw.h termdraw.h charmaps.h mouse.h keyboard.h scroll.h\
+				 xdraw.h termdraw.h charmaps.h xmouse.h keyboard.h scroll.h\
 				 globals.h colors.h controlchars.h xcursor.h xclipboard.h
 
 
