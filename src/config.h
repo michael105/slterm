@@ -354,6 +354,7 @@ static MouseShortcut mshortcuts[] = {
 // inputmodes
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
+#define MODE_REGULAR MODE_DEFAULT
 #define MODE_LESS 0x02
 #define IMODE_HELP 0x04 // 0x4 | 0x2 , keys for lessmode
 
