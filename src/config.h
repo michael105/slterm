@@ -36,6 +36,23 @@ static char *regular_font = "Liberation Mono:Bold:pixelsize=13:antialias=true:au
 //if size not set 
 int default_font_pixelsize = 14;
 
+// if set to 0, the sizes will be determined.
+// else these sizes are used, regardless of pixelsize
+int fontwidth = 0; // width in pixel, fontspacing is added
+int fontheight = 0; // height in pixel. should be larger than pixelsize
+
+
+// more/less font width spacing
+// here, with utf8 enabled, -1 looks much better.
+int fontspacing = 0;
+//int fontspacing = -1;
+
+/* Kerning / character bounding-box multipliers */
+static float cwscale = 1.0;
+static float chscale = 1.0;
+
+
+
 /* if fonts below are set, they are used, no matter of xresources or command line options
  else, if set to 0, the appropiate weight and slant are added to "regular_font" 
  (italic,bold,bold italic) when usexxxfont below is set to 1.
@@ -59,12 +76,6 @@ int usebolditalicfont = 1;
 
 
 
-// more/less font width spacing
-// here, with utf8 enabled, -1 looks much better.
-int fontspacing = 0;
-//int fontspacing = -1;
-
-
 //static int borderpx = 4;
 
 // The terminal's borderwidth in percent of a char's width
@@ -85,9 +96,6 @@ char *stty_args = "stty raw pass8 nl -echo -iexten -cstopb 38400";
 /* identification sequence returned in DA and DECID */
 char *vtiden = "\033[?6c";
 
-/* Kerning / character bounding-box multipliers */
-static float cwscale = 1.0;
-static float chscale = 1.0;
 
 /*
  word delimiter string
@@ -314,11 +322,6 @@ ResourcePref resources[] = {
     { "chscale", FLOAT, &chscale },
 };
 #endif
-/*
- Color used to display font attributes when fontconfig selected a font which
- doesn't match the ones requested.
-*/
-//static unsigned int defaultattr = 11;
 
 /*
  Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).

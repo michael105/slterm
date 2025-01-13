@@ -138,17 +138,27 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 		}
 	}
 
+	if ( fontwidth ){
+		f->width = fontwidth;
+	} else {
+
+
 #ifdef UTF8
 			XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)ascii_printable,
 							strlen(ascii_printable), &extents);
+	f->width = DIVCEIL(extents.xOff, strlen(ascii_printable));
+	//f->width = DIVCEIL(extents.xOff,190 );
+
 #else
-			// might be unneeded. fixed width. 
+			// might be unneeded, fonts are rendered as monospace
+			// don't know. something is happening. It works.
+			//
 	char printable[255];
 	int p = 0;
 	for ( int a = 32; a<127; a++) 
 		printable[p++] = a; 
 	for ( int a = 128; a<256; a++) 
-		printable[p++] = charmap_convert(a,0); //a;
+		printable[p++] = charmap_convert(a,0); // 
 	printable[p] = 0;
 
 
@@ -156,9 +166,14 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	//XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)printable,
 			(127-32)+127, &extents);
 			//sizeof(printable), &extents);
+	//f->width=8;
+	f->width = DIVCEIL(extents.xOff, (127-32)+127 );
+	//printf("w:%d, height: %d\n",f->width, f->height);
+	// pixelsize 13: w 8, h 15
+	//f->width = DIVCEIL(extents.xOff, 96);
+
 #endif
-
-
+	}
 
 	f->set = NULL;
 	f->pattern = configured;
@@ -168,17 +183,10 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	f->lbearing = 0;
 	f->rbearing = f->match->max_advance_width;
 
-	f->height = f->ascent + f->descent;
-#ifdef UTF8
-	f->width = DIVCEIL(extents.xOff, strlen(ascii_printable));
-	//f->width = DIVCEIL(extents.xOff,190 );
-#else
-	//f->width=8;
-	f->width = DIVCEIL(extents.xOff, (127-32)+127 );
-	//printf("w:%d, height: %d\n",f->width, f->height);
-	// pixelsize 13: w 8, h 15
-	//f->width = DIVCEIL(extents.xOff, 96);
-#endif
+	if ( fontheight )
+		f->height = fontheight;
+	else
+		f->height = f->ascent + f->descent;
 
 	f->width += fontspacing;
 	if ( f->width < 1 )
