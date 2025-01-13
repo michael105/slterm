@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
 	int useregularfont=1; // dummy
 
 	while ( *++argv && argv[0][0] == '-'  ){
-		for ( char *opt = *argv+1; *opt; opt++ ){
+		for ( char *opt = *argv+1; *opt; *opt && opt++ ){
 			switch ( *opt ){
 #ifdef INCLUDETERMINFO
 				case 'I': // dump terminfo
@@ -185,9 +185,9 @@ int main(int argc, char *argv[]) {
 						case 'i': ARGFONT(italic); break;
 						case 'I': ARGFONT(bolditalic); break;
 
-						case 'r':
+						//case 'r':
 						default:
-						opt_font = ARGFONT(regular);
+							opt_font = ARGFONT(regular);
 					}
 					break;
 				case 'g':

@@ -97,10 +97,10 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 		FcPatternAddString(match, FC_FILE, (const FcChar8 *) fontfile);
 	}
 
-#ifdef DEBUG
-//#if 1
+//#ifdef DEBUG
+#if 0
 	FcPatternPrint( match );
-	s = FcNameUnparse( match );
+	char *s = FcNameUnparse( match );
 	printf( "match name: %s\n", s );
 	free(s);
 #endif
@@ -142,6 +142,7 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 			XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)ascii_printable,
 							strlen(ascii_printable), &extents);
 #else
+			// might be unneeded. fixed width. 
 	char printable[255];
 	int p = 0;
 	for ( int a = 32; a<127; a++) 
@@ -151,8 +152,10 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	printable[p] = 0;
 
 
-	XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)printable,
-			sizeof(printable), &extents);
+	XftTextExtents8(xwin.dpy, f->match, (const FcChar8 *)printable,
+	//XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)printable,
+			(127-32)+127, &extents);
+			//sizeof(printable), &extents);
 #endif
 
 
@@ -171,7 +174,10 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	//f->width = DIVCEIL(extents.xOff,190 );
 #else
 	//f->width=8;
-	f->width = DIVCEIL(extents.xOff, 96);
+	f->width = DIVCEIL(extents.xOff, (127-32)+127 );
+	//printf("w:%d, height: %d\n",f->width, f->height);
+	// pixelsize 13: w 8, h 15
+	//f->width = DIVCEIL(extents.xOff, 96);
 #endif
 
 	f->width += fontspacing;
@@ -460,7 +466,6 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		} else {
 			// todo: load chars when loading the font, spare that
 			// the table is limited to ascii 255
-			fprintf(stderr,"rune missing in font, unicode: %x  ascii: %x\n",rune,glyphs[i].u);
 		}
 
 		/* Fallback on font cache, search the font cache for match. */
@@ -478,7 +483,9 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 		/* Nothing was found. Use fontconfig to find matching font. */
 		if (f >= frclen) {
-			fprintf(stderr,"Not cached\n");
+			// not in cache
+			fprintf(stderr,"rune missing in font, unicode: %x  ascii: %x\n",rune,glyphs[i].u);
+
 			if (!font->set)
 				font->set = FcFontSort(0, font->pattern, 1, 0, &fcres);
 			fcsets[0] = font->set;
@@ -526,10 +533,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			// todo: write a rune buffer for codepoints and fonts.
 
 			if ( glyphidx ){
-				FcPatternPrint( fcpattern );
-
-
-
+				//FcPatternPrint( fcpattern );
 
 			}
 
