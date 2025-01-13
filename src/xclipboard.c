@@ -6,7 +6,7 @@
 //       ... : copy current screen to clipboard
 //     make utf8 conversion switchable? 
 
-#include "clipboard.h"
+#include "xclipboard.h"
 
 XSelection xsel;
 
