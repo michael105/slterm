@@ -103,6 +103,14 @@ typedef union {
   ((t1.tv_sec - t2.tv_sec) * 1000 + (t1.tv_nsec - t2.tv_nsec) / 1E6)
 #define MODBIT(x, set, bit) ((set) ? ((x) |= (bit)) : ((x) &= ~(bit)))
 
+
+#define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
+	b = (void*)((POINTER)a ^ (POINTER)b);\
+	a = (void*)((POINTER)a ^ (POINTER)b);}
+#define SWAPint(a,b) {a^=b;b^=a;a^=b;}
+
+
+
 extern char* argv0;
 
 typedef XftColor Color;
@@ -171,7 +179,7 @@ typedef struct {
 extern XWindow xwin;
 
 
-/* Internal representation of the screen */
+/*  Glyph based representation of the screen and history buffer */
 typedef struct {
 	// todo: remove alt and hist[1], histsize should be smaller for help and alt screens
 	Line hist[HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.

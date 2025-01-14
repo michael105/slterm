@@ -20,13 +20,12 @@
 #include <libutil.h>
 #endif
 
+
 #undef IS_SET
+// used for winmode, termmode, .. with other macro definitions(!)
 #define IS_SET(flag) ((term->mode & (flag)) != 0)
 
-#define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
-	b = (void*)((POINTER)a ^ (POINTER)b);\
-	a = (void*)((POINTER)a ^ (POINTER)b);}
-#define SWAPint(a,b) {a^=b;b^=a;a^=b;}
+
 
 static void tcursor(int);
 static void tmoveto(int, int);

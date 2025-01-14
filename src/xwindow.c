@@ -27,14 +27,13 @@ typedef struct {
 } ResourcePref;
 #endif
 
-/* the configuration is in config.h (generated from config.h.in) */
 #include "config.h"
-
 
 /* macros */
 #ifdef IS_SET
 #undef IS_SET
 #endif
+// (!) is redefined, with different definitions (termmode,winmode,..)
 #define IS_SET(flag) ((twin.mode & (flag)) != 0)
 
 int xgeommasktogravity(int);
