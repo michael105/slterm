@@ -42,7 +42,7 @@ void ttyresize(int tw, int th) {
 	struct winsize w;
 
 	w.ws_row = term->rows;
-	w.ws_col = term->col;
+	w.ws_col = term->cols;
 	w.ws_xpixel = tw;
 	w.ws_ypixel = th;
 	if (ioctl(cmdfd, TIOCSWINSZ, &w) < 0) {

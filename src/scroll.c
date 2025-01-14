@@ -256,7 +256,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 		}
 
 		tsetdirt(orig, term->bot - n);
-		tclearregion(0, term->bot - n + 1, term->col - 1, term->bot);
+		tclearregion(0, term->bot - n + 1, term->cols - 1, term->bot);
 
 		for (i = term->bot; i >= orig + n; i--) {
 				SWAPp( term->line[i], term->line[i-n] );
@@ -301,7 +301,7 @@ void tscrollup(int orig, int n, int copyhist) {
 						SWAPp( term->hist[term->histi], term->line[orig] );
 
 				}	 else {
-						///printf("New line, cthist %d, term->histi: %d, term->col: %d\n", term->cthist, term->histi, term->col);
+						///printf("New line, cthist %d, term->histi: %d, term->col: %d\n", term->cthist, term->histi, term->cols );
 						term->hist[term->histi] = term->line[orig];
 						term->line[orig] = xmalloc( term->colalloc * sizeof(Glyph));
 						memset(term->line[orig],0,term->colalloc * sizeof(Glyph));

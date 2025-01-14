@@ -178,7 +178,7 @@ typedef struct {
 	int guard; // canary, debugging hist
 	Line *line;                               /* screen */
 	int rows;                                  // number of rows visible
-	int col;                                  // number of cols visible
+	int cols;                                  // number of cols visible
 	int colalloc; // allocated cols. won't shrink, only enlarge. 
 	int histi;    /* history index */ // points to the top of the terminal, last line in hist
 	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top

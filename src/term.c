@@ -76,7 +76,7 @@ void tnew(int col, int row) {
 
 
 int tlinelen(int y) {
-	int i = term->col;
+	int i = term->cols;
 
 	if (TLINE(y)[i - 1].mode & ATTR_WRAP) {
 		return i;
@@ -147,19 +147,19 @@ void tswapscreen(void) {
 	if ( p_alt != term ){ // altscr is not visible now
 		lessmode_toggle( &(Arg){.i=LESSMODE_OFF} ); 
 		if ( !p_alt ){ // displayed first time
-			tnew(term->col, term->rows);
+			tnew(term->cols, term->rows);
 			p_alt = term;
 		} else { // p_alt != term
 			term = p_alt;
-			if ( ( p_term->rows != term->rows ) || ( p_term->col != term->col )){
-				tresize( p_term->col, p_term->rows );
+			if ( ( p_term->rows != term->rows ) || ( p_term->cols != term->cols )){
+				tresize( p_term->cols, p_term->rows );
 			}
 		}
 		term->mode |= MODE_ALTSCREEN;
 	} else {
 		term = p_term;
-		if ( ( p_alt->rows != term->rows ) || ( p_alt->col != term->col ))
-			tresize( p_alt->col, p_alt->rows );
+		if ( ( p_alt->rows != term->rows ) || ( p_alt->cols != term->cols ))
+			tresize( p_alt->cols, p_alt->rows );
 	}
 
 	tfulldirt();
@@ -182,14 +182,14 @@ void showhelp(const Arg *a) {
 								  //p_term = term;
 		if ( !p_help ){ // displayed first time
 			p_help_storedterm = term;
-			tnew(term->col, term->rows);
+			tnew(term->cols, term->rows);
 			p_help = term;
 			twrite( (utfchar*)helpcontents, strlen(helpcontents), 0 );
 		} else {
 			p_help_storedterm = term;
 			term = p_help;
-			if ( ( p_term->rows != term->rows ) || ( p_term->col != term->col )){
-				tresize( p_term->col, p_term->rows );
+			if ( ( p_term->rows != term->rows ) || ( p_term->cols != term->cols )){
+				tresize( p_term->cols, p_term->rows );
 				//free(term);	// buggy. There might be some memory leaks.
 				// to fix it, I guess it would be best rewriting all this unlucky
 				// screen buffer stuff. Separating screen buffer and history clearly 
@@ -201,7 +201,7 @@ void showhelp(const Arg *a) {
 				// But, well. im going outside, 
 				//  sun is shining.
 				//
-				//tnew(term->col, term->rows);
+				//tnew(term->cols, term->rows);
 				//p_help = term;
 				//twrite( helpcontents, strlen(helpcontents), 0 );
 			}
@@ -225,8 +225,8 @@ void showhelp(const Arg *a) {
 		showstatus(0,0);
 		term = p_help_storedterm;
 		lessmode_toggle( ARGPi( LESSMODE_OFF ) ); // bugs else.
-		if ( ( p_help->rows != term->rows ) || ( p_help->col != term->col ))
-			tresize( p_help->col, p_help->rows );
+		if ( ( p_help->rows != term->rows ) || ( p_help->cols != term->cols ))
+			tresize( p_help->cols, p_help->rows );
 	}
 
 	tfulldirt();
@@ -269,14 +269,14 @@ void tmoveto(int x, int y) {
 		maxy = term->rows - 1;
 	}
 	term->cursor.state &= ~CURSOR_WRAPNEXT;
-	term->cursor.x = LIMIT(x, 0, term->col - 1);
+	term->cursor.x = LIMIT(x, 0, term->cols - 1);
 	term->cursor.y = LIMIT(y, miny, maxy);
 }
 void tdectest(utfchar c) {
 	int x, y;
 
 	if (c == '8') { /* DEC screen alignment test. */
-		for (x = 0; x < term->col; ++x) {
+		for (x = 0; x < term->cols; ++x) {
 			for (y = 0; y < term->rows; ++y) {
 				tsetchar('E', &term->cursor.attr, x, y);
 			}
@@ -288,7 +288,7 @@ void tdectest(utfchar c) {
 void tresize(int col, int row) {
 	int i;
 	int minrow = MIN(row, term->rows);
-	int mincol = MIN(col, term->col);
+	int mincol = MIN(col, term->cols);
 	int *bp;
 	int enlarge = 0;
 	TCursor c;
@@ -299,7 +299,7 @@ void tresize(int col, int row) {
 	}
 
 
-	if (row < term->rows || col < term->col) {
+	if (row < term->rows || col < term->cols) {
 		toggle_winmode(trt_kbdselect(XK_Escape, NULL, 0));
 	}
 
@@ -347,7 +347,7 @@ void tresize(int col, int row) {
 	if ( term->circledhist  ){
 		oldline = (term->histi+1 > HISTSIZE ) ? 0 : (term->histi+1);
 	}
-	dbg2(AC_YELLOW "oldline: %d  term->histi: %d  term->col: %d col: %d" AC_NORM,oldline,term->histi, term->col, col);
+	dbg2(AC_YELLOW "oldline: %d  term->histi: %d  term->col: %d col: %d" AC_NORM,oldline,term->histi, term->cols, col);
 	*/
 	term->cursor.attr.u = ' '; 
 #if 0
@@ -358,9 +358,9 @@ void tresize(int col, int row) {
 	}
 
 	while (oldline!=term->histi) { // Didn't reach the end of the old history yet
-		dbg3( "oldhist: %d term->col %d newhist %d oldline: %d oldcol: %d newline: %d newcol: %d", oldhist, term->col,newhist, oldline, oldcol, newline, newcol );
-		while( (oldline!=term->histi) && (oldcol < term->col) ){ // && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
-			dbg3( "term->col: %d L2: oldline: %d oldcol: %d newline: %d newcol: %d",term->col, oldline, oldcol, newline, newcol );
+		dbg3( "oldhist: %d term->cols %d newhist %d oldline: %d oldcol: %d newline: %d newcol: %d", oldhist, term->cols,newhist, oldline, oldcol, newline, newcol );
+		while( (oldline!=term->histi) && (oldcol < term->cols ) ){ // && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
+			dbg3( "term->col: %d L2: oldline: %d oldcol: %d newline: %d newcol: %d",term->cols, oldline, oldcol, newline, newcol );
 			//dbg3( "intG oldhist: %d - %d\n", term->hist[oldline][oldcol].intG, term->hist[oldline][oldcol].u );
 			if ( term->hist[oldline][oldcol].mode & ATTR_WRAP ){
 				dbg2("WRAP");
@@ -385,7 +385,7 @@ void tresize(int col, int row) {
 				//dbg3("newline: %d",newline);
 				memset32( &term->hist[newline][mincol].intG, term->cursor.attr.intG, col-mincol );
 			}
-			if ( oldcol == term->col ){// && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
+			if ( oldcol == term->cols ){// && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
 				dbg3( "YY: newline: %d newcol: %d", newline, newcol );
 				//free( term->hist[oldline] );
 				oldcol = 0;
@@ -463,10 +463,10 @@ void tresize(int col, int row) {
 		  }*/
 
 		if ( enlarge )
-			if (col > term->col) {
-				bp = term->tabs + term->col;
+			if (col > term->cols) {
+				bp = term->tabs + term->cols;
 
-				memset(bp, 0, sizeof(*term->tabs) * (term->colalloc - term->col));
+				memset(bp, 0, sizeof(*term->tabs) * (term->colalloc - term->cols));
 				while (--bp > term->tabs && !*bp) {
 					/* nothing */
 				}
@@ -475,7 +475,7 @@ void tresize(int col, int row) {
 				}
 			}
 		/* update terminal size */
-		term->col = col;
+		term->cols = col;
 		term->rows = row;
 		/* reset scrolling region */
 		tsetscroll(0, row - 1);

@@ -14,7 +14,7 @@ static int focusdraw = 1;
 
 void drawstatus(){
 	term->dirty[term->bot] = 1;
-	drawregion(0, term->bot, term->col, term->bot + 1);
+	drawregion(0, term->bot, term->cols, term->bot + 1);
 }
 
 void statusbar_focusin(){
@@ -53,8 +53,8 @@ void updatestatus(){
 
 		// currently shown number of cols
 		int stwidth = statuswidth;
-		if ( term->col != statuswidth )
-			stwidth = term->col;
+		if ( term->cols != statuswidth )
+			stwidth = term->cols;
 
 		char buf[512];
 		memset( buf, ' ', 256 );
@@ -118,8 +118,8 @@ void setstatus(char* status){
 		statuswidth = term->colalloc;
 	}
 	int stwidth = statuswidth;
-	if ( term->col != stwidth )
-		stwidth = term->col;
+	if ( term->cols != stwidth )
+		stwidth = term->cols;
 
 #ifndef UTF8
 	Glyph g = { .fg = statusfg, .bg = statusbg, .mode = statusattr, .u = ' ' };
@@ -163,9 +163,9 @@ void showstatus(int show, char *status){
 			statusvisible = 0;
 			// clear status
 			term->dirty[term->bot] = 1;
-			drawregion(0, term->bot, term->col, term->bot + 1);
+			drawregion(0, term->bot, term->cols, term->bot + 1);
 			//term->rows++;
-			//tresize(term->col,term->rows+1);
+			//tresize(term->cols,term->rows+1);
 		}
 	}
 }
@@ -175,16 +175,16 @@ void set_notifmode(int type, KeySym ksym) {
 	static char *lib[] = {" MOVE ", "SELECT"," LESS " };
 	static Glyph *g, *deb, *fin;
 	static int col, bot;
-	col = term->col, bot = term->bot;
+	col = term->cols, bot = term->bot;
 
 	if (ksym == -1) { // show
 		free(g);
 		g = xmalloc(term->colalloc * sizeof(Glyph));
 		memcpy(g, TLINE(bot), term->colalloc * sizeof(Glyph));
-		//tresize(term->col,term->rows-1);
+		//tresize(term->cols,term->rows-1);
 	} else if (ksym == -2) { // hide
 		memcpy(TLINE(bot), g, term->colalloc * sizeof(Glyph));
-		//tresize(term->col,term->rows+1);
+		//tresize(term->cols,term->rows+1);
 	}
 
 	if (type < 3) {

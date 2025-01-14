@@ -365,12 +365,12 @@ unknown:
 					break;
 				case 1: /* above */
 					if (term->cursor.y > 1) {
-						tclearregion(0, 0, term->col - 1, term->cursor.y - 1);
+						tclearregion(0, 0, term->cols - 1, term->cursor.y - 1);
 					}
 					tclearregion(0, term->cursor.y, term->cursor.x, term->cursor.y);
 					break;
 				case 2: /* all */
-					tclearregion(0, 0, term->col - 1, term->rows - 1);
+					tclearregion(0, 0, term->cols - 1, term->rows - 1);
 					break;
 				default:
 					goto unknown;
@@ -806,7 +806,7 @@ void tsetmode(int priv, int set, int *args, int narg) {
 					}
 					alt = IS_SET(MODE_ALTSCREEN);
 					if (alt) {
-						tclearregion(0, 0, term->col - 1, term->rows - 1);
+						tclearregion(0, 0, term->cols - 1, term->rows - 1);
 					}
 					if (set ^ alt) { /* set is always 1 or 0 */
 						tswapscreen();
