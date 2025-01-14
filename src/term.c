@@ -237,6 +237,8 @@ void showhelp(const Arg *a) {
 /* for absolute user moves, when decom is set */
 void tmoveato(int x, int y) {
 	//printf("tmoveato: %d\n",y);
+	
+
 	// delete retmarks, within the region.
 	// needed amongst others for screen based programs
 	if ( y==0 ){
