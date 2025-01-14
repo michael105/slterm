@@ -43,6 +43,20 @@ void statusbar_focusout(){
 	}
 }
 
+// text entering, textfield
+uchar tfbuf[512];
+int tfbuflen = 512;
+
+int tfpos = 0; // is not neccearily the pos of the cursor.
+int tftextlen = 0;
+int tfvisible = 0;
+
+
+// for the mode MODE_ENTERSTRING
+void statusbar_kpress( KeySym *ks, char *buf ){
+
+}
+
 
 
 
@@ -62,7 +76,13 @@ void updatestatus(){
 
 		//int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d", p_status,
 		int p = 0;
-		if ( stwidth > 32 + 19 ){
+
+		int fstwidth = stwidth;
+
+		stwidth -= strlen(p_status)+3; // try to keep that much free space at the left
+
+		// scrollinfo
+		if ( stwidth > 32 + 11 ){
 			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
 					term->histi-term->scr,term->histi-term->scr+term->rows, 
 					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
@@ -71,7 +91,7 @@ void updatestatus(){
 					term->retmark_scrolled
 					);
 
-			if ( stwidth > p+20 ){
+			if ( stwidth > p+10 ){
 				for ( int a=1; a<10; a++ ){
 					if ( term->scrollmarks[a] )
 						buf[p++] = a+'0';
@@ -84,7 +104,7 @@ void updatestatus(){
 					buf[p++] = ' ';
 			}
 
-		} else if ( stwidth > 20 + 16 ){ //TODO: other values (line number)
+		} else if ( stwidth > 20 + 6 ){ //TODO: other values (line number)
 			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
 					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
@@ -98,7 +118,7 @@ void updatestatus(){
 		//printf("p: %d\n",p);
 		buf[p] = 0;
 
-		int bp = 256 - stwidth + p;
+		int bp = 256 - fstwidth + p;
 		if ( bp <0 ) bp = 0;
 		if ( 256-bp > strlen(p_status) +3 )
 			memcpy( buf+bp+3, p_status, strlen(p_status) );
@@ -209,10 +229,4 @@ void set_notifmode(int type, KeySym ksym) {
 	term->dirty[bot] = 1;
 	drawregion(0, bot, col, bot + 1);
 }
-
-// for the mode MODE_ENTERSTRING
-void statusbar_kpress( KeySym *ks, char *buf ){
-
-}
-
 
