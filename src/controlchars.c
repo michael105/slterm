@@ -347,6 +347,9 @@ unknown:
 			DEFAULT(csiescseq.arg[0], 1);
 			DEFAULT(csiescseq.arg[1], 1);
 			tmoveato(csiescseq.arg[1] - 1, csiescseq.arg[0] - 1);
+			if ( ispagebased <0 ) ispagebased = 0;
+			else ispagebased++;
+			//printf("H ispagebased: %d\n",ispagebased);
 			break;
 		case 'I': /* CHT -- Cursor Forward Tabulation <n> tab stops */
 			DEFAULT(csiescseq.arg[0], 1);
@@ -374,6 +377,10 @@ unknown:
 			}
 			break;
 		case 'K': /* EL -- Clear line */
+			if ( ispagebased <0 ) ispagebased = 0;
+			else ispagebased++;
+			//printf("K ispagebased: %d\n",ispagebased);
+
 			switch (csiescseq.arg[0]) {
 				case 0: /* right */
 					tclearregion(term->cursor.x, term->cursor.y, term->colalloc - 1, term->cursor.y);
@@ -447,6 +454,7 @@ unknown:
 			break;
 		case 's': /* DECSC -- Save cursor position (ANSI.SYS) */
 			tcursor(CURSOR_SAVE);
+			printf("csave\n");
 			break;
 		case 'u': /* DECRC -- Restore cursor position (ANSI.SYS) */
 			tcursor(CURSOR_LOAD);
@@ -537,7 +545,7 @@ void strhandle(void) {
 // misc: handle control chars
 // bin mode should go here.
 void tcontrolcode(uchar ascii) {
-	//printf("tcontrolcode: %c\n", ascii); //DBG
+	//printf("tcontrolcode: %d\n", ascii); //DBG
 	switch (ascii) {
 		case '\t': /* HT */
 			tputtab(1);
@@ -547,11 +555,16 @@ void tcontrolcode(uchar ascii) {
 			return;
 		case '\r': /* CR */
 			tmoveto(0, term->cursor.y);
+			if ( ispagebased > 20 ) ispagebased = 20;
+			else	ispagebased--;
 			return;
 		case '\f': /* LF */
 		case '\v': /* VT */
 		case '\n': /* LF */
 			/* go to first col if the mode is set */
+			if ( ispagebased > 20 ) ispagebased = 20;
+			else	ispagebased--;
+			//printf("n : %d\n", ispagebased );
 			tnewline(IS_SET(MODE_CRLF));
 			return;
 		case '\a': /* BEL */

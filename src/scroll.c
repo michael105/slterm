@@ -110,7 +110,7 @@ void scroll( const Arg *a){
 
 void set_scrollmark(const Arg *a) {
 	if (term==p_alt) return;
-	term->scrollmarks[a->i] = term->histi-term->scr+1;	
+	term->scrollmarks[a->i] = term->histi - term->scr+1;	
 	updatestatus();
 	//printf("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term->histi, term->scr );
 }
@@ -120,10 +120,17 @@ void set_retmark() {
 	
 	//if ( term->histi + term->cursor.y < term->row )
 	//	return; // scrolled less than a page.
-
-	term->retmarks[ term->current_retmark ] = term->histi + term->cursor.y;
-	term->current_retmark = (term->current_retmark + 1) & (RETMARKCOUNT-1);
-	term->scroll_retmark = term->current_retmark;
+	
+	if ( (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] < 
+				(term->histi + term->cursor.y ) )  || 
+		  (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] > 
+			 (term->histi + term->cursor.y + HISTSIZE/2 )  ) ){ 
+		// second case: circled buffer, first case: try to detect screen based programs
+			// e.g. vim
+		term->retmarks[ term->current_retmark ] = term->histi + term->cursor.y;
+		term->current_retmark = (term->current_retmark + 1) & (RETMARKCOUNT-1);
+		term->scroll_retmark = term->current_retmark;
+	}
 	//updatestatus();
 	//printf("Setretmark: n:%d histi:%d scr:%d  cursor: %d\n", term->current_retmark, term->histi, term->scr, term->cursor.y );
 }

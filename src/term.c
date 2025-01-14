@@ -236,6 +236,23 @@ void showhelp(const Arg *a) {
 
 /* for absolute user moves, when decom is set */
 void tmoveato(int x, int y) {
+	//printf("tmoveato: %d\n",y);
+	// delete retmarks, within the region.
+	// needed amongst others for screen based programs
+	if ( y==0 ){
+		int tend = term->current_retmark;
+		for ( int t = (term->current_retmark -1 ) & (RETMARKCOUNT-1); 
+				(t!=tend) &&
+			 	(term->histi < term->retmarks[t] ) && 
+				(term->histi + term->row+1 > term->retmarks[t]);
+				t = (t-1) & ( RETMARKCOUNT-1 ) ){
+			term->current_retmark = t;
+			term->retmarks[ term->current_retmark ] = 0;
+		}
+		term->scroll_retmark = term->current_retmark;
+		
+	}
+
 	tmoveto(x, y + ((term->cursor.state & CURSOR_ORIGIN) ? term->top : 0));
 }
 

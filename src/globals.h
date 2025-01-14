@@ -20,6 +20,10 @@ char *opt_title = NULL;
 char opt_xresources;
 
 
+int ispagebased = 0; // counter, tries to keep track, whether the running program 
+							// has it's own screen buffer. (e.g. vim)
+							// doesnt work well.
+
 // number of saved scroll marks, set with enter.
 // needs to be a power of 2.
 // memory usage is RETMARKCOUNT*4 bytes,
