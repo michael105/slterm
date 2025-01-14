@@ -314,25 +314,17 @@ void tresize(int col, int row) {
 	 */
 	for (i = 0; i <= term->cursor.y - row; i++) {
 		free(term->line[i]);
-		//free(term->alt[i]);
-		//free(term->helpscr[i]);
 	}
 	/* ensure that both src and dst are not NULL */
 	if (i > 0) {
 		memmove(term->line, term->line + i, row * sizeof(Line));
-		//memmove(term->alt, term->alt + i, row * sizeof(Line));
-		//memmove(term->helpscr,term->helpscr + i, row * sizeof(Line));
 	}
 	for (i += row; i < term->rows; i++) {
 		free(term->line[i]);
-		//free(term->alt[i]);
-		//free(term->helpscr[i]);
 	}
 
 	/* resize to new height */
 	term->line = xrealloc(term->line, row * sizeof(Line));
-	//term->alt = xrealloc(term->alt, row * sizeof(Line));
-	//term->helpscr = xrealloc(term->helpscr, row * sizeof(Line));
 	term->dirty = xrealloc(term->dirty, row * sizeof(*term->dirty));
 	term->tabs = xrealloc(term->tabs, term->colalloc * sizeof(*term->tabs));
 
