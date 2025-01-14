@@ -115,7 +115,7 @@ void treset(void) {
 		term->tabs[i] = 1;
 	}
 	term->top = 0;
-	term->bot = term->row - 1;
+	term->bot = term->rows - 1;
 	term->mode = MODE_WRAP | MODE_UTF8; // not UTF8-> MODE_UTF8 eq 0
 	memset(term->trantbl, CS_USA, sizeof(term->trantbl));
 	term->charset = 0;
@@ -123,7 +123,7 @@ void treset(void) {
 	//for (i = 0; i < 2; i++) {
 		tmoveto(0, 0);
 		tcursor(CURSOR_SAVE);
-		tclearregion(0, 0, term->colalloc - 1, term->row - 1);
+		tclearregion(0, 0, term->colalloc - 1, term->rows - 1);
 		//tswapscreen(); //xxx
 	//}
 }
@@ -147,19 +147,19 @@ void tswapscreen(void) {
 	if ( p_alt != term ){ // altscr is not visible now
 		lessmode_toggle( &(Arg){.i=LESSMODE_OFF} ); 
 		if ( !p_alt ){ // displayed first time
-			tnew(term->col, term->row);
+			tnew(term->col, term->rows);
 			p_alt = term;
 		} else { // p_alt != term
 			term = p_alt;
-			if ( ( p_term->row != term->row ) || ( p_term->col != term->col )){
-				tresize( p_term->col, p_term->row );
+			if ( ( p_term->rows != term->rows ) || ( p_term->col != term->col )){
+				tresize( p_term->col, p_term->rows );
 			}
 		}
 		term->mode |= MODE_ALTSCREEN;
 	} else {
 		term = p_term;
-		if ( ( p_alt->row != term->row ) || ( p_alt->col != term->col ))
-			tresize( p_alt->col, p_alt->row );
+		if ( ( p_alt->rows != term->rows ) || ( p_alt->col != term->col ))
+			tresize( p_alt->col, p_alt->rows );
 	}
 
 	tfulldirt();
@@ -182,14 +182,14 @@ void showhelp(const Arg *a) {
 								  //p_term = term;
 		if ( !p_help ){ // displayed first time
 			p_help_storedterm = term;
-			tnew(term->col, term->row);
+			tnew(term->col, term->rows);
 			p_help = term;
 			twrite( (utfchar*)helpcontents, strlen(helpcontents), 0 );
 		} else {
 			p_help_storedterm = term;
 			term = p_help;
-			if ( ( p_term->row != term->row ) || ( p_term->col != term->col )){
-				tresize( p_term->col, p_term->row );
+			if ( ( p_term->rows != term->rows ) || ( p_term->col != term->col )){
+				tresize( p_term->col, p_term->rows );
 				//free(term);	// buggy. There might be some memory leaks.
 				// to fix it, I guess it would be best rewriting all this unlucky
 				// screen buffer stuff. Separating screen buffer and history clearly 
@@ -201,7 +201,7 @@ void showhelp(const Arg *a) {
 				// But, well. im going outside, 
 				//  sun is shining.
 				//
-				//tnew(term->col, term->row);
+				//tnew(term->col, term->rows);
 				//p_help = term;
 				//twrite( helpcontents, strlen(helpcontents), 0 );
 			}
@@ -225,8 +225,8 @@ void showhelp(const Arg *a) {
 		showstatus(0,0);
 		term = p_help_storedterm;
 		lessmode_toggle( ARGPi( LESSMODE_OFF ) ); // bugs else.
-		if ( ( p_help->row != term->row ) || ( p_help->col != term->col ))
-			tresize( p_help->col, p_help->row );
+		if ( ( p_help->rows != term->rows ) || ( p_help->col != term->col ))
+			tresize( p_help->col, p_help->rows );
 	}
 
 	tfulldirt();
@@ -246,7 +246,7 @@ void tmoveato(int x, int y) {
 		for ( int t = (term->current_retmark -1 ) & (RETMARKCOUNT-1); 
 				(t!=tend) &&
 			 	(term->histi < term->retmarks[t] ) && 
-				(term->histi + term->row+1 > term->retmarks[t]);
+				(term->histi + term->rows+1 > term->retmarks[t]);
 				t = (t-1) & ( RETMARKCOUNT-1 ) ){
 			term->current_retmark = t;
 			term->retmarks[ term->current_retmark ] = 0;
@@ -266,7 +266,7 @@ void tmoveto(int x, int y) {
 		maxy = term->bot;
 	} else {
 		miny = 0;
-		maxy = term->row - 1;
+		maxy = term->rows - 1;
 	}
 	term->cursor.state &= ~CURSOR_WRAPNEXT;
 	term->cursor.x = LIMIT(x, 0, term->col - 1);
@@ -277,7 +277,7 @@ void tdectest(utfchar c) {
 
 	if (c == '8') { /* DEC screen alignment test. */
 		for (x = 0; x < term->col; ++x) {
-			for (y = 0; y < term->row; ++y) {
+			for (y = 0; y < term->rows; ++y) {
 				tsetchar('E', &term->cursor.attr, x, y);
 			}
 		}
@@ -287,7 +287,7 @@ void tdectest(utfchar c) {
 
 void tresize(int col, int row) {
 	int i;
-	int minrow = MIN(row, term->row);
+	int minrow = MIN(row, term->rows);
 	int mincol = MIN(col, term->col);
 	int *bp;
 	int enlarge = 0;
@@ -299,7 +299,7 @@ void tresize(int col, int row) {
 	}
 
 
-	if (row < term->row || col < term->col) {
+	if (row < term->rows || col < term->col) {
 		toggle_winmode(trt_kbdselect(XK_Escape, NULL, 0));
 	}
 
@@ -324,7 +324,7 @@ void tresize(int col, int row) {
 		//memmove(term->alt, term->alt + i, row * sizeof(Line));
 		//memmove(term->helpscr,term->helpscr + i, row * sizeof(Line));
 	}
-	for (i += row; i < term->row; i++) {
+	for (i += row; i < term->rows; i++) {
 		free(term->line[i]);
 		//free(term->alt[i]);
 		//free(term->helpscr[i]);
@@ -476,7 +476,7 @@ void tresize(int col, int row) {
 			}
 		/* update terminal size */
 		term->col = col;
-		term->row = row;
+		term->rows = row;
 		/* reset scrolling region */
 		tsetscroll(0, row - 1);
 		/* make use of the LIMIT in tmoveto */

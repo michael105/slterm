@@ -64,8 +64,8 @@ void updatestatus(){
 		int p = 0;
 		if ( stwidth > 32 + 19 ){
 			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
-					term->histi-term->scr,term->histi-term->scr+term->row, 
-					term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
+					term->histi-term->scr,term->histi-term->scr+term->rows, 
+					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 					((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1),
 					term->retmark_scrolled
@@ -86,12 +86,12 @@ void updatestatus(){
 
 		} else if ( stwidth > 20 + 16 ){ //TODO: other values (line number)
 			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
-					term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
+					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 					term->retmark_scrolled );
 		} else {
 			p = sprintf(buf+256,"%5d %3d%% ",
-					term->histi+term->row-(term->histi-term->scr+term->row),
+					term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1) );
 		}
 
@@ -164,8 +164,8 @@ void showstatus(int show, char *status){
 			// clear status
 			term->dirty[term->bot] = 1;
 			drawregion(0, term->bot, term->col, term->bot + 1);
-			//term->row++;
-			//tresize(term->col,term->row+1);
+			//term->rows++;
+			//tresize(term->col,term->rows+1);
 		}
 	}
 }
@@ -181,10 +181,10 @@ void set_notifmode(int type, KeySym ksym) {
 		free(g);
 		g = xmalloc(term->colalloc * sizeof(Glyph));
 		memcpy(g, TLINE(bot), term->colalloc * sizeof(Glyph));
-		//tresize(term->col,term->row-1);
+		//tresize(term->col,term->rows-1);
 	} else if (ksym == -2) { // hide
 		memcpy(TLINE(bot), g, term->colalloc * sizeof(Glyph));
-		//tresize(term->col,term->row+1);
+		//tresize(term->col,term->rows+1);
 	}
 
 	if (type < 3) {

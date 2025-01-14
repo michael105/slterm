@@ -19,7 +19,7 @@ void drawregion(int x1, int y1, int x2, int y2) {
 				xdrawline(TLINE(y), x1, y, x2);
 		}
 				// statusline
-		if ( y==term->row && statusvisible ){
+		if ( y==term->rows && statusvisible ){
 				xdrawline(statusbar, x1, y-1, x2);
 		}
 }
@@ -34,7 +34,7 @@ void draw(void) {
 
 		/* adjust cursor position */
 		LIMIT(term->ocx, 0, term->col - 1);
-		LIMIT(term->ocy, 0, term->row - 1);
+		LIMIT(term->ocy, 0, term->rows - 1);
 
 #ifdef UTF8
 		if (term->line[term->ocy][term->ocx].mode & ATTR_WDUMMY) {
@@ -45,7 +45,7 @@ void draw(void) {
 		}
 #endif 
 
-		drawregion(0, 0, term->col, term->row);
+		drawregion(0, 0, term->col, term->rows);
 		if (term->scr == 0) {
 				xdrawcursor(cx, term->cursor.y, term->line[term->cursor.y][cx], term->ocx, term->ocy,
 								term->line[term->ocy][term->ocx]);
@@ -310,8 +310,8 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 
 		LIMIT(x1, 0, term->col - 1);
 		LIMIT(x2, 0, term->col - 1);
-		LIMIT(y1, 0, term->row - 1);
-		LIMIT(y2, 0, term->row - 1);
+		LIMIT(y1, 0, term->rows - 1);
+		LIMIT(y2, 0, term->rows - 1);
 
 		selclear(); // only call once.
 		//term->cursor.attr.u=' ';
@@ -387,13 +387,13 @@ void tdeleteline(int n) {
 }
 
 
-void tfulldirt(void) { tsetdirt(0, term->row - 1); }
+void tfulldirt(void) { tsetdirt(0, term->rows - 1); }
 
 
 void tsetdirtattr(int attr) {
 		int i, j;
 
-		for (i = 0; i < term->row - 1; i++) {
+		for (i = 0; i < term->rows - 1; i++) {
 				for (j = 0; j < term->col - 1; j++) {
 						if (term->line[i][j].mode & attr) {
 								tsetdirt(i, i);
@@ -407,7 +407,7 @@ void tsetdirtattr(int attr) {
 int tattrset(int attr) {
 		int i, j;
 
-		for (i = 0; i < term->row - 1; i++) {
+		for (i = 0; i < term->rows - 1; i++) {
 				for (j = 0; j < term->col - 1; j++) {
 					if ( term->line[i] == 0 ){ // xxx
 						fprintf(stderr,"WARNING: tattrset NULL: %d %d\n",i,j);
@@ -425,8 +425,8 @@ int tattrset(int attr) {
 void tsetdirt(int top, int bot) {
 		int i;
 
-		LIMIT(top, 0, term->row - 1);
-		LIMIT(bot, 0, term->row - 1);
+		LIMIT(top, 0, term->rows - 1);
+		LIMIT(bot, 0, term->rows - 1);
 
 		for (i = top; i <= bot; i++) {
 				term->dirty[i] = 1;
@@ -603,7 +603,7 @@ void tdumpline(int n) {
 void tdump(void) {
 		int i;
 
-		for (i = 0; i < term->row; ++i) {
+		for (i = 0; i < term->rows; ++i) {
 				tdumpline(i);
 		}
 }

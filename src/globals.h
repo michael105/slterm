@@ -177,7 +177,7 @@ typedef struct {
 	Line hist[HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
 	int guard; // canary, debugging hist
 	Line *line;                               /* screen */
-	int row;                                  // number of rows visible
+	int rows;                                  // number of rows visible
 	int col;                                  // number of cols visible
 	int colalloc; // allocated cols. won't shrink, only enlarge. 
 	int histi;    /* history index */ // points to the top of the terminal, last line in hist

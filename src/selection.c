@@ -216,7 +216,7 @@ void selsnap(int *x, int *y, int direction) {
 				if (!BETWEEN(newx, 0, term->col - 1)) {
 					newy += direction;
 					newx = (newx + term->col) % term->col;
-					if (!BETWEEN(newy, 0, term->row - 1)) {
+					if (!BETWEEN(newy, 0, term->rows - 1)) {
 						break;
 					}
 
@@ -269,7 +269,7 @@ void selsnap(int *x, int *y, int direction) {
 					}
 				}
 			} else if (direction > 0) {
-				for (; *y < term->row - 1; *y += direction) {
+				for (; *y < term->rows - 1; *y += direction) {
 					if (!(TLINE(*y)[term->col - 1].mode & ATTR_WRAP)) {
 						break;
 					}

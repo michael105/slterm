@@ -3,8 +3,8 @@
 
 
 void tsetscroll(int t, int b) {
-		LIMIT(t, 0, term->row - 1);
-		LIMIT(b, 0, term->row - 1);
+		LIMIT(t, 0, term->rows - 1);
+		LIMIT(b, 0, term->rows - 1);
 		if (t > b) {
 				//		SWAPint( t,b );
 				term->top = b;
@@ -21,7 +21,7 @@ void kscrolldown(const Arg *a) {
 
 		dbg2("kscrolldown, n: %d, guard: %x\n",n, term->guard);
 		if (n < 0) { // scroll a page
-				n = term->row + n;
+				n = term->rows + n;
 		}
 
 		if (n > term->scr) {  // at the bottom ( bottom: scr=0 )
@@ -61,10 +61,10 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
-		dbg2("kscrollup, n: %d, term->histi: %d, term->row: %d scr: %d\n",
-						n, term->histi, term->row, term->scr);
+		dbg2("kscrollup, n: %d, term->histi: %d, term->rows: %d scr: %d\n",
+						n, term->histi, term->rows, term->scr);
 		if (n < 0) { // scroll a page upwards
-				n = term->row + n;
+				n = term->rows + n;
 		}
 		dbg2("kscrollup2, n: %d\n",n);
 
@@ -118,7 +118,7 @@ void set_scrollmark(const Arg *a) {
 void set_retmark() {
 	if (term==p_alt) return;
 	
-	//if ( term->histi + term->cursor.y < term->row )
+	//if ( term->histi + term->cursor.y < term->rows )
 	//	return; // scrolled less than a page.
 	
 	if ( (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] < 
@@ -137,7 +137,7 @@ void set_retmark() {
 
 void retmark(const Arg* a){
 	if (term==p_alt) return; // not usable in alt screen
-	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->row, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
+	//printf("Retmark: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->rows, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
 
 	// rewrite that. (count curentretmark from 0 to UINT_MAX. Limit bits when
 	// accessing the array. ->retmark_scrolled can be set absolute.
@@ -168,7 +168,7 @@ void retmark(const Arg* a){
 		term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 
 	} else { // scroll backward
-		if ( term->histi<term->row){ // at the top
+		if ( term->histi<term->rows){ // at the top
 			scrolltotop();
 			lessmode_toggle( ARGPi(LESSMODE_ON) );	
 			return;
@@ -194,14 +194,14 @@ void retmark(const Arg* a){
 		term->scr=(term->histi-term->retmarks[term->scroll_retmark]);
 		*/
 	}
-	//term->scr=(term->histi-term->retmarks[0])-term->row+1;
+	//term->scr=(term->histi-term->retmarks[0])-term->rows+1;
 	//printf("scr: %d\n", term->scr );
 	if ( term->scr<0 ){
 			// TODO: circledhist
 		term->scr=0;
 		//term->scr&=(HISTSIZE-1);
 	};
-	//printf("Retmark OUT: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->row, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
+	//printf("Retmark OUT: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->rows, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
 
 	selscroll(0, term->scr);
 	tfulldirt();
@@ -327,7 +327,7 @@ void tscrollup(int orig, int n, int copyhist) {
 		}
 
 		selscroll(orig, -n);
-		///printf("scrd: %d %d %d %d %d %d\n", orig, n, term->histi, term->scr, term->scrollmarks[0], term->row);
+		///printf("scrd: %d %d %d %d %d %d\n", orig, n, term->histi, term->scr, term->scrollmarks[0], term->rows);
 		if ( enterlessmode ){ // scroll down until next line.
 				if ( term->histi > term->scrollmarks[0]){
 						//printf("Scroll\n");
@@ -362,10 +362,10 @@ void tnewline(int first_col) {
 
 void enterscroll(const Arg *a){
 	if (term==p_alt) return;
-		//printf("enterscroll: %d %d %d %d\n",term->histi,term->row,term->scr,term->cursor.y);
+		//printf("enterscroll: %d %d %d %d\n",term->histi,term->rows,term->scr,term->cursor.y);
 		
-		term->scrollmarks[0] = term->histi+ term->row - ( term->row - term->cursor.y );
-		enterlessmode = term->row;
+		term->scrollmarks[0] = term->histi+ term->rows - ( term->rows - term->cursor.y );
+		enterlessmode = term->rows;
 		ttywrite((utfchar*)"\n",1,1);
 }
 

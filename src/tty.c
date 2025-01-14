@@ -41,7 +41,7 @@ void tprinter(char *s, size_t len) {
 void ttyresize(int tw, int th) {
 	struct winsize w;
 
-	w.ws_row = term->row;
+	w.ws_row = term->rows;
 	w.ws_col = term->col;
 	w.ws_xpixel = tw;
 	w.ws_ypixel = th;
