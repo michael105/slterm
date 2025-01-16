@@ -187,9 +187,6 @@ The scripts for creating the output are within ./test
 ![](images/ascii.png)
 
 
-.. Did split the sourcefile (one big file with several thousand lines)
-into smaller pieces. Hopefully hacking st is in the future a little bit more conveniant. 
-
 
 ---
 
