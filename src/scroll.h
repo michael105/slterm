@@ -28,6 +28,25 @@
 //extern int scrollmarks[12];
 //extern int retmarks[10];
 
+
+/* Notes for history (todo)
+term->scr : scroll
+term->histpos: line in history buffer
+term->pos : histpos - scroll
+
+line: (TLINE): position of screen 'line' in the buffer
+
+double buffering of screen(?)
+
+
+zwei optionen: entweder in der history raw terminal input speichern.
+schwierig: scrollen, kann sprunghaft werden. oder aufwendig.
+(bsp farben: fast unmoeglich)
+oder eben den output, wie gehabt.
+
+*/
+
+
 // callbacks
 void kscrolldown(const Arg *);
 void kscrollup(const Arg *);

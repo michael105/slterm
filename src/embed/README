@@ -1,0 +1,31 @@
+The fonts LiberationMono_Bold and LiberationMono_BoldItalic,
+to be optionally embedded into the binary.
+
+The files are renamed to slterm_font.ttf and slterm_font_italic.ttf, 
+regardless of their weight, I prefer bold fonts at the terminal.
+"Bold" is shown as bright color instead.
+
+This can be changed in config.h
+
+
+I suggest to install those Liberation fonts when installing slterm,
+if not already present.
+
+
+Anyways, to have a working font especially with the statically linked binary,
+they can be embedded. (+400kB)
+
+
+The empty ttf files are needed anyways for the build process.
+
+
+To change the embedded fonts, copy the ttf font files into this directory, 
+overwriting the existing ttf files,
+update the size of the uncompressed ttf files in embed_fonts.h,
+(manually or execute updatesizes.sh)
+and rerun make. (set EMBEDFONT := 1 in config.make, or `make static_embedfont`)
+
+
+
+
+

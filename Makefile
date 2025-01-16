@@ -3,8 +3,43 @@
 .POSIX:
 
 
-all: man
+define HELP
+Makefile help
+
+for the build configuration, edit config.make
+further configuration and preferences can be set in src/config.h
+
+make targets
+------------
+slterm: (default) build slterm
+static: build slterm as static binary
+static_embedfont: static build, embed fonts into the binary
+
+install: install slterm
+
+endef
+
+
+
+all: man tools
 	cd src && $(MAKE)
+
+
+help:
+	$(info $(HELP))
+
+
+slterm: man tools
+	cd src && $(MAKE) 
+	
+static: man tools
+	cd src && $(MAKE) static
+
+static_embedfont: man tools
+	cd src && $(MAKE) static EMBEDFONT=1
+
+tools:
+	cd tools && $(MAKE)
 	
 #local (use config.in.loc)
 l: cd src && $(MAKE)
@@ -24,4 +59,5 @@ loc-install: src/slterm slterm.1
 
 
 .PHONY: all install
+
 

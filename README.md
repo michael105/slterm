@@ -3,17 +3,17 @@
 
 
 	Slim (110kB linked shared) and fast terminal emulator for X11,
-	with minimal external dependencies (Xlib and Xft).
+	with minimal external dependencies (Xlib, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
 
 
-##### Addons and modifications:
+##### Features
 
    * Lessmode: scroll around with less like keybindings
    * Hit shift+backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
-	* Tab and Tab left to jump in scrollmode to the locations of entered commands
+	* Retmarks: Tab/Backspace to jump in lessmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
@@ -24,19 +24,24 @@
    * secure mode, option -X: lock all pages into memory, prevent swapping
 	* Gradient custom 32 color palette for colors 0..7
 	  (0..7 with attributes normal, bold, faint, bold_faint)
-	  and the first 16 background colors.
+	  and the first 16 background colors
 	* Copy whole lines in the history with 'yy' in selection mode
 	* Additional cursor shapes
+	* utf8 clipboard conversion
 
 
-A statically linked binary with all dependencies is at
+Statically linked binaries with all dependencies are at
 [https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
 
 
-	checksum of the decompressed slterm binary, 0.99.2
-	sha: eb138a954af517dbb603c627a8aedcf4c46595c7 
-	sha3: fe35caef6fa65bb58a2d6eb40067ff5bdb5664f0405598d917978553 
+	checksums of the decompressed slterm binary 
+	0.99.2
+	sha3:   fe35caef6fa65bb58a2d6eb40067ff5bdb5664f0405598d917978553 
 	blake3: 67c69e7185328842cbec6b82782ee00d92c9ce5876967f7ad51c48b28b6ff895 
+
+	0.99.5
+	sha3:   0ab6218cc2d877a8ce94bf5f74c5827a22bdf2211cb9a01bca04018d
+	blake3: 64041ef890a77ece25d3e7ea375f1ee4b5b9220f96ee2589c24de03de4bd54fc
 
 
 ---
@@ -68,6 +73,11 @@ A statically linked binary with all dependencies is at
 	set mark:   Ctrl+Alt+n (n=0..9)
 	goto mark:  Ctrl+n
 	(lessmode): 'n' (number without modifier)
+
+	retmarks:  the positions within the terminal history is saved for
+              every line, entered with return.
+				  Go back: Shift+Backspace
+				  cycle (in lessmode): tab left/right, backspace
 
 
 ##### Hotkeys for font sizes and colors:
@@ -118,29 +128,9 @@ A statically linked binary with all dependencies is at
 `Ctrl+F1`
    
     Show inline help, and the reference of keybindings
-    `Anymod` can be any combination of modification keys (Ctrl, Alt,..)
-    Added to show the internal help, also when e.g. F1 has been
-	 bound to the window manager
-
-  
    
 	Cursor and configurable cursorcolor for unfocused windows,
 	cursor gets highlighted on focus in
-
-
-#### Slim resource usage:
-
-  Colors restricted to a 256 color palette per default.
-        (Saving 6 Bytes per Glyph)
-
-	Keep the history and terminal contents on resize events
-		(Doesn't erase wider lines, when shrinking)
-		No scrollback "behind" the current history anymore (Bugfix)
-
-	Delayed allocation of the history buffer. 
-
-		Saves up to tenths or even hundreds of MB, 
-		depending on the terminal's width and history size
 
 
 ___
@@ -203,11 +193,16 @@ into smaller pieces. Hopefully hacking st is in the future a little bit more con
 
 ---
 
+
 ### Requirements for compiling
 
+- make
+- gcc
 - Xlib headers
-- Xft headers
+- Xft freetype2 headers
 - pkgconf (pkgconfig)
+- optional, to embed resources: rst2man, xdd
+
 
 ### Install
 
@@ -279,7 +274,7 @@ corrected ret marks and scrollmarks
 
 
 
-(misc147 2020-2024 - github.com/michael105)
+(misc147 2020-2025 - github.com/michael105)
 
 
 Credits

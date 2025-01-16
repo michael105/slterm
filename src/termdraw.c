@@ -19,7 +19,7 @@ void drawregion(int x1, int y1, int x2, int y2) {
 				xdrawline(TLINE(y), x1, y, x2);
 		}
 				// statusline
-		if ( y==term->row && statusvisible ){
+		if ( y==term->rows && statusvisible ){
 				xdrawline(statusbar, x1, y-1, x2);
 		}
 }
@@ -33,8 +33,8 @@ void draw(void) {
 		}
 
 		/* adjust cursor position */
-		LIMIT(term->ocx, 0, term->col - 1);
-		LIMIT(term->ocy, 0, term->row - 1);
+		LIMIT(term->ocx, 0, term->cols - 1);
+		LIMIT(term->ocy, 0, term->rows - 1);
 
 #ifdef UTF8
 		if (term->line[term->ocy][term->ocx].mode & ATTR_WDUMMY) {
@@ -45,7 +45,7 @@ void draw(void) {
 		}
 #endif 
 
-		drawregion(0, 0, term->col, term->row);
+		drawregion(0, 0, term->cols, term->rows);
 		if (term->scr == 0) {
 				xdrawcursor(cx, term->cursor.y, term->line[term->cursor.y][cx], term->ocx, term->ocy,
 								term->line[term->ocy][term->ocx]);
@@ -63,13 +63,13 @@ void redraw(void) {
 
 
 int twrite(const utfchar *buf, int buflen, int show_ctrl) {
-		int charsize;
 		Rune u;
 		int n;
 
 		dbg("twrite0 buflen: %d buf[0]: %c  show_ctrl: %d", buflen, buf[0], show_ctrl);
 
 #ifdef UTF8
+		int charsize = 0;
 		for (n = 0; n < buflen; n += charsize) { // misc dfq
 				if (IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
 						// process a complete utf8 char
@@ -107,8 +107,8 @@ void tputtab(int n) {
 		uint x = term->cursor.x;
 
 		if (n > 0) {
-				while (x < term->col && n--) {
-						for (++x; x < term->col && !term->tabs[x]; ++x) {
+				while (x < term->cols && n--) {
+						for (++x; x < term->cols && !term->tabs[x]; ++x) {
 								/* nothing */
 						}
 				}
@@ -119,12 +119,11 @@ void tputtab(int n) {
 						}
 				}
 		}
-		term->cursor.x = LIMIT(x, 0, term->col - 1);
+		term->cursor.x = LIMIT(x, 0, term->cols - 1);
 }
 
 void tputc(Rune u) {
 		char c[UTF_SIZ];
-		int control;
 		int width, len;
 		Glyph *gp;
 //	if ( u>=0x80 )
@@ -135,6 +134,7 @@ void tputc(Rune u) {
 		c[0] = u;
 		width = len = 1;
 #else 
+		int control;
 		if (!IS_SET(MODE_UTF8) && !IS_SET(MODE_SIXEL)) {
 				c[0] = u;
 				width = len = 1;
@@ -173,11 +173,11 @@ void tputc(Rune u) {
 				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
 
-		if (IS_SET(MODE_INSERT) && term->cursor.x + width < term->col) {
-				memmove(gp + width, gp, (term->col - term->cursor.x - width) * sizeof(Glyph));
+		if (IS_SET(MODE_INSERT) && term->cursor.x + width < term->cols) {
+				memmove(gp + width, gp, (term->cols - term->cursor.x - width) * sizeof(Glyph));
 		}
 
-		if (term->cursor.x + width > term->col) {
+		if (term->cursor.x + width > term->cols ) {
 				tnewline(1);  // NHIST
 				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
@@ -192,14 +192,14 @@ void tputc(Rune u) {
 		if (width == 2) {
 				dbg2("tputchar width2: %x %c", gp[0].u, gp[0].u );
 				gp->mode |= ATTR_WIDE;
-				if (term->cursor.x + 1 < term->col) {
+				if (term->cursor.x + 1 < term->cols ) {
 						gp[1].u = '\0';
 						gp[1].mode = ATTR_WDUMMY;
 				}
 		}
 #endif
 
-		if (term->cursor.x + width < term->col) {
+		if (term->cursor.x + width < term->cols ) {
 				tmoveto(term->cursor.x + width, term->cursor.y);
 		} else {
 				term->cursor.state |= CURSOR_WRAPNEXT;
@@ -214,11 +214,11 @@ void histputc(utfchar c){
 				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
 
-		if (IS_SET(MODE_INSERT) && term->cursor.x + width < term->col) {
-				memmove(gp + width, gp, (term->col - term->cursor.x - width) * sizeof(Glyph));
+		if (IS_SET(MODE_INSERT) && term->cursor.x + width < term->cols ) {
+				memmove(gp + width, gp, (term->cols - term->cursor.x - width) * sizeof(Glyph));
 		}
 
-		if (term->cursor.x + width > term->col) {
+		if (term->cursor.x + width > term->cols ) {
 				tnewline(1);
 				gp = &term->line[term->cursor.y][term->cursor.x];
 		}
@@ -230,14 +230,14 @@ void histputc(utfchar c){
 		if (width == 2) {
 				dbg2("tputchar width2: %x %c", gp[0].u, gp[0].u );
 				gp->mode |= ATTR_WIDE;
-				if (term->cursor.x + 1 < term->col) {
+				if (term->cursor.x + 1 < term->cols ) {
 						gp[1].u = '\0';
 						gp[1].mode = ATTR_WDUMMY;
 				}
 		}
 #endif
 
-		if (term->cursor.x + width < term->col) {
+		if (term->cursor.x + width < term->cols ) {
 				tmoveto(term->cursor.x + width, term->cursor.y);
 		} else {
 				term->cursor.state |= CURSOR_WRAPNEXT;
@@ -283,7 +283,7 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 
 		if (term->line[y][x].mode & ATTR_WIDE) {
 				dbg2("Attr_wide: %c\n",term->line[y][x].u);
-				if (x + 1 < term->col) {
+				if (x + 1 < term->cols ) {
 						term->line[y][x + 1].u = ' ';
 						term->line[y][x + 1].mode &= ~ATTR_WDUMMY;
 				}
@@ -299,8 +299,7 @@ void tsetchar(Rune u, Glyph *attr, int x, int y) {
 }
 
 void tclearregion(int x1, int y1, int x2, int y2) {
-		int x, y;
-		Glyph *gp;
+		int y;
 
 		if (x1 > x2) {
 				SWAPint(x1,x2);
@@ -309,10 +308,10 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 				SWAPint(y1,y2);
 		}
 
-		LIMIT(x1, 0, term->col - 1);
-		LIMIT(x2, 0, term->col - 1);
-		LIMIT(y1, 0, term->row - 1);
-		LIMIT(y2, 0, term->row - 1);
+		LIMIT(x1, 0, term->cols - 1);
+		LIMIT(x2, 0, term->cols - 1);
+		LIMIT(y1, 0, term->rows - 1);
+		LIMIT(y2, 0, term->rows - 1);
 
 		selclear(); // only call once.
 		//term->cursor.attr.u=' ';
@@ -325,6 +324,8 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 				memset32( &term->line[y][x1].intG, term->cursor.attr.intG, (x2-x1)+1 ); // memset64 or comp
 				dbg("ok\n");
 #else
+		Glyph *gp;
+		int x;
 				//printf("y: %d, x1: %d, x2: %d\n", y, x1, x2); // xxx
 				for (x = x1; x <= x2; x++) { //misc copy longs (64bit)or,better: memset. mmx/sse?
 						//if (selected(x, y)) { // room for optimization. only ask once, when no selection
@@ -347,26 +348,26 @@ void tdeletechar(int n) {
 		int dst, src, size;
 		Glyph *line;
 
-		LIMIT(n, 0, term->col - term->cursor.x);
+		LIMIT(n, 0, term->cols - term->cursor.x);
 
 		dst = term->cursor.x;
 		src = term->cursor.x + n;
-		size = term->col - src;
+		size = term->cols - src;
 		line = term->line[term->cursor.y];
 
 		memmove(&line[dst], &line[src], size * sizeof(Glyph));
-		tclearregion(term->col - n, term->cursor.y, term->col - 1, term->cursor.y);
+		tclearregion(term->cols - n, term->cursor.y, term->cols - 1, term->cursor.y);
 }
 
 void tinsertblank(int n) {
 		int dst, src, size;
 		Glyph *line;
 
-		LIMIT(n, 0, term->col - term->cursor.x);
+		LIMIT(n, 0, term->cols - term->cursor.x);
 
 		dst = term->cursor.x + n;
 		src = term->cursor.x;
-		size = term->col - dst;
+		size = term->cols - dst;
 		line = term->line[term->cursor.y];
 
 		memmove(&line[dst], &line[src], size * sizeof(Glyph));
@@ -386,14 +387,14 @@ void tdeleteline(int n) {
 }
 
 
-void tfulldirt(void) { tsetdirt(0, term->row - 1); }
+void tfulldirt(void) { tsetdirt(0, term->rows - 1); }
 
 
 void tsetdirtattr(int attr) {
 		int i, j;
 
-		for (i = 0; i < term->row - 1; i++) {
-				for (j = 0; j < term->col - 1; j++) {
+		for (i = 0; i < term->rows - 1; i++) {
+				for (j = 0; j < term->cols - 1; j++) {
 						if (term->line[i][j].mode & attr) {
 								tsetdirt(i, i);
 								break;
@@ -406,8 +407,8 @@ void tsetdirtattr(int attr) {
 int tattrset(int attr) {
 		int i, j;
 
-		for (i = 0; i < term->row - 1; i++) {
-				for (j = 0; j < term->col - 1; j++) {
+		for (i = 0; i < term->rows - 1; i++) {
+				for (j = 0; j < term->cols - 1; j++) {
 					if ( term->line[i] == 0 ){ // xxx
 						fprintf(stderr,"WARNING: tattrset NULL: %d %d\n",i,j);
 						return ( 0 );
@@ -424,8 +425,8 @@ int tattrset(int attr) {
 void tsetdirt(int top, int bot) {
 		int i;
 
-		LIMIT(top, 0, term->row - 1);
-		LIMIT(bot, 0, term->row - 1);
+		LIMIT(top, 0, term->rows - 1);
+		LIMIT(bot, 0, term->rows - 1);
 
 		for (i = top; i <= bot; i++) {
 				term->dirty[i] = 1;
@@ -582,14 +583,6 @@ void tsetattr(int *attr, int l) {
 
 void printscreen(const Arg *arg) { tdump(); }
 
-void tprinter(char *s, size_t len) {
-		if (iofd != -1 && xwrite(iofd, s, len) < 0) {
-				perror("Error writing to output file");
-				close(iofd);
-				iofd = -1;
-		}
-}
-
 void toggleprinter(const Arg *arg) { term->mode ^= MODE_PRINT; }
 
 
@@ -598,7 +591,7 @@ void tdumpline(int n) {
 		Glyph *bp, *end;
 
 		bp = &term->line[n][0];
-		end = &bp[MIN(tlinelen(n), term->col) - 1];
+		end = &bp[MIN(tlinelen(n), term->cols ) - 1];
 		if (bp != end || bp->u != ' ') {
 				for (; bp <= end; ++bp) {
 						tprinter(buf, utf8encode(bp->u, buf));
@@ -610,7 +603,7 @@ void tdumpline(int n) {
 void tdump(void) {
 		int i;
 
-		for (i = 0; i < term->row; ++i) {
+		for (i = 0; i < term->rows; ++i) {
 				tdumpline(i);
 		}
 }

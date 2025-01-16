@@ -10,18 +10,39 @@
 #include "debug.h"
 #include "termdraw.h"
 #include "xevent.h"
-#include "x.h"
+#include "xwindow.h"
+
+
+int iofd = 1;
+int cmdfd;
+
 
 void ttyhangup() {
 	/* Send SIGHUP to shell */
-	kill(pid, SIGHUP);
+	kill(shellpid, SIGHUP);
 }
+
+void sendbreak(const Arg *arg) {
+	if (tcsendbreak(cmdfd, 0)) {
+		perror("Error sending break");
+	}
+}
+
+
+void tprinter(char *s, size_t len) {
+		if (iofd != -1 && xwrite(iofd, s, len) < 0) {
+				perror("Error writing to output file");
+				close(iofd);
+				iofd = -1;
+		}
+}
+
 
 void ttyresize(int tw, int th) {
 	struct winsize w;
 
-	w.ws_row = term->row;
-	w.ws_col = term->col;
+	w.ws_row = term->rows;
+	w.ws_col = term->cols;
 	w.ws_xpixel = tw;
 	w.ws_ypixel = th;
 	if (ioctl(cmdfd, TIOCSWINSZ, &w) < 0) {
@@ -79,7 +100,7 @@ int ttynew(char *line, char *cmd, char *out, char **args) {
 		die("openpty failed: %s\n", strerror(errno));
 	}
 
-	switch (pid = fork()) {
+	switch (shellpid = fork()) {
 		case -1:
 			die("fork failed: %s\n", strerror(errno));
 			break;
@@ -139,6 +160,7 @@ size_t ttyread(void) {
 	return ret;
 }
 
+// writes to the terminal / shell
 void ttywrite(const utfchar *s, size_t n, int may_echo) {
 	const utfchar *next;
 	Arg arg = (Arg){.i = term->scr};

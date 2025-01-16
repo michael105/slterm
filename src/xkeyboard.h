@@ -45,3 +45,4 @@ int match(unsigned int mask, unsigned int state);
 void ttysend(const Arg *);
 
 void dummy( const Arg *a);
+void dump_terminfo( const Arg *a);

@@ -1,1 +1,0 @@
-const char* compilecommand="gcc -o st-asc st.c x.c -I/usr/X11R6/include  `pkg-config --cflags fontconfig`  `pkg-config --cflags freetype2` -DVERSION=\"asc-0.9rc2\" -D_XOPEN_SOURCE=600  -O  -O2  -DHISTSIZEBITS=14 -L/usr/X11R6/lib -lm -lrt -lX11 -lutil -lXft  `pkg-config --libs fontconfig`  `pkg-config --libs freetype2`  -s";

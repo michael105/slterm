@@ -16,6 +16,21 @@
 #define ATTRCMP(a, b)                                                          \
   ((a).mode != (b).mode || (a).fg != (b).fg || (a).bg != (b).bg)
 
+
+// get pointer to a line.
+//
+// todo: rewrite the whole history buffer.
+// concept:  
+// 	drop t->line and t->hist
+// 	use t->buf instead.
+// 	pos from 0 to UINT_MAX.
+// 		-> only 2 pointers needed: current pos, and scrolled pos.
+// 		fetch and write buffer by limiting to &(HISTSIZE-1).
+// 		when scrolling, obviously limit to currentpos & (HISTSIZE-1).
+// 		funny enough, overflowing UINT_MAX won't be a problem.
+// 	use absolute values in TLINE(line) ( add pos + scroll to line, &(HISTSIZE-1) )
+// 	use negative - no, positive, since we need in theory scroll up to UINT_NAX lines - 
+// 	values for scroll to scroll. scrolling to 0 = pos.
 #define TLINE(y)                                                               \
   ((y) < term->scr                                                              \
        ? term->hist[(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
@@ -23,15 +38,34 @@
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
 
-#define IS_SET(flag) ((term->mode & (flag)) != 0)
+// inputmode. switchable via lessmode_toggle
+//extern int inputmode;
+
+enum term_mode {
+  MODE_WRAP = 1 << 0,
+  MODE_INSERT = 1 << 1,
+  MODE_ALTSCREEN = 1 << 2,
+  MODE_CRLF = 1 << 3,
+  MODE_ECHO = 1 << 4,
+  MODE_PRINT = 1 << 5,
+#ifdef UTF8
+  MODE_UTF8 = 1 << 6,
+#else
+	MODE_UTF8 = 0,
+#endif
+  MODE_SIXEL = 1 << 7,
+	TMODE_HELP = 1 << 8,
+};
+
+
 
 #ifndef HISTSIZEBITS
-// Should be set in config.h.in
+// Should be set in config.h
 #define HISTSIZEBITS 11
 #endif
 
 #if (HISTSIZEBITS>20)
-#error You most possibly do not want a history with a length > 1.000.000 ?
+#error You most possibly do not want a history with a length > 1.000.000 
 #error Either change HISTSIZEBITS accordingly, or edit the sources
 #endif
 
@@ -69,24 +103,6 @@ enum glyph_attribute {
 #endif
 };
 
-// inputmode. switchable via lessmode_toggle
-//extern int inputmode;
-
-enum term_mode {
-  MODE_WRAP = 1 << 0,
-  MODE_INSERT = 1 << 1,
-  MODE_ALTSCREEN = 1 << 2,
-  MODE_CRLF = 1 << 3,
-  MODE_ECHO = 1 << 4,
-  MODE_PRINT = 1 << 5,
-#ifdef UTF8
-  MODE_UTF8 = 1 << 6,
-#else
-	MODE_UTF8 = 0,
-#endif
-  MODE_SIXEL = 1 << 7,
-	TMODE_HELP = 1 << 8,
-};
 
 enum cursor_movement { CURSOR_SAVE, CURSOR_LOAD };
 
@@ -105,18 +121,6 @@ enum charset {
   CS_GER,
   CS_FIN
 };
-
-enum escape_state {
-  ESC_START = 1,
-  ESC_CSI = 2,
-  ESC_STR = 4, /* OSC, PM, APC */
-  ESC_ALTCHARSET = 8,
-  ESC_STR_END = 16, /* a final string was encountered */
-  ESC_TEST = 32,    /* Enter in test mode */
-  ESC_UTF8 = 64,
-  ESC_DCS = 128,
-};
-
 
 
 #ifdef UTF8
@@ -152,24 +156,14 @@ typedef struct {
 
 typedef Glyph *Line;
 
-typedef struct {
-  Glyph attr; /* current char attributes */ //the rune is set to ' ' (empty)
-	// Possibly there should be a difference between space ' ' and empty?
-	// evtl render spaces and tabs visually? 
-  int x;
-  int y;
-  char state;
-} TCursor;
-
-
 void redraw(void);
 void draw(void);
 
 void printscreen(const Arg *);
 void printsel(const Arg *);
-void sendbreak(const Arg *);
 void toggleprinter(const Arg *);
 void showhelp(const Arg *);
+void quithelp(const Arg *);
 void inverse_screen();
 
 int tisaltscr(void);
