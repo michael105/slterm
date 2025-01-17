@@ -187,17 +187,7 @@ void retmark(const Arg* a){
 			}
 		}
 
-		/*
-		int t = term->scroll_retmark;
-		term->scroll_retmark = (term->scroll_retmark-1) & (RETMARKCOUNT-1);
-		if ( term->scroll_retmark == ((term->current_retmark) &(RETMARKCOUNT-1)) ||
-				(term->retmarks[t]==0 && term->retmarks[term->scroll_retmark] == 0 )  )
-			term->scroll_retmark = t;
-
-		term->scr=(term->histi-term->retmarks[term->scroll_retmark]);
-		*/
 	}
-	//term->scr=(term->histi-term->retmarks[0])-term->rows+1;
 	//printf("scr: %d\n", term->scr );
 	if ( term->scr<0 ){
 			// TODO: circledhist
@@ -210,7 +200,6 @@ void retmark(const Arg* a){
 	tfulldirt();
 	//updatestatus();
 	lessmode_toggle( ARGPi(LESSMODE_ON) );
-//	}
 }
 
 
