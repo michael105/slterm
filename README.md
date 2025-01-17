@@ -11,17 +11,18 @@
 ##### Features
 
    * Lessmode: scroll around with less like keybindings
-   * Hit shift+backspace: enter 'lessmode', and scroll
+   * Retmarks, shift+backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
-	* Retmarks: Tab/Backspace to jump in lessmode to the locations of entered commands
+	* Tab/Backspace to jump in lessmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
    * Hotkeys for changing font size, -spacing and inverting colors
    * Inline help (reference of the bound keys) 
    * Switching codepages with hotkeys (cp437,cp850,cp1252,..)
    * Input translation of unicode / X Keysyms to the current codepage
-   * Several performance and memory related modifications;
-     slterm might be the fastest available terminal emulator for X
-   * secure mode, option -X. lock all pages into memory, prevent swapping
+   * performance and memory related modifications;
+     slterm shall be the fastest available terminal emulator for X
+   * secure mode, option -X. lock all pages into memory, prevent swapping 
+     (secrets are readable in the swap)
    * Gradient custom 32 color palette for colors 0..7
 	  (0..7 with attributes normal, bold, faint, bold_faint)
 	  and the first 16 background colors
@@ -30,24 +31,11 @@
    * utf8 clipboard conversion
 
 
-Statically linked binaries with all dependencies are at
+Statically linked binaries with all dependencies for linux, 64bit are at
 [https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
 
 
-	checksums of the decompressed slterm binary 
-	0.99.2
-	sha3:   fe35caef6fa65bb58a2d6eb40067ff5bdb5664f0405598d917978553 
-	blake3: 67c69e7185328842cbec6b82782ee00d92c9ce5876967f7ad51c48b28b6ff895 
-
-	0.99.5
-	sha3:   0ab6218cc2d877a8ce94bf5f74c5827a22bdf2211cb9a01bca04018d
-	blake3: 64041ef890a77ece25d3e7ea375f1ee4b5b9220f96ee2589c24de03de4bd54fc
-
-
 ---
-
-
-#### Additions
 
 
 ##### Lessmode
@@ -110,13 +98,18 @@ Statically linked binaries with all dependencies are at
 
   The default 7 colors, with additional 3 attributes bold, faint and bold_faint 
   ( so there are 32 colors ) are configured as color gradients,
-  configurable in config.h
+  configurable in config.h. 
+  The default gradient follows a compatible scheme, 'yellow' is 'brown'..
 
   The 256 colors map follows the xterm standard, with the difference 
   of more contrast with faint and bold_faint attributes.
 
   Combining blink and inverse attributes does blinking by reversing.
   > echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n' 
+
+	Cursor and configurable cursorcolor for unfocused windows,
+	cursor gets highlighted on focus in
+
 
 
 ![indexed_colors](images/indexed_fgcolors.jpg)
@@ -129,9 +122,6 @@ Statically linked binaries with all dependencies are at
    
     Show inline help, and the reference of keybindings
    
-	Cursor and configurable cursorcolor for unfocused windows,
-	cursor gets highlighted on focus in
-
 
 ___
 
@@ -158,7 +148,7 @@ Applied 'official' patches:
 		compile time switch "XRESOURCES"
 
 
-Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.md](LOG.md)
+Further info is in [slterm.1](src/slterm.1.rst), [Patches](doc/PATCHES.md) and the folder doc
 
 
 ### About
@@ -191,14 +181,14 @@ Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.
 ---
 
 
-### Requirements for compiling
+### Requirements for compilation
 
 - make
 - gcc
 - Xlib headers
 - Xft freetype2 headers
 - pkgconf (pkgconfig)
-- optional, to embed resources: rst2man, xdd
+- optional, to embed resources: rst2man, xxd (comes with vim)
 
 
 ### Install
@@ -209,9 +199,9 @@ edit [src/config.h](src/config.h) (optionally)
     make
     make install
 
-The default configuration might be save. 
+The default configuration should be save. 
 
-(no utf8, scrollback history 16384 lines, no XResources, installs into /usr/local/bin)
+(no utf8, scrollback history 65536 lines, no XResources, installs into /usr/local/)
 
 If you'd like to change anything, please edit config.h and config.make
 
@@ -252,19 +242,10 @@ If you'd like to change anything, please edit config.h and config.make
 Switching back and forth from alt screen does reset the cursor position,
 but doesn't clear the screen for remote ssh sessions.
 
-Retmarks aren't accurate for every 65536 lines.
+Retmarks stop working after 65536 lines.
 
-No UTF8
-UTF-8 currently would need some work,
-stripped for performance reasons.
+Xresources, untested for a while. 
 
-Xresources, untested for a while. Currently colors are not used.
-
-
-#### fixed:
-
-crashes with the alt screen
-corrected ret marks and scrollmarks
 
 
 ====================
@@ -289,8 +270,25 @@ Please see for more information on the authors of the patches [PATCHES](PATCHES.
  Devin J. Pohly, Sai Praneeth Reddy)
 
 My apologies for not pushing the work back to suckless,
-but the heavy changes and the not so simple additions
+but the extensive modifications
 let me seem this neither easy nor following the suckless philosophy;
 and it wouldn't be possible to submit "patches" anymore.
+(A rant. I'll never get, why you redefine the macro IS_SET with
+ different definitions. This is. Amazing. 
+ ..But st has been a good starting point.)
+
+
+-----
+
+
+sha3 checksums of the decompressed statically linked binaries (linux amd64)
+[https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
+
+
+	0.99.2:   fe35caef6fa65bb58a2d6eb40067ff5bdb5664f0405598d917978553 
+	0.99.5:   0ab6218cc2d877a8ce94bf5f74c5827a22bdf2211cb9a01bca04018d
+	0.99.5.1: 40a928e51497c95a48482a09d45f1d657b469fed6a7bc8ff13884e41
+
+
 
 

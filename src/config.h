@@ -520,7 +520,7 @@ BIND( XK_ANY_MOD, XK_6, retmark, { .i=6 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_7, retmark, { .i=7 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_8, retmark, { .i=8 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_9, retmark, { .i=9 },MODE_LESS ),
-BIND( XK_ANY_MOD, XK_0, retmark, { .i=10 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_0, retmark, { .i=0 },MODE_LESS ),
 
 
 
@@ -899,7 +899,7 @@ int selected_codepage = 2;
 #endif
 
 // convert the x clipboard to and from utf8, when yanking/pasting
-#ifndef UTF8 // wouldn't be useful
+#ifndef UTF8 // utf8->utf8 wouldn't be useful
 #define UTF8_CLIPBOARD
 #endif
 
@@ -924,14 +924,12 @@ const char *export_env[][2] = {
    { "BLACK", "\e[30m"},
    { "RED", "\e[31m"},
    { "GREEN", "\e[32m"},
-   { "YELLOW", "\e[33m"},
+   { "BROWN", "\e[33m"},
    { "BLUE", "\e[34m"},
    { "MAGENTA", "\e[35m"},
    { "CYAN", "\e[36m"},
    { "WHITE", "\e[37m"},
 
-   { "BROWN", "\e[33m"},
-   { "BGBROWN", "\e[43m"},
    { "ORANGE", "\e[1;2;33m"},
    { "ORANGERED", "\e[1;2;31m"},
    { "GRAY", "\e[1;2;30m"},
@@ -940,27 +938,34 @@ const char *export_env[][2] = {
    { "TURQUOISE", "\e[1;2;36m"},
 
    { "LBLACK", "\e[90m"},
+   { "LGRAY", "\e[90m"},
    { "LRED", "\e[91m"},
    { "LGREEN", "\e[92m"},
    { "LYELLOW", "\e[93m"},
+   { "LBROWN", "\e[93m"}, // well. "compatibility"
+   { "YELLOW", "\e[93m"},
    { "LBLUE", "\e[94m"},
    { "LMAGENTA", "\e[95m"},
    { "LCYAN", "\e[96m"},
    { "LWHITE", "\e[97m"},
 
    { "DBLACK", "\e[2;30m"},
+   { "DGRAY", "\e[2;30m"},
    { "DRED", "\e[2;31m"},
    { "DGREEN", "\e[2;32m"},
-   { "DYELLOW", "\e[2;33m"},
+   { "DYELLOW", "\e[2;33m"}, // is brown
+   { "DBROWN", "\e[2;33m"},
    { "DBLUE", "\e[2;34m"},
    { "DMAGENTA", "\e[2;35m"},
    { "DCYAN", "\e[2;36m"},
    { "DWHITE", "\e[2;37m"},
 
    { "LDBLACK", "\e[1;2;30m"},
+   { "LDGRAY", "\e[1;2;30m"},
    { "LDRED", "\e[1;2;31m"},
    { "LDGREEN", "\e[1;2;32m"},
    { "LDYELLOW", "\e[1;2;33m"},
+   { "LDBROWN", "\e[1;2;33m"},
    { "LDBLUE", "\e[1;2;34m"},
    { "LDMAGENTA", "\e[1;2;35m"},
    { "LDCYAN", "\e[1;2;36m"},
@@ -970,16 +975,19 @@ const char *export_env[][2] = {
    { "BGBLACK", "\e[40m"},
    { "BGRED", "\e[41m"},
    { "BGGREEN", "\e[42m"},
-   { "BGYELLOW", "\e[43m"},
+   { "BGBROWN", "\e[43m"},
    { "BGBLUE", "\e[44m"},
    { "BGMAGENTA", "\e[45m"},
    { "BGCYAN", "\e[46m"},
    { "BGWHITE", "\e[47m"},
 
    { "BGLBLACK", "\e[100m"},
+   { "BGGRAY", "\e[100m"},
    { "BGLRED", "\e[101m"},
    { "BGLGREEN", "\e[102m"},
    { "BGLYELLOW", "\e[103m"},
+   { "BGYELLOW", "\e[103m"},
+   { "BGLBROWN", "\e[103m"},
    { "BGLBLUE", "\e[104m"},
    { "BGLMAGENTA", "\e[105m"},
    { "BGLCYAN", "\e[106m"},
