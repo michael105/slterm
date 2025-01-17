@@ -21,7 +21,7 @@ endef
 
 
 
-all: man tools
+all: tools
 	cd src && $(MAKE)
 
 
@@ -29,10 +29,10 @@ help:
 	$(info $(HELP))
 
 
-slterm: man tools
+slterm: tools
 	cd src && $(MAKE) 
 	
-static: man tools
+static: tools
 	cd src && $(MAKE) static
 
 static_embedfont: man tools
