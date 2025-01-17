@@ -174,7 +174,7 @@ Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.
         (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
         E.g. bash, vi, .. What is an interesting result. st did have quite good unicode handling,
         but until yet I always needed to dive into the configurations for 
-        entering chars like Umlaute (&uuml;&auml;..)
+        entering chars like Umlaute (î,Å,..)
 
         Besides, instead of having a history buffer, which needs 15 Bytes per Glyph 
         (a Glyph is a char on the screen with text attributes and colors)
