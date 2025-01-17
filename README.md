@@ -37,7 +37,7 @@ Statically linked binaries with all dependencies are at
 	sha3 checksums of the decompressed slterm binary 
 	0.99.2:   fe35caef6fa65bb58a2d6eb40067ff5bdb5664f0405598d917978553 
 	0.99.5:   0ab6218cc2d877a8ce94bf5f74c5827a22bdf2211cb9a01bca04018d
-	0.99.5.1: fbc494fc8ed9e6cd4b946c091c49f34e588ed5e309283e2e37d87a16
+	0.99.5.1: 40a928e51497c95a48482a09d45f1d657b469fed6a7bc8ff13884e41
 
 ---
 
