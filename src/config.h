@@ -520,7 +520,7 @@ BIND( XK_ANY_MOD, XK_6, retmark, { .i=6 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_7, retmark, { .i=7 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_8, retmark, { .i=8 },MODE_LESS ),
 BIND( XK_ANY_MOD, XK_9, retmark, { .i=9 },MODE_LESS ),
-BIND( XK_ANY_MOD, XK_0, retmark, { .i=0 },MODE_LESS ),
+BIND( XK_ANY_MOD, XK_0, retmark, { .i=-2 },MODE_LESS ),
 
 
 
@@ -532,7 +532,7 @@ BIND( ShiftMask, XK_Return, enterscroll, { .i=11 },ALLMODES ),
 	// doesnt ork ??
 	// { TERMMOD, XK_E, ttysend, { .s="\x80" }, ALLMODES ),
 
-BIND( ShiftMask, XK_BackSpace, retmark , { },ALLMODES ),
+BIND( ShiftMask, XK_BackSpace, retmark , {  },ALLMODES ),
 BIND( ShiftMask, XK_ISO_Left_Tab, retmark, {}, ALLMODES ), // tab left <- to enter lessmode
 BIND( XK_ANY_MOD,XK_BackSpace, retmark , { },MODE_LESS ),
 BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=-1 },MODE_LESS ), // tab -> to scroll down

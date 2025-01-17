@@ -167,6 +167,9 @@ void retmark(const Arg* a){
 		term->scr=(term->histi-term->retmarks[t]);
 		term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 
+	} else if ( a->i == -2 ){
+			term->retmark_scrolled = 0;
+			scrolltobottom();
 	} else { // scroll backward
 		if ( term->histi<term->rows){ // at the top
 			scrolltotop();
