@@ -2,7 +2,7 @@
 
 
 
-	Slim (110kB linked shared) and fast terminal emulator for X11,
+	Slim (124kB linked shared) and fast terminal emulator for X11,
 	with minimal external dependencies (Xlib, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
@@ -21,13 +21,13 @@
    * Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
      slterm might be the fastest available terminal emulator for X
-   * secure mode, option -X: lock all pages into memory, prevent swapping
-	* Gradient custom 32 color palette for colors 0..7
+   * secure mode, option -X. lock all pages into memory, prevent swapping
+   * Gradient custom 32 color palette for colors 0..7
 	  (0..7 with attributes normal, bold, faint, bold_faint)
 	  and the first 16 background colors
-	* Copy whole lines in the history with 'yy' in selection mode
-	* Additional cursor shapes
-	* utf8 clipboard conversion
+   * Copy whole lines in the history with 'yy' in selection mode
+   * Additional cursor shapes
+   * utf8 clipboard conversion
 
 
 Statically linked binaries with all dependencies are at
@@ -115,7 +115,7 @@ Statically linked binaries with all dependencies are at
   The 256 colors map follows the xterm standard, with the difference 
   of more contrast with faint and bold_faint attributes.
 
-  Combining blink and inverse attributes does blinking by reversing. (wonderful)
+  Combining blink and inverse attributes does blinking by reversing.
   > echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n' 
 
 
@@ -136,11 +136,11 @@ Statically linked binaries with all dependencies are at
 ___
 
 
-The sourcecode is heavily modified, partly rewritten, and split into 
+
+The sourcecode of st was heavily modified, partly rewritten, and split into 
 smaller sections. (Originally it had been one single file with several thousand lines).
 
 
-___
 
 Applied 'official' patches:
 
@@ -172,9 +172,9 @@ Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.
     Stripped unicode support in favour of the 256 chars (extended) ASCII table
         utf8 is an optional compiletime switch now.(was).
         (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
-        E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
+        E.g. bash, vi, .. What is an interesting result. st did have quite good unicode handling,
         but until yet I always needed to dive into the configurations for 
-        entering chars like ä,ö,ß in unicode mode)
+        entering chars like Umlaute.
 
         Besides, instead of having a history buffer, which needs 15 Bytes per Glyph 
         (a Glyph is a char on the screen with text attributes and colors)
@@ -182,13 +182,10 @@ Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.
 ![](images/colors.png?raw=true)
 
 "256" colors (with attributes faint, normal, bold) and the ascii table without control characters as displayed by slterm.<br>
-The scripts for creating the output are within ./test
+
 
 ![](images/ascii.png)
 
-
-.. Did split the sourcefile (one big file with several thousand lines)
-into smaller pieces. Hopefully hacking st is in the future a little bit more conveniant. 
 
 
 ---

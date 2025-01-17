@@ -44,12 +44,73 @@ void statusbar_focusout(){
 }
 
 // text entering, textfield
+// besser als struct, objektorientiert.
 uchar tfbuf[512];
 int tfbuflen = 512;
 
-int tfpos = 0; // is not neccearily the pos of the cursor.
+int tfpos = 0; // is not necessarily the pos of the cursor.
 int tftextlen = 0;
 int tfvisible = 0;
+
+uchar tfinput[512];
+int tfinputlen = 512;
+
+// callbacks
+//
+// xkeyboard -> keypress
+// verarbeitet input, auch keycombos
+//
+// tfevent -> receiver (searchwidget)
+// sendet:
+// textentered (buf)
+// search (buf)
+// complete (buf)
+//
+// setcursor(x) -> relative cursor position
+//
+// redraw() -> receiver (statusbar)
+// ->redraw() beide richtungen. d.h. in statusbarupdate: setwidth(), paint(), getcursor()
+//
+// ->setwidth(x)
+//
+// ->view,hide
+// ->setfocus()
+//
+//
+// eventfilterlist. (Ctrl+F,Tab,ESC, . hm. evtl zu weit.)
+// benoetige ein sinnvolles format fuewr die glyphen.
+// vermutlich am besten "doppelt". textstring, und glyphlist fuer farbe und attribute.
+//
+// auch moeglich: die callbacks von sprintf in minilib fuer colorierung schreiben.
+// ->sprintf: marker fuer farbe. zb ein Test in %ROT%Farbe
+// hatte ja schonmal ein konzept. 
+//
+// sinnvoll, hier, hab keine zeit: variablen und callbacks als struktur.
+//
+// Rest koennte ich immer noch aufbauen. bspw sender- verteiler -receiver
+// usw.
+// 
+// besser: slots.
+// in der strukt slot registerkey[], drin struct: key,callback(key,sender)
+// -> structs muessen fuer alle widgets eine selbe grundstruktur am anfang haben.
+// -> = "parent" class.
+// -> sogar die syntax wird nett: struct _textinput { struct widget; ...
+// laesst sich dann auch polymorph gestalten.
+// create_widget( typ )... setzt callbacks, initialisiert.
+//
+// kann natuerlich auch macros machen:
+// struct widget; wird zu PARENTCLASS widget;
+// "public" scheint unpassend.
+// genaugenommen: struct _textinput{ CLASS widget; 
+// und struct _widget{ CLASS object; 
+// ...
+// nicht mal casten notwendig.
+// nur upcasten, von object auf widget, usw.
+//
+// kann ich natuerlich auch gleich mit ids arbeiten.
+// fuer jede instanz, und jede klasse.
+//
+
 
 
 // for the mode MODE_ENTERSTRING
