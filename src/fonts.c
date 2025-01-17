@@ -406,6 +406,18 @@ void xunloadfonts(void) {
 		xunloadfont(&dc.ibfont);
 }
 
+// use a table for the glyph translation
+// call makeglyphfontspecs only, when the char hasn't been found.
+int noutf8_xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
+		int x, int y) {
+#ifndef UTF8
+	
+
+#endif
+	return( xmakeglyphfontspecs( specs, glyphs, len, x, y ) );
+}
+
+
 int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		int x, int y) {
 	float winx = twin.hborderpx + x * twin.cw, winy = twin.vborderpx + y * twin.ch,
