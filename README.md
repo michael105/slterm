@@ -115,7 +115,7 @@ Statically linked binaries with all dependencies are at
   The 256 colors map follows the xterm standard, with the difference 
   of more contrast with faint and bold_faint attributes.
 
-  Combining blink and inverse attributes does blinking by reversing. (wonderful)
+  Combining blink and inverse attributes does blinking by reversing.
   > echo -e '\e[48;5;9;32;1;6;7m\n\n BLINK \n' 
 
 
@@ -136,11 +136,11 @@ Statically linked binaries with all dependencies are at
 ___
 
 
-The sourcecode is heavily modified, partly rewritten, and split into 
+
+The sourcecode of st was heavily modified, partly rewritten, and split into 
 smaller sections. (Originally it had been one single file with several thousand lines).
 
 
-___
 
 Applied 'official' patches:
 
@@ -174,7 +174,7 @@ Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.
         (Most programs suddenly handle German Umlauts, etc.pp out of the box, using the ASCII table / CP1250 only.
         E.g. bash, vi, .. What is an interesting result. st has a quite good unicode handling,
         but until yet I always needed to dive into the configurations for 
-        entering chars like ä,ö,ß in unicode mode)
+        entering chars like ä,ö,ß (e Î£,Ã·,â–€%) in unicode mode)
 
         Besides, instead of having a history buffer, which needs 15 Bytes per Glyph 
         (a Glyph is a char on the screen with text attributes and colors)
@@ -182,7 +182,7 @@ Further info is in [slterm.1](src/slterm.1.rst), [Patches](PATCHES.md) and [LOG.
 ![](images/colors.png?raw=true)
 
 "256" colors (with attributes faint, normal, bold) and the ascii table without control characters as displayed by slterm.<br>
-The scripts for creating the output are within ./test
+
 
 ![](images/ascii.png)
 
