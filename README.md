@@ -252,13 +252,9 @@ If you'd like to change anything, please edit config.h and config.make
 Switching back and forth from alt screen does reset the cursor position,
 but doesn't clear the screen for remote ssh sessions.
 
-Retmarks aren't accurate for every 65536 lines.
+Retmarks stop working after 65536 lines.
 
-No UTF8
-UTF-8 currently would need some work,
-stripped for performance reasons.
-
-Xresources, untested for a while. Currently colors are not used.
+Xresources, untested for a while. 
 
 
 #### fixed:
