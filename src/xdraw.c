@@ -9,7 +9,7 @@ DC dc;
  * Absolute coordinates.
  */
 void xclear(int x1, int y1, int x2, int y2) {
-	XftDrawRect(xwin.draw, &dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg],
+	XftDrawRect(xwin.draw, &dc.color_array[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg],
 			x1, y1, x2 - x1, y2 - y1);
 }
 
@@ -87,7 +87,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &truebg);
 				bg = &truebg;
 			} else {
-				bg = &dc.col[base.bg];
+				bg = &dc.color_array[base.bg];
 			}
 		}
 	}
@@ -116,7 +116,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &truefg);
 				fg = &truefg;
 			} else {
-				fg = &dc.col[base.fg];
+				fg = &dc.color_array[base.fg];
 			}
 
 
@@ -129,7 +129,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			/* Change basic system colors [0-7] to bright system colors [8-15] */
 			if ((base.mode & ATTR_BOLD) == ATTR_BOLD ){
 				if ( BETWEEN(base.fg, 0, 7)){
-					fg = &dc.col[base.fg + 8];
+					fg = &dc.color_array[base.fg + 8];
 				} else { 
 					//if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  
 					cbold(red); //= fg->color.red * 2;
@@ -185,8 +185,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	if (IS_SET(MODE_REVERSE)) { // inverse mode (Ctrl+Shift+I)
 		if ( !fgcache ){
-			if ( fg == &dc.col[defaultfg]) {
-				fg = &dc.col[defaultbg];
+			if ( fg == &dc.color_array[defaultfg]) {
+				fg = &dc.color_array[defaultbg];
 			} else {
 				colfg.alpha = fg->color.alpha;
 #define AS(c) colfg.c = ~fg->color.c
@@ -200,8 +200,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		}
 
 		if ( !bgcache ){
-			if ( bg == &dc.col[defaultbg]) {
-				bg = &dc.col[defaultfg];
+			if ( bg == &dc.color_array[defaultbg]) {
+				bg = &dc.color_array[defaultfg];
 			} else {
 				colbg.alpha = bg->color.alpha;
 #define ASB(c) colbg.c = ~bg->color.c
@@ -307,7 +307,7 @@ int xstartdraw(void) { return IS_SET(MODE_VISIBLE); }
 void xfinishdraw(void) {
 	XCopyArea(xwin.dpy, xwin.buf, xwin.win, dc.gc, 0, 0, twin.w, twin.h, 0, 0);
 	XSetForeground(xwin.dpy, dc.gc,
-			dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg].pixel);
+			dc.color_array[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg].pixel);
 }
 
 
