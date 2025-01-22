@@ -57,6 +57,30 @@ void zoomreset(const Arg *arg) {
 	}
 }
 
+void fill_font_asciitable(Font *f){
+	// fill ascii table
+	for ( int a = 0; a<=127; a++ ){
+		int glyphidx = XftCharIndex(xwin.dpy, f->match, a);
+		printf("%3d -> %3d\n",a,glyphidx );
+		f->asciitable[a] = glyphidx;
+	}
+	for ( int a = 128; a<=255; a++ ){
+		int glyphidx = XftCharIndex(xwin.dpy, f->match, charmap_convert(a,0));
+		printf("%3d -> %3d\n",a,glyphidx );
+		if ( ! glyphidx ){
+			/*
+			Glyph g = { .u=a };
+			XftGlyphFontSpec fs;
+			xmakeglyphfontspecs( &fs, &g, 1, 0, 0 );
+			printf("frclen: %d   glyph: %d\n", frclen, fs.glyph );
+			*/
+			// spare that, load other fonts later, if needed
+			// also for other attributes. (if added)
+		}
+		f->asciitable[a] = glyphidx;
+
+	}
+}
 
 
 int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile){
@@ -191,6 +215,8 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	f->width += fontspacing;
 	if ( f->width < 1 )
 		f->width=1;
+
+	fill_font_asciitable(f);
 
 	return 0;
 }
@@ -382,6 +408,7 @@ void xloadfonts(double fontsize) {
 				unlink( fname[i] );
 		}
 	#endif
+	
 
 }
 
@@ -408,10 +435,17 @@ void xunloadfonts(void) {
 
 // use a table for the glyph translation
 // call makeglyphfontspecs only, when the char hasn't been found.
+// better: load all ascii chars, in all weights. dont branch anymore.
+// use a font table. -> 255*4 { glyphnumber,fontnumber }
+// need to lookup, how many bits the glyphnumber can have. 16 could be enough.
+// and this should most possibly branch, for chars < 127.
+// the table is loaded into the cacheline else.
+// it's a inner loop here. 
+// I'm wondering,whether 7bit ascii would be useful.
 int noutf8_xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		int x, int y) {
 #ifndef UTF8
-	
+	// use table: 0..255, 0..3 char,weight -> glyph, font
 
 #endif
 	return( xmakeglyphfontspecs( specs, glyphs, len, x, y ) );

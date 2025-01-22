@@ -16,6 +16,9 @@ typedef XftGlyphFontSpec GlyphFontSpec;
 /* Font structure */
 #define Font Font_
 typedef struct {
+#ifndef UTF8
+		int asciitable[256]; // cache codepoints
+#endif
 		int height;
 		int width;
 		int ascent;
@@ -29,7 +32,9 @@ typedef struct {
 		FcPattern *pattern;
 } Font;
 
-/* Font Ring Cache */
+// font cache. growing array. no ring. as stated below.
+// in theory, this shouldn't be global, the cache depends
+// on the used font.
 enum { FRC_NORMAL, FRC_ITALIC, FRC_BOLD, FRC_ITALICBOLD };
 
 typedef struct {
@@ -51,6 +56,7 @@ void zoomabs(const Arg *);
 void zoomreset(const Arg *);
 
 
+int noutf8_xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
 int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
 
 

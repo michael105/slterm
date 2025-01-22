@@ -181,10 +181,10 @@ extern XWindow xwin;
 
 /*  Glyph based representation of the screen and history buffer */
 typedef struct {
-	// todo: remove alt and hist[1], histsize should be smaller for help and alt screens
+	// todo: histsize should be smaller for help and alt screens
 	Line hist[HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
 	int guard; // canary, debugging hist
-	Line *line;                               /* screen */
+	Line *line;                               // visible lines on screen
 	int rows;                                  // number of rows visible
 	int cols;                                  // number of cols visible
 	int colalloc; // allocated cols. won't shrink, only enlarge. 
@@ -192,6 +192,7 @@ typedef struct {
 	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top
 				  // scr=0 : scroll to the bottom
 
+	// needed for defining scroll areas
 	int top;                                  /* top    scroll limit */
 	int bot;                                  /* bottom scroll limit */
 	// top / bot: when only parts of the screen are scrolled (scroll areas set)
