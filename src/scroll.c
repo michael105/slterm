@@ -1,8 +1,9 @@
 
 #include "scroll.h"
 
-//#define DBG(...) printf(__VA_ARGS__)
-#define DBG(...) 
+#define DBG(...) printf(__VA_ARGS__)
+//#define DBG(...) 
+#define DBG2(...) DBG(__VA_ARGS__)
 
 void tsetscroll(int t, int b) {
 		LIMIT(t, 0, term->rows - 1);
@@ -30,7 +31,7 @@ void kscrolldown(const Arg *a) {
 		if (n > term->scr) {  // at the bottom ( bottom: scr=0 )
 				n = term->scr;
 		}
-		dbg2("kscrolldown2, n: %d\n",n);
+		DBG2("kscrolldown2, n: %d\n",n);
 
 		if (term->scr > 0) {
 				term->scr -= n; 
@@ -41,7 +42,7 @@ void kscrolldown(const Arg *a) {
 }
 
 void scrolltobottom(){
-	//DBG("scrolltobottom\n"); // xxx
+	DBG("scrolltobottom\n"); // xxx
 		if ( term->scr ){
 				term->scr=0;
 				selscroll(0, 0);
@@ -51,7 +52,7 @@ void scrolltobottom(){
 }
 
 void scrolltotop(){
-	//DBG("totop\n");
+	DBG("totop\n");
 		term->scr=HISTSIZE;
 		if ( (term->circledhist==0) && (term->scr>term->histi ) )
 				term->scr=term->histi; // 
@@ -64,12 +65,12 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 		int n = a->i;
 
-		dbg2("kscrollup, n: %d, term->histi: %d, term->rows: %d scr: %d\n",
+		DBG2("kscrollup, n: %d, term->histi: %d, term->rows: %d scr: %d\n",
 						n, term->histi, term->rows, term->scr);
 		if (n < 0) { // scroll a page upwards
 				n = term->rows + n;
 		}
-		dbg2("kscrollup2, n: %d\n",n);
+		DBG2("kscrollup2, n: %d\n",n);
 
 		if ( term->scr <= HISTSIZE-n ) {
 				term->scr += n;
@@ -143,7 +144,7 @@ void retmark(const Arg* a){
 	//DBG("Retmark: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->rows, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
 
 	// rewrite that. (count curentretmark from 0 to UINT_MAX. Limit bits when
-	// accessing the array. ->retmark_scrolled can be set absolute.
+	// accessing the array. ->scrolled_retmark can be set absolute.
 
 	if ( a->i == -1 ){ // tab right in lessmode -> scrolling down
 
@@ -156,14 +157,14 @@ void retmark(const Arg* a){
 			//if ( (term->retmarks[t] < term->histi - term->scr) ){
 			if ( (term->histi - term->retmarks[t] < term->scr) ){
 				term->scr=(term->histi - term->retmarks[t]);
-				term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
+				term->scrolled_retmark = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 				b = 0;
 			//DBG("mark: %d   %d\n",t, term->retmarks[t] );
 				break;
 			}
 		}
 		if ( b ){
-			term->retmark_scrolled = 0;
+			term->scrolled_retmark = 0;
 			scrolltobottom();
 		}
 #else
@@ -173,10 +174,10 @@ void retmark(const Arg* a){
 		}
 		if ( term->current_retmark != t ){
 				term->scr=(term->histi - term->retmarks[t]);
-				term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
+				term->scrolled_retmark = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 				DBG("mark: %d   %d\n",t, term->retmarks[t] );
 			} else {
-			term->retmark_scrolled = 0;
+			term->scrolled_retmark = 0;
 			scrolltobottom();
 		}
 
@@ -187,10 +188,10 @@ void retmark(const Arg* a){
 	} else if ( a->i >= 1 ){ // number, scroll to retmark number x
 		int t = (term->current_retmark - a->i ) & (RETMARKCOUNT-1); 
 		term->scr=(term->histi-term->retmarks[t]);
-		term->retmark_scrolled = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
+		term->scrolled_retmark = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 
 	} else if ( a->i == -2 ){
-			term->retmark_scrolled = 0;
+			term->scrolled_retmark = 0;
 			scrolltobottom();
 	} else { // scroll backward / Up
 		if ( term->histi<term->rows){ // at the top
@@ -204,7 +205,7 @@ void retmark(const Arg* a){
 			DBG("mark: %d   %d\n",t, term->retmarks[t] );
 			if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] > term->scr) ){
 				term->scr=(term->histi - term->retmarks[t]);
-				term->retmark_scrolled = (term->current_retmark - t) & ( RETMARKCOUNT-1);
+				term->scrolled_retmark = (term->current_retmark - t) & ( RETMARKCOUNT-1);
 				break;
 			}
 		}
@@ -293,7 +294,7 @@ void tscrollup(int orig, int n, int copyhist) {
 		LIMIT(n, 0, term->bot - orig + 1);
 
 		if (copyhist) {
-				dbg2("term->histi: %d\n", term->histi);
+				DBG2("term->histi: %d\n", term->histi);
 				term->histi = ((term->histi + 1) ^ HISTSIZE ) & (HISTSIZE-1);
 				///DBG("term->histi: %d, \n", term->histi);
 				if ( term->histi == 0 ){

@@ -31,9 +31,15 @@
 // 	use absolute values in TLINE(line) ( add pos + scroll to line, &(HISTSIZE-1) )
 // 	use negative - no, positive, since we need in theory scroll up to UINT_NAX lines - 
 // 	values for scroll to scroll. scrolling to 0 = pos.
+
+//#define TLINETOBUF( _y ) ( _y+ term->linebufpos & 
+
+
 #define TLINE(y)                                                               \
   ((y) < term->scr                                                              \
-       ? term->hist[(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
+       ? term->hist[( (y) + term->histi - term->scr +1 ) & (HISTSIZE-1) ]  : term->line[ (y) - term->scr ])
+
+       //? term->hist[(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
 
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))

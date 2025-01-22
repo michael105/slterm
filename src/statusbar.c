@@ -149,7 +149,7 @@ void updatestatus(){
 					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 					((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1),
-					term->retmark_scrolled
+					term->scrolled_retmark
 					);
 
 			if ( stwidth > p+10 ){
@@ -169,7 +169,7 @@ void updatestatus(){
 			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
 					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
-					term->retmark_scrolled );
+					term->scrolled_retmark );
 		} else {
 			p = sprintf(buf+256,"%5d %3d%% ",
 					term->histi+term->rows-(term->histi-term->scr+term->rows),

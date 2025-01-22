@@ -213,7 +213,7 @@ typedef struct {
 	int retmarks[RETMARKCOUNT];
 	int current_retmark; // current retmark. retmarks are stored circular.
 	int scroll_retmark; // to which retmark was scrolled
-	int retmark_scrolled; // to which retmark was scrolled
+	int scrolled_retmark; // to which retmark was scrolled
 
 	char circledhist;
 } Term;

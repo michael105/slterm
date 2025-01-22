@@ -61,12 +61,12 @@ void fill_font_asciitable(Font *f){
 	// fill ascii table
 	for ( int a = 0; a<=127; a++ ){
 		int glyphidx = XftCharIndex(xwin.dpy, f->match, a);
-		printf("%3d -> %3d\n",a,glyphidx );
+		//printf("%3d -> %3d\n",a,glyphidx );
 		f->asciitable[a] = glyphidx;
 	}
 	for ( int a = 128; a<=255; a++ ){
 		int glyphidx = XftCharIndex(xwin.dpy, f->match, charmap_convert(a,0));
-		printf("%3d -> %3d\n",a,glyphidx );
+		//printf("%3d -> %3d\n",a,glyphidx );
 		if ( ! glyphidx ){
 			/*
 			Glyph g = { .u=a };
