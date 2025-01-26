@@ -17,4 +17,6 @@ jobs:
       run: sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx11-dev libxft-dev python3-docutils busybox
     - name: make
       run: make
+    - name: make static
+      run: make static_embedfont
  
