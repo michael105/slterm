@@ -204,6 +204,10 @@ into smaller pieces. Hopefully hacking st is in the future a little bit more con
 - optional, to embed resources: rst2man, xdd
 
 
+For ubuntu : 'sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx11-dev libxft-dev python3-docutils'
+
+
+
 ### Install
 
 edit [config.make](config.make) (optionally) 
