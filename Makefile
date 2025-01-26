@@ -40,6 +40,9 @@ static_embedfont: man tools
 
 tools:
 	cd tools && $(MAKE) 
+
+check:
+	cd src && $(MAKE) check
 	
 #local (use config.in.loc)
 l: cd src && $(MAKE)
