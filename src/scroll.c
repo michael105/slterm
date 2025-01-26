@@ -1,8 +1,8 @@
 
 #include "scroll.h"
 
-#define DBG(...) printf(__VA_ARGS__)
-//#define DBG(...) 
+//#define DBG(...) printf(__VA_ARGS__)
+#define DBG(...) 
 #define DBG2(...) DBG(__VA_ARGS__)
 
 void tsetscroll(int t, int b) {
@@ -25,7 +25,7 @@ void retmark_scrolledup(){ // scan upwards for the next retmark, update
 			t-- ){
 		t &= ( RETMARKCOUNT-1 ); 
 		DBG("mark upw: %d   %d\n",t, term->retmarks[t] );
-		if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] > term->scr) ){
+		if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] >= term->scr) ){
 			term->scrolled_retmark = (term->current_retmark - t) & ( RETMARKCOUNT-1);
 			return;
 		}
