@@ -56,7 +56,7 @@ INCS = -I$(X11INC) \
        `$(PKG_CONFIG) --cflags freetype2`
 
 #LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft 
-LIBS = -L$(X11LIB) -lX11 -lXft \
+LIBS = -L$(X11LIB) -lX11 -lXft -lc \
        `$(PKG_CONFIG) --libs fontconfig` \
        `$(PKG_CONFIG) --libs freetype2`
 
@@ -195,7 +195,8 @@ compile.h:
 	@echo '#define __COMPILEDATE__ "'`date`\" >>compile.h
 	@echo '#define __UNAME__ "'`uname -m -o -r -s`\" >> compile.h
 	@echo '#define __OPT_FLAG__ "$(OPT_FLAG)"' >> compile.h
-	@echo '#define __UTF8__ "$(UTF8)"\n#define __XRESOURCES__  "$(XRESOURCES)"' >> compile.h
+	@echo '#define __UTF8__ "$(UTF8)"'
+	@echo '#define __XRESOURCES__  "$(XRESOURCES)"' >> compile.h
 	@echo '#define __ENABLEDEBUG__ "$(ENABLEDEBUG)"' >> compile.h
 	@echo '#define __CC_VERSION__ "'`$(CC) -dumpversion`'"' >> compile.h
 	@echo '#define __CC__ "$(CC)"' >> compile.h

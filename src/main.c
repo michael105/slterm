@@ -227,7 +227,6 @@ int main(int argc, char *argv[]) {
 							"HISTORY: %d\n"
 							"DEBUGLEVEL: "__ENABLEDEBUG__"\n"
 							"XRESOURCES: "__XRESOURCES__"\n"
-							"UTF8: "__UTF8__"\n"
 							__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
 					exit(0);
 				case 127: // silence unused var warning
