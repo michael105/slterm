@@ -2,6 +2,10 @@ All	 All                	 Break      	 sendbreak
 All	 All                	 Print      	 printsel 	
 All	 All                	 Scroll_Lock 	 lessmode_toggle 	
 All	 Alt                	 s          	 keyboard_select 	
+All	 Alt+Shift          	 Down       	 lessmode_toggle 	
+All	 Alt+Shift          	 Page_Down  	 lessmode_toggle 	
+All	 Alt+Shift          	 Page_Up    	 lessmode_toggle 	
+All	 Alt+Shift          	 Up         	 lessmode_toggle 	
 All	 Control            	 0          	 scrollmark 	
 All	 Control            	 1          	 scrollmark 	
 All	 Control            	 2          	 scrollmark 	

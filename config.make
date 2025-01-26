@@ -30,8 +30,8 @@ EMBEDFONT := 0
 
 # Length of history, in bits, -> log(size in lines) ~ bits */
 # 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
-#HISTSIZEBITS := 16
-HISTSIZEBITS = 11
+HISTSIZEBITS := 16
+#HISTSIZEBITS = 11
 
 
 # opt Flag. -O2 might be save, -O3 sometimes gives troubles

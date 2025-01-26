@@ -204,7 +204,7 @@ void retmark(const Arg* a){
 			term->scr=(term->histi-term->retmarks[t]);
 			term->scrolled_retmark = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
 
-		} else if ( a->i == -2 ){
+		} else if ( a->i == -2 ){ // = key '0'
 			term->scrolled_retmark = 0;
 			scrolltobottom();
 		} else { // scroll backward / Up

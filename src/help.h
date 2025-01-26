@@ -9,7 +9,7 @@ static char* helpcontents = "\
 [36m     slterm - [00;35msl[36mim [00;35mt[36merminal emulator for X [0;0m\n\r\
 \n\r\
 http://github.com/michael105/slterm\n\r\
-Version: 0.99.5\n\r\
+Version: 0.99.5.1\n\r\
 \n\r\
 \n\r\
 [01;33m Help [0;0m\n\r\
@@ -167,6 +167,10 @@ All	 All                	 Break      	 sendbreak 	\n\r\
 All	 All                	 Print      	 printsel 	\n\r\
 All	 All                	 Scroll_Lock 	 lessmode_toggle 	\n\r\
 All	 Alt                	 s          	 keyboard_select 	\n\r\
+All	 Alt+Shift          	 Down       	 lessmode_toggle 	\n\r\
+All	 Alt+Shift          	 Page_Down  	 lessmode_toggle 	\n\r\
+All	 Alt+Shift          	 Page_Up    	 lessmode_toggle 	\n\r\
+All	 Alt+Shift          	 Up         	 lessmode_toggle 	\n\r\
 All	 Control            	 0          	 scrollmark 	\n\r\
 All	 Control            	 1          	 scrollmark 	\n\r\
 All	 Control            	 2          	 scrollmark 	\n\r\

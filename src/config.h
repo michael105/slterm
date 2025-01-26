@@ -377,6 +377,11 @@ static MouseShortcut mshortcuts[] = {
 #define IMODE_HELP Help
 #endif
 
+#define ALT Mod1Mask 
+#define SHIFT ShiftMask 
+#define KCTRL ControlMask 
+#define WIN Mod4Mask 
+
 // masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
 // mod1 = alt, mod2 = win , mod3 = Capslock (here)
 // mod4 = win (!) 
@@ -544,9 +549,13 @@ BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=-1 },MODE_LESS ), // tab -> to scroll do
 // quit with q or Escape
 	// switch on.
 BIND( TERMMOD, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
+BIND( ALT+ShiftMask, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
 BIND( TERMMOD, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
+BIND( ALT+SHIFT, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
 BIND( TERMMOD, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES ),
+BIND( ALT+SHIFT, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES ),
 BIND( TERMMOD, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
+BIND( ALT+SHIFT, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
 BIND( TERMMOD, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
 
 	// toggle
@@ -576,6 +585,11 @@ BIND( ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES ),
 };
 #undef I
 #undef BIND
+
+#undef ALT
+#undef SHIFT
+#undef KCTRL
+#undef WIN
 
 /*
  Special keys (change & recompile slterm.terminfo accordingly)
