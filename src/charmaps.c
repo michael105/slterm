@@ -46,6 +46,16 @@ void set_charmap(const Arg *a){
 	if ( a->i < sizeof(codepage)/sizeof(uint*)){
 		selected_codepage = a->i;
 		create_unicode_table();
+		
+		fill_font_asciitable(&dc.font);
+		if ( useboldfont )
+			fill_font_asciitable(&dc.bfont);
+		if ( useitalicfont )
+			fill_font_asciitable(&dc.ifont);
+		if ( usebolditalicfont )
+			fill_font_asciitable(&dc.ibfont);
+
+
 		redraw();
 	}
 

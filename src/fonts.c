@@ -66,7 +66,7 @@ void fill_font_asciitable(Font *f){
 	}
 	for ( int a = 128; a<=255; a++ ){
 		int glyphidx = XftCharIndex(xwin.dpy, f->match, charmap_convert(a,0));
-		//printf("%3d -> %3d\n",a,glyphidx );
+		printf("%3d -> %3d\n",a,glyphidx );
 		if ( ! glyphidx ){
 			/*
 			Glyph g = { .u=a };
@@ -446,9 +446,53 @@ int noutf8_xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int
 		int x, int y) {
 #ifndef UTF8
 	// use table: 0..255, 0..3 char,weight -> glyph, font
+	uint winx = twin.hborderpx + x * twin.cw, winy = twin.vborderpx + y * twin.ch,
+	xp, yp;
+	uchar mode, prevmode = UCHAR_MAX;
+	Font *font = &dc.font;
+	uint runewidth = twin.cw;
+	FT_UInt glyphidx;
 
-#endif
+	int i, numspecs = 0;
+
+	for (i = 0, xp = winx, yp = winy + font->ascent; i < len; ++i) {
+		/* Fetch rune and mode for current glyph. */
+		mode = glyphs[i].mode;
+
+		/* Determine font for glyph if different from previous glyph. */
+		if (prevmode != mode) {
+			prevmode = mode;
+			font = &dc.font;
+			runewidth = twin.cw;// * ((mode & ATTR_WIDE) ? 2.0f : 1.0f);
+			if ((mode & ATTR_ITALIC) && (mode & ATTR_BOLD) && usebolditalicfont ) {
+				font = &dc.ibfont;
+			} else if (mode & ATTR_ITALIC && useitalicfont ) {
+				font = &dc.ifont;
+			} else if (mode & ATTR_BOLD && useboldfont) {
+				font = &dc.bfont;
+			}
+		}
+		glyphidx = font->asciitable[ glyphs[i].u ];
+	
+		if (!glyphidx){
+			//printf("Not found\n");
+				xmakeglyphfontspecs( specs+numspecs, glyphs+i, 1, x+i , y );
+			
+		} else {
+			//if ( rune>0x80 )
+			//printf("rune: %x  idx: %x\n",rune,glyphidx);
+			specs[numspecs].font = font->match;
+			specs[numspecs].glyph = glyphidx;
+			specs[numspecs].x = (short)xp;
+			specs[numspecs].y = (short)yp;
+		}
+		xp += runewidth;
+		numspecs++;
+	}
+	return( numspecs );
+#else
 	return( xmakeglyphfontspecs( specs, glyphs, len, x, y ) );
+#endif
 }
 
 
@@ -471,7 +515,6 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 	for (i = 0, xp = winx, yp = winy + font->ascent; i < len; ++i) {
 		/* Fetch rune and mode for current glyph. */
-		rune = charmap_convert( glyphs[i].u,glyphs[i].mode );
 		mode = glyphs[i].mode;
 
 #ifdef UTF8
@@ -502,12 +545,15 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			}
 			yp = winy + font->ascent;
 		}
+		//glyphidx = font->asciitable[ glyphs[i].u ];
 		//if ( rune>=0x80 )
 		//printf("rune: %x  \n",rune,glyphidx);
 		/* Lookup character index with default font. */
-
-		// todo: cache that. ( besser auch die charmap )
-		glyphidx = XftCharIndex(xwin.dpy, font->match, rune);
+		//if ( !glyphidx ){
+			rune = charmap_convert( glyphs[i].u,glyphs[i].mode );
+			// todo: cache that. ( besser auch die charmap )
+			glyphidx = XftCharIndex(xwin.dpy, font->match, rune);
+		//}
 		if (glyphidx) {
 			//if ( rune>0x80 )
 			//printf("rune: %x  idx: %x\n",rune,glyphidx);
@@ -528,10 +574,13 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		for (f = 0; f < frclen; f++) {
 			glyphidx = XftCharIndex(xwin.dpy, frc[f].font, rune);
 			/* Everything correct. */
-			if (glyphidx && frc[f].flags == frcflags)
+			if (glyphidx && frc[f].flags == frcflags){
+				//font->asciitable[rune] = glyphidx;
 				break;
+			}
 			/* We got a default font for a not found glyph. */
 			if (!glyphidx && frc[f].flags == frcflags && frc[f].unicodep == rune) {
+				//font->asciitable[rune] = glyphidx;
 				break;
 			}
 		}
@@ -590,6 +639,7 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			if ( glyphidx ){
 				//FcPatternPrint( fcpattern );
 
+				//frc[frclen].font.asciitable[rune] = glyphidx;
 			}
 
 			f = frclen;

@@ -18,8 +18,12 @@ void xdrawline(Line line, int x1, int y1, int x2) {
 	int i, x, ox, numspecs;
 	Glyph base, new;
 	XftGlyphFontSpec *specs = xwin.specbuf;
-
+#ifndef UTF8
+	numspecs = noutf8_xmakeglyphfontspecs(specs, &line[x1], x2 - x1, x1, y1);
+#else
 	numspecs = xmakeglyphfontspecs(specs, &line[x1], x2 - x1, x1, y1);
+#endif
+
 	i = ox = 0;
 	for (x = x1; x < x2 && i < numspecs; x++) {
 		new = line[x];
@@ -297,8 +301,11 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 Color* xdrawglyph(Glyph g, int x, int y) {
 	int numspecs;
 	XftGlyphFontSpec spec;
-
+#ifndef UTF8
+	numspecs = noutf8_xmakeglyphfontspecs(&spec, &g, 1, x, y);
+#else
 	numspecs = xmakeglyphfontspecs(&spec, &g, 1, x, y);
+#endif
 	return( xdrawglyphfontspecs(&spec, g, numspecs, x, y) );
 }
 

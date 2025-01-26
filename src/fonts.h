@@ -66,5 +66,8 @@ void xloadfonts(double);
 void xunloadfont(Font *);
 void xunloadfonts(void);
 
+
+void fill_font_asciitable(Font *f);
+
 #endif
 

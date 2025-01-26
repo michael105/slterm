@@ -19,26 +19,59 @@ void tsetscroll(int t, int b) {
 }
 
 
+void retmark_scrolledup(){ // scan upwards for the next retmark, update 
+	for ( int t = term->current_retmark - (term->scrolled_retmark?term->scrolled_retmark:1); 
+			t!=term->current_retmark; 
+			t-- ){
+		t &= ( RETMARKCOUNT-1 ); 
+		DBG("mark upw: %d   %d\n",t, term->retmarks[t] );
+		if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] > term->scr) ){
+			term->scrolled_retmark = (term->current_retmark - t) & ( RETMARKCOUNT-1);
+			break;
+		}
+	}
+}
+
+
+
+void retmark_scrolleddown(){ // scan downwards for the next retmark, update 
+		int b = 1;
+		for ( int t = (term->current_retmark - (term->scrolled_retmark?term->scrolled_retmark:1 )) & (RETMARKCOUNT-1); t!=term->current_retmark; 
+				t = (t+1) & ( RETMARKCOUNT-1 ) ){
+			if ( (term->histi - term->retmarks[t] < term->scr) ){
+				term->scrolled_retmark = ( term->current_retmark - t + 1 ) & ( RETMARKCOUNT-1);
+				b = 0;
+				//DBG("mark: %d   %d\n",t, term->retmarks[t] );
+				break;
+			}
+		}
+		if ( b ){ // at the bottom
+			term->scrolled_retmark = 1;
+		} 
+}
+
 // scroll downwards
 void kscrolldown(const Arg *a) {
-		int n = a->i;
+	int n = a->i;
 
-		DBG("kscrolldown, n: %d, guard: %x\n",n, term->guard);
-		if (n < 0) { // scroll a page
-				n = term->rows + n;
-		}
+	DBG("kscrolldown, n: %d, guard: %x\n",n, term->guard);
+	if (n < 0) { // scroll a page
+		n = term->rows + n;
+	}
 
-		if (n > term->scr) {  // at the bottom ( bottom: scr=0 )
-				n = term->scr;
-		}
-		DBG2("kscrolldown2, n: %d\n",n);
+	if (n > term->scr) {  // at the bottom ( bottom: scr=0 )
+		n = term->scr;
+	}
+	DBG2("kscrolldown2, n: %d\n",n);
 
-		if (term->scr > 0) {
-				term->scr -= n; 
-				selscroll(0, -n);
-				tfulldirt();
-				updatestatus();
-		}
+	if (term->scr > 0) {
+		term->scr -= n; 
+		selscroll(0, -n);
+		retmark_scrolleddown();
+
+		tfulldirt();
+		updatestatus();
+	}
 }
 
 void scrolltobottom(){
@@ -46,6 +79,7 @@ void scrolltobottom(){
 		if ( term->scr ){
 				term->scr=0;
 				selscroll(0, 0);
+				retmark_scrolleddown();
 				tfulldirt();	
 				updatestatus();
 		}
@@ -57,31 +91,44 @@ void scrolltotop(){
 		if ( (term->circledhist==0) && (term->scr>term->histi ) )
 				term->scr=term->histi; // 
 		selscroll(0, term->scr);
+		retmark_scrolledup();
 		tfulldirt();
 		updatestatus();
 }
 
 
+
+void update_retmark(){
+
+
+
+
+}
+
+// scroll upwards (Shift+up)_
 void kscrollup(const Arg *a) {
-		int n = a->i;
+	int n = a->i;
 
-		DBG2("kscrollup, n: %d, term->histi: %d, term->rows: %d scr: %d\n",
-						n, term->histi, term->rows, term->scr);
-		if (n < 0) { // scroll a page upwards
-				n = term->rows + n;
-		}
-		DBG2("kscrollup2, n: %d\n",n);
+	DBG2("kscrollup, n: %d, term->histi: %d, term->rows: %d scr: %d\n",
+			n, term->histi, term->rows, term->scr);
+	if (n < 0) { // scroll a page upwards
+					 //n = term->rows + n;
+		n = term->rows;
+	}
+	DBG2("kscrollup2, n: %d\n",n);
 
-		if ( term->scr <= HISTSIZE-n ) {
-				term->scr += n;
+	if ( term->scr <= HISTSIZE-n ) { 
+		term->scr += n;
 
-				if ( (term->circledhist==0) && (term->scr>term->histi ) )
-						term->scr=term->histi;
+		if ( (term->circledhist==0) && (term->scr>term->histi ) )
+			term->scr=term->histi; // at the top
 
-				selscroll(0, n);
-				tfulldirt();
-				updatestatus();
-		}
+		DBG2("kscrollup3, scr: %d\n",term->scr);
+		selscroll(0, n);
+		retmark_scrolledup();
+		tfulldirt();
+		updatestatus();
+	}
 }
 
 void scroll( const Arg *a){
@@ -121,10 +168,7 @@ void set_scrollmark(const Arg *a) {
 
 void set_retmark() {
 	if (term==p_alt) return;
-	
-	//if ( term->histi + term->cursor.y < term->rows )
-	//	return; // scrolled less than a page.
-	
+	// check, if (e.g. vi) we are above the last retmark
 	if ( (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] < 
 				(term->histi + term->cursor.y ) )  || 
 		  (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] > 
@@ -133,9 +177,8 @@ void set_retmark() {
 			// e.g. vim
 		term->retmarks[ term->current_retmark ] = term->histi + term->cursor.y;
 		term->current_retmark = (term->current_retmark + 1) & (RETMARKCOUNT-1);
-		term->scroll_retmark = term->current_retmark;
+		term->scrolled_retmark = 0;
 	}
-	//updatestatus();
 	//DBG("Setretmark: n:%d histi:%d scr:%d  cursor: %d\n", term->current_retmark, term->histi, term->scr, term->cursor.y );
 }
 
@@ -151,7 +194,6 @@ void retmark(const Arg* a){
 		// scanning could be optimized. (skip, and divide..)
 		int b = 1;
 		// todo: reverse scanning.
-#if 1	
 		for ( int t = (term->current_retmark +1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
 				t = (t+1) & ( RETMARKCOUNT-1 ) ){
 			//if ( (term->retmarks[t] < term->histi - term->scr) ){
@@ -167,22 +209,6 @@ void retmark(const Arg* a){
 			term->scrolled_retmark = 0;
 			scrolltobottom();
 		}
-#else
-		int t = (term->current_retmark -1 ) & (RETMARKCOUNT-1); 
-		while ( t!=term->current_retmark &&  (term->histi - term->retmarks[t] >= term->scr) ){
-				t = (t-1) & ( RETMARKCOUNT-1 );
-		}
-		if ( term->current_retmark != t ){
-				term->scr=(term->histi - term->retmarks[t]);
-				term->scrolled_retmark = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
-				DBG("mark: %d   %d\n",t, term->retmarks[t] );
-			} else {
-			term->scrolled_retmark = 0;
-			scrolltobottom();
-		}
-
-	
-#endif
 
 
 	} else if ( a->i >= 1 ){ // number, scroll to retmark number x
@@ -259,7 +285,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 		LIMIT(n, 0, term->bot - orig + 1);
 
 		if (copyhist) {
-				term->histi = ((term->histi - 1 ) ^ HISTSIZE) & (HISTSIZE-1); 
+				term->histi = (term->histi - 1 ) & (HISTSIZE-1); 
 				SWAPp( term->hist[term->histi], term->line[term->bot] );
 				///DBG("copyhist: term->histi %d   %p <->  %p  \n", term->histi, term->hist[term->histi], term->line[term->bot] );
 
@@ -295,7 +321,7 @@ void tscrollup(int orig, int n, int copyhist) {
 
 		if (copyhist) {
 				DBG2("term->histi: %d\n", term->histi);
-				term->histi = ((term->histi + 1) ^ HISTSIZE ) & (HISTSIZE-1);
+				term->histi = (term->histi + 1) & (HISTSIZE-1);
 				///DBG("term->histi: %d, \n", term->histi);
 				if ( term->histi == 0 ){
 						if ( term->circledhist == 0 ){
