@@ -27,7 +27,7 @@ void retmark_scrolledup(){ // scan upwards for the next retmark, update
 		DBG("mark upw: %d   %d\n",t, term->retmarks[t] );
 		if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] > term->scr) ){
 			term->scrolled_retmark = (term->current_retmark - t) & ( RETMARKCOUNT-1);
-			break;
+			return;
 		}
 	}
 }
@@ -35,19 +35,17 @@ void retmark_scrolledup(){ // scan upwards for the next retmark, update
 
 
 void retmark_scrolleddown(){ // scan downwards for the next retmark, update 
-		int b = 1;
-		for ( int t = (term->current_retmark - (term->scrolled_retmark?term->scrolled_retmark:1 )) & (RETMARKCOUNT-1); t!=term->current_retmark; 
-				t = (t+1) & ( RETMARKCOUNT-1 ) ){
-			if ( (term->histi - term->retmarks[t] < term->scr) ){
-				term->scrolled_retmark = ( term->current_retmark - t + 1 ) & ( RETMARKCOUNT-1);
-				b = 0;
-				//DBG("mark: %d   %d\n",t, term->retmarks[t] );
-				break;
-			}
+	for ( int t = (term->current_retmark - (term->scrolled_retmark?term->scrolled_retmark:1 )) & (RETMARKCOUNT-1); t!=term->current_retmark; 
+			t = (t+1) & ( RETMARKCOUNT-1 ) ){
+		if ( (term->histi - term->retmarks[t] < term->scr) ){
+			term->scrolled_retmark = ( term->current_retmark - t + 1 ) & ( RETMARKCOUNT-1);
+			//DBG("mark: %d   %d\n",t, term->retmarks[t] );
+			return;
 		}
-		if ( b ){ // at the bottom
-			term->scrolled_retmark = 1;
-		} 
+	}
+	if ( b ){ // at the bottom
+		term->scrolled_retmark = 1;
+	} 
 }
 
 // scroll downwards
@@ -76,33 +74,24 @@ void kscrolldown(const Arg *a) {
 
 void scrolltobottom(){
 	DBG("scrolltobottom\n"); // xxx
-		if ( term->scr ){
-				term->scr=0;
-				selscroll(0, 0);
-				retmark_scrolleddown();
-				tfulldirt();	
-				updatestatus();
-		}
+	if ( term->scr ){
+		term->scr=0;
+		selscroll(0, 0);
+		retmark_scrolleddown();
+		tfulldirt();	
+		updatestatus();
+	}
 }
 
 void scrolltotop(){
 	DBG("totop\n");
-		term->scr=HISTSIZE;
-		if ( (term->circledhist==0) && (term->scr>term->histi ) )
-				term->scr=term->histi; // 
-		selscroll(0, term->scr);
-		retmark_scrolledup();
-		tfulldirt();
-		updatestatus();
-}
-
-
-
-void update_retmark(){
-
-
-
-
+	term->scr=HISTSIZE;
+	if ( (term->circledhist==0) && (term->scr>term->histi ) )
+		term->scr=term->histi; // 
+	selscroll(0, term->scr);
+	retmark_scrolledup();
+	tfulldirt();
+	updatestatus();
 }
 
 // scroll upwards (Shift+up)_
@@ -191,7 +180,7 @@ void retmark(const Arg* a){
 
 	if ( a->i == -1 ){ // tab right in lessmode -> scrolling down
 
-		// scanning could be optimized. (skip, and divide..)
+		// todo: rewrite. also for a circled buffer
 		int b = 1;
 		// todo: reverse scanning.
 		for ( int t = (term->current_retmark +1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
@@ -226,6 +215,17 @@ void retmark(const Arg* a){
 			return;
 		}
 		
+#if 0
+		// todo: scroll to next retmark
+		int t = term->scrolled_retmark;
+		if ( t ){
+			//t= (t-1) & (RETMARKCOUNT-1);
+			t--;
+			term->scrolled_retmark = t;
+			term->scr=(term->histi - term->retmarks[(term->current_retmark - t)&(RETMARKCOUNT-1) ]);
+
+		}
+#else
 		for ( int t = (term->current_retmark -1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
 				t = (t-1) & ( RETMARKCOUNT-1 ) ){
 			DBG("mark: %d   %d\n",t, term->retmarks[t] );
@@ -234,7 +234,8 @@ void retmark(const Arg* a){
 				term->scrolled_retmark = (term->current_retmark - t) & ( RETMARKCOUNT-1);
 				break;
 			}
-		}
+		} 
+#endif
 
 	}
 	DBG("scr: %d\n", term->scr );
