@@ -199,6 +199,8 @@ compile.h:
 	@echo -e '#define __ENABLEDEBUG__ "$(ENABLEDEBUG)"' >> compile.h
 	@echo -e '#define __CC_VERSION__ "'`$(CC) -dumpversion`'"' >> compile.h
 	@echo -e '#define __CC__ "$(CC)"' >> compile.h
+	@echo compile:
+	cat compile.h
 
 	
 	
