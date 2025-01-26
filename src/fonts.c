@@ -97,10 +97,10 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 		FcPatternAddString(match, FC_FILE, (const FcChar8 *) fontfile);
 	}
 
-#ifdef DEBUG
-//#if 1
+//#ifdef DEBUG
+#if 0
 	FcPatternPrint( match );
-	s = FcNameUnparse( match );
+	char *s = FcNameUnparse( match );
 	printf( "match name: %s\n", s );
 	free(s);
 #endif
@@ -138,24 +138,42 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 		}
 	}
 
+	if ( fontwidth ){
+		f->width = fontwidth;
+	} else {
+
+
 #ifdef UTF8
 			XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)ascii_printable,
 							strlen(ascii_printable), &extents);
+	f->width = DIVCEIL(extents.xOff, strlen(ascii_printable));
+	//f->width = DIVCEIL(extents.xOff,190 );
+
 #else
+			// might be unneeded, fonts are rendered as monospace
+			// don't know. something is happening. It works.
+			//
 	char printable[255];
 	int p = 0;
 	for ( int a = 32; a<127; a++) 
 		printable[p++] = a; 
 	for ( int a = 128; a<256; a++) 
-		printable[p++] = charmap_convert(a,0); //a;
+		printable[p++] = charmap_convert(a,0); // 
 	printable[p] = 0;
 
 
-	XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)printable,
-			sizeof(printable), &extents);
+	XftTextExtents8(xwin.dpy, f->match, (const FcChar8 *)printable,
+	//XftTextExtentsUtf8(xwin.dpy, f->match, (const FcChar8 *)printable,
+			(127-32)+127, &extents);
+			//sizeof(printable), &extents);
+	//f->width=8;
+	f->width = DIVCEIL(extents.xOff, (127-32)+127 );
+	//printf("w:%d, height: %d\n",f->width, f->height);
+	// pixelsize 13: w 8, h 15
+	//f->width = DIVCEIL(extents.xOff, 96);
+
 #endif
-
-
+	}
 
 	f->set = NULL;
 	f->pattern = configured;
@@ -165,14 +183,10 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 	f->lbearing = 0;
 	f->rbearing = f->match->max_advance_width;
 
-	f->height = f->ascent + f->descent;
-#ifdef UTF8
-	f->width = DIVCEIL(extents.xOff, strlen(ascii_printable));
-	//f->width = DIVCEIL(extents.xOff,190 );
-#else
-	//f->width=8;
-	f->width = DIVCEIL(extents.xOff, 96);
-#endif
+	if ( fontheight )
+		f->height = fontheight;
+	else
+		f->height = f->ascent + f->descent;
 
 	f->width += fontspacing;
 	if ( f->width < 1 )
@@ -314,7 +328,8 @@ void xloadfonts(double fontsize) {
 	twin.cw = ceilf(dc.font.width * cwscale);
 	twin.ch = ceilf(dc.font.height * chscale);
 
-	borderpx = ceilf(((float)borderperc / 100) * twin.cw);
+	if ( borderperc != 0 )
+		borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
 	if ( useboldfont ){
 		if ( bold_font ){
@@ -444,6 +459,8 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 		//if ( rune>=0x80 )
 		//printf("rune: %x  \n",rune,glyphidx);
 		/* Lookup character index with default font. */
+
+		// todo: cache that. ( besser auch die charmap )
 		glyphidx = XftCharIndex(xwin.dpy, font->match, rune);
 		if (glyphidx) {
 			//if ( rune>0x80 )
@@ -455,9 +472,13 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			xp += runewidth;
 			numspecs++;
 			continue;
+		} else {
+			// todo: load chars when loading the font, spare that
+			// the table is limited to ascii 255
 		}
 
 		/* Fallback on font cache, search the font cache for match. */
+		// TODO: reverse that. "cache" fonts in a table indexed by ascii
 		for (f = 0; f < frclen; f++) {
 			glyphidx = XftCharIndex(xwin.dpy, frc[f].font, rune);
 			/* Everything correct. */
@@ -471,6 +492,9 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 		/* Nothing was found. Use fontconfig to find matching font. */
 		if (f >= frclen) {
+			// not in cache
+			fprintf(stderr,"rune missing in font, unicode: %x  ascii: %x\n",rune,glyphs[i].u);
+
 			if (!font->set)
 				font->set = FcFontSort(0, font->pattern, 1, 0, &fcres);
 			fcsets[0] = font->set;
@@ -487,12 +511,16 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 
 			FcCharSetAddChar(fccharset, rune);
 			FcPatternAddCharSet(fcpattern, FC_CHARSET, fccharset);
-			FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
+			//FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
 
 			FcConfigSubstitute(0, fcpattern, FcMatchPattern);
 			FcDefaultSubstitute(fcpattern);
 
+		//FcPatternDel(fcpattern, FC_FAMILY);
+			//FcPatternDel(fcpattern, FC_WEIGHT);
+
 			fontpattern = FcFontSetMatch(0, fcsets, 1, fcpattern, &fcres);
+			//fontpattern = FcFontMatch(NULL, fcpattern, &fcres);
 
 			/* Allocate memory for the new cache entry. */
 			if (frclen >= frccap) {
@@ -508,6 +536,15 @@ int xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len,
 			frc[frclen].unicodep = rune;
 
 			glyphidx = XftCharIndex(xwin.dpy, frc[frclen].font, rune);
+
+			fprintf(stderr,"found idx: %d\nfrclen: %d\n",glyphidx,frclen);
+			// misc. ok. memeory leak. frclen, if runes aren't found.
+			// todo: write a rune buffer for codepoints and fonts.
+
+			if ( glyphidx ){
+				//FcPatternPrint( fcpattern );
+
+			}
 
 			f = frclen;
 			frclen++;

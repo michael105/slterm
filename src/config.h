@@ -5,7 +5,7 @@
 
 #ifndef extract_keyref
 
-// Silence my syntaxcheckerplugin
+// Silence syntaxcheckerplugin
 #include <X11/XKBlib.h>
 #include <X11/Xatom.h>
 #include <X11/Xft/Xft.h>
@@ -36,6 +36,23 @@ static char *regular_font = "Liberation Mono:Bold:pixelsize=13:antialias=true:au
 //if size not set 
 int default_font_pixelsize = 14;
 
+// if set to 0, the sizes will be determined.
+// else these sizes are used, regardless of pixelsize
+int fontwidth = 0; // width in pixel, fontspacing is added
+int fontheight = 0; // height in pixel. should be larger than pixelsize
+
+
+// more/less font width spacing
+// here, with utf8 enabled, -1 looks much better.
+int fontspacing = 0;
+//int fontspacing = -1;
+
+/* Kerning / character bounding-box multipliers */
+static float cwscale = 1.0;
+static float chscale = 1.0;
+
+
+
 /* if fonts below are set, they are used, no matter of xresources or command line options
  else, if set to 0, the appropiate weight and slant are added to "regular_font" 
  (italic,bold,bold italic) when usexxxfont below is set to 1.
@@ -59,16 +76,14 @@ int usebolditalicfont = 1;
 
 
 
-// more/less font width spacing
-// here, with utf8 enabled, -1 looks much better.
-int fontspacing = 0;
-//int fontspacing = -1;
 
-
-//static int borderpx = 4;
 
 // The terminal's borderwidth in percent of a char's width
+// if set to 0, borderpx is not changed
 int borderperc = 40;
+
+// the borderwidth in pixel. borderpc is used to calculate borderpx, if set.
+int borderpx = 0;
 
 /*
  What program is execed by slterm depends of these precedence rules:
@@ -85,9 +100,6 @@ char *stty_args = "stty raw pass8 nl -echo -iexten -cstopb 38400";
 /* identification sequence returned in DA and DECID */
 char *vtiden = "\033[?6c";
 
-/* Kerning / character bounding-box multipliers */
-static float cwscale = 1.0;
-static float chscale = 1.0;
 
 /*
  word delimiter string
@@ -314,11 +326,6 @@ ResourcePref resources[] = {
     { "chscale", FLOAT, &chscale },
 };
 #endif
-/*
- Color used to display font attributes when fontconfig selected a font which
- doesn't match the ones requested.
-*/
-//static unsigned int defaultattr = 11;
 
 /*
  Force mouse select/shortcuts while mask is active (when MODE_MOUSE is set).
@@ -347,6 +354,7 @@ static MouseShortcut mshortcuts[] = {
 // inputmodes
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
+#define MODE_REGULAR MODE_DEFAULT
 #define MODE_LESS 0x02
 #define IMODE_HELP 0x04 // 0x4 | 0x2 , keys for lessmode
 
@@ -397,7 +405,7 @@ static MouseShortcut mshortcuts[] = {
 #ifndef extract_keyref
 Shortcut shortcuts[] = {
 #endif
-/*  { mask,       keysym,   function,  argument, INPUTMODE } */
+/*  ( mask,       keysym,   function,  argument, INPUTMODE ) */
 
 BIND( ControlMask, XK_F1, showhelp, { 0},ALLMODES ),
 
@@ -894,6 +902,100 @@ int selected_codepage = 2;
 #ifndef UTF8 // wouldn't be useful
 #define UTF8_CLIPBOARD
 #endif
+
+
+// environment variables, exported to the shell
+// besides SHELL, USER, HOME, TERM, COLUMNS, LINES, TERMCAP 
+// which are determined and set in system.c 
+const char *export_env[][2] = {
+
+		// display chars 128-255 in less
+   { "LESSCHARSET", "dos"}, 
+
+		// "save" default. better than unset.
+		// is set in the shell normally
+   { "LANG", "C"},
+   { "LC_ALL", "C"},
+		
+
+	// color ansi escape sequences
+   { "NORM", "\e[0;37;40m"},
+
+   { "BLACK", "\e[30m"},
+   { "RED", "\e[31m"},
+   { "GREEN", "\e[32m"},
+   { "YELLOW", "\e[33m"},
+   { "BLUE", "\e[34m"},
+   { "MAGENTA", "\e[35m"},
+   { "CYAN", "\e[36m"},
+   { "WHITE", "\e[37m"},
+
+   { "BROWN", "\e[33m"},
+   { "BGBROWN", "\e[43m"},
+   { "ORANGE", "\e[1;2;33m"},
+   { "ORANGERED", "\e[1;2;31m"},
+   { "GRAY", "\e[1;2;30m"},
+   { "PURPLE", "\e[1;2;35m"},
+   { "MINT", "\e[1;2;32m"},
+   { "TURQUOISE", "\e[1;2;36m"},
+
+   { "LBLACK", "\e[90m"},
+   { "LRED", "\e[91m"},
+   { "LGREEN", "\e[92m"},
+   { "LYELLOW", "\e[93m"},
+   { "LBLUE", "\e[94m"},
+   { "LMAGENTA", "\e[95m"},
+   { "LCYAN", "\e[96m"},
+   { "LWHITE", "\e[97m"},
+
+   { "DBLACK", "\e[2;30m"},
+   { "DRED", "\e[2;31m"},
+   { "DGREEN", "\e[2;32m"},
+   { "DYELLOW", "\e[2;33m"},
+   { "DBLUE", "\e[2;34m"},
+   { "DMAGENTA", "\e[2;35m"},
+   { "DCYAN", "\e[2;36m"},
+   { "DWHITE", "\e[2;37m"},
+
+   { "LDBLACK", "\e[1;2;30m"},
+   { "LDRED", "\e[1;2;31m"},
+   { "LDGREEN", "\e[1;2;32m"},
+   { "LDYELLOW", "\e[1;2;33m"},
+   { "LDBLUE", "\e[1;2;34m"},
+   { "LDMAGENTA", "\e[1;2;35m"},
+   { "LDCYAN", "\e[1;2;36m"},
+   { "LDWHITE", "\e[1;2;37m"},
+
+
+   { "BGBLACK", "\e[40m"},
+   { "BGRED", "\e[41m"},
+   { "BGGREEN", "\e[42m"},
+   { "BGYELLOW", "\e[43m"},
+   { "BGBLUE", "\e[44m"},
+   { "BGMAGENTA", "\e[45m"},
+   { "BGCYAN", "\e[46m"},
+   { "BGWHITE", "\e[47m"},
+
+   { "BGLBLACK", "\e[100m"},
+   { "BGLRED", "\e[101m"},
+   { "BGLGREEN", "\e[102m"},
+   { "BGLYELLOW", "\e[103m"},
+   { "BGLBLUE", "\e[104m"},
+   { "BGLMAGENTA", "\e[105m"},
+   { "BGLCYAN", "\e[106m"},
+   { "BGLWHITE", "\e[107m"},
+
+
+   { "BOLD","\e[1m" },
+   { "FAINT","\e[2m" },
+   { "CURSIVE","\e[3m" },
+   { "UNDERLINE","\e[4m" },
+   { "BLINK","\e[6m" },
+   { "REVERSE","\e[7m" },
+   { "STRIKETHROUGH","\e[9m" },
+   { "DOUBLEUNDERLINE","\e[21m" },
+	{0} };
+
 
 
 #endif

@@ -150,7 +150,7 @@ void selnormalize(void) {
 		sel.nb.x = i;
 	}
 	if (tlinelen(sel.ne.y) <= sel.ne.x) {
-		sel.ne.x = term->col - 1;
+		sel.ne.x = term->cols - 1;
 	}
 }
 
@@ -171,12 +171,12 @@ int selected(int x, int y) {
 void search(int selectsearch_mode, Rune *target, int ptarget, int incr,
 		int type, TCursor *cu) {
 	Rune *r;
-	int i, bound = (term->col * cu->y + cu->x) * (incr > 0) + incr;
+	int i, bound = (term->cols * cu->y + cu->x) * (incr > 0) + incr;
 
-	for (i = term->col * term->cursor.y + term->cursor.x + incr; i != bound; i += incr) {
+	for (i = term->cols * term->cursor.y + term->cursor.x + incr; i != bound; i += incr) {
 		for (r = target; r - target < ptarget; r++) {
 			if (*r ==
-					term->line[(i + r - target) / term->col][(i + r - target) % term->col]
+					term->line[(i + r - target) / term->cols][(i + r - target) % term->cols]
 					.u) {
 				if (r - target == ptarget - 1) {
 					break;
@@ -192,7 +192,7 @@ void search(int selectsearch_mode, Rune *target, int ptarget, int incr,
 	}
 
 	if (i != bound) {
-		term->cursor.y = i / term->col, term->cursor.x = i % term->col;
+		term->cursor.y = i / term->cols, term->cursor.x = i % term->cols;
 		select_or_drawcursor(selectsearch_mode, type);
 	}
 }
@@ -213,10 +213,10 @@ void selsnap(int *x, int *y, int direction) {
 			for (;;) {
 				newx = *x + direction;
 				newy = *y;
-				if (!BETWEEN(newx, 0, term->col - 1)) {
+				if (!BETWEEN(newx, 0, term->cols - 1)) {
 					newy += direction;
-					newx = (newx + term->col) % term->col;
-					if (!BETWEEN(newy, 0, term->row - 1)) {
+					newx = (newx + term->cols ) % term->cols;
+					if (!BETWEEN(newy, 0, term->rows - 1)) {
 						break;
 					}
 
@@ -261,16 +261,16 @@ void selsnap(int *x, int *y, int direction) {
 			 * has set ATTR_WRAP at its end. Then the whole next or
 			 * previous line will be selected.
 			 */
-			*x = (direction < 0) ? 0 : term->col - 1;
+			*x = (direction < 0) ? 0 : term->cols - 1;
 			if (direction < 0) {
 				for (; *y > 0; *y += direction) {
-					if (!(TLINE(*y - 1)[term->col - 1].mode & ATTR_WRAP)) {
+					if (!(TLINE(*y - 1)[term->cols - 1].mode & ATTR_WRAP)) {
 						break;
 					}
 				}
 			} else if (direction > 0) {
-				for (; *y < term->row - 1; *y += direction) {
-					if (!(TLINE(*y)[term->col - 1].mode & ATTR_WRAP)) {
+				for (; *y < term->rows - 1; *y += direction) {
+					if (!(TLINE(*y)[term->cols - 1].mode & ATTR_WRAP)) {
 						break;
 					}
 				}
@@ -288,7 +288,7 @@ char *getsel(void) {
 		return NULL;
 	}
 
-	bufsize = (term->col + 1) * (sel.ne.y - sel.nb.y + 1) * UTF_SIZ;
+	bufsize = (term->cols + 1) * (sel.ne.y - sel.nb.y + 1) * UTF_SIZ;
 	ptr = str = xmalloc(bufsize);
 
 	/* append every set & selected glyph to the selection */
@@ -303,7 +303,7 @@ char *getsel(void) {
 			lastx = sel.ne.x;
 		} else {
 			gp = &TLINE(y)[sel.nb.y == y ? sel.nb.x : 0];
-			lastx = (sel.ne.y == y) ? sel.ne.x : term->col - 1;
+			lastx = (sel.ne.y == y) ? sel.ne.x : term->cols - 1;
 		}
 		last = &TLINE(y)[MIN(lastx, linelen - 1)];
 		while (last >= gp && last->u == ' ') {
@@ -365,7 +365,7 @@ void selscroll(int orig, int n) {
 			}
 			if (sel.oe.y > term->bot) {
 				sel.oe.y = term->bot;
-				sel.oe.x = term->col;
+				sel.oe.x = term->cols;
 			}
 		}
 		selnormalize();
@@ -397,7 +397,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			term->line[term->bot][ptarget--].u = ' ';
 		} else if (len < 1) {
 			return 0;
-		} else if (ptarget == term->col || ksym == XK_Escape) {
+		} else if (ptarget == term->cols || ksym == XK_Escape) {
 			return 0;
 		} else {
 			utf8decode(buf, &target[ptarget++], len);
@@ -409,7 +409,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 		}
 
 		term->dirty[term->bot] = 1;
-		drawregion(0, term->bot, term->col, term->bot + 1);
+		drawregion(0, term->bot, term->cols, term->bot + 1);
 		return 0;
 	}
 
@@ -464,7 +464,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			if ( selectsearch_mode == 0 ){
 				selstart(0,term->cursor.y,0);
 				set_notifmode(selectsearch_mode = 1, ksym);
-				selextend(term->col-1, term->cursor.y, type, 0);
+				selextend(term->cols - 1, term->cursor.y, type, 0);
 				xsetsel(getsel());
 				break;
 			}
@@ -506,7 +506,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_dollar:
-			term->cursor.x = term->col - 1;
+			term->cursor.x = term->cols - 1;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_g:
@@ -522,7 +522,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_End:
-			term->cursor.x = term->col-1;
+			term->cursor.x = term->cols - 1;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 
@@ -532,12 +532,12 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_exclam:
-			term->cursor.x = term->col >> 1;
+			term->cursor.x = term->cols >> 1;
 			select_or_drawcursor(selectsearch_mode, type);
 			break;
 		case XK_asterisk:
 		case XK_KP_Multiply:
-			term->cursor.x = term->col >> 1;
+			term->cursor.x = term->cols >> 1;
 		case XK_underscore:
 			term->cursor.y = cu.y >> 1;
 			select_or_drawcursor(selectsearch_mode, type);
@@ -559,7 +559,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 
 			xy = (i & 1) ? &term->cursor.y : &term->cursor.x;
 			sens = (i & 2) ? 1 : -1;
-			bound = (i >> 1 ^ 1) ? 0 : (i ^ 3) ? term->col - 1 : term->bot;
+			bound = (i >> 1 ^ 1) ? 0 : (i ^ 3) ? term->cols - 1 : term->bot;
 
 			if (quant == 0) {
 				quant++;

@@ -48,6 +48,23 @@ void execsh(char *cmd, char **args) {
 		setenv("HOME", pw->pw_dir, 1);
 		setenv("TERM", termname, 1);
 
+		// define env in config.h
+		for ( const char **p = (const char**)export_env; *p; p++ ){
+			setenv( p[0], p[1], 1 );
+		}
+
+		// IFNDEF UTF8
+
+		/*
+		// display chars 128-255 in less
+		setenv("LESSCHARSET", "dos", 1); 
+
+		// "save" default. better than unset.
+		// is set in the shell normally
+		setenv("LANG", "C", 1);
+		setenv("LC_ALL", "C", 1);
+		
+
 		setenv("NORM", "\e[0;37;40m", 1);
 
 		setenv("BLACK", "\e[30m", 1);
@@ -123,6 +140,7 @@ void execsh(char *cmd, char **args) {
 		setenv("REVERSE","\e[7m",1);
 		setenv("STRIKETHROUGH","\e[9m",1);
 		setenv("DOUBLEUNDERLINE","\e[21m",1);
+		*/
 
 
 		signal(SIGCHLD, SIG_DFL);

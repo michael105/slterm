@@ -14,7 +14,7 @@ static int focusdraw = 1;
 
 void drawstatus(){
 	term->dirty[term->bot] = 1;
-	drawregion(0, term->bot, term->col, term->bot + 1);
+	drawregion(0, term->bot, term->cols, term->bot + 1);
 }
 
 void statusbar_focusin(){
@@ -53,8 +53,8 @@ void updatestatus(){
 
 		// currently shown number of cols
 		int stwidth = statuswidth;
-		if ( term->col != statuswidth )
-			stwidth = term->col;
+		if ( term->cols != statuswidth )
+			stwidth = term->cols;
 
 		char buf[512];
 		memset( buf, ' ', 256 );
@@ -64,8 +64,8 @@ void updatestatus(){
 		int p = 0;
 		if ( stwidth > 32 + 19 ){
 			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
-					term->histi-term->scr,term->histi-term->scr+term->row, 
-					term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
+					term->histi-term->scr,term->histi-term->scr+term->rows, 
+					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 					((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1),
 					term->retmark_scrolled
@@ -86,12 +86,12 @@ void updatestatus(){
 
 		} else if ( stwidth > 20 + 16 ){ //TODO: other values (line number)
 			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
-					term->histi+term->row, term->histi+term->row-(term->histi-term->scr+term->row),
+					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 					term->retmark_scrolled );
 		} else {
 			p = sprintf(buf+256,"%5d %3d%% ",
-					term->histi+term->row-(term->histi-term->scr+term->row),
+					term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1) );
 		}
 
@@ -118,8 +118,8 @@ void setstatus(char* status){
 		statuswidth = term->colalloc;
 	}
 	int stwidth = statuswidth;
-	if ( term->col != stwidth )
-		stwidth = term->col;
+	if ( term->cols != stwidth )
+		stwidth = term->cols;
 
 #ifndef UTF8
 	Glyph g = { .fg = statusfg, .bg = statusbg, .mode = statusattr, .u = ' ' };
@@ -163,9 +163,9 @@ void showstatus(int show, char *status){
 			statusvisible = 0;
 			// clear status
 			term->dirty[term->bot] = 1;
-			drawregion(0, term->bot, term->col, term->bot + 1);
-			//term->row++;
-			//tresize(term->col,term->row+1);
+			drawregion(0, term->bot, term->cols, term->bot + 1);
+			//term->rows++;
+			//tresize(term->cols,term->rows+1);
 		}
 	}
 }
@@ -175,16 +175,16 @@ void set_notifmode(int type, KeySym ksym) {
 	static char *lib[] = {" MOVE ", "SELECT"," LESS " };
 	static Glyph *g, *deb, *fin;
 	static int col, bot;
-	col = term->col, bot = term->bot;
+	col = term->cols, bot = term->bot;
 
 	if (ksym == -1) { // show
 		free(g);
 		g = xmalloc(term->colalloc * sizeof(Glyph));
 		memcpy(g, TLINE(bot), term->colalloc * sizeof(Glyph));
-		//tresize(term->col,term->row-1);
+		//tresize(term->cols,term->rows-1);
 	} else if (ksym == -2) { // hide
 		memcpy(TLINE(bot), g, term->colalloc * sizeof(Glyph));
-		//tresize(term->col,term->row+1);
+		//tresize(term->cols,term->rows+1);
 	}
 
 	if (type < 3) {

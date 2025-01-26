@@ -186,8 +186,8 @@ void kpress(XEvent *ev) {
 
 	dbg("key: %x, keycode: %x, state: %x\n",ksym, e->keycode, e->state );
 
-	// handle return, set scrollmark 0
-	if ( ( ksym == XK_Return ) ){
+	// handle return, add retmark 
+	if ( ( ksym == XK_Return ) && (term->scr==0) && ( inputmode == MODE_REGULAR ) && !( twin.mode & MODE_KBDSELECT ) ){
 		//if ( (!IS_SET(MODE_ALTSCREEN)) && ( ksym == XK_Return ) ){
 		set_retmark();
 	}

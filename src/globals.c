@@ -14,7 +14,6 @@ Term *p_alt=0;
 
 
 // term.c
-int borderpx;
 int enterlessmode;
 
 

@@ -61,19 +61,6 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 	int fgcache = 0, bgcache = 0;
 
 
-	// Look for the right color
-
-	/* Fallback on color display for attributes not supported by the font */
-	/*
-	if (base.mode & ATTR_ITALIC && base.mode & ATTR_BOLD) {
-		if (dc.ibfont.badslant || dc.ibfont.badweight)
-			base.fg = defaultattr;
-	} else if ((base.mode & ATTR_ITALIC && dc.ifont.badslant) ||
-			(base.mode & ATTR_BOLD && dc.bfont.badweight)) {
-		base.fg = defaultattr;
-	}
-	*/
-
 	//get colors from cache, if present
 	if (  !(twin.mode & MODE_FOCUSED) || IS_SET(MODE_REVERSE) ){
 		if ( ( bg =getcachecolor( 0, &base,twin.mode ) ) )
@@ -132,6 +119,31 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				fg = &dc.col[base.fg];
 			}
 
+	if ( !fgcache ){
+		if ( base.fg < 8 ){
+			//printf("<c %d>an",base.fg);
+			int fi = 0;
+			if ((base.mode & ATTR_FAINT) == ATTR_FAINT )
+				fi = 2;
+			if ((base.mode & ATTR_BOLD) == ATTR_BOLD )
+				fi++;
+
+			fg = &dc.colortable[base.fg+8*fi];
+		} else if ( base.fg < 16 ) {
+			fg = &dc.colortable[base.fg];
+		} else {
+			// old code
+			if (IS_TRUECOL(base.fg)) {
+				//printf("Truecolor\n");
+				colfg.alpha = 0xffff;
+				colfg.red = TRUERED(base.fg);
+				colfg.green = TRUEGREEN(base.fg);
+				colfg.blue = TRUEBLUE(base.fg);
+				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &truefg);
+				fg = &truefg;
+			} else {
+				fg = &dc.col[base.fg];
+			}
 
 			//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
 #define cbold(c) colfg.c = ((fg->color.c + fg->color.c/2) | fg->color.c ) & 0xffff

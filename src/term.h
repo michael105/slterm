@@ -38,10 +38,29 @@
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
 
-#define IS_SET(flag) ((term->mode & (flag)) != 0)
+// inputmode. switchable via lessmode_toggle
+//extern int inputmode;
+
+enum term_mode {
+  MODE_WRAP = 1 << 0,
+  MODE_INSERT = 1 << 1,
+  MODE_ALTSCREEN = 1 << 2,
+  MODE_CRLF = 1 << 3,
+  MODE_ECHO = 1 << 4,
+  MODE_PRINT = 1 << 5,
+#ifdef UTF8
+  MODE_UTF8 = 1 << 6,
+#else
+	MODE_UTF8 = 0,
+#endif
+  MODE_SIXEL = 1 << 7,
+	TMODE_HELP = 1 << 8,
+};
+
+
 
 #ifndef HISTSIZEBITS
-// Should be set in config.h.in
+// Should be set in config.h
 #define HISTSIZEBITS 11
 #endif
 
@@ -84,24 +103,6 @@ enum glyph_attribute {
 #endif
 };
 
-// inputmode. switchable via lessmode_toggle
-//extern int inputmode;
-
-enum term_mode {
-  MODE_WRAP = 1 << 0,
-  MODE_INSERT = 1 << 1,
-  MODE_ALTSCREEN = 1 << 2,
-  MODE_CRLF = 1 << 3,
-  MODE_ECHO = 1 << 4,
-  MODE_PRINT = 1 << 5,
-#ifdef UTF8
-  MODE_UTF8 = 1 << 6,
-#else
-	MODE_UTF8 = 0,
-#endif
-  MODE_SIXEL = 1 << 7,
-	TMODE_HELP = 1 << 8,
-};
 
 enum cursor_movement { CURSOR_SAVE, CURSOR_LOAD };
 
@@ -154,16 +155,6 @@ typedef struct {
 
 
 typedef Glyph *Line;
-
-typedef struct {
-  Glyph attr; /* current char attributes */ //the rune is set to ' ' (empty)
-	// Possibly there should be a difference between space ' ' and empty?
-	// evtl render spaces and tabs visually? 
-  int x;
-  int y;
-  char state;
-} TCursor;
-
 
 void redraw(void);
 void draw(void);
