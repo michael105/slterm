@@ -379,7 +379,7 @@ static MouseShortcut mshortcuts[] = {
 
 #define ALT Mod1Mask 
 #define SHIFT ShiftMask 
-#define KCTRL ControlMask 
+#define CONTROL ControlMask 
 #define WIN Mod4Mask 
 
 // masks: Mod1Mask .. Mod5Mask, ControlMask, ShiftMask, LockMask
@@ -557,6 +557,7 @@ BIND( ALT+SHIFT, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN
 BIND( TERMMOD, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
 BIND( ALT+SHIFT, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
 BIND( TERMMOD, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
+BIND( ALT+SHIFT, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
 
 	// toggle
 BIND( TERMMOD, XK_L, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES ),
@@ -588,7 +589,7 @@ BIND( ControlMask|Mod4Mask, XK_0, set_charmap, { .i=0 },ALLMODES ),
 
 #undef ALT
 #undef SHIFT
-#undef KCTRL
+#undef CONTROL
 #undef WIN
 
 /*

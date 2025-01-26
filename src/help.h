@@ -168,6 +168,7 @@ All	 All                	 Print      	 printsel 	\n\r\
 All	 All                	 Scroll_Lock 	 lessmode_toggle 	\n\r\
 All	 Alt                	 s          	 keyboard_select 	\n\r\
 All	 Alt+Shift          	 Down       	 lessmode_toggle 	\n\r\
+All	 Alt+Shift          	 Home       	 lessmode_toggle 	\n\r\
 All	 Alt+Shift          	 Page_Down  	 lessmode_toggle 	\n\r\
 All	 Alt+Shift          	 Page_Up    	 lessmode_toggle 	\n\r\
 All	 Alt+Shift          	 Up         	 lessmode_toggle 	\n\r\
