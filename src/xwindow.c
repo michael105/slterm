@@ -203,8 +203,8 @@ void xinit(int cols, int rows) {
 		xwin.t += DisplayHeight(xwin.dpy, xwin.scr) - twin.h - 2;
 
 	/* Events */
-	xwin.attrs.background_pixel = dc.col[defaultbg].pixel;
-	xwin.attrs.border_pixel = dc.col[defaultbg].pixel;
+	xwin.attrs.background_pixel = dc.color_array[defaultbg].pixel;
+	xwin.attrs.border_pixel = dc.color_array[defaultbg].pixel;
 	xwin.attrs.bit_gravity = NorthWestGravity;
 	xwin.attrs.event_mask = FocusChangeMask | KeyPressMask | KeyReleaseMask |
 		ExposureMask | VisibilityChangeMask |
@@ -225,7 +225,7 @@ void xinit(int cols, int rows) {
 	dc.gc = XCreateGC(xwin.dpy, parent, GCGraphicsExposures, &gcvalues);
 	xwin.buf =
 		XCreatePixmap(xwin.dpy, xwin.win, twin.w, twin.h, DefaultDepth(xwin.dpy, xwin.scr));
-	XSetForeground(xwin.dpy, dc.gc, dc.col[defaultbg].pixel);
+	XSetForeground(xwin.dpy, dc.gc, dc.color_array[defaultbg].pixel);
 	XFillRectangle(xwin.dpy, xwin.buf, dc.gc, 0, 0, twin.w, twin.h);
 
 	/* font spec buffer */

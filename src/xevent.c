@@ -198,7 +198,7 @@ void focus(XEvent *ev) {
 	static int colorsaved = 0;
 	static Color tmp;
 	if ( !colorsaved ){
-		tmp = dc.col[FCB];
+		tmp = dc.color_array[FCB];
 		colorsaved = 1;
 	}
 
@@ -210,7 +210,7 @@ void focus(XEvent *ev) {
 			if (IS_SET(MODE_FOCUS))
 				ttywrite((utfchar*)"\033[I", 3, 0);
 			statusbar_focusin();
-			dc.col[FCB] = tmp;
+			dc.color_array[FCB] = tmp;
 			redraw();
 		}
 
@@ -221,7 +221,7 @@ void focus(XEvent *ev) {
 			if (IS_SET(MODE_FOCUS))
 				ttywrite((utfchar*)"\033[O", 3, 0);
 			statusbar_focusout();
-			dc.col[FCB] = dc.col[7];
+			dc.color_array[FCB] = dc.color_array[7];
 			redraw();
 		}
 

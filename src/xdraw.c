@@ -9,7 +9,7 @@ DC dc;
  * Absolute coordinates.
  */
 void xclear(int x1, int y1, int x2, int y2) {
-	XftDrawRect(xwin.draw, &dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg],
+	XftDrawRect(xwin.draw, &dc.color_array[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg],
 			x1, y1, x2 - x1, y2 - y1);
 }
 
@@ -18,8 +18,12 @@ void xdrawline(Line line, int x1, int y1, int x2) {
 	int i, x, ox, numspecs;
 	Glyph base, new;
 	XftGlyphFontSpec *specs = xwin.specbuf;
-
+#ifndef UTF8
+	numspecs = noutf8_xmakeglyphfontspecs(specs, &line[x1], x2 - x1, x1, y1);
+#else
 	numspecs = xmakeglyphfontspecs(specs, &line[x1], x2 - x1, x1, y1);
+#endif
+
 	i = ox = 0;
 	for (x = x1; x < x2 && i < numspecs; x++) {
 		new = line[x];
@@ -87,7 +91,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &truebg);
 				bg = &truebg;
 			} else {
-				bg = &dc.col[base.bg];
+				bg = &dc.color_array[base.bg];
 			}
 		}
 	}
@@ -116,34 +120,9 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &truefg);
 				fg = &truefg;
 			} else {
-				fg = &dc.col[base.fg];
+				fg = &dc.color_array[base.fg];
 			}
 
-	if ( !fgcache ){
-		if ( base.fg < 8 ){
-			//printf("<c %d>an",base.fg);
-			int fi = 0;
-			if ((base.mode & ATTR_FAINT) == ATTR_FAINT )
-				fi = 2;
-			if ((base.mode & ATTR_BOLD) == ATTR_BOLD )
-				fi++;
-
-			fg = &dc.colortable[base.fg+8*fi];
-		} else if ( base.fg < 16 ) {
-			fg = &dc.colortable[base.fg];
-		} else {
-			// old code
-			if (IS_TRUECOL(base.fg)) {
-				//printf("Truecolor\n");
-				colfg.alpha = 0xffff;
-				colfg.red = TRUERED(base.fg);
-				colfg.green = TRUEGREEN(base.fg);
-				colfg.blue = TRUEBLUE(base.fg);
-				XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &truefg);
-				fg = &truefg;
-			} else {
-				fg = &dc.col[base.fg];
-			}
 
 			//#define cbold(c) colfg.c = fg->color.c + boldf <= 0xffff ? fg->color.c+boldf : fg->color.c ;
 #define cbold(c) colfg.c = ((fg->color.c + fg->color.c/2) | fg->color.c ) & 0xffff
@@ -154,7 +133,7 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 			/* Change basic system colors [0-7] to bright system colors [8-15] */
 			if ((base.mode & ATTR_BOLD) == ATTR_BOLD ){
 				if ( BETWEEN(base.fg, 0, 7)){
-					fg = &dc.col[base.fg + 8];
+					fg = &dc.color_array[base.fg + 8];
 				} else { 
 					//if ( ( (base.mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base.fg,0,15) )  
 					cbold(red); //= fg->color.red * 2;
@@ -210,8 +189,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 
 	if (IS_SET(MODE_REVERSE)) { // inverse mode (Ctrl+Shift+I)
 		if ( !fgcache ){
-			if ( fg == &dc.col[defaultfg]) {
-				fg = &dc.col[defaultbg];
+			if ( fg == &dc.color_array[defaultfg]) {
+				fg = &dc.color_array[defaultbg];
 			} else {
 				colfg.alpha = fg->color.alpha;
 #define AS(c) colfg.c = ~fg->color.c
@@ -225,8 +204,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 		}
 
 		if ( !bgcache ){
-			if ( bg == &dc.col[defaultbg]) {
-				bg = &dc.col[defaultfg];
+			if ( bg == &dc.color_array[defaultbg]) {
+				bg = &dc.color_array[defaultfg];
 			} else {
 				colbg.alpha = bg->color.alpha;
 #define ASB(c) colbg.c = ~bg->color.c
@@ -322,8 +301,11 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 Color* xdrawglyph(Glyph g, int x, int y) {
 	int numspecs;
 	XftGlyphFontSpec spec;
-
+#ifndef UTF8
+	numspecs = noutf8_xmakeglyphfontspecs(&spec, &g, 1, x, y);
+#else
 	numspecs = xmakeglyphfontspecs(&spec, &g, 1, x, y);
+#endif
 	return( xdrawglyphfontspecs(&spec, g, numspecs, x, y) );
 }
 
@@ -332,7 +314,7 @@ int xstartdraw(void) { return IS_SET(MODE_VISIBLE); }
 void xfinishdraw(void) {
 	XCopyArea(xwin.dpy, xwin.buf, xwin.win, dc.gc, 0, 0, twin.w, twin.h, 0, 0);
 	XSetForeground(xwin.dpy, dc.gc,
-			dc.col[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg].pixel);
+			dc.color_array[IS_SET(MODE_REVERSE) ? defaultfg : defaultbg].pixel);
 }
 
 

@@ -23,7 +23,7 @@ Color *getcursorcolor( Glyph g, int cx, int cy ){
 	Color *col;
 	Color drawcol;
 	if ( g.bg == defaultbg ){
-		col = &dc.col[defaultcs];
+		col = &dc.color_array[defaultcs];
 	} else {
 		if ( !( col = getcachecolor( 2, &g, twin.mode ) ) ){
 			col = xdrawglyph(g, cx, cy); // unneccessary, but need the bg color
@@ -76,10 +76,10 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 		g.mode |= ATTR_REVERSE;
 		g.bg = defaultfg;
 		if (selected(cx, cy)) {
-			drawcol = dc.col[defaultrcs];
+			drawcol = dc.color_array[defaultrcs];
 			g.fg = defaultbg;
 		} else {
-			drawcol = dc.col[defaultrcs];
+			drawcol = dc.color_array[defaultrcs];
 			g.fg = defaultbg;
 		}
 	} else {
@@ -90,7 +90,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 			g.fg = defaultbg;
 			g.bg = defaultcs;
 		}
-		drawcol = dc.col[g.bg];
+		drawcol = dc.color_array[g.bg];
 	}
 	*/
 
@@ -136,17 +136,17 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 					g.fg = 4;
 					xdrawglyph(g, cx, cy);
 
-					drawcol = dc.col[1];
+					drawcol = dc.color_array[1];
 
 					// underline
-					drawcol = dc.col[defaultcs];
+					drawcol = dc.color_array[defaultcs];
 					XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
 							twin.vborderpx + (cy + 1) * twin.ch - cursorthickness, twin.cw,
 							cursorthickness);
 
 				} else { // draw cursor as underline
 					focusinx=focusiny=0;
-					//drawcol = dc.col[defaultcs];
+					//drawcol = dc.color_array[defaultcs];
 
 					col = getcursorcolor( g, cx, cy );
 
@@ -237,7 +237,7 @@ void xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og) {
 		}
 	} else { // window hasn't the focus. 
 				//g.fg = unfocusedrcs;
-		drawcol = dc.col[unfocusedrcs];
+		drawcol = dc.color_array[unfocusedrcs];
 		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,
 				twin.vborderpx + cy * twin.ch, twin.cw - 1, 1);
 		XftDrawRect(xwin.draw, &drawcol, twin.hborderpx + cx * twin.cw,

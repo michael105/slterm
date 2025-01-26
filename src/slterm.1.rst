@@ -181,8 +181,6 @@ The default foreground and background color and attributes can be reset with $NO
 - foreground: echo -e "\e[38;5;XXm", XX one of 0 - 255.
 - background: echo -e "\e[48;5;XXm", XX one of 0 - 255.
 
-`Shift+Enter` in Normal mode enters lessmode, if the output
-of a command is more than a screen.
 
 Cursor
 ------

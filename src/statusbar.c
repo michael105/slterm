@@ -43,6 +43,81 @@ void statusbar_focusout(){
 	}
 }
 
+// text entering, textfield
+// besser als struct, objektorientiert.
+uchar tfbuf[512];
+int tfbuflen = 512;
+
+int tfpos = 0; // is not necessarily the pos of the cursor.
+int tftextlen = 0;
+int tfvisible = 0;
+
+uchar tfinput[512];
+int tfinputlen = 512;
+
+// callbacks
+//
+// xkeyboard -> keypress
+// verarbeitet input, auch keycombos
+//
+// tfevent -> receiver (searchwidget)
+// sendet:
+// textentered (buf)
+// search (buf)
+// complete (buf)
+//
+// setcursor(x) -> relative cursor position
+//
+// redraw() -> receiver (statusbar)
+// ->redraw() beide richtungen. d.h. in statusbarupdate: setwidth(), paint(), getcursor()
+//
+// ->setwidth(x)
+//
+// ->view,hide
+// ->setfocus()
+//
+//
+// eventfilterlist. (Ctrl+F,Tab,ESC, . hm. evtl zu weit.)
+// benoetige ein sinnvolles format fuewr die glyphen.
+// vermutlich am besten "doppelt". textstring, und glyphlist fuer farbe und attribute.
+//
+// auch moeglich: die callbacks von sprintf in minilib fuer colorierung schreiben.
+// ->sprintf: marker fuer farbe. zb ein Test in %ROT%Farbe
+// hatte ja schonmal ein konzept. 
+//
+// sinnvoll, hier, hab keine zeit: variablen und callbacks als struktur.
+//
+// Rest koennte ich immer noch aufbauen. bspw sender- verteiler -receiver
+// usw.
+// 
+// besser: slots.
+// in der strukt slot registerkey[], drin struct: key,callback(key,sender)
+// -> structs muessen fuer alle widgets eine selbe grundstruktur am anfang haben.
+// -> = "parent" class.
+// -> sogar die syntax wird nett: struct _textinput { struct widget; ...
+// laesst sich dann auch polymorph gestalten.
+// create_widget( typ )... setzt callbacks, initialisiert.
+//
+// kann natuerlich auch macros machen:
+// struct widget; wird zu PARENTCLASS widget;
+// "public" scheint unpassend.
+// genaugenommen: struct _textinput{ CLASS widget; 
+// und struct _widget{ CLASS object; 
+// ...
+// nicht mal casten notwendig.
+// nur upcasten, von object auf widget, usw.
+//
+// kann ich natuerlich auch gleich mit ids arbeiten.
+// fuer jede instanz, und jede klasse.
+//
+
+
+
+// for the mode MODE_ENTERSTRING
+void statusbar_kpress( KeySym *ks, char *buf ){
+
+}
+
 
 
 
@@ -62,16 +137,22 @@ void updatestatus(){
 
 		//int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d", p_status,
 		int p = 0;
-		if ( stwidth > 32 + 19 ){
+
+		int fstwidth = stwidth;
+
+		stwidth -= strlen(p_status)+3; // try to keep that much free space at the left
+
+		// scrollinfo
+		if ( stwidth > 32 + 11 ){
 			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
 					term->histi-term->scr,term->histi-term->scr+term->rows, 
 					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
 					((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1),
-					term->retmark_scrolled
+					term->scrolled_retmark
 					);
 
-			if ( stwidth > p+20 ){
+			if ( stwidth > p+10 ){
 				for ( int a=1; a<10; a++ ){
 					if ( term->scrollmarks[a] )
 						buf[p++] = a+'0';
@@ -84,11 +165,11 @@ void updatestatus(){
 					buf[p++] = ' ';
 			}
 
-		} else if ( stwidth > 20 + 16 ){ //TODO: other values (line number)
+		} else if ( stwidth > 20 + 6 ){ //TODO: other values (line number)
 			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
 					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
 					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
-					term->retmark_scrolled );
+					term->scrolled_retmark );
 		} else {
 			p = sprintf(buf+256,"%5d %3d%% ",
 					term->histi+term->rows-(term->histi-term->scr+term->rows),
@@ -98,7 +179,7 @@ void updatestatus(){
 		//printf("p: %d\n",p);
 		buf[p] = 0;
 
-		int bp = 256 - stwidth + p;
+		int bp = 256 - fstwidth + p;
 		if ( bp <0 ) bp = 0;
 		if ( 256-bp > strlen(p_status) +3 )
 			memcpy( buf+bp+3, p_status, strlen(p_status) );
@@ -209,10 +290,4 @@ void set_notifmode(int type, KeySym ksym) {
 	term->dirty[bot] = 1;
 	drawregion(0, bot, col, bot + 1);
 }
-
-// for the mode MODE_ENTERSTRING
-void statusbar_kpress( KeySym *ks, char *buf ){
-
-}
-
 

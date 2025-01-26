@@ -93,15 +93,15 @@ void xloadcolors(void) {
 		return; // dunno. this code drives me crazy
 				  // there might be memory leaks
 				  // misc24
-		for (cp = dc.col; cp < &dc.col[dc.collen]; ++cp)
+		for (cp = dc.color_array; cp < &dc.color_array[dc.color_arraylen]; ++cp)
 			XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, cp);
 	} else {
-		dc.collen = MAX(LEN(colorname), 256);
-		dc.col = xmalloc(dc.collen * sizeof(Color));
+		dc.color_arraylen = MAX(LEN(colorname), 256);
+		dc.color_array = xmalloc(dc.color_arraylen * sizeof(Color));
 	}
 
-	for (i = 0; i < dc.collen; i++)
-		if (!xloadcolor(i, NULL, &dc.col[i])) {
+	for (i = 0; i < dc.color_arraylen; i++)
+		if (!xloadcolor(i, NULL, &dc.color_array[i])) {
 			if (colorname[i])
 				die("could not allocate color '%s'\n", colorname[i]);
 			else
@@ -139,14 +139,14 @@ void xloadcolors(void) {
 int xsetcolorname(int x, const char *name) {
 	Color p_color;
 
-	if (!BETWEEN(x, 0, dc.collen))
+	if (!BETWEEN(x, 0, dc.color_arraylen))
 		return 1;
 
 	if (!xloadcolor(x, name, &p_color))
 		return 1;
 
-	XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, &dc.col[x]);
-	dc.col[x] = p_color;
+	XftColorFree(xwin.dpy, xwin.vis, xwin.cmap, &dc.color_array[x]);
+	dc.color_array[x] = p_color;
 
 	return 0;
 }
@@ -177,7 +177,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 		XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colfg, &truefg);
 		fg = &truefg;
 	} else {
-		fg = &dc.col[base->fg];
+		fg = &dc.color_array[base->fg];
 	}
 
 	if (IS_TRUECOL(base->bg)) {
@@ -188,7 +188,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 		XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &colbg, &truebg);
 		bg = &truebg;
 	} else {
-		bg = &dc.col[base->bg];
+		bg = &dc.color_array[base->bg];
 	}
 #define AS(c) colfg.c = fg->color.c
 #define ASB(c) colbg.c = bg->color.c
@@ -209,7 +209,7 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 	/* Change basic system colors [0-7] to bright system colors [8-15] */
 	if ((base->mode & ATTR_BOLD) == ATTR_BOLD ){
 		if ( BETWEEN(base->fg, 0, 7)){
-			fg = &dc.col[base->fg + 8];
+			fg = &dc.color_array[base->fg + 8];
 	} else { 
 	//if ( ( (base->mode & ATTR_BOLD) == ATTR_BOLD ) && !BETWEEN(base->fg,0,15) )  {
 		cbold(red); //= fg->color.red * 2;
@@ -234,8 +234,8 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 
 
 	if (IS_SET(MODE_REVERSE)) {
-		if (fg == &dc.col[defaultfg]) {
-			fg = &dc.col[defaultbg];
+		if (fg == &dc.color_array[defaultfg]) {
+			fg = &dc.color_array[defaultbg];
 		} else {
 			//						colfg.blue = ~fg->color.blue;
 			//						colfg.alpha = fg->color.alpha;
@@ -248,8 +248,8 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 			fg = &revfg;
 		}
 
-		if ( bg == &dc.col[defaultbg]) {
-			bg = &dc.col[defaultfg];
+		if ( bg == &dc.color_array[defaultbg]) {
+			bg = &dc.color_array[defaultfg];
 		} else {
 			//					fprintf(stderr,"inv\n");//D
 			//colbg.red = ~bg->color.red;
@@ -311,9 +311,9 @@ void getGlyphColor( Glyph *base, Color **pfg, Color **pbg ){
 	if (base->mode & ATTR_REVERSE) {
 		//	fprintf(stderr,"attrinv\n");//D
 #if 0
-		bg = &dc.col[selectionbg];
+		bg = &dc.color_array[selectionbg];
 		if (!ignoreselfg)
-			fg = &dc.col[selectionfg];
+			fg = &dc.color_array[selectionfg];
 #else
 			cltmp = bg;
 			bg = fg;

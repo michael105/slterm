@@ -381,7 +381,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 	static char selectsearch_mode;
 	int i, bound, *xy;
 
-	if (selectsearch_mode & 2) { // never ?? misc
+	if (selectsearch_mode & 2) { // 
 		dbg("selectsearch_mode & 2\n");
 		if (ksym == XK_Return) {
 			selectsearch_mode ^= 2;

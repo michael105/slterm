@@ -62,10 +62,9 @@ void tnew(int col, int row) {
 	term->hist[0] = xmalloc( col * sizeof(Glyph));
 	memset(term->hist[0],0, col * sizeof(Glyph));
 
-	term->colalloc = 0;
-
-	term->scroll_retmark = 1;
-	term->current_retmark = 0;
+	//term->colalloc = 0;
+	//term->scroll_retmark = 1;
+	//term->current_retmark = 0;
 
 	term->guard = 0xf0f0f0f0;
 	asm( "" : "+m"(term->guard));
@@ -236,7 +235,6 @@ void showhelp(const Arg *a) {
 /* for absolute user moves, when decom is set */
 void tmoveato(int x, int y) {
 	//printf("tmoveato: %d\n",y);
-	
 
 	// delete retmarks, within the region.
 	// needed amongst others for screen based programs
@@ -250,8 +248,7 @@ void tmoveato(int x, int y) {
 			term->current_retmark = t;
 			term->retmarks[ term->current_retmark ] = 0;
 		}
-		term->scroll_retmark = term->current_retmark;
-		
+		//term->scroll_retmark = term->current_retmark;
 	}
 
 	tmoveto(x, y + ((term->cursor.state & CURSOR_ORIGIN) ? term->top : 0));
