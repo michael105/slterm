@@ -110,7 +110,7 @@ void usage(void) {
 	
 	fprintf(stderr," Original author Aurelien Aptel. 20xx-2019 st, suckless.\n 2020-2025 fork, slterm, misc147 github.com/michael105, MIT license\n\n");
 
-	exit(1);
+	exit(0);
 }
 
 void missingfontname( const char* option ){
@@ -233,6 +233,7 @@ int main(int argc, char *argv[]) {
 					printf( "%d",useregularfont );
 				default:
 					fprintf( stderr, "Unknown option: %c\n\n", *opt );
+				case 'h':
 					usage();
 			}
 		}

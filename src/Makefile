@@ -262,6 +262,11 @@ slterm.1: slterm.1.rst
 clean:
 	rm -f slterm $(OBJ) slterm-$(VERSION).tar.gz
 
+
+check:
+	./slterm -h && ./slterm -V && ./slterm -H
+
+
 dist: clean
 	mkdir -p slterm-$(VERSION)
 	cp -R FAQ LEGACY TODO LICENSE Makefile README \
