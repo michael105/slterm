@@ -110,7 +110,7 @@ void usage(void) {
 	
 	fprintf(stderr," Original author Aurelien Aptel. 20xx-2019 st, suckless.\n 2020-2025 fork, slterm, misc147 github.com/michael105, MIT license\n\n");
 
-	exit(1);
+	exit(0);
 }
 
 void missingfontname( const char* option ){
@@ -227,13 +227,13 @@ int main(int argc, char *argv[]) {
 							"HISTORY: %d\n"
 							"DEBUGLEVEL: "__ENABLEDEBUG__"\n"
 							"XRESOURCES: "__XRESOURCES__"\n"
-							"UTF8: "__UTF8__"\n"
 							__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
 					exit(0);
 				case 127: // silence unused var warning
 					printf( "%d",useregularfont );
 				default:
 					fprintf( stderr, "Unknown option: %c\n\n", *opt );
+				case 'h':
 					usage();
 			}
 		}
