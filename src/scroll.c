@@ -43,9 +43,8 @@ void retmark_scrolleddown(){ // scan downwards for the next retmark, update
 			return;
 		}
 	}
-	if ( b ){ // at the bottom
-		term->scrolled_retmark = 1;
-	} 
+	// at the bottom
+	term->scrolled_retmark = 1;
 }
 
 // scroll downwards
