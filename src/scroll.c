@@ -1,10 +1,6 @@
 
 #include "scroll.h"
 
-//#define DBG(...) printf(__VA_ARGS__)
-#define DBG(...) 
-#define DBG2(...) DBG(__VA_ARGS__)
-
 void tsetscroll(int t, int b) {
 	LIMIT(t, 0, term->rows - 1);
 	LIMIT(b, 0, term->rows - 1);
@@ -16,35 +12,6 @@ void tsetscroll(int t, int b) {
 		term->top = t;
 		term->bot = b;
 	}
-}
-
-
-void retmark_scrolledup(){ // scan upwards for the next retmark, update 
-	for ( int t = term->current_retmark - (term->scrolled_retmark?term->scrolled_retmark:1); 
-			t!=term->current_retmark; 
-			t-- ){
-		t &= ( RETMARKCOUNT-1 ); 
-		DBG("mark upw: %d   %d\n",t, term->retmarks[t] );
-		if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] >= term->scr) ){
-			term->scrolled_retmark = (term->current_retmark - t) & ( RETMARKCOUNT-1);
-			return;
-		}
-	}
-}
-
-
-
-void retmark_scrolleddown(){ // scan downwards for the next retmark, update 
-	for ( int t = (term->current_retmark - (term->scrolled_retmark?term->scrolled_retmark:1 )) & (RETMARKCOUNT-1); t!=term->current_retmark; 
-			t = (t+1) & ( RETMARKCOUNT-1 ) ){
-		if ( (term->histi - term->retmarks[t] < term->scr) ){
-			term->scrolled_retmark = ( term->current_retmark - t + 1 ) & ( RETMARKCOUNT-1);
-			//DBG("mark: %d   %d\n",t, term->retmarks[t] );
-			return;
-		}
-	}
-	// at the bottom
-	term->scrolled_retmark = 1;
 }
 
 // scroll downwards
@@ -84,9 +51,9 @@ void scrolltobottom(){
 
 void scrolltotop(){
 	DBG("totop\n");
-	term->scr=HISTSIZE;
-	if ( (term->circledhist==0) && (term->scr>term->histi ) )
-		term->scr=term->histi; // 
+	term->scr=term->histsize + 1; //HSTSIZE
+	if ( (term->circledhist==0) && (term->scr>term->histindex ) )
+		term->scr=term->histindex; // 
 	selscroll(0, term->scr);
 	retmark_scrolledup();
 	tfulldirt();
@@ -97,19 +64,19 @@ void scrolltotop(){
 void kscrollup(const Arg *a) {
 	int n = a->i;
 
-	DBG2("kscrollup, n: %d, term->histi: %d, term->rows: %d scr: %d\n",
-			n, term->histi, term->rows, term->scr);
+	DBG2("kscrollup, n: %d, term->histindex: %d, term->rows: %d scr: %d\n",
+			n, term->histindex, term->rows, term->scr);
 	if (n < 0) { // scroll a page upwards
 					 //n = term->rows + n;
 		n = term->rows;
 	}
 	DBG2("kscrollup2, n: %d\n",n);
 
-	if ( term->scr <= HISTSIZE-n ) { 
+	if ( term->scr <= term->histsize - n + 1) { //HSTSIZE
 		term->scr += n;
 
-		if ( (term->circledhist==0) && (term->scr>term->histi ) )
-			term->scr=term->histi; // at the top
+		if ( (term->circledhist==0) && (term->scr>term->histindex ) )
+			term->scr=term->histindex; // at the top
 
 		DBG2("kscrollup3, scr: %d\n",term->scr);
 		selscroll(0, n);
@@ -149,122 +116,20 @@ void scroll( const Arg *a){
 
 void set_scrollmark(const Arg *a) {
 	if (term==p_alt) return;
-	term->scrollmarks[a->i] = term->histi - term->scr+1;	
+	term->scrollmarks[a->i] = term->histindex - term->scr+1;	
 	updatestatus();
-	//DBG("Setscrollmark: n:%d histi:%d scr:%d\n", a->i, term->histi, term->scr );
+	//DBG("Setscrollmark: n:%d histindex:%d scr:%d\n", a->i, term->histindex, term->scr );
 }
-
-void set_retmark() {
-	if (term==p_alt) return;
-	// check, if (e.g. vi) we are above the last retmark
-	if ( (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] < 
-				(term->histi + term->cursor.y ) )  || 
-			(term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] > 
-			 (term->histi + term->cursor.y + HISTSIZE/2 )  ) ){ 
-		// second case: circled buffer, first case: try to detect screen based programs
-		// e.g. vim
-		term->retmarks[ term->current_retmark ] = term->histi + term->cursor.y;
-		term->current_retmark = (term->current_retmark + 1) & (RETMARKCOUNT-1);
-		term->scrolled_retmark = 0;
-	}
-	//DBG("Setretmark: n:%d histi:%d scr:%d  cursor: %d\n", term->current_retmark, term->histi, term->scr, term->cursor.y );
-}
-
-void retmark(const Arg* a){
-	if (term==p_alt) return; // not usable in alt screen
-									 //DBG("Retmark: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->rows, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
-
-									 // rewrite that. (count curentretmark from 0 to UINT_MAX. Limit bits when
-									 // accessing the array. ->scrolled_retmark can be set absolute.
-
-	if ( a->i == -1 ){ // tab right in lessmode -> scrolling down
-
-		// todo: rewrite. also for a circled buffer
-		int b = 1;
-		// todo: reverse scanning.
-		for ( int t = (term->current_retmark +1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
-				t = (t+1) & ( RETMARKCOUNT-1 ) ){
-			//if ( (term->retmarks[t] < term->histi - term->scr) ){
-			if ( (term->histi - term->retmarks[t] < term->scr) ){
-				term->scr=(term->histi - term->retmarks[t]);
-				term->scrolled_retmark = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
-				b = 0;
-				//DBG("mark: %d   %d\n",t, term->retmarks[t] );
-				break;
-			}
-		}
-		if ( b ){
-			term->scrolled_retmark = 0;
-			scrolltobottom();
-		}
-
-
-		} else if ( a->i >= 1 ){ // number, scroll to retmark number x
-			int t = (term->current_retmark - a->i ) & (RETMARKCOUNT-1); 
-			term->scr=(term->histi-term->retmarks[t]);
-			term->scrolled_retmark = ( term->current_retmark - t ) & ( RETMARKCOUNT-1);
-
-		} else if ( a->i == -2 ){ // = key '0'
-			term->scrolled_retmark = 0;
-			scrolltobottom();
-		} else { // scroll backward / Up
-			if ( term->histi<term->rows){ // at the top
-				scrolltotop();
-				lessmode_toggle( ARGPi(LESSMODE_ON) );	
-				return;
-			}
-
-#if 0
-			// todo: scroll to next retmark
-			int t = term->scrolled_retmark;
-			if ( t ){
-				//t= (t-1) & (RETMARKCOUNT-1);
-				t--;
-				term->scrolled_retmark = t;
-				term->scr=(term->histi - term->retmarks[(term->current_retmark - t)&(RETMARKCOUNT-1) ]);
-
-			}
-#else
-			for ( int t = (term->current_retmark -1 ) & (RETMARKCOUNT-1); t!=term->current_retmark; 
-					t = (t-1) & ( RETMARKCOUNT-1 ) ){
-				DBG("mark: %d   %d\n",t, term->retmarks[t] );
-				if ( (term->retmarks[t]==0) || (term->histi - term->retmarks[t] > term->scr) ){
-					term->scr=(term->histi - term->retmarks[t]);
-					term->scrolled_retmark = (term->current_retmark - t) & ( RETMARKCOUNT-1);
-					break;
-				}
-			} 
-#endif
-
-	}
-	DBG("scr: %d\n", term->scr );
-	if ( term->scr<0 ){
-		// TODO: circledhist
-		if ( term->circledhist )
-			term->scr&=(HISTSIZE-1);
-		else
-			term->scr=0;
-
-		DBG("scr: %d\n", term->scr );
-	};
-	//DBG("Retmark OUT: n:%d scrm:%d histi:%d scr:%d   scroll_mark %d  current_mark %d\n", term->rows, term->retmarks[0],term->histi, term->scr, term->scroll_retmark, term->current_retmark );
-
-	selscroll(0, term->scr);
-	tfulldirt();
-	//updatestatus();
-	lessmode_toggle( ARGPi(LESSMODE_ON) );
-}
-
 
 
 void scrollmark(const Arg *a){
 	if (term==p_alt) return;
-	//DBG("Scrollmark: n:%d scrm:%d histi:%d scr:%d\n", a->i, term->scrollmarks[a->i],term->histi, term->scr );
+	//DBG("Scrollmark: n:%d scrm:%d histindex:%d scr:%d\n", a->i, term->scrollmarks[a->i],term->histindex, term->scr );
 	//	if ( term->scrollmarks[a->i] ){
 	if ( term->scrollmarks[a->i] )
-		term->scr=term->histi-term->scrollmarks[a->i]+1;
+		term->scr=term->histindex-term->scrollmarks[a->i]+1;
 	else 
-		term->scr=term->histi-term->scrollmarks[a->i];
+		term->scr=term->histindex-term->scrollmarks[a->i];
 	selscroll(0, term->scr);
 	tfulldirt();
 	updatestatus();
@@ -275,8 +140,8 @@ void tscrolldown(int orig, int n, int copyhist) {
 	int i;
 
 
-	DBG("===== tscrolldown, orig:%d n:%d , histi: %d  scr: %d copyhist: %d term->bot: %d\n",orig,n, term->histi, term->scr, copyhist, term->bot);
-	if ( term->histi == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
+	DBG("===== tscrolldown, orig:%d n:%d , histindex: %d  scr: %d copyhist: %d term->bot: %d\n",orig,n, term->histindex, term->scr, copyhist, term->bot);
+	if ( term->histindex == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
 																		// else segfaults. reproduce: man man; and scroll with a (now, since this is patched rotfl) unknown combination of commands.
 																		//DBG("RETURN\n"); // xxx
 																		//return; // ? strange. no segfaults anymore. 
@@ -285,9 +150,9 @@ void tscrolldown(int orig, int n, int copyhist) {
 	LIMIT(n, 0, term->bot - orig + 1);
 
 	if (copyhist) {
-		term->histi = (term->histi - 1 ) & (HISTSIZE-1); 
-		SWAPp( term->hist[term->histi], term->line[term->bot] );
-		///DBG("copyhist: term->histi %d   %p <->  %p  \n", term->histi, term->hist[term->histi], term->line[term->bot] );
+		term->histindex = (term->histindex - 1 ) & (term->histsize); 
+		SWAPp( term->hist[term->histindex], term->line[term->bot] );
+		///DBG("copyhist: term->histindex %d   %p <->  %p  \n", term->histindex, term->hist[term->histindex], term->line[term->bot] );
 
 		if (  term->line[term->bot] == 0 ){
 			///DBG("newline .");
@@ -315,15 +180,15 @@ void tscrolldown(int orig, int n, int copyhist) {
 void tscrollup(int orig, int n, int copyhist) {
 	int i;
 
-	DBG("===== tscrollup, orig:%d n:%d , histi: %d  scr: %d copyhist: %d \n",orig,n, term->histi, term->scr, copyhist);
+	DBG("===== tscrollup, orig:%d n:%d , histindex: %d  scr: %d copyhist: %d \n",orig,n, term->histindex, term->scr, copyhist);
 	//LIMIT(n, 0, term->bot - orig ); //xxx
 	LIMIT(n, 0, term->bot - orig + 1);
 
 	if (copyhist) {
-		DBG2("term->histi: %d\n", term->histi);
-		term->histi = (term->histi + 1) & (HISTSIZE-1);
-		///DBG("term->histi: %d, \n", term->histi);
-		if ( term->histi == 0 ){
+		DBG2("term->histindex: %d\n", term->histindex);
+		term->histindex = (term->histindex + 1) & (term->histsize);
+		///DBG("term->histindex: %d, \n", term->histindex);
+		if ( term->histindex == 0 ){
 			if ( term->circledhist == 0 ){
 				term->circledhist=1;
 				///DBG("circledhist = 1");
@@ -334,8 +199,8 @@ void tscrollup(int orig, int n, int copyhist) {
 		}
 
 
-		if ( term->hist[term->histi] ){
-			///DBG("SWAP cthist %d, histi %d, orig %d\n", term->cthist, term->histi, orig);
+		if ( term->hist[term->histindex] ){
+			///DBG("SWAP cthist %d, histindex %d, orig %d\n", term->cthist, term->histindex, orig);
 
 			if (  term->line[term->bot] == 0 ){
 				///DBG("newline 2 .");
@@ -343,11 +208,11 @@ void tscrollup(int orig, int n, int copyhist) {
 				term->line[term->bot]  = xmalloc( term->colalloc * sizeof(Glyph));
 				memset( term->line[term->bot]  ,0,term->colalloc * sizeof(Glyph));
 			}
-			SWAPp( term->hist[term->histi], term->line[orig] );
+			SWAPp( term->hist[term->histindex], term->line[orig] );
 
 		}	 else {
-			///DBG("New line, cthist %d, term->histi: %d, term->col: %d\n", term->cthist, term->histi, term->cols );
-			term->hist[term->histi] = term->line[orig];
+			///DBG("New line, cthist %d, term->histindex: %d, term->col: %d\n", term->cthist, term->histindex, term->cols );
+			term->hist[term->histindex] = term->line[orig];
 			term->line[orig] = xmalloc( term->colalloc * sizeof(Glyph));
 			memset(term->line[orig],0,term->colalloc * sizeof(Glyph));
 		}
@@ -359,8 +224,8 @@ void tscrollup(int orig, int n, int copyhist) {
 		// with 200 cols a compression ratio of 200/2 (misc)
 	}
 
-	if (term->scr > 0 && term->scr < HISTSIZE) {
-		term->scr = MIN(term->scr + n, HISTSIZE - 1);
+	if (term->scr > 0 && term->scr < term->histsize + 1 ) { //HSTSIZE
+		term->scr = MIN(term->scr + n, term->histsize );  //HISTSIZE - 1);
 	}
 
 	tclearregion(0, orig, term->colalloc - 1, orig + n - 1);
@@ -372,11 +237,11 @@ void tscrollup(int orig, int n, int copyhist) {
 	}
 
 	selscroll(orig, -n);
-	///DBG("scrd: %d %d %d %d %d %d\n", orig, n, term->histi, term->scr, term->scrollmarks[0], term->rows);
+	///DBG("scrd: %d %d %d %d %d %d\n", orig, n, term->histindex, term->scr, term->scrollmarks[0], term->rows);
 	if ( enterlessmode ){ // scroll down until next line.
-		if ( term->histi > term->scrollmarks[0]){
+		if ( term->histindex > term->scrollmarks[0]){
 			//DBG("Scroll\n");
-			term->scr=(term->histi)-term->scrollmarks[0];
+			term->scr=(term->histindex)-term->scrollmarks[0];
 			selscroll(0, term->scr);
 			//tfulldirt();
 			lessmode_toggle(ARGP(i=LESSMODE_ON));
@@ -395,7 +260,7 @@ void tnewline(int first_col) {
 	int y = term->cursor.y;
 
 	//xxx
-	//DBG("tnewline: %d, term->scr: %d  histi: %d\n",first_col, term->scr,term->histi );
+	//DBG("tnewline: %d, term->scr: %d  histindex: %d\n",first_col, term->scr,term->histindex );
 	if (y == term->bot) {
 		tscrollup(term->top, 1, 1);
 	} else {
@@ -407,9 +272,9 @@ void tnewline(int first_col) {
 
 void enterscroll(const Arg *a){
 	if (term==p_alt) return;
-	//DBG("enterscroll: %d %d %d %d\n",term->histi,term->rows,term->scr,term->cursor.y);
+	//DBG("enterscroll: %d %d %d %d\n",term->histindex,term->rows,term->scr,term->cursor.y);
 
-	term->scrollmarks[0] = term->histi+ term->rows - ( term->rows - term->cursor.y );
+	term->scrollmarks[0] = term->histindex+ term->rows - ( term->rows - term->cursor.y );
 	enterlessmode = term->rows;
 	ttywrite((utfchar*)"\n",1,1);
 }

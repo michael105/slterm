@@ -182,13 +182,15 @@ extern XWindow xwin;
 /*  Glyph based representation of the screen and history buffer */
 typedef struct {
 	// todo: histsize should be smaller for help and alt screens
-	Line hist[HISTSIZE]; /* history buffer */ // the bug. Oh for god's sake.
+	//Line hist[HISTSIZE]; /* history buffer */ // 
+	Line *hist; /* history buffer */ // 
 	int guard; // canary, debugging hist
 	Line *line;                               // visible lines on screen
 	int rows;                                  // number of rows visible
 	int cols;                                  // number of cols visible
 	int colalloc; // allocated cols. won't shrink, only enlarge. 
-	int histi;    /* history index */ // points to the top of the terminal, last line in hist
+	int histindex;    /* history index */ // points to the top of the terminal, last line (bottom) in hist
+	uint histsize; // history size-1
 	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top
 				  // scr=0 : scroll to the bottom
 
@@ -214,7 +216,6 @@ typedef struct {
 	int current_retmark; // current retmark. retmarks are stored circular.
 	int scrolled_retmark; // to which retmark was scrolled
 	//int scroll_retmark; // to which retmark was scrolled
-
 	char circledhist;
 } Term;
 

@@ -37,9 +37,10 @@
 
 #define TLINE(y)                                                               \
   ((y) < term->scr                                                              \
-       ? term->hist[( (y) + term->histi - term->scr +1 ) & (HISTSIZE-1) ]  : term->line[ (y) - term->scr ])
+       ? term->hist[( (y) + term->histindex - term->scr +1 ) & (term->histsize) ]  : term->line[ (y) - term->scr ])
+       //? term->hist[( (y) + term->histindex - term->scr +1 ) & (HISTSIZE-1) ]  : term->line[ (y) - term->scr ])
 
-       //? term->hist[(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
+       //? term->hist[(((y) + term->histindex - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
 
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))
@@ -173,7 +174,7 @@ void quithelp(const Arg *);
 void inverse_screen();
 
 int tisaltscr(void);
-void tnew(int, int);
+void tnew(int, int, uint );
 void tresize(int, int);
 void ttyhangup(void);
 int ttynew(char *, char *, char *, char **);

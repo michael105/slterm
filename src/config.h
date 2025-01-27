@@ -1021,6 +1021,21 @@ const char *export_env[][2] = {
 
 
 
+
+// size of the history buffer for the alt screen.
+// this buffer is used as cache by some programs,
+// e.g. man does scrolling, and repainting, mixed
+// Both sizes need to be a power of 2
+
+#define ALTSCREEN_HISTSIZE 4096
+
+// needs to be larger than the help text
+#define HELPSCREEN_HISTSIZE 512
+
+
+
+// end of config
+
 #endif
 
 #endif

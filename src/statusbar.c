@@ -145,10 +145,10 @@ void updatestatus(){
 		// scrollinfo
 		if ( stwidth > 32 + 11 ){
 			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
-					term->histi-term->scr,term->histi-term->scr+term->rows, 
-					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
-					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
-					((term->histi-term->scr-term->scrollmarks[0]+1)*100)/((term->histi-term->scrollmarks[0]+1)?term->histi-term->scrollmarks[0]+1:1),
+					term->histindex-term->scr,term->histindex-term->scr+term->rows, 
+					term->histindex+term->rows, term->histindex+term->rows-(term->histindex-term->scr+term->rows),
+					((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1),
+					((term->histindex-term->scr-term->scrollmarks[0]+1)*100)/((term->histindex-term->scrollmarks[0]+1)?term->histindex-term->scrollmarks[0]+1:1),
 					term->scrolled_retmark
 					);
 
@@ -167,13 +167,13 @@ void updatestatus(){
 
 		} else if ( stwidth > 20 + 6 ){ //TODO: other values (line number)
 			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
-					term->histi+term->rows, term->histi+term->rows-(term->histi-term->scr+term->rows),
-					((term->histi-term->scr)*100)/((term->histi)?term->histi:1),
+					term->histindex+term->rows, term->histindex+term->rows-(term->histindex-term->scr+term->rows),
+					((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1),
 					term->scrolled_retmark );
 		} else {
 			p = sprintf(buf+256,"%5d %3d%% ",
-					term->histi+term->rows-(term->histi-term->scr+term->rows),
-					((term->histi-term->scr)*100)/((term->histi)?term->histi:1) );
+					term->histindex+term->rows-(term->histindex-term->scr+term->rows),
+					((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1) );
 		}
 
 		//printf("p: %d\n",p);

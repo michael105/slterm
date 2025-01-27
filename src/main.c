@@ -260,7 +260,7 @@ run:
 
 	cols = MAX(cols, 1);
 	rows = MAX(rows, 1);
-	tnew(cols, rows);
+	tnew(cols, rows, HISTSIZE);
 	xinit(cols, rows);
 	xsetenv();
 	selinit();

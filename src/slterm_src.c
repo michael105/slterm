@@ -41,9 +41,15 @@
 #include "slterm_man.h"
 #endif
 
+//#define DBG(...) printf(__VA_ARGS__)
+#define DBG(...) 
+#define DBG2(...) DBG(__VA_ARGS__)
+
+
 
 #include "globals.c"
 #include "statusbar.c"
+#include "retmarks.c"
 //#include "arg.c"
 #include "term.c"
 #include "controlchars.c"
