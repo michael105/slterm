@@ -37,9 +37,9 @@
 
 #define TLINE(y)                                                               \
   ((y) < term->scr                                                              \
-       ? term->hist[( (y) + term->histi - term->scr +1 ) & (HISTSIZE-1) ]  : term->line[ (y) - term->scr ])
+       ? term->hist[( (y) + term->histindex - term->scr +1 ) & (HISTSIZE-1) ]  : term->line[ (y) - term->scr ])
 
-       //? term->hist[(((y) + term->histi - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
+       //? term->hist[(((y) + term->histindex - term->scr + HISTSIZE +1 ) ^ HISTSIZE ) & (HISTSIZE-1) ]  : term->line[(y)-term->scr])
 
 
 #define ISDELIM(u) (u && wcschr(worddelimiters, u))

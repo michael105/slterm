@@ -188,7 +188,7 @@ typedef struct {
 	int rows;                                  // number of rows visible
 	int cols;                                  // number of cols visible
 	int colalloc; // allocated cols. won't shrink, only enlarge. 
-	int histi;    /* history index */ // points to the top of the terminal, last line in hist
+	int histindex;    /* history index */ // points to the top of the terminal, last line in hist
 	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top
 				  // scr=0 : scroll to the bottom
 

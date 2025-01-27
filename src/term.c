@@ -242,8 +242,8 @@ void tmoveato(int x, int y) {
 		int tend = term->current_retmark;
 		for ( int t = (term->current_retmark -1 ) & (RETMARKCOUNT-1); 
 				(t!=tend) &&
-			 	(term->histi < term->retmarks[t] ) && 
-				(term->histi + term->rows+1 > term->retmarks[t]);
+			 	(term->histindex < term->retmarks[t] ) && 
+				(term->histindex + term->rows+1 > term->retmarks[t]);
 				t = (t-1) & ( RETMARKCOUNT-1 ) ){
 			term->current_retmark = t;
 			term->retmarks[ term->current_retmark ] = 0;
@@ -333,21 +333,21 @@ void tresize(int col, int row) {
 //	int oldhist = term->cthist;
 	// delay here. Collect resize events
 	if ( term->circledhist  ){
-		oldline = (term->histi+1 > HISTSIZE ) ? 0 : (term->histi+1);
+		oldline = (term->histindex+1 > HISTSIZE ) ? 0 : (term->histindex+1);
 	}
-	dbg2(AC_YELLOW "oldline: %d  term->histi: %d  term->col: %d col: %d" AC_NORM,oldline,term->histi, term->cols, col);
+	dbg2(AC_YELLOW "oldline: %d  term->histindex: %d  term->col: %d col: %d" AC_NORM,oldline,term->histindex, term->cols, col);
 	*/
 	term->cursor.attr.u = ' '; 
 #if 0
 
-	if ( oldline != term->histi ){
+	if ( oldline != term->histindex ){
 		term->hist[newline] = xmalloc( col * sizeof(Glyph));
 		memset32( &term->hist[newline][mincol].intG, term->cursor.attr.intG, col-mincol );
 	}
 
-	while (oldline!=term->histi) { // Didn't reach the end of the old history yet
+	while (oldline!=term->histindex) { // Didn't reach the end of the old history yet
 		dbg3( "oldhist: %d term->cols %d newhist %d oldline: %d oldcol: %d newline: %d newcol: %d", oldhist, term->cols,newhist, oldline, oldcol, newline, newcol );
-		while( (oldline!=term->histi) && (oldcol < term->cols ) ){ // && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
+		while( (oldline!=term->histindex) && (oldcol < term->cols ) ){ // && !( ( oldcol>0 ) && (term->hist[oldline][oldcol-1].mode & ATTR_WRAP )) ){
 			dbg3( "term->col: %d L2: oldline: %d oldcol: %d newline: %d newcol: %d",term->cols, oldline, oldcol, newline, newcol );
 			//dbg3( "intG oldhist: %d - %d\n", term->hist[oldline][oldcol].intG, term->hist[oldline][oldcol].u );
 			if ( term->hist[oldline][oldcol].mode & ATTR_WRAP ){
@@ -388,7 +388,7 @@ void tresize(int col, int row) {
 		term->cthist = newhist;
 		dbg2("copied hist. oldhist: %d  term->cthist: %d", oldhist, term->cthist );
 #else
-		int t = term->histi;
+		int t = term->histindex;
 		if ( term->circledhist  ){
 			t = HISTSIZE;
 		}
