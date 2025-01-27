@@ -42,8 +42,8 @@ void set_retmark() {
 	// check, if (e.g. vi) we are above the last retmark
 	if ( (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] < 
 				(term->histi + term->cursor.y ) )  || 
-			(term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] > 
-			 (term->histi + term->cursor.y + HISTSIZE/2 )  ) ){ 
+		( term->circledhist && (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] > 
+			 (term->histi + term->cursor.y + HISTSIZE/2 )  ) ) ){ 
 		// second case: circled buffer, first case: try to detect screen based programs
 		// e.g. vim
 		term->retmarks[ term->current_retmark ] = term->histi + term->cursor.y;

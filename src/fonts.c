@@ -13,10 +13,6 @@
   	 #include "sinfl.h"
 #endif
  
-#if 0
-#define INCLUDED_FONT
-#include "font_ttf.h"
-#endif
 
 //char *usedfont = NULL;
 double usedfontsize = 0;
@@ -65,9 +61,11 @@ void fill_font_asciitable(Font *f){
 		f->asciitable[a] = glyphidx;
 	}
 	for ( int a = 128; a<=255; a++ ){
-		int glyphidx = XftCharIndex(xwin.dpy, f->match, charmap_convert(a,0));
+		// this uses memory, but the performance gain is neglectibel.
+		// surprisingly.
+		//int glyphidx = XftCharIndex(xwin.dpy, f->match, charmap_convert(a,0));
 		//printf("%3d -> %3d\n",a,glyphidx );
-		if ( ! glyphidx ){
+		//if ( ! glyphidx ){
 			/*
 			Glyph g = { .u=a };
 			XftGlyphFontSpec fs;
@@ -76,8 +74,9 @@ void fill_font_asciitable(Font *f){
 			*/
 			// spare that, load other fonts later, if needed
 			// also for other attributes. (if added)
-		}
-		f->asciitable[a] = glyphidx;
+		//}
+		f->asciitable[a] = 0;
+		//f->asciitable[a] = glyphidx;
 
 	}
 }
@@ -332,6 +331,7 @@ void xloadfonts(double fontsize) {
 				 }
 			 }
 		 } 
+		 asm( "" :"+m"(s.canary) );
 		 if ( s.canary != 0xa23df1223 ){
 			 die("buffer overflow");
 		 }
