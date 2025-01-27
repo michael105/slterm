@@ -34,7 +34,7 @@ HISTSIZEBITS := 16
 #HISTSIZEBITS = 7
 
 # opt Flag. -O2 might be save, -O3 sometimes gives troubles
-OPT_FLAG := -Os -Wall
+OPT_FLAG := -Os
 #OPT_FLAG = -g
 
 # Linker Flags
