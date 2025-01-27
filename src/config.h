@@ -1029,6 +1029,7 @@ const char *export_env[][2] = {
 
 #define ALTSCREEN_HISTSIZE 4096
 
+// needs to be larger than the help text
 #define HELPSCREEN_HISTSIZE 512
 
 
