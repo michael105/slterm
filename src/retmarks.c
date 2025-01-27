@@ -43,7 +43,7 @@ void set_retmark() {
 	if ( (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] < 
 				(term->histindex + term->cursor.y ) )  || 
 		( term->circledhist && (term->retmarks[ (term->current_retmark - 1) & (RETMARKCOUNT-1) ] > 
-			 (term->histindex + term->cursor.y + HISTSIZE/2 )  ) ) ){ 
+			 (term->histindex + term->cursor.y + term->histsize/2 )  ) ) ){ 
 		// second case: circled buffer, first case: try to detect screen based programs
 		// e.g. vim
 		term->retmarks[ term->current_retmark ] = term->histindex + term->cursor.y;
@@ -124,7 +124,7 @@ void retmark(const Arg* a){
 	if ( term->scr<0 ){
 		// TODO: circledhist
 		if ( term->circledhist )
-			term->scr&=(HISTSIZE-1);
+			term->scr&=(term->histsize);
 		else
 			term->scr=0;
 

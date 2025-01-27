@@ -51,7 +51,7 @@ void scrolltobottom(){
 
 void scrolltotop(){
 	DBG("totop\n");
-	term->scr=HISTSIZE;
+	term->scr=term->histsize + 1; //HSTSIZE
 	if ( (term->circledhist==0) && (term->scr>term->histindex ) )
 		term->scr=term->histindex; // 
 	selscroll(0, term->scr);
@@ -72,7 +72,7 @@ void kscrollup(const Arg *a) {
 	}
 	DBG2("kscrollup2, n: %d\n",n);
 
-	if ( term->scr <= HISTSIZE-n ) { 
+	if ( term->scr <= term->histsize - n + 1) { //HSTSIZE
 		term->scr += n;
 
 		if ( (term->circledhist==0) && (term->scr>term->histindex ) )
@@ -150,7 +150,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 	LIMIT(n, 0, term->bot - orig + 1);
 
 	if (copyhist) {
-		term->histindex = (term->histindex - 1 ) & (HISTSIZE-1); 
+		term->histindex = (term->histindex - 1 ) & (term->histsize); 
 		SWAPp( term->hist[term->histindex], term->line[term->bot] );
 		///DBG("copyhist: term->histindex %d   %p <->  %p  \n", term->histindex, term->hist[term->histindex], term->line[term->bot] );
 
@@ -186,7 +186,7 @@ void tscrollup(int orig, int n, int copyhist) {
 
 	if (copyhist) {
 		DBG2("term->histindex: %d\n", term->histindex);
-		term->histindex = (term->histindex + 1) & (HISTSIZE-1);
+		term->histindex = (term->histindex + 1) & (term->histsize);
 		///DBG("term->histindex: %d, \n", term->histindex);
 		if ( term->histindex == 0 ){
 			if ( term->circledhist == 0 ){
@@ -224,8 +224,8 @@ void tscrollup(int orig, int n, int copyhist) {
 		// with 200 cols a compression ratio of 200/2 (misc)
 	}
 
-	if (term->scr > 0 && term->scr < HISTSIZE) {
-		term->scr = MIN(term->scr + n, HISTSIZE - 1);
+	if (term->scr > 0 && term->scr < term->histsize + 1 ) { //HSTSIZE
+		term->scr = MIN(term->scr + n, term->histsize );  //HISTSIZE - 1);
 	}
 
 	tclearregion(0, orig, term->colalloc - 1, orig + n - 1);

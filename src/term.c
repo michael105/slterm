@@ -49,9 +49,9 @@ void check_canary(){
 }
 
 // initiate new terminal window and buffers
-void tnew(int col, int row) {
+void tnew(int cols, int rows, uint histsize) {
 	dbg2("tnew *******************************************************\n");
-	dbg2("col: %d, row: %d\n",col,row);
+	dbg2("cols: %d, rows: %d\n",cols,rows);
 	//term = (Term){.c = {.attr = {.fg = defaultfg, .bg = defaultbg}}};
 	term = xmalloc(sizeof(Term));
 	memset ( term, 0, sizeof(Term) );
@@ -59,16 +59,24 @@ void tnew(int col, int row) {
 		p_term = term;
 	term->cursor = (TCursor){.attr = {.fg = defaultfg, .bg = defaultbg}};
 
-	term->hist[0] = xmalloc( col * sizeof(Glyph));
-	memset(term->hist[0],0, col * sizeof(Glyph));
+	term->hist = xmalloc( histsize * sizeof(Line*) );
 
-	//term->colalloc = 0;
+	if ( histsize <65 || ( ((~histsize) & (histsize-1) )+1 != histsize ) )
+		die("tnew: history buffer size needs to be a power of 2, and > 64. Got: %d\n",histsize );
+	// else hell will break loose. 
+
+	term->histsize = histsize-1;
+
+	term->hist[0] = xmalloc( cols * sizeof(Glyph));
+	memset(term->hist[0],0, cols * sizeof(Glyph));
+
+	//term->colsalloc = 0;
 	//term->scroll_retmark = 1;
 	//term->current_retmark = 0;
 
 	term->guard = 0xf0f0f0f0;
 	asm( "" : "+m"(term->guard));
-	tresize(col,row);
+	tresize(cols,rows);
 	treset();
 }
 
@@ -145,7 +153,7 @@ void tswapscreen(void) {
 	if ( p_alt != term ){ // altscr is not visible now
 		lessmode_toggle( &(Arg){.i=LESSMODE_OFF} ); 
 		if ( !p_alt ){ // displayed first time
-			tnew(term->cols, term->rows);
+			tnew(term->cols, term->rows, ALTSCREEN_HISTSIZE);
 			p_alt = term;
 		} else { // p_alt != term
 			term = p_alt;
@@ -180,7 +188,7 @@ void showhelp(const Arg *a) {
 								  //p_term = term;
 		if ( !p_help ){ // displayed first time
 			p_help_storedterm = term;
-			tnew(term->cols, term->rows);
+			tnew(term->cols, term->rows, HELPSCREEN_HISTSIZE);
 			p_help = term;
 			twrite( (utfchar*)helpcontents, strlen(helpcontents), 0 );
 		} else {
@@ -390,7 +398,7 @@ void tresize(int col, int row) {
 #else
 		int t = term->histindex;
 		if ( term->circledhist  ){
-			t = HISTSIZE;
+			t = term->histsize+1; //HISTSIZE;
 		}
 
 		if ( enlarge )
