@@ -13,13 +13,13 @@ ENABLEDEBUG := 0
 FULLDEBUG := 0
 
 # version
-VERSION := 0.99.5.2
+VERSION := 0.99.5.3
 
 # Set to 1 enable Xresource configuration
 # (in addition, slterm has to be started with the option "-x on")
 XRESOURCES := 0
 
-# embed the terminfo and manual page (+12k)
+# embed terminfo and manual page (+12k)
 EMBEDRESOURCES := 1
 
 # Embed fonts into the binary
@@ -34,7 +34,7 @@ HISTSIZEBITS := 16
 #HISTSIZEBITS = 7
 
 # opt Flag. -O2 might be save, -O3 sometimes gives troubles
-OPT_FLAG := -Os -Wall
+OPT_FLAG := -Os
 #OPT_FLAG = -g
 
 # Linker Flags
