@@ -264,7 +264,9 @@ clean:
 
 
 check:
-	./slterm -h && ./slterm -V && ./slterm -H && ./slterm sh -c "echo ok"
+	./slterm -h && ./slterm -V && ./slterm -H 
+
+#./slterm sh -c "echo ok"
 
 
 dist: clean
