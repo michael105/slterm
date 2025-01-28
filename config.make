@@ -56,5 +56,10 @@ PKG_CONFIG := pkg-config
 # compiler and linker
 CC := gcc
 
+# gcc options
+OPTIONS := -Wall 
+
+# enable bzip2 fonts
+#OPTIONS += -DWITHBZIP2 -lbz2
 
 

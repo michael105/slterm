@@ -217,6 +217,8 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 
 	fill_font_asciitable(f);
 
+	printf("font: %d %d %d %d %d\n",f->width,f->height,f->ascent,f->descent, f->rbearing );
+
 	return 0;
 }
 
@@ -351,11 +353,14 @@ void xloadfonts(double fontsize) {
 	}
 
 	/* Setting character width and height. */
-	twin.cw = ceilf(dc.font.width * cwscale);
-	twin.ch = ceilf(dc.font.height * chscale);
+	twin.cw = dc.font.width;
+	//twin.cw = ceilf(dc.font.width * cwscale);
+	twin.ch = dc.font.height;
+	//twin.ch = ceilf(dc.font.height * chscale);
 
 	if ( borderperc != 0 )
-		borderpx = ceilf(((float)borderperc / 100) * twin.cw);
+		borderpx = (borderperc* twin.cw)/100;
+		//borderpx = ceilf(((float)borderperc / 100) * twin.cw);
 
 	if ( useboldfont ){
 		if ( bold_font ){

@@ -87,6 +87,7 @@ typedef union {
 #endif
 #endif
 
+// those macros are partially terrorism. 
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define MAX(a, b) ((a) < (b) ? (b) : (a))
 // Len in Bytes
@@ -188,25 +189,35 @@ typedef struct {
 	Line *line;                               // visible lines on screen
 	int rows;                                  // number of rows visible
 	int cols;                                  // number of cols visible
-	int colalloc; // allocated cols. won't shrink, only enlarge. 
+	int colalloc; // allocated cols in the hist buf, can be > cols. won't shrink, only enlarge. 
 	int histindex;    /* history index */ // points to the top of the terminal, last line (bottom) in hist
-	uint histsize; // history size-1
+	uint histsize; // history size-1, size of the buffer. (the count of written lines is in histindex,
+						// albite histindex only indicates the number of written lines in the hist buffer,
+						// until the buffer is circled.)
 	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top
 				  // scr=0 : scroll to the bottom
 
 	// needed for defining scroll areas
+	// would be possible to abandon the separation of "line"(s) buffer of the visible screen,
+	// and the hist buffer. however, if only parts of the screen are scrolled, 
+	// some pointer copying would be needed. Since it works now,
+	// I leave it for now. I'm further abstracting anyways, eventually I'm going
+	// to change the line buffer to point at the hist buffer.
+	// Maybe. I'm always getting dizzy with the buffer stuff here.
+	// Other things are more important, imho. If someone likes to
+	// change it, the Macro TLINE and the functions in scroll.c are the locations to begin with.
 	int top;                                  /* top    scroll limit */
 	int bot;                                  /* bottom scroll limit */
 	// top / bot: when only parts of the screen are scrolled (scroll areas set)
 			 
-	int *dirty;                               /* dirtyness of lines */
+	int *dirty;  /* dirtyness of lines */ // points to an array
 
 	TCursor cursor;                                /* cursor */
 	int ocx;                                  /* old cursor col */
 	int ocy;                                  /* old cursor row */
 	int mode;                                 /* terminal mode flags */
 	int esc;                                  /* escape state flags */
-	char trantbl[4];                          /* charset table translation */ //unused
+	char trantbl[4];                          /* charset table translation */ 
 	int charset;                              /* current charset */
 	int icharset;                             /* selected charset for sequence */
 	int *tabs;
@@ -219,11 +230,18 @@ typedef struct {
 	char circledhist;
 } Term;
 
+// would be possible to have several terminals as tabbed or split screens
+// I suggest to use i3 or "tabbed", so I'm not going to add that
+// the visible terminal
 extern Term *term; 
+// help terminal. 
 extern Term *p_help; 
+// alt screen
+extern Term *p_alt; 
+
+// temporary storages
 extern Term *p_help_storedterm; 
 extern Term *p_term; 
-extern Term *p_alt; 
 
 
 // pid of executed shell 
@@ -241,7 +259,10 @@ static char ascii_printable[]
       "`abcdefghijklmnopqrstuvwxyz{|}~";
 #else
 // no utf8, but using extended ascii.
-// unused.
+// unused. todo: remove that.
+// This table was used to calculate the medium advance of fonts without
+// fixed width. However, fonts are used as fixed width fonts in each case.
+//
 /*
 static char unused_ascii_printable[]
     = " !\"#$%&'()*+,-./0123456789:;<=>?"

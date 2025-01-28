@@ -22,7 +22,7 @@ void execsh(char *cmd, char **args) {
 				if (errno) {
 						die("getpwuid: %s\n", strerror(errno));
 				} else {
-						die("who are you?\n");
+						die("Cannout read uid\n");
 				}
 		}
 

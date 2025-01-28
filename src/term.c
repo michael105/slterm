@@ -21,6 +21,12 @@
 #endif
 
 
+// this is terrorism. misc. How not to use macros.
+// Let me guess, "macros are messed up anyways. need to fix C" .....
+// Well. something is always messed up. 
+// And yeah, this should be fixed.
+// On the other hand, I do have some fun, and this code isn't professional 
+// at all. It's been neither my intention, nor the intention of the previous authors (assuming).
 #undef IS_SET
 // used for winmode, termmode, .. with other macro definitions(!)
 #define IS_SET(flag) ((term->mode & (flag)) != 0)
