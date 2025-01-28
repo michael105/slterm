@@ -56,7 +56,7 @@ INCS = -I$(X11INC) \
        `$(PKG_CONFIG) --cflags freetype2`
 
 #LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft 
-LIBS = -L$(X11LIB) -lX11 -lXft -lc -lm \
+LIBS = -L$(X11LIB) -lX11 -lXft -lc  \
        `$(PKG_CONFIG) --libs fontconfig` \
        `$(PKG_CONFIG) --libs freetype2`
 
@@ -66,7 +66,7 @@ STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCESFLAG) \
            $(OPT_FLAG) $(UTF8FLAG) -DHISTSIZEBITS=$(HISTSIZEBITS) $(DBGFLAG) \
            -DEMBEDFONT=$(EMBEDFONT)
 
-STLDFLAGS = $(LIBS) $(LDFLAGS) $(LINKER_FLAG) 
+STLDFLAGS = $(LIBS) $(LDFLAGS)  $(LINKER_FLAG) 
 
 ifeq "$(strip $(EMBEDRESOURCES))" "1"
 		STCFLAGS += -DINCLUDETERMINFO -DINCLUDEMANPAGE -DINCLUDELICENSE
@@ -125,7 +125,8 @@ all: slterm man slterm_terminfo.h slterm_license.h slterm_man.h $(EMBEDFONTS)
 
 # better go in one run. Gives way more room to the compiler for optimizations.
 slterm: $(SRC) $(HEADER) help.h ../config.make compile.h $(EMBEDFONTS)
-	$(CC) -o slterm $(EMBEDFONTS) slterm_src.c $(STCFLAGS) $(STLDFLAGS)
+	echo $(CC) -o slterm $(EMBEDFONTS) slterm_src.c  -Wl,--exclude-libs,ALL $(STCFLAGS) $(STLDFLAGS)
+	$(CC) -o slterm $(EMBEDFONTS) slterm_src.c  -Wl,--exclude-libs,ALL $(STCFLAGS) $(STLDFLAGS)
 
 
 static_embedfont: 
@@ -138,9 +139,12 @@ static_recurse: slterm_terminfo.h slterm_license.h compile.h $(EMBEDFONTS)
 	gcc -o slterm $(EMBEDFONTS) slterm_src.c \
 		$(STCFLAGS) \
 		-Wl,-O1,--gc-sections,--start-group -lxcb -lXau -lc -lXdmcp -lbsd \
-		-lXft -lfontconfig -lfreetype -lbz2 -lpng16 -lz -lexpat -luuid \
-		-lintl -liconv -lXrender -lX11  \
+		-lXft -lfontconfig -lfreetype -lpng16 -lz -lexpat -luuid \
+		-lXrender -lX11  \
 		-Wl,--end-group -static -Os -s
+		
+		#-lintl -liconv 
+		#-lbz2 ( dummies in global.c )
 
 embed/%.o: embed/%.c
 	gcc -o $@ -c $<

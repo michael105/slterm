@@ -35,6 +35,7 @@
 //#define TLINETOBUF( _y ) ( _y+ term->linebufpos & 
 
 
+// get the pointer to a line, depending on scroll
 #define TLINE(y)                                                               \
   ((y) < term->scr                                                              \
        ? term->hist[( (y) + term->histindex - term->scr +1 ) & (term->histsize) ]  : term->line[ (y) - term->scr ])

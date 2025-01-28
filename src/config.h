@@ -37,20 +37,15 @@ static char *regular_font = "Liberation Mono:Bold:pixelsize=13:antialias=true:au
 int default_font_pixelsize = 14;
 
 // if set to 0, the sizes will be determined.
-// else these sizes are used, regardless of pixelsize
-int fontwidth = 0; // width in pixel, fontspacing is added
-int fontheight = 0; // height in pixel. should be larger than pixelsize
+// else these sizes are used, regardless of a given pixelsize
+int fontwidth = 8; // width in pixel, fontspacing is added
+int fontheight = 15; // height in pixel. should be larger than pixelsize
 
 
 // more/less font width spacing
 // here, with utf8 enabled, -1 looks much better.
 int fontspacing = 0;
 //int fontspacing = -1;
-
-/* Kerning / character bounding-box multipliers */
-static float cwscale = 1.0;
-static float chscale = 1.0;
-
 
 
 /* if fonts below are set, they are used, no matter of xresources or command line options
@@ -73,6 +68,11 @@ int useboldfont = 1;
 int useitalicfont = 1;
 int usebolditalicfont = 1;
 #endif
+
+
+/* Kerning / character bounding-box multipliers */
+//static float cwscale = 1.0;
+//static float chscale = 1.0;
 
 
 
@@ -322,8 +322,8 @@ ResourcePref resources[] = {
     { "bellvolume", INTEGER, &bellvolume },
     { "tabspaces", INTEGER, &tabspaces },
     { "borderpx", INTEGER, &borderpx },
-    { "cwscale", FLOAT, &cwscale },
-    { "chscale", FLOAT, &chscale },
+//    { "cwscale", FLOAT, &cwscale },
+//    { "chscale", FLOAT, &chscale },
 };
 #endif
 
