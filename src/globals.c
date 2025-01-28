@@ -28,6 +28,11 @@ TermWindow twin;
 //XSelection xsel;
 
 
+
+
+// dummy functions, to remove dependencies on unused libraries
+
+
 // overwrite the (only) dependency of fontconfig to lbintl, and therefore iconv.
 // The internationalization is used solely for the font info name.
 // adding nearly 1MB to the memory usage

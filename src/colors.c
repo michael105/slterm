@@ -78,6 +78,16 @@ int xloadcolor(int i, const char *name, Color *p_color) {
 		} else
 			name = colorname[i]; // color 0..16
 	}
+	//printf("color name: %s\n",name);
+	if ( name[0] == '#' ){
+		# define HX(x) ( x<='9' ? x- 0x30 : x-(0x61+10) )
+		//Color 
+		color.red = HX( name[1] ) * 16 + HX(name[2] );
+		color.green = HX( name[3] ) * 16 + HX(name[4] );
+		color.blue = HX( name[5] ) * 16 + HX(name[6] );
+		return XftColorAllocValue(xwin.dpy, xwin.vis, xwin.cmap, &color, p_color);
+		# undef HX
+	}
 
 	return XftColorAllocName(xwin.dpy, xwin.vis, xwin.cmap, name, p_color);
 }

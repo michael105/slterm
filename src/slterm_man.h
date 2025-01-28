@@ -1,4 +1,4 @@
-const char* slterm_man = R"(SLTERM()                                                                                    SLTERM()
+const char* slterm_man = R"(SLTERM()                                                                                     SLTERM()
 
 NAME
        slterm -
@@ -8,19 +8,19 @@ NAME
 SYNOPSIS
        slterm -I -H -L -h
 
-       slterm  [-aivVx]  [-c class] [-f font] [-g geometry] [-n name] [-o iofile] [-T title] [-t ti-
-       tle] [-l line] [-w windowid] [-X] [[-e] command] [arguments...]]
+       slterm [-aivVx] [-c class] [-f font] [-g geometry] [-n name] [-o iofile] [-T title] [-t title]
+       [-l line] [-w windowid] [-X] [[-e] command] [arguments...]]
 
-       slterm [-aivVx] [-c class] [-f font] [-g geometry] [-n name] [-o iofile] [-T title]  [-t  ti-
-       tle] [-w windowid] -l line [stty_args...]
+       slterm [-aivVx] [-c class] [-f font] [-g geometry] [-n name] [-o iofile] [-T title] [-t title]
+       [-w windowid] -l line [stty_args...]
 
 DESCRIPTION
        slterm is a virtual terminal emulator for X
 
-       slterm  is  highly optimized for fast text output and slim memory usage, while having several
+       slterm  is  highly  optimized for fast text output and slim memory usage, while having several
        addons like switchable codepages or advanced history browsing.
 
-       In favor of compatibility with terminal programs and performance utf8  support  is  stripped.
+       In favor of compatibility with terminal programs and performance  utf8  support  is  stripped.
        Communication with the x clipboard is however automatically converted from and to utf8.
 
 USAGE
@@ -97,15 +97,15 @@ USAGE
                    with German umlauts and box drawing chars
 
 TERMINAL
-       slterm  is  mostly VT100 compatible, please look in question for the according manuals.  Here
+       slterm  is  mostly  VT100 compatible, please look in question for the according manuals.  Here
        only some of the vt100 or slterm additions are described.
 
-       slterm starts either the env variable SHELL, /bin/sh, or a command supplied with slterm  [-e]
+       slterm starts either the env variable SHELL, /bin/sh, or a command supplied with  slterm  [-e]
        command options.
 
        All options are forwarded to command without changes.
 
-       The already set environmental variables are kept, further variables are exported into the en-
+       The  already set environmental variables are kept, further variables are exported into the en-
        vironment:
 
        COLUMNS, LINES, TERMCAP, LOGNAME, USER, SHELL, HOME, TERM.
@@ -113,21 +113,21 @@ TERMINAL
        Color Ansi escapesequences are set.
 
    Colors
-       The basic 8 colors, accessable in the shell as: $BLACK, $RED, $GREEN,  $YELLOW,  $BLUE,  $MA-
+       The basic 8 colors, accessable in the shell as: $BLACK, $RED,  $GREEN,  $YELLOW,  $BLUE,  $MA-
        GENTA, $CYAN, $WHITE.
 
        > echo $RED red text
 
-       They can be combined with prefixes: L(ight), D(ark), LD(light-dark), BG(background), BGL(ight
+       They  can be combined with prefixes: L(ight), D(ark), LD(light-dark), BG(background), BGL(ight
        background).  Example: $LGREEN, D: $DRED, $LD: $LDCYAN, BG: $BGBLUE, BGLCYAN.
 
-       These Colors cannot be combined: ORANGE,  ORANGERED,  BROWN,  BGBROWN,  PURPLE,  GRAY,  MINT,
+       These Colors cannot be combined:  ORANGE,  ORANGERED,  BROWN,  BGBROWN,  PURPLE,  GRAY,  MINT,
        TURQUOISE
 
-       Other   text   attributes   are:  $BOLD,  $FAINT,  $CURSIVE,  $UNDERLINE,  $BLINK,  $REVERSE,
+       Other   text   attributes   are:   $BOLD,  $FAINT,  $CURSIVE,  $UNDERLINE,  $BLINK,  $REVERSE,
        $STRIKETHROUGH, $DOUBLEUNDERLINE.
 
-       The text attributes can be combined, with some special combinations: BLINK and REVERSE blinks
+       The text attributes can be combined, with some special combinations: BLINK and REVERSE  blinks
        by reversing colors.  STRIKETHROUGH and UNDERLINE get a double underline.
 
        The default foreground and background color and attributes can be reset with $NORMAL.
@@ -163,43 +163,43 @@ TERMINAL
        o 12:  overline, lines right and left
 
    Bell
-       Sending  a  bell  to the terminal (echo -e "007") sends the according notification (XBell) to
-       the window manager.
+       Sending a bell to the terminal (echo -e "007") sends the according notification (XBell) to the
+       window manager.
 
 INSTALL
-       If obtained from source, edit the files config.make and config.h to  customize  slterm.  Type
+       If obtained from source, edit the files config.make and config.h  to  customize  slterm.  Type
        make, and make install.
 
        If you downloaded the statically linked binary,
 
        1. copy the binary to a suitable place (/usr/local/bin)
 
-       2. install the terminal info file: (for curses) slterm -I | tic -sx - ( the netbsd version of
-          tic, the terminal info compiler,  is supplied as source in tools/tic, and should  be  com-
-          patible with other curses versions )
+       2. install  the terminal info file: (for curses) slterm -I | tic -sx - ( the netbsd version of
+          tic, the terminal info compiler,  is supplied as source in tools/tic, and should be compat-
+          ible with other curses versions )
 
-       3. If   needed,   download   this   man  page  in  its  man  format  (slterm.1)  from  github
-          (github.com/michael105/slterm),   copy   into   the   appropiate    directory    (/usr/lo-
+       3. If   needed,   download   this   man   page  in  its  man  format  (slterm.1)  from  github
+          (github.com/michael105/slterm),   copy   into   the    appropiate    directory    (/usr/lo-
           cal/share/man/man1)
 
-       Interestingly, the statically linked binary seems to use even less memory than the shared bi-
+       Interestingly,  the statically linked binary seems to use even less memory than the shared bi-
        nary.
 
    CURSES
-          To be used with curses,  the  installation  of  the  terminfo  database  file  is  needed.
-          slterm.terminfo  is  supplied  in the sources, within the folder src.  It can be installed
-          with tic -sx slterm.terminfo.  Alternatively, the termcap database "linux" is mostly  com-
+          To be used with  curses,  the  installation  of  the  terminfo  database  file  is  needed.
+          slterm.terminfo  is  supplied  in  the sources, within the folder src.  It can be installed
+          with tic -sx slterm.terminfo.  Alternatively, the termcap database "linux" is  mostly  com-
           patible.  Set with export TERM=linux
 
-          The  terminfo  database  of  slterm  is  also displayed, when slterm was compiled with EM-
-          BEDRESOURCES. Type slterm -I, to install: slterm -I | tic  -sx  -.   The  key  combination
-          Ctrl+Shift+Win+ALT+I will dump the terminal info to the terminal as well, and can be used,
-          to  install  the  terminal  info  within  a  remote  shell.  (  type  tic   -sx   -,   hit
+          The  terminfo  database  of  slterm  is  also  displayed, when slterm was compiled with EM-
+          BEDRESOURCES. Type slterm -I, to install: slterm -I |  tic  -sx  -.   The  key  combination
+          Ctrl+Shift+Win+ALT+I  will dump the terminal info to the terminal as well, and can be used,
+          to  install  the  terminal  info  within  a  remote  shell.  (  type   tic   -sx   -,   hit
           Ctrl+Shift+Win+Alt+I, and Ctrl+D )
 
-          Tic  is the terminfo compiler, available from the curses distributions, the netbsd tic im-
-          plementation is supplied within tools/tic.  There is a statically linked binary for linux,
-          64bit  of  tic  at  github.com/michael105/static-bin  Sources  of  tic  and netbsd curses:
+          Tic  is  the terminfo compiler, available from the curses distributions, the netbsd tic im-
+          plementation is supplied within tools/tic.  There is a statically linked binary for  linux,
+          64bit  of  tic  at  github.com/michael105/static-bin  Sources  of  tic  and  netbsd curses:
           github.com/oasislinux/netbsd-curses/
 
 OPTIONS
@@ -215,16 +215,16 @@ OPTIONS
               defines the window class (default $TERM).
 
        -f font
-              defines the  font  to  use  when  slterm  is  run.   example:  slterm  -f  'Liberation
-              Mono:Bold:pixelsize=13:antialias=true:autohint=true'  the  parameters are described in
+              defines  the  font  to  use  when  slterm  is  run.   example:  slterm  -f  'Liberation
+              Mono:Bold:pixelsize=13:antialias=true:autohint=true'  the  parameters  are described in
               the fontconfig documentation, an overview is supplied in doc/fontconfig.txt
 
        -fb boldfont -fi italicfont -fI bolditalicfont
-              Set bold/italic/bolditalic fonts.  Supply '0' to disable the  according  font  and  to
-              display the text attributes by color changes only
+              Set bold/italic/bolditalic fonts.  Supply '0' to disable the according font and to dis-
+              play the text attributes by color changes only
 
        -g geometry
-              defines   the  X11  geometry  string.  The  form  is  [=][<cols>{xX}<rows>][{+-}<xoff-
+              defines   the   X11  geometry  string.  The  form  is  [=][<cols>{xX}<rows>][{+-}<xoff-
               set>{+-}<yoffset>]. See XParseGeometry (3) for further details.
 
        -i     will fixate the position given with the -g option.
@@ -233,7 +233,7 @@ OPTIONS
               defines the window instance name (default $TERM).
 
        -o iofile
-              writes all the I/O to iofile. This feature is useful when recording slterm sessions. A
+              writes all the I/O to iofile. This feature is useful when recording slterm sessions.  A
               value of "-" means standard output.
 
        -T title
@@ -246,43 +246,43 @@ OPTIONS
               embeds slterm within the window identified by windowid
 
        -l line
-              use  a  tty line instead of a pseudo terminal. line should be a (pseudo-)serial device
-              (e.g. /dev/ttyS0 on Linux for serial port 0).  When this flag is given remaining argu-
-              ments  are used as flags for stty(1). By default slterm initializes the serial line to
-              8 bits, no parity, 1 stop bit and a 38400 baud rate. The speed is set by appending  it
-              as  last argument (e.g. 'slterm -l /dev/ttyS0 115200').  Arguments before the last one
-              are stty(1) flags. If you want to set odd  parity  on  115200  baud  use  for  example
-              'slterm -l /dev/ttyS0 parenb parodd 115200'. Set the number of bits by using for exam-
-              ple 'slterm -l /dev/ttyS0 cs7 115200'. See stty(1) for more arguments and cases.
+              use  a  tty  line instead of a pseudo terminal. line should be a (pseudo-)serial device
+              (e.g. /dev/ttyS0 on Linux for serial port 0).  When this flag is given remaining  argu-
+              ments are used as flags for stty(1). By default slterm initializes the serial line to 8
+              bits, no parity, 1 stop bit and a 38400 baud rate. The speed is set by appending it  as
+              last  argument (e.g. 'slterm -l /dev/ttyS0 115200').  Arguments before the last one are
+              stty(1) flags. If you want to set odd parity on 115200 baud use for example 'slterm  -l
+              /dev/ttyS0  parenb  parodd 115200'. Set the number of bits by using for example 'slterm
+              -l /dev/ttyS0 cs7 115200'. See stty(1) for more arguments and cases.
 
        -v     prints version information, then exits.
 
        -V     prints version and compile information, then exits
 
        -e command [ arguments ... ]
-              slterm executes command instead of the shell. If this is used it must be the last  op-
-              tion on the command line, as in xterm / rxvt. This option is only intended for compat-
-              ibility, and all the remaining arguments are used as a command even without it.
+              slterm executes command instead of the shell. If this is used it must be the  last  op-
+              tion on the command line, as in xterm / rxvt. This option is only intended for compati-
+              bility, and all the remaining arguments are used as a command even without it.
 
-       -x     enable reading of the XResources database for the configuration slterm must  had  been
+       -x     enable reading of the XResources database for the configuration slterm  must  had  been
               compiled with the XRESOURCES flag in config.make set to 1
 
-       -X     lock  all memory pages into memory, prevent swapping.  Secrets could be revealed, also
-              years later, if the memory is swapped to disk. Worse, with flash  disks  also  erasing
-              the contents will not necessarily erase the written cells.  This option locks all mem-
-              ory pages into ram.
+       -X     lock  all  memory pages into memory, prevent swapping.  Secrets could be revealed, also
+              years later, if the memory is swapped to disk. Worse, with flash disks also erasing the
+              contents  will  not  necessarily erase the written cells.  This option locks all memory
+              pages into ram.
 
 AUTHORS
        (2020-2025) Michael (misc147), www.github.com/michael105
 
-       The code is based on st, the suckless terminal emulator, fetched from git 1.1.2020, which was
+       The code is based on st, the suckless terminal emulator, fetched from git 1.1.2020, which  was
        originally written by Aurelien Aptel.
 
        The included patches to st had been provided by:
 
-       Tonton  Couillon, dcat, Jochen Sprickerhof, M Farkas-Dyck, Ivan Tham, Ori Bernstein, Matthias
-       Schoth, Laslo Hunhold, Paride Legovini, Lorenzo Bracco, Kamil  Kleban,  Avi  Halachmi,  Jacob
-       Prosser, Augusto Born de Oliveira, Kai Hendry, Laslo Hunhold, Matthew Parnell, Doug Whiteley,
+       Tonton  Couillon,  dcat, Jochen Sprickerhof, M Farkas-Dyck, Ivan Tham, Ori Bernstein, Matthias
+       Schoth, Laslo Hunhold, Paride Legovini, Lorenzo Bracco,  Kamil  Kleban,  Avi  Halachmi,  Jacob
+       Prosser,  Augusto Born de Oliveira, Kai Hendry, Laslo Hunhold, Matthew Parnell, Doug Whiteley,
        Aleksandrs Stier, Devin J. Pohly, Sai Praneeth Reddy
 
 LICENSE
@@ -294,6 +294,6 @@ SEE ALSO
 BUGS
        See the README in the distribution.
 
-                                                                                            SLTERM()
+                                                                                             SLTERM()
 )";
 
