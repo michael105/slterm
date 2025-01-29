@@ -23,12 +23,12 @@
      slterm should be the fastest available terminal emulator for X,
      which does real scrolling 
    * secure mode, option -X: lock all pages into memory, prevent swapping
-	* Gradient custom 32 color palette for colors 0..7
-	  (0..7 with attributes normal, bold, faint, bold_faint)
-	  and the first 16 background colors
-	* Copy whole lines in the history with 'yy' in selection mode
-	* Additional cursor shapes
-	* utf8 clipboard conversion
+   * Gradient custom 32 color palette for colors 0..7
+     (0..7 with attributes normal, bold, faint, bold_faint)
+     and the first 16 background colors
+   * Copy whole lines in the history with 'yy' in selection mode
+   * Additional cursor shapes
+   * utf8 clipboard conversion
 
 
 Statically linked binaries with all dependencies are under "releases", 
