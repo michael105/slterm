@@ -80,7 +80,8 @@ void printhelp(){
 
 void fontusage(){
 	fprintf(stderr, 
-			" slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname] [other options]\n"
+			" slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname]\n"
+			"        [-fw fontwidth] [-fh fontheight] [other options]\n"
 			"\n   The fontname format is specified in the fontconfig documentation,\n"
 			"   http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
 			"   A list of attributes is in doc/fontconfig.txt\n"
@@ -96,15 +97,11 @@ void usage(void) {
 			" slterm -H: show help\n"
 		  	"        -I: dump terminfo file\n"
 			"        -L display license\n\n"
-			" slterm [-aiv] [-c class] [-f font] [-g geometry]"
-			" [-n name] [-o file]\n"
-			"        [-T title] [-t title] [-w windowid]"
-			" [[-e] command [args ...]]\n\n"
-			" slterm [-aiv] [-c class] [-f font] [-g geometry]"
-			" [-n name] [-o file]\n"
-			"[-x] [-v] [-V] [-X]\n"
-			"        [-T title] [-t title] [-w windowid] -l line"
-			" [stty_args ...]\n\n"
+			" slterm [-aiv] [-c class] [-f font] [-g geometry] [-n name] [-o file]\n"
+			"        [-T title] [-t title] [-w windowid] [[-e] command [args ...]]\n\n"
+			" slterm [-aiv] [-c class] [-f font] [-g geometry] [-n name] [-o file]\n"
+			"        [-x] [-v] [-V] [-X] [-T title] [-t title] [-w windowid] -l line\n"
+			"        [stty_args ...]\n\n"
 			);
 	fontusage();
 	
