@@ -179,6 +179,8 @@ int main(int argc, char *argv[]) {
 					goto run;
 				case 'f':
 					switch ( *++opt ){
+						case 'w': fontwidth = atoi( EARGF() ); break;
+						case 'h': fontheight = atoi( EARGF() ); break;
 						case 'R':
 						case 'b': ARGFONT(bold); break;
 						case 'i': ARGFONT(italic); break;
