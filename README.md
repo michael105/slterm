@@ -2,7 +2,7 @@
 
 
 
-	Slim (110kB linked shared) and fast terminal emulator for X11,
+	Slim (124kB linked shared) and fast terminal emulator for X11,
 	with minimal external dependencies (Xlib, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
