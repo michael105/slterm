@@ -56,7 +56,7 @@ INCS = -I$(X11INC) \
        `$(PKG_CONFIG) --cflags freetype2`
 
 #LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft 
-LIBS = -L$(X11LIB) -lX11 -lXft -lc  \
+LIBS = -L$(X11LIB) -lX11 -lXft -lc -lutil  \
        `$(PKG_CONFIG) --libs fontconfig` \
        `$(PKG_CONFIG) --libs freetype2`
 
