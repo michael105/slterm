@@ -20,7 +20,8 @@
    * Switching codepages with hotkeys (cp437,cp850,cp1252,..)
    * Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
-     slterm might be the fastest available terminal emulator for X
+     slterm should be the fastest available terminal emulator for X,
+     which does real scrolling 
    * secure mode, option -X: lock all pages into memory, prevent swapping
 	* Gradient custom 32 color palette for colors 0..7
 	  (0..7 with attributes normal, bold, faint, bold_faint)

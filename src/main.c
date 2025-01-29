@@ -183,9 +183,12 @@ int main(int argc, char *argv[]) {
 						case 'i': ARGFONT(italic); break;
 						case 'I': ARGFONT(bolditalic); break;
 
-						//case 'r':
-						default:
+						case 'r':
+						case 0:
 							opt_font = ARGFONT(regular);
+							break;
+						default:
+							usage();
 					}
 					break;
 				case 'g':
@@ -218,14 +221,18 @@ int main(int argc, char *argv[]) {
 					exit(0);
 				case 'V':
 					printversion();
+# define __Q(_x) #_x
+# define _Q(_x) __Q(_x)
+					printf( "Git Revision " _GITREVISION_"\n");
 					printf( "\nCompiled " __COMPILEDATE__ "\n"
 							__UNAME__ "\n"
 							"CC: "__CC__" "__CC_VERSION__"\n\n"
-							"Compileflags:\n"
+							"Compileflags: "
 							__OPT_FLAG__ "\n"
 							"HISTORY: %d\n"
 							"DEBUGLEVEL: "__ENABLEDEBUG__"\n"
 							"XRESOURCES: "__XRESOURCES__"\n"
+							"XProtocol Version " _Q(X_PROTOCOL) "." _Q(X_PROTOCOL_REVISION) "\n"
 							__COMPILECOMMAND__ "\n", ( 1<<HISTSIZEBITS) );
 					exit(0);
 				case 127: // silence unused var warning
