@@ -31,18 +31,11 @@
 	* utf8 clipboard conversion
 
 
-Statically linked binaries with all dependencies are at
+Statically linked binaries with all dependencies are under "releases", 
+or at
 [https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
 
-
-	checksums of the decompressed slterm binary 
-	0.99.2
-	sha3:   fe35caef6fa65bb58a2d6eb40067ff5bdb5664f0405598d917978553 
-	blake3: 67c69e7185328842cbec6b82782ee00d92c9ce5876967f7ad51c48b28b6ff895 
-
-	0.99.5
-	sha3:   0ab6218cc2d877a8ce94bf5f74c5827a22bdf2211cb9a01bca04018d
-	blake3: 64041ef890a77ece25d3e7ea375f1ee4b5b9220f96ee2589c24de03de4bd54fc
+The latest development statically linked binary is named slterm_version.devel
 
 
 ---

@@ -394,7 +394,7 @@ static MouseShortcut mshortcuts[] = {
 //#define BOOKMARKMASK Mod2Mask
 #define BOOKMARKMASK ControlMask
 // Ctrl+Shift+Win
-#define SETFONTMASK ShiftMask|Mod1Mask
+#define SETFONTMASK ShiftMask|CONTROL
 
 
 /*
@@ -423,7 +423,8 @@ BIND( XK_ANY_MOD, XK_Print, printsel, {.i = 0},ALLMODES ),
 BIND( TERMMOD, XK_I, inverse_screen, {},ALLMODES ),
 
 BIND(ControlMask|ShiftMask|Mod1Mask|Mod4Mask, XK_I, dump_terminfo, {}, MODE_DEFAULT ),
-		// Change font size/width
+
+// Change font size/width
 BIND( SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES ),
     //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES ),
 BIND( SETFONTMASK, XK_Page_Down, zoom, {.f = +1},ALLMODES ),
