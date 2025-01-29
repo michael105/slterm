@@ -11,7 +11,7 @@
 ##### Features
 
    * Lessmode: scroll around with less like keybindings
-   * Hit shift+backspace: enter 'lessmode', and scroll
+   * shift+backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
 	* Retmarks: Tab/Backspace to jump in lessmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
