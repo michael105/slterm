@@ -38,8 +38,10 @@ int default_font_pixelsize = 14;
 
 // if set to 0, the sizes will be determined.
 // else these sizes are used, regardless of a given pixelsize
-int fontwidth = 8; // width in pixel, fontspacing is added
-int fontheight = 15; // height in pixel. should be larger than pixelsize
+//int fontwidth = 8; // width in pixel, fontspacing is added
+int fontwidth = 0; // width in pixel, fontspacing is added
+int fontheight = 0; // height in pixel. should be larger than pixelsize
+//int fontheight = 15; // height in pixel. should be larger than pixelsize
 
 
 // more/less font width spacing

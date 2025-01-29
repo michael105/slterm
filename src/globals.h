@@ -19,6 +19,11 @@ char *opt_name = NULL;
 char *opt_title = NULL;
 char opt_xresources;
 
+char opt_regular_font = 0;
+char opt_italic_font = 0;
+char opt_bold_font = 0;
+char opt_bolditalic_font = 0;
+
 
 int ispagebased = 0; // counter, tries to keep track, whether the running program 
 							// has it's own screen buffer. (e.g. vim)

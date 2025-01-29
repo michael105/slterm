@@ -115,7 +115,7 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 		return 1;
 	}
 
-	if ( *fontfile ){
+	if ( fontfile && *fontfile ){
 		FcPatternDel( match, FC_FILE );
 		FcPatternAddString(match, FC_FILE, (const FcChar8 *) fontfile);
 	}
@@ -217,7 +217,7 @@ int xloadfont(Font *f, FcPattern *pattern, int pixelsize,  const char* fontfile)
 
 	fill_font_asciitable(f);
 
-	printf("font: %d %d %d %d %d\n",f->width,f->height,f->ascent,f->descent, f->rbearing );
+	//printf("font: %d %d %d %d %d\n",f->width,f->height,f->ascent,f->descent, f->rbearing );
 
 	return 0;
 }
@@ -342,7 +342,7 @@ void xloadfonts(double fontsize) {
 #endif
 
 	// load regular font
-	if (xloadfont(&dc.font, pattern, 0, fname[0] ))
+	if (xloadfont(&dc.font, pattern, 0, ( opt_regular_font? 0:fname[0]) ))
 		die("x can't open font %s\n", fontstr);
 
 	if (usedfontsize < 0) { // determine the used fontsize as pixelsize of the regular font
@@ -370,7 +370,7 @@ void xloadfonts(double fontsize) {
 			FcPatternDel(pattern, FC_WEIGHT);
 			FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
 		}
-		if (xloadfont(&dc.bfont, pattern, usedfontsize, fname[1] ))
+		if (xloadfont(&dc.bfont, pattern, usedfontsize,  opt_bold_font? 0:fname[1] ) )
 			die("can't open font %s\n", fontstr);
 		FcPatternDel(pattern, FC_WEIGHT);
 	}
@@ -384,7 +384,7 @@ void xloadfonts(double fontsize) {
 			FcPatternDel(pattern, FC_SLANT);
 			FcPatternAddInteger(pattern, FC_SLANT, FC_SLANT_ITALIC);
 		}
-		if (xloadfont(&dc.ifont, pattern, usedfontsize, fname[2] ))
+		if (xloadfont(&dc.ifont, pattern, usedfontsize,  opt_italic_font? 0:fname[2] ))
 			die("can't open font %s\n", fontstr);
 	}
 
@@ -397,7 +397,7 @@ void xloadfonts(double fontsize) {
 			FcPatternDel(pattern, FC_WEIGHT);
 			FcPatternAddInteger(pattern, FC_WEIGHT, FC_WEIGHT_BOLD);
 		}
-		if (xloadfont(&dc.ibfont, pattern, usedfontsize, fname[3]))
+		if (xloadfont(&dc.ibfont, pattern, usedfontsize,  opt_bolditalic_font? 0:fname[3]))
 			die("can't open font %s\n", fontstr);
 	}
 

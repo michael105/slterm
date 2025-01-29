@@ -138,7 +138,7 @@ int main(int argc, char *argv[]) {
 
 #define ARGFONT(_type) ({ if ( ! *++argv ) missingfontname( argv[-1] ); \
 		if ( **argv == '0' ){ _type##_font = 0; use##_type##font=0; } \
-		else { _type##_font = *argv; use##_type##font=1; } \
+		else { _type##_font = *argv; use##_type##font=1; opt_##_type##_font = 1; } \
 		*argv; })
 
 	int useregularfont=1; // dummy
