@@ -198,13 +198,14 @@ into smaller pieces. Hopefully hacking st is in the future a little bit more con
 
 - make
 - gcc
-- Xlib headers
-- Xft freetype2 headers
+- Xlib 
+- Xft 
+- freetype2
 - pkgconf (pkgconfig)
-- optional, to embed resources: rst2man, xdd
+- optional, to embed resources: rst2man, xdd (comes with vim)
 
 
-For ubuntu : 'sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx11-dev libxft-dev python3-docutils'
+For ubuntu : 'sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx11-dev libxft-dev python3-docutils vim' 
 
 
 
@@ -218,7 +219,7 @@ edit [src/config.h](src/config.h) (optionally)
 
 The default configuration might be save. 
 
-(no utf8, scrollback history 16384 lines, no XResources, installs into /usr/local/bin)
+(no utf8, scrollback history 65536 lines, no XResources, installs into /usr/local/bin)
 
 If you'd like to change anything, please edit config.h and config.make
 
