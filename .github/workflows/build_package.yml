@@ -39,7 +39,7 @@ jobs:
         cat dist/debian/DEBIAN/control
         dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}.deb
     - name: package check
-      run:
+      run: |
         sudo dpkg -i slterm_${{ steps.get_version.outputs.version }}.deb
         slterm -V
     - name: Upload package
