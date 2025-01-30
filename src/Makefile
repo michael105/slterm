@@ -130,7 +130,7 @@ slterm: $(SRC) $(HEADER) help.h ../config.make compile.h $(EMBEDFONTS)
 
 
 static_embedfont: 
-	$(MAKE) compile.h -B
+	$(MAKE) compile.h EMBEDFONT=1 -B
 	$(MAKE) static_recurse EMBEDFONT=1
 
 static:
