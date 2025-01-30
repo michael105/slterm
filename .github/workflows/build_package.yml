@@ -46,5 +46,5 @@ jobs:
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
-        name: slterm-ubuntu-package
+        name: slterm_${{ steps.get_version.outputs.version }}.deb 
         path: slterm_${{ steps.get_version.outputs.version }}.deb 

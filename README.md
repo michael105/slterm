@@ -48,6 +48,9 @@ or at
 
 The latest development statically linked binary is named slterm_version.devel
 
+An ubuntu (debian) package is online at [build_package](https://github.com/michael105/slterm/actions/workflows/build_package.yml) 
+(last workflow run -> Artifacts) 
+
 
 ---
 
