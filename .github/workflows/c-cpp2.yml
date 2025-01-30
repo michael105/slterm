@@ -19,4 +19,16 @@ jobs:
       run: make
     - name: make check
       run: make check
- 
+    - name: Get last tag
+      id: get_tag
+      run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+    - name: build package
+      run: |
+        TAG=$(echo ${{ steps.get_tag.outputs.tag }} | sed 's/^v//')
+        sed -ei 's/VERSION/$TAG/' dist/debian/DEBIAN/control
+        dpkg-deb --build dist/debian ../slterm_$TAG.deb
+    - name: Upload package
+      uses: actions/upload-artifact@v2
+      with:
+        name: slterm-debian-package
+        path: slterm_$TAG.deb 
