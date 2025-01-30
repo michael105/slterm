@@ -230,9 +230,9 @@ singleobjects:
 
 help.h: help.h.in help.txt keyref.txt
 	cp help.h.in help.h 
-	sh -c "source colors.sh;sed -E 's/(.*)$$/echo \"\1\\\\n\\\\r\"\\\\/e' help.txt >> help.h"
-	sh -c "source colors.sh;sed -E 's/(.*)$$/echo \"\1\\\\n\\\\r\"\\\\/e' keyref.txt >> help.h"
-	sh -c "source colors.sh;sed -E 's/(.*)$$/echo \"\1\\\\n\\\\r\"\\\\/e' license.txt >> help.h"
+	sh -c ". colors.sh;sed -E 's/(.*)$$/echo \"\1\\\\n\\\\r\"\\\\/e' help.txt >> help.h"
+	sh -c ". colors.sh;sed -E 's/(.*)$$/echo \"\1\\\\n\\\\r\"\\\\/e' keyref.txt >> help.h"
+	sh -c ". colors.sh;sed -E 's/(.*)$$/echo \"\1\\\\n\\\\r\"\\\\/e' license.txt >> help.h"
 	echo '";' >> help.h
 	sed -Ei 's/\{VERSION}/$(VERSION)/' help.h
 
