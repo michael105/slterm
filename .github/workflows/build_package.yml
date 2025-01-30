@@ -40,6 +40,7 @@ jobs:
         dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}.deb
     - name: package check
       run: |
+        sudo apt-get install freetype xft fontconfig
         sudo dpkg -i slterm_${{ steps.get_version.outputs.version }}.deb
         slterm -V
     - name: Upload package
