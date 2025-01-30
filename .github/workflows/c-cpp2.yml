@@ -21,13 +21,15 @@ jobs:
       run: make check
     - name: Install project
       run: sudo make install DESTDIR=$(pwd)/dist/debian
-    - name: Get last tag
-      id: get_tag
-      run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+    - name: Get version from config.make
+      id: get_version
+      run: |
+        VERSION=$(sed -ne 's/^VERSION := //p' config.make | tr -d '\n')
+        echo "::set-output name=version::$VERSION"
     - name: build package
       run: |
-        TAG=`sed -ne 's/^VERSION := //p' config.make | tr -d '\n'`
-        sed -ei 's/VERSION/$TAG/' dist/debian/DEBIAN/control
+        VERSION=${{ steps.get_version.outputs.version }}
+        sed -ei 's/VERSION/$VERSION/' dist/debian/DEBIAN/control
         cat dist/debian/DEBIAN/control
         dpkg-deb --build dist/debian ../slterm.deb
     - name: Upload package
