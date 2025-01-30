@@ -6,6 +6,8 @@
 	with minimal external dependencies (Xlib, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
+	VTxxx compatible.
+
 	Finally getting close to a first "stable" release.
 	Only things missing (imho) are history search and storing.
 	Should run stable, please open issues for any crashes.
@@ -13,6 +15,8 @@
 	The statically linked binary (slterm_linux_amd64) in "releases" should work for every 
 	64bit linux with a running xorg xserver, and (surprisingly) doesn't need more
 	memory than the shared executable.
+
+	Ram usage with an empty history buffer is about (virtual) 6MB + (resident) 4MB.
 	
 
 ##### Features
