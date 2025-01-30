@@ -141,13 +141,14 @@ static_recurse: slterm_terminfo.h slterm_license.h compile.h $(EMBEDFONTS)
 	gcc -o slterm $(EMBEDFONTS) slterm_src.c \
 		$(STCFLAGS) \
 		-Wl,-O1,--gc-sections,--start-group -z noexecstack \
-		-lxcb -lXau -lc -lXdmcp -lbsd \
+		-lxcb -lXau -lc -lbsd \
 		-lXft -lfontconfig -lfreetype -lpng16 -lz -lexpat -luuid \
 		-lXrender -lX11  \
 		-Wl,--end-group -static -Os -s
 		
 		#-lintl -liconv 
 		#-lbz2 ( dummies in global.c )
+		#-lxcb -lXau -lc -lXdmcp -lbsd \
 
 embed/%.o: embed/%.c
 	gcc -o $@ -c $<

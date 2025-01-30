@@ -328,7 +328,7 @@ void xseturgency(int add) {
 void xbell(void) {
 	if (!(IS_SET(MODE_FOCUSED)))
 		xseturgency(1);
-	//if (bellvolume)
-	//	XkbBell(xwin.dpy, xwin.win, bellvolume, (Atom)NULL);
+	if (bellvolume)
+		XkbBell(xwin.dpy, xwin.win, bellvolume, (Atom)NULL);
 }
 

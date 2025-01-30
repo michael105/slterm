@@ -19,7 +19,7 @@ double usedfontsize = 0;
 double defaultfontsize = 0;
 
 
-print_fontmetriks(){
+void print_fontmetriks(){
 	printf("font metriks: width: %d height: %d usedfontsize: %f fontspacing: %d\n", 
 			dc.font.width, dc.font.height, usedfontsize, fontspacing );
 }

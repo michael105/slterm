@@ -50,3 +50,13 @@ int BZ2_bzDecompress( void*v ){ return 0; };
 int BZ2_bzDecompressInit( void*v, int a,int b ){ die("bzip2 not linked. remove dummie functions, and relink\n"); return 0; };
 #endif
 
+
+
+void XdmcpWrap (
+		unsigned char *input,
+		unsigned char *wrapper,
+		unsigned char *output,
+		int        bytes)
+{};
+
+
