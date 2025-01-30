@@ -1,14 +1,14 @@
 name: Build package
 
 on:
-  #push:
-  #  tags:
-  #    - '*'
-
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    tags:
+      - '*'
+
+  #push:
+    #  branches: [ "master" ]
+      #pull_request:
+    #  branches: [ "master" ]
 
 
 
