@@ -220,6 +220,20 @@ For ubuntu : 'sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx1
 
 ### Install
 
+
+For Ubuntu/Debian:
+
+download the latest release package from 
+(https://github.com/michael105/slterm/actions/workflows/build_package.yml) 
+
+(Select the topmost workflow run, at the bottom is a link under 'Artifacts' to the .deb package)
+
+	install dependencies: ' sudo apt-get install libfreetype6 libxft2 libfontconfig1 fonts-liberation '
+	install the package: ' sudo dpki -i slterm_xxx.deb '
+
+
+from source: 
+
 edit [config.make](config.make) (optionally) 
 edit [src/config.h](src/config.h) (optionally) 
 
