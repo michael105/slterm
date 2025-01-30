@@ -19,6 +19,8 @@ jobs:
       run: make
     - name: make check
       run: make check
+    - name: Install project
+      run: sudo make install DESTDIR=$(pwd)/dist/debian
     - name: Get last tag
       id: get_tag
       run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
@@ -28,7 +30,7 @@ jobs:
         sed -ei 's/VERSION/$TAG/' dist/debian/DEBIAN/control
         dpkg-deb --build dist/debian ../slterm_$TAG.deb
     - name: Upload package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: slterm-debian-package
         path: slterm_$TAG.deb 
