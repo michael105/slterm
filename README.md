@@ -6,7 +6,10 @@
 	with minimal external dependencies (Xlib, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
-
+	Finally getting close to a first "stable" release.
+	Only things missing (imho) is history search and storing.
+	Should run stable, please open issues for any crashes.
+	
 
 ##### Features
 
