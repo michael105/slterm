@@ -19,10 +19,27 @@ double usedfontsize = 0;
 double defaultfontsize = 0;
 
 
+print_fontmetriks(){
+	printf("font metriks: width: %d height: %d usedfontsize: %f fontspacing: %d\n", 
+			dc.font.width, dc.font.height, usedfontsize, fontspacing );
+}
+
 
 // callbacks
 void set_fontwidth( const Arg *a ){
-	fontspacing += a->i;
+	if ( fontwidth <= 0 )
+		fontwidth = dc.font.width;
+	fontwidth += a->i;
+	Arg larg;
+	larg.f = usedfontsize;
+	zoomabs(&larg);
+}
+
+// callbacks
+void set_fontheight( const Arg *a ){
+	if ( fontheight <= 0 )
+		fontheight = dc.font.height;
+	fontheight += a->i;
 	Arg larg;
 	larg.f = usedfontsize;
 	zoomabs(&larg);
@@ -42,9 +59,12 @@ void zoomabs(const Arg *arg) {
 	cresize(0, 0);
 	redraw();
 	xhints();
+	print_fontmetriks();
 }
 
 void zoomreset(const Arg *arg) {
+	fontwidth = 0;
+	fontheight = 0;
 	Arg larg;
 
 	if (defaultfontsize > 0) {

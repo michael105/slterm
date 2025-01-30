@@ -51,6 +51,7 @@ int frccap = 0;
 
 // callbacks
 void set_fontwidth( const Arg *a );
+void set_fontheight( const Arg *a );
 void zoom(const Arg *);
 void zoomabs(const Arg *);
 void zoomreset(const Arg *);

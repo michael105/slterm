@@ -425,15 +425,16 @@ BIND( TERMMOD, XK_I, inverse_screen, {},ALLMODES ),
 BIND(ControlMask|ShiftMask|Mod1Mask|Mod4Mask, XK_I, dump_terminfo, {}, MODE_DEFAULT ),
 
 // Change font size/width
-BIND( SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES ),
     //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES ),
 BIND( SETFONTMASK, XK_Page_Down, zoom, {.f = +1},ALLMODES ),
+BIND( SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES ),
     //{ SETFONTMASK, XK_Next, zoom, {.f = -1},ALLMODES ),
-BIND( SETFONTMASK, XK_Home, zoomreset, {.f = 0},ALLMODES ),
+BIND( SETFONTMASK, XK_BackSpace, zoomreset, {.f = 0},ALLMODES ),
 
 BIND( SETFONTMASK, XK_Insert, set_fontwidth, {.i = -1},ALLMODES ),
 BIND( SETFONTMASK, XK_Delete, set_fontwidth, {.i = 1},ALLMODES ),
-BIND( SETFONTMASK, XK_End, set_fontwidth, {.i = -1},ALLMODES ),
+BIND( SETFONTMASK, XK_End, set_fontheight, {.i = -1},ALLMODES ),
+BIND( SETFONTMASK, XK_Home, set_fontheight, {.i = +1},ALLMODES ),
 
 // Scrolling
 BIND( ShiftMask, XK_Page_Up, kscrollup, {.i = -1},ALLMODES ),
@@ -551,15 +552,15 @@ BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=-1 },MODE_LESS ), // tab -> to scroll do
 // toggle with Ctrl+Shift + L / down
 // quit with q or Escape
 	// switch on.
-BIND( TERMMOD, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
+//BIND( TERMMOD, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
 BIND( ALT+ShiftMask, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
-BIND( TERMMOD, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
+//BIND( TERMMOD, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
 BIND( ALT+SHIFT, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
-BIND( TERMMOD, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES ),
+//BIND( TERMMOD, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES ),
 BIND( ALT+SHIFT, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES ),
-BIND( TERMMOD, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
+//BIND( TERMMOD, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
 BIND( ALT+SHIFT, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMODES ),
-BIND( TERMMOD, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
+//BIND( TERMMOD, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
 BIND( ALT+SHIFT, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
 
 	// toggle
