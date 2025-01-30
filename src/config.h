@@ -426,8 +426,8 @@ BIND(ControlMask|ShiftMask|Mod1Mask|Mod4Mask, XK_I, dump_terminfo, {}, MODE_DEFA
 
 // Change font size/width
     //{ SETFONTMASK, XK_Prior, zoom, {.f = +1},ALLMODES ),
-BIND( SETFONTMASK, XK_Page_Down, zoom, {.f = +1},ALLMODES ),
-BIND( SETFONTMASK, XK_Page_Up, zoom, {.f = -1},ALLMODES ),
+BIND( SETFONTMASK, XK_Page_Up, zoom, {.f = +1},ALLMODES ),
+BIND( SETFONTMASK, XK_Page_Down, zoom, {.f = -1},ALLMODES ),
     //{ SETFONTMASK, XK_Next, zoom, {.f = -1},ALLMODES ),
 BIND( SETFONTMASK, XK_BackSpace, zoomreset, {.f = 0},ALLMODES ),
 
