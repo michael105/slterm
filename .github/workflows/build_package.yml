@@ -2,8 +2,15 @@ name: Build package
 
 on:
   push:
-    tags:
-      - '*'
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+
+
+  #  push:
+  #  tags:
+  #    - '*'
 
 jobs:
   build:
