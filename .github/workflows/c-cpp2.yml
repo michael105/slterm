@@ -29,7 +29,7 @@ jobs:
     - name: build package
       run: |
         VERSION=${{ steps.get_version.outputs.version }}
-        sed -ei "s/VERSION/$VERSION/" dist/debian/DEBIAN/control
+        sed -i "s/VERSION/$VERSION/" dist/debian/DEBIAN/control
         cat dist/debian/DEBIAN/control
         dpkg-deb --build dist/debian ../slterm.deb
     - name: Upload package
