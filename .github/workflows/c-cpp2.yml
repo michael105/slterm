@@ -26,7 +26,7 @@ jobs:
       run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
     - name: build package
       run: |
-        TAG=`git describe --tags --abbrev=0`
+        TAG=$(git describe --tags --abbrev=0)
         sed -ei 's/VERSION/$TAG/' dist/debian/DEBIAN/control
         cat dist/debian/DEBIAN/control
         dpkg-deb --build dist/debian ../slterm.deb
