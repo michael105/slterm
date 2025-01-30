@@ -1,0 +1,8 @@
+Package: slterm
+Version: VERSION
+Section: base
+Priority: optional
+Architecture: all
+Maintainer: misc147 <misc147@disroot.org>
+Description: slterm - slim terminal for X
+
