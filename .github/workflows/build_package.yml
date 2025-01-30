@@ -2,15 +2,16 @@ name: Build package
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-
+    tags:
+      - '*'
 
   #  push:
-  #  tags:
-  #    - '*'
+  #  branches: [ "master" ]
+  #pull_request:
+  #  branches: [ "master" ]
+
+
+
 
 jobs:
   build:
