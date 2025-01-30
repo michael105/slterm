@@ -26,11 +26,12 @@ jobs:
       run: echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
     - name: build package
       run: |
-        TAG=$(echo ${{ steps.get_tag.outputs.tag }} | sed 's/^v//')
+        TAG=`git describe --tags --abbrev=0`
         sed -ei 's/VERSION/$TAG/' dist/debian/DEBIAN/control
-        dpkg-deb --build dist/debian ../slterm_$TAG.deb
+        cat dist/debian/DEBIAN/control
+        dpkg-deb --build dist/debian ../slterm.deb
     - name: Upload package
       uses: actions/upload-artifact@v3
       with:
         name: slterm-debian-package
-        path: slterm_$TAG.deb 
+        path: slterm.deb 
