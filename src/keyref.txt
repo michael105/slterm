@@ -4,6 +4,7 @@ All	 All                	 Scroll_Lock 	 lessmode_toggle
 All	 Alt                	 s          	 keyboard_select 	
 All	 Alt+Shift          	 Down       	 lessmode_toggle 	
 All	 Alt+Shift          	 Home       	 lessmode_toggle 	
+All	 Alt+Shift          	 L          	 lessmode_toggle 	
 All	 Alt+Shift          	 Page_Down  	 lessmode_toggle 	
 All	 Alt+Shift          	 Page_Up    	 lessmode_toggle 	
 All	 Alt+Shift          	 Up         	 lessmode_toggle 	
@@ -32,7 +33,6 @@ All	 Control+Alt        	 9          	 set_scrollmark
 All	 Control+Alt        	 Return     	 enterscroll 	
 All	 Control+Shift      	 C          	 clipcopy 	
 All	 Control+Shift      	 I          	 inverse_screen 	
-All	 Control+Shift      	 L          	 lessmode_toggle 	
 All	 Control+Shift      	 Num_Lock   	 numlock 	
 All	 Control+Shift      	 S          	 keyboard_select 	
 All	 Control+Shift      	 V          	 clippaste 	

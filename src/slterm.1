@@ -44,6 +44,9 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 \fBslterm\fP [\fB\-aivVx\fP] [\fB\-c\fP \fIclass\fP] [\fB\-f\fP \fIfont\fP] [\fB\-g\fP \fIgeometry\fP]
 [\fB\-n\fP \fIname\fP] [\fB\-o\fP \fIiofile\fP] [\fB\-T\fP \fItitle\fP] [\fB\-t\fP \fItitle\fP]
 [\fB\-w\fP \fIwindowid\fP] \-l \fIline\fP [\fIstty_args\fP\&...]
+.sp
+\fBslterm\fP [\-f regularfont] [\-fb boldfont] [\-fi italicfont] [\-fbi bolditalicfont]
+[\-fw fontwidth] [\-fh fontheight] [cmd ...]
 .SH DESCRIPTION
 .sp
 \fBslterm\fP is a virtual terminal emulator for X
@@ -95,7 +98,7 @@ last entered command with \(gaShift+backspace\(ga.
 In lessmode it is possible to browse the scrollback buffer via
 the standard less like keybindings.
 
-\(gaCtrl+Shift Up/Down/PgUp/PdDown\(ga enter lessmode
+\(gaAlt+Shift Up/Down/PgUp/PdDown\(ga enter lessmode
 \(gaShift+Backspace\(ga enters lessmode and browses back to the last line,
 a command has been entered.
 
@@ -146,9 +149,10 @@ Ctrl+Shift + I: Inverse colors
 Ctrl+F1:    Show this help
 
 Set font width/size:
-Alt+Shift + Insert/Delete:   Enlarge/Shrink width
-Alt+Shift + PageUp/PageDown: Zoom in / out
-Alt+Shift + Home:            Reset font display
+Ctrl+Shift + Insert/Delete:   Enlarge/Shrink width
+Ctrl+Shift + Home/End:        Enlarge/Shrink height
+Ctrl+Shift + PageUp/PageDown: Zoom in / out
+Ctrl+Shift + Backspace:       Reset font display
 
 Select Codepage: \(gaCtrl+Win\(ga +
 0 CP1250

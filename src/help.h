@@ -53,9 +53,10 @@ scrollmarks and lessmode are disabled.\n\r\
 \n\r\
 [1mSet font width/size:[0;0m\n\r\
 \n\r\
-  Alt+Shift + Insert/Delete:   Enlarge/Shrink width\n\r\
-  Alt+Shift + PageUp/PageDown: Zoom in / out\n\r\
-  Alt+Shift + Home:            Reset font display\n\r\
+  Ctrl+Shift + Insert/Delete:   Enlarge/Shrink width\n\r\
+  Ctrl+Shift + Home/End:        Enlarge/Shrink height\n\r\
+  Ctrl+Shift + PageUp/PageDown: Zoom in / out\n\r\
+  Ctrl+Shift + Backspace:       Reset font display\n\r\
 \n\r\
 \n\r\
 [1mSelect Codepage:[0;0m\n\r\
@@ -97,7 +98,7 @@ scrollmarks and lessmode are disabled.\n\r\
 \n\r\
 [1m[4m[01;32mLessmode:[0;0m\n\r\
 \n\r\
-  Ctrl+Shift + Up/PageUp/l, ScrollLock:  Enter lessmode. \n\r\
+  Alt+Shift + Down/PageDown/Up/PageUp/l, ScrollLock:  Enter lessmode. \n\r\
   Scroll around with cursor keys, Home, End.\n\r\
   Backspace/Tab left go to the location of the previous command in shell,\n\r\
   Tab scrolls down to the next entered command location.\n\r\
@@ -169,6 +170,7 @@ All	 All                	 Scroll_Lock 	 lessmode_toggle 	\n\r\
 All	 Alt                	 s          	 keyboard_select 	\n\r\
 All	 Alt+Shift          	 Down       	 lessmode_toggle 	\n\r\
 All	 Alt+Shift          	 Home       	 lessmode_toggle 	\n\r\
+All	 Alt+Shift          	 L          	 lessmode_toggle 	\n\r\
 All	 Alt+Shift          	 Page_Down  	 lessmode_toggle 	\n\r\
 All	 Alt+Shift          	 Page_Up    	 lessmode_toggle 	\n\r\
 All	 Alt+Shift          	 Up         	 lessmode_toggle 	\n\r\
@@ -197,7 +199,6 @@ All	 Control+Alt        	 9          	 set_scrollmark 	\n\r\
 All	 Control+Alt        	 Return     	 enterscroll 	\n\r\
 All	 Control+Shift      	 C          	 clipcopy 	\n\r\
 All	 Control+Shift      	 I          	 inverse_screen 	\n\r\
-All	 Control+Shift      	 L          	 lessmode_toggle 	\n\r\
 All	 Control+Shift      	 Num_Lock   	 numlock 	\n\r\
 All	 Control+Shift      	 S          	 keyboard_select 	\n\r\
 All	 Control+Shift      	 V          	 clippaste 	\n\r\
