@@ -23,9 +23,10 @@ $UL${LGREEN}All modes:$N
 
 ${BOLD}Set font width/size:$N
 
-  Alt+Shift + Insert/Delete:   Enlarge/Shrink width
-  Alt+Shift + PageUp/PageDown: Zoom in / out
-  Alt+Shift + Home:            Reset font display
+  Ctrl+Shift + Insert/Delete:   Enlarge/Shrink width
+  Ctrl+Shift + Home/End:        Enlarge/Shrink height
+  Ctrl+Shift + PageUp/PageDown: Zoom in / out
+  Ctrl+Shift + Backspace:       Reset font display
 
 
 ${BOLD}Select Codepage:$N
@@ -67,7 +68,7 @@ ${BOLD}Scrollmarks:$N
 
 $BOLD${UL}${LGREEN}Lessmode:$N
 
-  Ctrl+Shift + Up/PageUp/l, ScrollLock:  Enter lessmode. 
+  Alt+Shift + Down/PageDown/Up/PageUp/l, ScrollLock:  Enter lessmode. 
   Scroll around with cursor keys, Home, End.
   Backspace/Tab left go to the location of the previous command in shell,
   Tab scrolls down to the next entered command location.

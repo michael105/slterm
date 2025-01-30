@@ -46,7 +46,7 @@ The latest development statically linked binary is named slterm_version.devel
 
 ##### Lessmode
 
-  * `Ctrl+Shift+l/PageUp/CursorUp` to enter "lessmode".
+  * `Alt+Shift+l/Up/Down/PageUp/PageDown` to enter "lessmode".
 		
 	Afterwards in "lessmode" Cursor keys and PageUp/Down scroll around.
 
@@ -76,10 +76,11 @@ The latest development statically linked binary is named slterm_version.devel
 
 ##### Hotkeys for font sizes and colors:
   
- - `Alt+Shift+Insert/Delete`   Enlarge/Shrink font width
- - `Alt+Shift+PageUp/PageDown` Zoom font in / out
- - `Alt+Shift+Home`            Reset to default font size.
- - `Ctrl+Shift+I`              Inverse colors
+ - `Ctrl+Shift+Insert/Delete`   Enlarge/Shrink font width
+ - `Ctrl+Shift+Home/End`        Enlarge/Shrink font height
+ - `Ctrl+Shift+PageUp/PageDown` Zoom font in / out
+ - `Ctrl+Shift+Backspace`       Reset to default font size.
+ - `Ctrl+Shift+I`               Inverse colors
    
 
 ##### Different charmaps, assigned to hotkeys

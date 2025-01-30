@@ -20,6 +20,9 @@ SYNOPSIS
 [**-n** *name*] [**-o** *iofile*] [**-T** *title*] [**-t** *title*]
 [**-w** *windowid*] -l *line* [*stty_args*...]
 
+**slterm** [-f regularfont] [-fb boldfont] [-fi italicfont] [-fbi bolditalicfont]
+[-fw fontwidth] [-fh fontheight] [cmd ...]
+
 
 DESCRIPTION
 ===========
@@ -72,7 +75,7 @@ lessmode
  In lessmode it is possible to browse the scrollback buffer via 
  the standard less like keybindings.
  
- `Ctrl+Shift Up/Down/PgUp/PdDown` enter lessmode 
+ `Alt+Shift Up/Down/PgUp/PdDown` enter lessmode 
  `Shift+Backspace` enters lessmode and browses back to the last line, 
  a command has been entered.
  
@@ -117,9 +120,10 @@ all modes
  Ctrl+F1:    Show this help
  
  Set font width/size:
- Alt+Shift + Insert/Delete:   Enlarge/Shrink width
- Alt+Shift + PageUp/PageDown: Zoom in / out
- Alt+Shift + Home:            Reset font display
+ Ctrl+Shift + Insert/Delete:   Enlarge/Shrink width
+ Ctrl+Shift + Home/End:        Enlarge/Shrink height
+ Ctrl+Shift + PageUp/PageDown: Zoom in / out
+ Ctrl+Shift + Backspace:       Reset font display
  
  Select Codepage: `Ctrl+Win` + 
  0 CP1250

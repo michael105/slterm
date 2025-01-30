@@ -564,7 +564,7 @@ BIND( ALT+SHIFT, XK_Down, lessmode_toggle,I( LESSMODE_ON | SCROLLDOWN(3)),ALLMOD
 BIND( ALT+SHIFT, XK_Home, lessmode_toggle,I( LESSMODE_ON | SCROLL_TOP ),ALLMODES ),
 
 	// toggle
-BIND( TERMMOD, XK_L, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES ),
+BIND( ALT+SHIFT, XK_L, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES ),
 BIND( XK_ANY_MOD, XK_Scroll_Lock, lessmode_toggle, I(LESSMODE_TOGGLE),ALLMODES ),
 	// switchoff
 BIND( XK_ANY_MOD, XK_Escape, lessmode_toggle,  I(LESSMODE_OFF | SCROLL_BOTTOM),MODE_LESS ),
