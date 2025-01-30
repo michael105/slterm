@@ -19,21 +19,4 @@ jobs:
       run: make
     - name: make check
       run: make check
-    - name: Install project
-      run: sudo make install DESTDIR=$(pwd)/dist/debian
-    - name: Get version from config.make
-      id: get_version
-      run: |
-        VERSION=$(sed -ne 's/^VERSION := //p' config.make | tr -d '\n')
-        echo "::set-output name=version::$VERSION"
-    - name: build package
-      run: |
-        VERSION=${{ steps.get_version.outputs.version }}
-        sed -i "s/VERSION/$VERSION/" dist/debian/DEBIAN/control
-        cat dist/debian/DEBIAN/control
-        dpkg-deb --build dist/debian slterm.deb
-    - name: Upload package
-      uses: actions/upload-artifact@v3
-      with:
-        name: slterm-debian-package
-        path: slterm.deb 
+

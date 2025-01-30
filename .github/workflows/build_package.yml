@@ -1,0 +1,38 @@
+name: Build package
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: requisites
+      run: sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx11-dev libxft-dev python3-docutils
+    - name: make
+      run: make
+    - name: make check
+      run: make check
+    - name: Install project
+      run: sudo make install DESTDIR=$(pwd)/dist/debian
+    - name: Get version from config.make
+      id: get_version
+      run: |
+        VERSION=$(sed -ne 's/^VERSION := //p' config.make | tr -d '\n')
+        echo "::set-output name=version::$VERSION"
+    - name: build package
+      run: |
+        VERSION=${{ steps.get_version.outputs.version }}
+        sed -i "s/VERSION/$VERSION/" dist/debian/DEBIAN/control
+        cat dist/debian/DEBIAN/control
+        dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}.deb
+    - name: Upload package
+      uses: actions/upload-artifact@v3
+      with:
+        name: slterm-ubuntu-package
+        path: slterm_${{ steps.get_version.outputs.version }}.deb 
