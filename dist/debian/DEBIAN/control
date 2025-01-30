@@ -4,6 +4,6 @@ Section: base
 Priority: optional
 Architecture: all
 Maintainer: misc147 <misc147@disroot.org>
-Depends: libfreetype6, libxft2, libfontconfig1
+Depends: libfreetype6, libxft2, libfontconfig1, fonts-liberation
 Description: slterm - slim terminal for X
 

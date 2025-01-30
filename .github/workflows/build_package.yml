@@ -41,7 +41,7 @@ jobs:
         dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}.deb
     - name: package check
       run: |
-        sudo apt-get install libfreetype6 libxft2 libfontconfig1
+        sudo apt-get install libfreetype6 libxft2 libfontconfig1 fonts-liberation
         sudo dpkg -i slterm_${{ steps.get_version.outputs.version }}.deb
         slterm -V
     - name: Upload package
