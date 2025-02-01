@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+     - name: Get version from config.make
+        id: get_version
+        run: |
+          VERSION=$(sed -ne 's/^VERSION := //p' config.make | tr -d '\n')
+          echo "::set-output name=version::$VERSION"
 
       - name: Download Binary using wget
         run: |
@@ -22,8 +27,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version  }} testing
           body: |
             statically linked binary for linux/64bit attached
           draft: false
@@ -38,3 +43,5 @@ jobs:
           asset_path: ./slterm_linux_amd64
           asset_name: slterm_linux_amd64
           asset_content_type: application/octet-stream
+
+
