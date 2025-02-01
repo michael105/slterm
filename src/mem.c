@@ -6,10 +6,28 @@
 #include "mem.h"
 
 // Set glyphs (non utf8 - one glyph is one int32 )
-// misc - could be optimized ( either copy int64, or simd )
 void memset32( uint32_t* i, uint32_t value, int count ){
 	for ( int a=0; a<count; a++ )
 		i[a] = value;
+	return;
+
+	// marginal gain. (if at all)
+	/*
+	if ( count & 1 )
+		i[count-1] = value;
+
+	uint c =  count>>1;
+	uint64_t i64 = value | (ulong)( (ulong)value << 32UL );
+	asm volatile ("rep stosq\n" : "+D"(i), "+c"(c): "a"(i64) : "cc", "memory" );
+	*/
+}
+
+
+// optimized, only usable for even count values
+void memset64( uint32_t* i, uint32_t value, int count ){
+	count >>=1;
+	uint64_t i64 = value | (ulong)( (ulong)value << 32UL );
+	asm volatile ("rep stosq\n" : "+D"(i), "+c"(count): "a"(i64) : "cc", "memory" );
 }
 
 
@@ -38,6 +56,20 @@ void *xmalloc(size_t len) {
 
 	return p;
 }
+
+void *xcalloc(size_t len) {
+	void *p;
+
+	if (!(p = malloc(len))) {
+		die("malloc: %s\n", strerror(errno));
+	}
+	bzero( p, len );
+
+	return p;
+}
+
+
+
 
 void *xrealloc(void *p, size_t len) {
 	if ((p = realloc(p, len)) == NULL) {
