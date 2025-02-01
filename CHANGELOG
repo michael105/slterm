@@ -1,0 +1,7 @@
+
+0.99.5.7 (2025/02/01)
+
+Fixed segfault with alt screen
+Documentation
+Add .deb package build workflow
+
