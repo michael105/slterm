@@ -66,6 +66,7 @@ void tnew(int cols, int rows, uint histsize) {
 	term->cursor = (TCursor){.attr = {.fg = defaultfg, .bg = defaultbg}};
 
 	term->hist = xmalloc( histsize * sizeof(Line*) );
+	memset( term->hist, 0, histsize * sizeof(Line*) );
 
 	if ( histsize <65 || ( ((~histsize) & (histsize-1) )+1 != histsize ) )
 		die("tnew: history buffer size needs to be a power of 2, and > 64. Got: %d\n",histsize );
@@ -81,9 +82,16 @@ void tnew(int cols, int rows, uint histsize) {
 	//term->current_retmark = 0;
 
 	term->guard = 0xf0f0f0f0;
+
 	asm( "" : "+m"(term->guard));
 	tresize(cols,rows);
 	treset();
+
+	// fix
+//	for ( int i = 1; i<histsize; i++ ){
+//		if ( term->hist[i] )
+//			printf("tnew, i: %d %p\n", i, term->hist[i] );
+//	}
 }
 
 
@@ -161,6 +169,13 @@ void tswapscreen(void) {
 		if ( !p_alt ){ // displayed first time
 			tnew(term->cols, term->rows, ALTSCREEN_HISTSIZE);
 			p_alt = term;
+			// fix segfaults (prealloc buffer of alt screen)
+			//for ( int i = 1; i<ALTSCREEN_HISTSIZE; i++ ){
+			//	term->hist[i] = 0;//xmalloc( term->colalloc * sizeof(Glyph));
+				//memset(term->hist[i],0,term->colalloc * sizeof(Glyph));
+			//}
+			//term->circledhist=1;
+
 		} else { // p_alt != term
 			term = p_alt;
 			if ( ( p_term->rows != term->rows ) || ( p_term->cols != term->cols )){
@@ -303,6 +318,9 @@ void tresize(int col, int row) {
 	int enlarge = 0;
 	TCursor c;
 	int oldwidth = term->colalloc;
+
+	DBG("tresize: %d %d %d %d %d\n", col,row, term->cols, term->rows, term->colalloc );
+
 	if ( col > term->colalloc ){
 		term->colalloc = col;
 		enlarge = 1;
