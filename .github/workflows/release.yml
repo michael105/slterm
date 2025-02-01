@@ -43,7 +43,8 @@ jobs:
       - name: build package
         run: |
           VERSION=${{ github.ref }}
-          sed -i "s/VERSION/$VERSION/;/^Depends:/d" dist/debian/DEBIAN/control
+          sed -i "s/VERSION/$VERSION/" dist/debian/DEBIAN/control
+          sed -i "/^Depends:/d" dist/debian/DEBIAN/control
           cat dist/debian/DEBIAN/control
           mkdir -p dist/debian/usr/local/bin
           cp slterm_linux_amd64 dist/debian/usr/local/bin/slterm
