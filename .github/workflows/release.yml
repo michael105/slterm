@@ -1,9 +1,7 @@
 name: Create Release with Binary
 
 on:
-  push:
-    branches: [ "master" ]
-    tags:
+  tags:
       - '*'
 
 jobs:
