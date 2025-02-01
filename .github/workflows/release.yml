@@ -3,14 +3,11 @@ name: Create Release with Binary
 on:
   push:
     branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-      # tags:
-      # - '*'
+    tags:
+      - '*'
 
 jobs:
-  #release:
+  release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
