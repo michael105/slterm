@@ -40,9 +40,15 @@ jobs:
           asset_name: slterm_linux_amd64
           asset_content_type: application/octet-stream
 
+      - name: Get version from config.make
+        id: get_version
+        run: |
+          VERSION=$(sed -ne 's/^VERSION := //p' config.make | tr -d '\n')
+          echo "::set-output name=version::$VERSION"
+
       - name: build package
         run: |
-          VERSION=${{ github.ref }}
+          VERSION=${{ steps.get_version.outputs.version }}
           echo Version - $VERSION
           sed -i "s/VERSION/$VERSION/" dist/debian/DEBIAN/control
           sed -i "/^Depends:/d" dist/debian/DEBIAN/control
@@ -61,8 +67,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: slterm_${{ github.ref }}.deb
-          asset_name: slterm_${{ github.ref }}.deb
+          asset_path: slterm_${{ steps.get_version.outputs.version }}.deb
+          asset_name: slterm_${{ steps.get_version.outputs.version }}.deb
           asset_content_type: application/vnd.debian.binary-package
 
 
