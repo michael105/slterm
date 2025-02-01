@@ -43,6 +43,7 @@ jobs:
       - name: build package
         run: |
           VERSION=${{ github.ref }}
+          echo Version - $VERSION
           sed -i "s/VERSION/$VERSION/" dist/debian/DEBIAN/control
           sed -i "/^Depends:/d" dist/debian/DEBIAN/control
           cat dist/debian/DEBIAN/control
