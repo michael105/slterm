@@ -1,0 +1,42 @@
+name: Create Release with Binary
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Binary using wget
+        run: |
+          wget https://github.com/michael105/static-bin/raw/refs/heads/main/xorg/slterm
+          chmod a+x slterm
+          mv slterm slterm_linux_amd64
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            statically linked binary for linux/64bit attached
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./slterm_linux_amd64
+          asset_name: slterm_linux_amd64
+          asset_content_type: application/octet-stream
