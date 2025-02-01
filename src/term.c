@@ -87,11 +87,6 @@ void tnew(int cols, int rows, uint histsize) {
 	tresize(cols,rows);
 	treset();
 
-	// fix
-//	for ( int i = 1; i<histsize; i++ ){
-//		if ( term->hist[i] )
-//			printf("tnew, i: %d %p\n", i, term->hist[i] );
-//	}
 }
 
 
