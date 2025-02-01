@@ -1,8 +1,8 @@
 name: Create Release with Binary
 
 on:
-  tags:
-      - '*'
+  push:
+    branches: [ "master" ]
 
 jobs:
   release:
@@ -11,26 +11,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-    - name: Get version from config.make
-      id: get_version
-      run: |
-        VERSION=$(sed -ne 's/^VERSION := //p' config.make | tr -d '\n')
-        echo "::set-output name=version::$VERSION"
-
       - name: Download Binary using wget
         run: |
           wget https://github.com/michael105/static-bin/raw/refs/heads/main/xorg/slterm
           chmod a+x slterm
           mv slterm slterm_linux_amd64
-
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.get_version.outputs.version }}
-          release_name: Release ${{ steps.get_version.outputs.version  }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           body: |
             statically linked binary for linux/64bit attached
           draft: false
@@ -45,30 +38,3 @@ jobs:
           asset_path: ./slterm_linux_amd64
           asset_name: slterm_linux_amd64
           asset_content_type: application/octet-stream
-
-      - name: build package
-        run: |
-          VERSION=${{ steps.get_version.outputs.version }}
-          sed -i "s/VERSION/$VERSION/;/^Depends:/d" dist/debian/DEBIAN/control
-          cat dist/debian/DEBIAN/control
-          mkdir -p dist/debian/usr/local/bin
-          cp slterm_linux_amd64 dist/debian/usr/local/bin/slterm
-          mkdir -p dist/debian/usr/local/share/man/man1
-          cp src/slterm.1 dist/debian/usr/local/share/man/man1/
-          mkdir -p dist/debian/usr/local/share/doc/slterm
-          cp -R README.md LICENSE PATCHES.md doc test dist/debian/usr/local/share/doc/slterm/
-          dpkg-deb --build dist/debian slterm_$VERSION.deb
-
-      - name: upload package
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: slterm_${{ steps.get_version.outputs.version }}.deb
-          asset_name: slterm_${{ steps.get_version.outputs.version }}.deb
-          asset_content_type: application/vnd.debian.binary-package
-
-
-
-
