@@ -1031,7 +1031,7 @@ const char *export_env[][2] = {
 // e.g. man does scrolling, and repainting, mixed
 // Both sizes need to be a power of 2
 
-#define ALTSCREEN_HISTSIZE 4096
+#define ALTSCREEN_HISTSIZE 1024
 
 // needs to be larger than the help text
 #define HELPSCREEN_HISTSIZE 512

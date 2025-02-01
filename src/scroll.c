@@ -185,25 +185,24 @@ void tscrollup(int orig, int n, int copyhist) {
 	LIMIT(n, 0, term->bot - orig + 1);
 
 	if (copyhist) {
-		DBG2("term->histindex: %d\n", term->histindex);
+		DBG("term->histindex: %d\n", term->histindex);
 		term->histindex = (term->histindex + 1) & (term->histsize);
-		///DBG("term->histindex: %d, \n", term->histindex);
+		DBG("term->histindex: %d, \n", term->histindex);
 		if ( term->histindex == 0 ){
 			if ( term->circledhist == 0 ){
 				term->circledhist=1;
-				///DBG("circledhist = 1");
+				DBG("circledhist = 1");
 				// dirty bugfix below. didn't find the real problem
 				term->hist[0] = xmalloc( term->colalloc * sizeof(Glyph));
 				memset(term->hist[0],0,term->colalloc * sizeof(Glyph));
 			}
 		}
 
-
 		if ( term->hist[term->histindex] ){
-			///DBG("SWAP cthist %d, histindex %d, orig %d\n", term->cthist, term->histindex, orig);
+			DBG("SWAP cthist %p, histindex %d, orig %d\n", term->hist[term->histindex], term->histindex, orig);
 
 			if (  term->line[term->bot] == 0 ){
-				///DBG("newline 2 .");
+				DBG("newline 2 .");
 				//term->circledhist=1; //?
 				term->line[term->bot]  = xmalloc( term->colalloc * sizeof(Glyph));
 				memset( term->line[term->bot]  ,0,term->colalloc * sizeof(Glyph));
@@ -211,9 +210,9 @@ void tscrollup(int orig, int n, int copyhist) {
 			SWAPp( term->hist[term->histindex], term->line[orig] );
 
 		}	 else {
-			///DBG("New line, cthist %d, term->histindex: %d, term->col: %d\n", term->cthist, term->histindex, term->cols );
+			DBG("New line, cthist %d, term->histindex: %d, term->col: %d\n", 1, term->histindex, term->cols );
 			term->hist[term->histindex] = term->line[orig];
-			term->line[orig] = xmalloc( term->colalloc * sizeof(Glyph));
+			term->line[orig] = xmalloc( term->colalloc * sizeof(Glyph) );
 			memset(term->line[orig],0,term->colalloc * sizeof(Glyph));
 		}
 		// (candidate for swap or, malloc hist here) done.
@@ -224,20 +223,23 @@ void tscrollup(int orig, int n, int copyhist) {
 		// with 200 cols a compression ratio of 200/2 (misc)
 	}
 
+	DBG("1\n");
 	if (term->scr > 0 && term->scr < term->histsize + 1 ) { //HSTSIZE
 		term->scr = MIN(term->scr + n, term->histsize );  //HISTSIZE - 1);
 	}
 
+	DBG("1a\n");
 	tclearregion(0, orig, term->colalloc - 1, orig + n - 1);
+	DBG("2\n");
 	tsetdirt(orig + n, term->bot);
 
-	///DBG("swap\n");
+	DBG("swap: %d   %d\n",orig,term->bot);
 	for (i = orig; i <= term->bot - n; i++) {
 		SWAPp(term->line[i],term->line[i+n]);
 	}
 
 	selscroll(orig, -n);
-	///DBG("scrd: %d %d %d %d %d %d\n", orig, n, term->histindex, term->scr, term->scrollmarks[0], term->rows);
+	DBG("scrd: %d %d %d %d %d %d\n", orig, n, term->histindex, term->scr, term->scrollmarks[0], term->rows);
 	if ( enterlessmode ){ // scroll down until next line.
 		if ( term->histindex > term->scrollmarks[0]){
 			//DBG("Scroll\n");

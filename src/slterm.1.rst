@@ -162,7 +162,7 @@ Colors
 The basic 8 colors, accessable in the shell as:
 $BLACK, $RED, $GREEN, $YELLOW, $BLUE, $MAGENTA, $CYAN, $WHITE.
 
-> echo $RED red text
+`echo $RED red text`
 
 
 They can be combined with prefixes: L(ight), D(ark), LD(light-dark), BG(background), BGL(ight background).

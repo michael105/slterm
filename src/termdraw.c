@@ -313,16 +313,20 @@ void tclearregion(int x1, int y1, int x2, int y2) {
 		LIMIT(y1, 0, term->rows - 1);
 		LIMIT(y2, 0, term->rows - 1);
 
+		DBG("tclearregion, %d %d %d %d\n",x1,x2,y1,y2);
 		selclear(); // only call once.
 		//term->cursor.attr.u=' ';
 
 		for (y = y1; y <= y2; y++) { 
+				DBG("y: %d\n",y);
 				term->dirty[y] = 1;
+				DBG("y: %d\n",y);
 #if 1
 //#ifndef UTF8
-				dbg("y: %d, x1: %d, x2: %d\n", y, x1, x2);
-				memset32( &term->line[y][x1].intG, term->cursor.attr.intG, (x2-x1)+1 ); // memset64 or comp
-				dbg("ok\n");
+				//printf("x: %d %p\n", 0, &term->line[y][0] );
+				DBG("y: %d, x1: %d, x2: %d\n", y, x1, x2);
+				memset32( &term->line[y][x1].intG, term->cursor.attr.intG, (x2-x1) +1 ); // memset64 or comp
+				DBG("ok\n");
 #else
 		Glyph *gp;
 		int x;
