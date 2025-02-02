@@ -202,7 +202,7 @@ typedef struct {
 	uint histsize; // history size-1, size of the buffer. (the count of written lines is in histindex,
 						// albite histindex only indicates the number of written lines in the hist buffer,
 						// until the buffer is circled.)
-	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top
+	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll to the top
 				  // scr=0 : scroll to the bottom
 
 	// needed for defining scroll areas
