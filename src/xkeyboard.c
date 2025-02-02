@@ -179,7 +179,7 @@ void kpress(XEvent *ev) {
 		return;
 	}
 
-	printf("key: %lx, keycode: %x, state: %x, buf: %s\n",ksym, e->keycode, e->state,buf );
+	DBG("key: %lx, keycode: %x, state: %x, buf: %s\n",ksym, e->keycode, e->state,buf );
 
 	if ( IS_SET( MODE_ENTERSTRING ) ){
 		if ( statusbar_kpress( e, &ksym, (char*)buf ) == 1 )
