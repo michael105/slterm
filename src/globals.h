@@ -215,7 +215,7 @@ typedef struct {
 	// Other things are more important, imho. If someone likes to
 	// change it, the Macro TLINE and the functions in scroll.c are the locations to begin with.
 	int top;                                  /* top    scroll limit */
-	int bot;                                  /* bottom scroll limit */
+	int scroll_bottom;                                  /* bottom scroll limit */
 	// top / bot: when only parts of the screen are scrolled (scroll areas set)
 			 
 	int *dirty;  /* dirtyness of lines */ // points to an array

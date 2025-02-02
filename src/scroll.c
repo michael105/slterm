@@ -7,10 +7,10 @@ void tsetscroll(int t, int b) {
 	if (t > b) {
 		//		SWAPint( t,b );
 		term->top = b;
-		term->bot = t;
+		term->scroll_bottom = t;
 	} else {
 		term->top = t;
-		term->bot = b;
+		term->scroll_bottom = b;
 	}
 }
 
@@ -140,33 +140,33 @@ void tscrolldown(int orig, int n, int copyhist) {
 	int i;
 
 
-	DBG("===== tscrolldown, orig:%d n:%d , histindex: %d  scr: %d copyhist: %d term->bot: %d\n",orig,n, term->histindex, term->scr, copyhist, term->bot);
+	DBG("===== tscrolldown, orig:%d n:%d , histindex: %d  scr: %d copyhist: %d term->scroll_bottom: %d\n",orig,n, term->histindex, term->scr, copyhist, term->scroll_bottom);
 	if ( term->histindex == 0 && IS_SET(MODE_ALTSCREEN) ){ //xxx bug patch. alt screen 
 																		// else segfaults. reproduce: man man; and scroll with a (now, since this is patched rotfl) unknown combination of commands.
 																		//DBG("RETURN\n"); // xxx
 																		//return; // ? strange. no segfaults anymore. 
 	}
-	//LIMIT(n, 0, term->bot - orig ); //xxx
-	LIMIT(n, 0, term->bot - orig + 1);
+	//LIMIT(n, 0, term->scroll_bottom - orig ); //xxx
+	LIMIT(n, 0, term->scroll_bottom - orig + 1);
 
 	if (copyhist) {
 		term->histindex = (term->histindex - 1 ) & (term->histsize); 
-		SWAPp( term->hist[term->histindex], term->line[term->bot] );
-		///DBG("copyhist: term->histindex %d   %p <->  %p  \n", term->histindex, term->hist[term->histindex], term->line[term->bot] );
+		SWAPp( term->hist[term->histindex], term->line[term->scroll_bottom] );
+		///DBG("copyhist: term->histindex %d   %p <->  %p  \n", term->histindex, term->hist[term->histindex], term->line[term->scroll_bottom] );
 
-		if (  term->line[term->bot] == 0 ){
+		if (  term->line[term->scroll_bottom] == 0 ){
 			///DBG("newline .");
 			//term->circledhist=1; //?
-			term->line[term->bot]  = xmalloc( term->colalloc * sizeof(Glyph));
-			memset( term->line[term->bot]  ,0,term->colalloc * sizeof(Glyph));
+			term->line[term->scroll_bottom]  = xmalloc( term->colalloc * sizeof(Glyph));
+			memset( term->line[term->scroll_bottom]  ,0,term->colalloc * sizeof(Glyph));
 		}
 
 	}
 
-	tsetdirt(orig, term->bot - n);
-	tclearregion(0, term->bot - n + 1, term->cols - 1, term->bot);
+	tsetdirt(orig, term->scroll_bottom - n);
+	tclearregion(0, term->scroll_bottom - n + 1, term->cols - 1, term->scroll_bottom);
 
-	for (i = term->bot; i >= orig + n; i--) {
+	for (i = term->scroll_bottom; i >= orig + n; i--) {
 		SWAPp( term->line[i], term->line[i-n] );
 	}
 
@@ -181,8 +181,8 @@ void tscrollup(int orig, int n, int copyhist) {
 	int i;
 
 	DBG("===== tscrollup, orig:%d n:%d , histindex: %d  scr: %d copyhist: %d \n",orig,n, term->histindex, term->scr, copyhist);
-	//LIMIT(n, 0, term->bot - orig ); //xxx
-	LIMIT(n, 0, term->bot - orig + 1);
+	//LIMIT(n, 0, term->scroll_bottom - orig ); //xxx
+	LIMIT(n, 0, term->scroll_bottom - orig + 1);
 
 	if (copyhist) {
 		DBG("term->histindex: %d\n", term->histindex);
@@ -201,11 +201,11 @@ void tscrollup(int orig, int n, int copyhist) {
 		if ( term->hist[term->histindex] ){
 			DBG("SWAP cthist %p, histindex %d, orig %d\n", term->hist[term->histindex], term->histindex, orig);
 
-			if (  term->line[term->bot] == 0 ){
+			if (  term->line[term->scroll_bottom] == 0 ){
 				DBG("newline 2 .");
 				//term->circledhist=1; //?
-				term->line[term->bot]  = xmalloc( term->colalloc * sizeof(Glyph));
-				memset( term->line[term->bot]  ,0,term->colalloc * sizeof(Glyph));
+				term->line[term->scroll_bottom]  = xmalloc( term->colalloc * sizeof(Glyph));
+				memset( term->line[term->scroll_bottom]  ,0,term->colalloc * sizeof(Glyph));
 			}
 			SWAPp( term->hist[term->histindex], term->line[orig] );
 
@@ -231,10 +231,10 @@ void tscrollup(int orig, int n, int copyhist) {
 	DBG("1a\n");
 	tclearregion(0, orig, term->colalloc - 1, orig + n - 1);
 	DBG("2\n");
-	tsetdirt(orig + n, term->bot);
+	tsetdirt(orig + n, term->scroll_bottom);
 
-	DBG("swap: %d   %d\n",orig,term->bot);
-	for (i = orig; i <= term->bot - n; i++) {
+	DBG("swap: %d   %d\n",orig,term->scroll_bottom);
+	for (i = orig; i <= term->scroll_bottom - n; i++) {
 		SWAPp(term->line[i],term->line[i+n]);
 	}
 
@@ -263,7 +263,7 @@ void tnewline(int first_col) {
 
 	//xxx
 	//DBG("tnewline: %d, term->scr: %d  histindex: %d\n",first_col, term->scr,term->histindex );
-	if (y == term->bot) {
+	if (y == term->scroll_bottom) {
 		tscrollup(term->top, 1, 1);
 	} else {
 		y++;

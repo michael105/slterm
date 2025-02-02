@@ -346,8 +346,8 @@ void selscroll(int orig, int n) {
 		return;
 	}
 
-	if (BETWEEN(sel.ob.y, orig, term->bot) || BETWEEN(sel.oe.y, orig, term->bot)) {
-		if ((sel.ob.y += n) > term->bot || (sel.oe.y += n) < term->top) {
+	if (BETWEEN(sel.ob.y, orig, term->scroll_bottom) || BETWEEN(sel.oe.y, orig, term->scroll_bottom)) {
+		if ((sel.ob.y += n) > term->scroll_bottom || (sel.oe.y += n) < term->top) {
 			selclear();
 			return;
 		}
@@ -355,16 +355,16 @@ void selscroll(int orig, int n) {
 			if (sel.ob.y < term->top) {
 				sel.ob.y = term->top;
 			}
-			if (sel.oe.y > term->bot) {
-				sel.oe.y = term->bot;
+			if (sel.oe.y > term->scroll_bottom) {
+				sel.oe.y = term->scroll_bottom;
 			}
 		} else {
 			if (sel.ob.y < term->top) {
 				sel.ob.y = term->top;
 				sel.ob.x = 0;
 			}
-			if (sel.oe.y > term->bot) {
-				sel.oe.y = term->bot;
+			if (sel.oe.y > term->scroll_bottom) {
+				sel.oe.y = term->scroll_bottom;
 				sel.oe.x = term->cols;
 			}
 		}
@@ -394,22 +394,22 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 			if (!ptarget) {
 				return 0;
 			}
-			term->line[term->bot][ptarget--].u = ' ';
+			term->line[term->scroll_bottom][ptarget--].u = ' ';
 		} else if (len < 1) {
 			return 0;
 		} else if (ptarget == term->cols || ksym == XK_Escape) {
 			return 0;
 		} else {
 			utf8decode(buf, &target[ptarget++], len);
-			term->line[term->bot][ptarget].u = target[ptarget - 1];
+			term->line[term->scroll_bottom][ptarget].u = target[ptarget - 1];
 		}
 
 		if (ksym != XK_BackSpace) {
 			search(selectsearch_mode, &target[0], ptarget, sens, type, &cu);
 		}
 
-		term->dirty[term->bot] = 1;
-		drawregion(0, term->bot, term->cols, term->bot + 1);
+		term->dirty[term->scroll_bottom] = 1;
+		drawregion(0, term->scroll_bottom, term->cols, term->scroll_bottom + 1);
 		return 0;
 	}
 
@@ -559,7 +559,7 @@ int trt_kbdselect(KeySym ksym, char *buf, int len) {
 
 			xy = (i & 1) ? &term->cursor.y : &term->cursor.x;
 			sens = (i & 2) ? 1 : -1;
-			bound = (i >> 1 ^ 1) ? 0 : (i ^ 3) ? term->cols - 1 : term->bot;
+			bound = (i >> 1 ^ 1) ? 0 : (i ^ 3) ? term->cols - 1 : term->scroll_bottom;
 
 			if (quant == 0) {
 				quant++;

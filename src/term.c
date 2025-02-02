@@ -130,7 +130,7 @@ void treset(void) {
 		term->tabs[i] = 1;
 	}
 	term->top = 0;
-	term->bot = term->rows - 1;
+	term->scroll_bottom = term->rows - 1;
 	term->mode = MODE_WRAP | MODE_UTF8; // not UTF8-> MODE_UTF8 eq 0
 	memset(term->trantbl, CS_USA, sizeof(term->trantbl));
 	term->charset = 0;
@@ -283,7 +283,7 @@ void tmoveto(int x, int y) {
 
 	if (term->cursor.state & CURSOR_ORIGIN) {
 		miny = term->top;
-		maxy = term->bot;
+		maxy = term->scroll_bottom;
 	} else {
 		miny = 0;
 		maxy = term->rows - 1;

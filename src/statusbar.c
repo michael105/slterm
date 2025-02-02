@@ -13,8 +13,8 @@ static int focusdraw = 1;
 
 
 void drawstatus(){
-	term->dirty[term->bot] = 1;
-	drawregion(0, term->bot, term->cols, term->bot + 1);
+	term->dirty[term->scroll_bottom] = 1;
+	drawregion(0, term->scroll_bottom, term->cols, term->scroll_bottom + 1);
 }
 
 void statusbar_focusin(){
@@ -243,8 +243,8 @@ void showstatus(int show, char *status){
 		if ( statusvisible ){
 			statusvisible = 0;
 			// clear status
-			term->dirty[term->bot] = 1;
-			drawregion(0, term->bot, term->cols, term->bot + 1);
+			term->dirty[term->scroll_bottom] = 1;
+			drawregion(0, term->scroll_bottom, term->cols, term->scroll_bottom + 1);
 			//term->rows++;
 			//tresize(term->cols,term->rows+1);
 		}
@@ -256,7 +256,7 @@ void set_notifmode(int type, KeySym ksym) {
 	static char *lib[] = {" MOVE ", "SELECT"," LESS " };
 	static Glyph *g, *deb, *fin;
 	static int col, bot;
-	col = term->cols, bot = term->bot;
+	col = term->cols, bot = term->scroll_bottom;
 
 	if (ksym == -1) { // show
 		free(g);

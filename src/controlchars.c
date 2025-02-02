@@ -679,7 +679,7 @@ int eschandle(uchar ascii) {
 			term->esc |= ESC_ALTCHARSET;
 			return 0;
 		case 'D': /* IND -- Linefeed */
-			if (term->cursor.y == term->bot) {
+			if (term->cursor.y == term->scroll_bottom) {
 				tscrollup(term->top, 1, 1);
 			} else {
 				tmoveto(term->cursor.x, term->cursor.y + 1);
