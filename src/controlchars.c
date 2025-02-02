@@ -11,15 +11,15 @@ int handle_controlchars( Rune u IF_UTF8(, uint decoded_len, char* decoded_char )
 #define decoded_len 1
 #endif
 
-	if (term->esc & ESC_STR) { // within a esc sequence
+	if (term->esc_state & ESC_STR) { // within a esc sequence
 		if (u == '\a' || u == 030 || u == 032 || u == 033 || ISCONTROLC1(u)) {
-			term->esc &= ~(ESC_START | ESC_STR | ESC_DCS);
+			term->esc_state &= ~(ESC_START | ESC_STR | ESC_DCS);
 			if (IS_SET(MODE_SIXEL)) {
 				/* TODO: render sixel */
 				term->mode &= ~MODE_SIXEL;
 				return(1);
 			}
-			term->esc |= ESC_STR_END;
+			term->esc_state |= ESC_STR_END;
 			goto check_control_code;
 		}
 
@@ -27,7 +27,7 @@ int handle_controlchars( Rune u IF_UTF8(, uint decoded_len, char* decoded_char )
 			/* TODO: implement sixel mode */
 			return(1);
 		}
-		if (term->esc & ESC_DCS && strescseq.len == 0 && u == 'q') {
+		if (term->esc_state & ESC_DCS && strescseq.len == 0 && u == 'q') {
 			term->mode |= MODE_SIXEL;
 		}
 
@@ -42,7 +42,7 @@ int handle_controlchars( Rune u IF_UTF8(, uint decoded_len, char* decoded_char )
 			 * In the case users ever get fixed, here is the code:
 			 */
 			/*
-			 * term->esc = 0;
+			 * term->esc_state = 0;
 			 * strhandle();
 			 */
 			//if (strescseq.siz > (SIZE_MAX - UTF_SIZ) / 2) 
@@ -85,21 +85,21 @@ check_control_code:
 		 * control codes are not shown ever
 		 */
 		return(1);
-	} else if (term->esc & ESC_START) {
-		if (term->esc & ESC_CSI) {
+	} else if (term->esc_state & ESC_START) {
+		if (term->esc_state & ESC_CSI) {
 			csiescseq.buf[csiescseq.len++] = u;
 			if (BETWEEN(u, 0x40, 0x7E) ||
 					csiescseq.len >= sizeof(csiescseq.buf) - 1) {
-				term->esc = 0;
+				term->esc_state = 0;
 				csiparse();
 				csihandle();
 			}
 			return(1);
-		} else if (term->esc & ESC_UTF8) {
+		} else if (term->esc_state & ESC_UTF8) {
 			tdefutf8(u);
-		} else if (term->esc & ESC_ALTCHARSET) {
+		} else if (term->esc_state & ESC_ALTCHARSET) {
 			tdeftran(u);
-		} else if (term->esc & ESC_TEST) {
+		} else if (term->esc_state & ESC_TEST) {
 			tdectest(u);
 		} else {
 			if (!eschandle(u)) {
@@ -107,7 +107,7 @@ check_control_code:
 			}
 			/* sequence already finished */
 		}
-		term->esc = 0;
+		term->esc_state = 0;
 		/*
 		 * All characters which form part of a sequence are not
 		 * printed
@@ -186,7 +186,7 @@ void tstrsequence(uchar c) {
 	switch (c) {
 		case 0x90: /* DCS -- Device Control String */
 			c = 'P';
-			term->esc |= ESC_DCS;
+			term->esc_state |= ESC_DCS;
 			break;
 		case 0x9f: /* APC -- Application Program Command */
 			c = '_';
@@ -199,7 +199,7 @@ void tstrsequence(uchar c) {
 			break;
 	}
 	strescseq.type = c;
-	term->esc |= ESC_STR;
+	term->esc_state |= ESC_STR;
 }
 
 void csiparse(void) {
@@ -478,7 +478,7 @@ void strhandle(void) {
 	char *p = NULL, *dec;
 	int j, narg, par;
 
-	term->esc &= ~(ESC_STR_END | ESC_STR);
+	term->esc_state &= ~(ESC_STR_END | ESC_STR);
 	strparse();
 	par = (narg = strescseq.narg) ? atoi(strescseq.args[0]) : 0;
 
@@ -568,7 +568,7 @@ void tcontrolcode(uchar ascii) {
 			tnewline(IS_SET(MODE_CRLF));
 			return;
 		case '\a': /* BEL */
-			if (term->esc & ESC_STR_END) {
+			if (term->esc_state & ESC_STR_END) {
 				/* backwards compatibility to xterm */
 				strhandle();
 			} else {
@@ -577,8 +577,8 @@ void tcontrolcode(uchar ascii) {
 			break;
 		case '\033': /* ESC */
 			csireset();
-			term->esc &= ~(ESC_CSI | ESC_ALTCHARSET | ESC_TEST);
-			term->esc |= ESC_START;
+			term->esc_state &= ~(ESC_CSI | ESC_ALTCHARSET | ESC_TEST);
+			term->esc_state |= ESC_START;
 			return;
 		case '\016': /* SO (LS1 -- Locking shift 1) */
 		case '\017': /* SI (LS0 -- Locking shift 0) */
@@ -641,7 +641,7 @@ void tcontrolcode(uchar ascii) {
 			return;
 	}
 	/* only CAN, SUB, \a and C1 chars interrupt a sequence */
-	term->esc &= ~(ESC_STR_END | ESC_STR);
+	term->esc_state &= ~(ESC_STR_END | ESC_STR);
 }
 
 /*
@@ -652,13 +652,13 @@ int eschandle(uchar ascii) {
 	//printf("eschandle: %c\n", ascii); //DBG
 	switch (ascii) {
 		case '[':
-			term->esc |= ESC_CSI;
+			term->esc_state |= ESC_CSI;
 			return 0;
 		case '#':
-			term->esc |= ESC_TEST;
+			term->esc_state |= ESC_TEST;
 			return 0;
 		case '%':
-			term->esc |= ESC_UTF8;
+			term->esc_state |= ESC_UTF8;
 			return 0;
 		case 'P': /* DCS -- Device Control String */
 		case '_': /* APC -- Application Program Command */
@@ -676,7 +676,7 @@ int eschandle(uchar ascii) {
 		case '*': /* G2D4 -- set tertiary charset G2 */
 		case '+': /* G3D4 -- set quaternary charset G3 */
 			term->icharset = ascii - '(';
-			term->esc |= ESC_ALTCHARSET;
+			term->esc_state |= ESC_ALTCHARSET;
 			return 0;
 		case 'D': /* IND -- Linefeed */
 			if (term->cursor.y == term->scroll_bottom) {
@@ -719,7 +719,7 @@ int eschandle(uchar ascii) {
 			tcursor(CURSOR_LOAD);
 			break;
 		case '\\': /* ST -- String Terminator */
-			if (term->esc & ESC_STR_END) {
+			if (term->esc_state & ESC_STR_END) {
 				strhandle();
 			}
 			break;

@@ -224,7 +224,7 @@ typedef struct {
 	int oldcursor_x;                                  /* old cursor col */
 	int oldcursor_y;                                  /* old cursor row */
 	int mode;                                 /* terminal mode flags */
-	int esc;                                  /* escape state flags */
+	int esc_state;                                  /* escape state flags */
 	char trantbl[4];                          /* charset table translation */ 
 	int charset;                              /* current charset */
 	int icharset;                             /* selected charset for sequence */
