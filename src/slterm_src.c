@@ -50,6 +50,7 @@
 
 
 
+#include "lessmode.c"
 #include "globals.c"
 #include "statusbar.c"
 #include "retmarks.c"

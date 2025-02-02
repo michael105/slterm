@@ -10,6 +10,7 @@ void setstatus(char* status);
 void statusbar_focusin();
 void statusbar_focusout();
 
+void showstatus(int show, char *status);
 
 
 #endif
