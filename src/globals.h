@@ -33,7 +33,7 @@ int ispagebased = 0; // counter, tries to keep track, whether the running progra
 // needs to be a power of 2.
 // memory usage is RETMARKCOUNT*4 bytes,
 // and the array is scanned linear when browsing to the marks.
-#define RETMARKCOUNT 512
+#define RETMARKCOUNT 256
 
 
 typedef unsigned char uchar;
@@ -69,7 +69,6 @@ typedef union {
 
 #else
 
-//#define utfchar char
 #define utfchar unsigned char
 #define UTF_INVALID 0xff
 #define UTF_SIZ 1
@@ -119,7 +118,7 @@ typedef union {
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
 
-
+// the binary name
 extern char* argv0;
 
 typedef XftColor Color;
@@ -169,7 +168,7 @@ typedef struct {
 typedef struct {
 	Display *dpy;
 	Colormap cmap;
-	Window win;
+	Window win; // the window itself, = XCreateWindow()
 	Drawable buf;
 	GlyphFontSpec *specbuf; /* font spec buffer used for rendering */
 	Atom xembed, wmdeletewin, netwmname, netwmpid;
@@ -234,7 +233,6 @@ typedef struct {
 	int retmarks[RETMARKCOUNT];
 	int current_retmark; // current retmark. retmarks are stored circular.
 	int scrolled_retmark; // to which retmark was scrolled
-	//int scroll_retmark; // to which retmark was scrolled
 	char circledhist;
 } Term;
 
