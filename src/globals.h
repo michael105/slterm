@@ -109,9 +109,9 @@ typedef union {
 #define MODBIT(x, set, bit) ((set) ? ((x) |= (bit)) : ((x) &= ~(bit)))
 
 
-//#define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
-	b = (void*)((POINTER)a ^ (POINTER)b);\
-	a = (void*)((POINTER)a ^ (POINTER)b);}
+//#define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);
+//	b = (void*)((POINTER)a ^ (POINTER)b);
+//	a = (void*)((POINTER)a ^ (POINTER)b);}
 
 #define SWAPp(_a,_b) { void* _tmp = _a; _a=_b; _b=_tmp; }
 

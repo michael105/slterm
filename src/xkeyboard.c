@@ -162,6 +162,7 @@ void kpress(XEvent *ev) {
 	XKeyEvent *e = &ev->xkey;
 	KeySym ksym;
 	unsigned char buf[32];
+	buf[0] = 0;
 	int len;
 	Rune c;
 	Status status;
@@ -178,13 +179,13 @@ void kpress(XEvent *ev) {
 		return;
 	}
 
+	printf("key: %lx, keycode: %x, state: %x, buf: %s\n",ksym, e->keycode, e->state,buf );
 
 	if ( IS_SET( MODE_ENTERSTRING ) ){
-		statusbar_kpress( &ksym, (char*)buf );
+		statusbar_kpress( e, &ksym, (char*)buf );
 		return;
 	}
 
-	dbg("key: %x, keycode: %x, state: %x\n",ksym, e->keycode, e->state );
 
 	// handle return, add retmark 
 	if ( ( ksym == XK_Return ) && (term->scr==0) && ( inputmode == MODE_REGULAR ) && !( twin.mode & MODE_KBDSELECT ) ){

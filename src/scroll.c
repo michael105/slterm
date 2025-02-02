@@ -1,16 +1,16 @@
 
 #include "scroll.h"
 
-void tsetscroll(int t, int b) {
-	LIMIT(t, 0, term->rows - 1);
-	LIMIT(b, 0, term->rows - 1);
-	if (t > b) {
+void tsetscroll(int top, int bottom) {
+	LIMIT(top, 0, term->rows - 1);
+	LIMIT(bottom, 0, term->rows - 1);
+	if (top > bottom) {
 		//		SWAPint( t,b );
-		term->scroll_top = b;
-		term->scroll_bottom = t;
+		term->scroll_top = bottom;
+		term->scroll_bottom = top;
 	} else {
-		term->scroll_top = t;
-		term->scroll_bottom = b;
+		term->scroll_top = top;
+		term->scroll_bottom = bottom;
 	}
 }
 
@@ -166,6 +166,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 	tsetdirt(orig, term->scroll_bottom - n);
 	tclearregion(0, term->scroll_bottom - n + 1, term->cols - 1, term->scroll_bottom);
 
+	// MARKLINE
 	for (i = term->scroll_bottom; i >= orig + n; i--) {
 		SWAPp( term->line[i], term->line[i-n] );
 	}
@@ -177,6 +178,7 @@ void tscrolldown(int orig, int n, int copyhist) {
 // Scroll downwards (And append lines)
 // doesn't neccessarily scroll the view.
 // Thanks for the names. Afterall, upwards is downwards, its just only the opposite.
+// -> kscrolldown does tscrollup (!!)
 void tscrollup(int orig, int n, int copyhist) {
 	int i;
 
@@ -234,6 +236,7 @@ void tscrollup(int orig, int n, int copyhist) {
 	tsetdirt(orig + n, term->scroll_bottom);
 
 	DBG("swap: %d   %d\n",orig,term->scroll_bottom);
+	// MARKLINE
 	for (i = orig; i <= term->scroll_bottom - n; i++) {
 		SWAPp(term->line[i],term->line[i+n]);
 	}
@@ -248,11 +251,6 @@ void tscrollup(int orig, int n, int copyhist) {
 			//tfulldirt();
 			lessmode_toggle(ARGP(i=LESSMODE_ON));
 			enterlessmode = 0;
-			//a.i=0;
-			//scrollmark(&a);
-
-			//inputmode |= MODE_LESS;
-			//set_notifmode( 2, -1 ); // show message "less"
 		}
 	}
 
