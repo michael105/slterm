@@ -13,7 +13,7 @@ ENABLEDEBUG := 0
 FULLDEBUG := 0
 
 # version
-VERSION := 0.99.5.7
+VERSION := 0.99.6.0
 
 # Set to 1 enable Xresource configuration
 # (in addition, slterm has to be started with the option "-x on")
