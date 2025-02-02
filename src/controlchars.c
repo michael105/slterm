@@ -395,11 +395,11 @@ unknown:
 			break;
 		case 'S': /* SU -- Scroll <n> line up */
 			DEFAULT(csiescseq.arg[0], 1);
-			tscrollup(term->top, csiescseq.arg[0], 0);
+			tscrollup(term->scroll_top, csiescseq.arg[0], 0);
 			break;
 		case 'T': /* SD -- Scroll <n> line down */
 			DEFAULT(csiescseq.arg[0], 1);
-			tscrolldown(term->top, csiescseq.arg[0], 0);
+			tscrolldown(term->scroll_top, csiescseq.arg[0], 0);
 			break;
 		case 'L': /* IL -- Insert <n> blank lines */
 			DEFAULT(csiescseq.arg[0], 1);
@@ -680,7 +680,7 @@ int eschandle(uchar ascii) {
 			return 0;
 		case 'D': /* IND -- Linefeed */
 			if (term->cursor.y == term->scroll_bottom) {
-				tscrollup(term->top, 1, 1);
+				tscrollup(term->scroll_top, 1, 1);
 			} else {
 				tmoveto(term->cursor.x, term->cursor.y + 1);
 			}
@@ -692,8 +692,8 @@ int eschandle(uchar ascii) {
 			term->tabs[term->cursor.x] = 1;
 			break;
 		case 'M': /* RI -- Reverse index */
-			if (term->cursor.y == term->top) {
-				tscrolldown(term->top, 1, 1);
+			if (term->cursor.y == term->scroll_top) {
+				tscrolldown(term->scroll_top, 1, 1);
 			} else {
 				tmoveto(term->cursor.x, term->cursor.y - 1);
 			}

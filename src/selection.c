@@ -347,20 +347,20 @@ void selscroll(int orig, int n) {
 	}
 
 	if (BETWEEN(sel.ob.y, orig, term->scroll_bottom) || BETWEEN(sel.oe.y, orig, term->scroll_bottom)) {
-		if ((sel.ob.y += n) > term->scroll_bottom || (sel.oe.y += n) < term->top) {
+		if ((sel.ob.y += n) > term->scroll_bottom || (sel.oe.y += n) < term->scroll_top) {
 			selclear();
 			return;
 		}
 		if (sel.type == SEL_RECTANGULAR) {
-			if (sel.ob.y < term->top) {
-				sel.ob.y = term->top;
+			if (sel.ob.y < term->scroll_top) {
+				sel.ob.y = term->scroll_top;
 			}
 			if (sel.oe.y > term->scroll_bottom) {
 				sel.oe.y = term->scroll_bottom;
 			}
 		} else {
-			if (sel.ob.y < term->top) {
-				sel.ob.y = term->top;
+			if (sel.ob.y < term->scroll_top) {
+				sel.ob.y = term->scroll_top;
 				sel.ob.x = 0;
 			}
 			if (sel.oe.y > term->scroll_bottom) {

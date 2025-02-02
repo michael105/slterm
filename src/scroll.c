@@ -6,10 +6,10 @@ void tsetscroll(int t, int b) {
 	LIMIT(b, 0, term->rows - 1);
 	if (t > b) {
 		//		SWAPint( t,b );
-		term->top = b;
+		term->scroll_top = b;
 		term->scroll_bottom = t;
 	} else {
-		term->top = t;
+		term->scroll_top = t;
 		term->scroll_bottom = b;
 	}
 }
@@ -264,7 +264,7 @@ void tnewline(int first_col) {
 	//xxx
 	//DBG("tnewline: %d, term->scr: %d  histindex: %d\n",first_col, term->scr,term->histindex );
 	if (y == term->scroll_bottom) {
-		tscrollup(term->top, 1, 1);
+		tscrollup(term->scroll_top, 1, 1);
 	} else {
 		y++;
 	}

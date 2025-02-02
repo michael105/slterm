@@ -129,7 +129,7 @@ void treset(void) {
 	for (i = tabspaces; i < term->colalloc; i += tabspaces) {
 		term->tabs[i] = 1;
 	}
-	term->top = 0;
+	term->scroll_top = 0;
 	term->scroll_bottom = term->rows - 1;
 	term->mode = MODE_WRAP | MODE_UTF8; // not UTF8-> MODE_UTF8 eq 0
 	memset(term->trantbl, CS_USA, sizeof(term->trantbl));
@@ -275,14 +275,14 @@ void tmoveato(int x, int y) {
 		//term->scroll_retmark = term->current_retmark;
 	}
 
-	tmoveto(x, y + ((term->cursor.state & CURSOR_ORIGIN) ? term->top : 0));
+	tmoveto(x, y + ((term->cursor.state & CURSOR_ORIGIN) ? term->scroll_top : 0));
 }
 
 void tmoveto(int x, int y) {
 	int miny, maxy;
 
 	if (term->cursor.state & CURSOR_ORIGIN) {
-		miny = term->top;
+		miny = term->scroll_top;
 		maxy = term->scroll_bottom;
 	} else {
 		miny = 0;

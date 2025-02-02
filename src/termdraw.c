@@ -379,13 +379,13 @@ void tinsertblank(int n) {
 }
 
 void tinsertblankline(int n) {
-		if (BETWEEN(term->cursor.y, term->top, term->scroll_bottom)) {
+		if (BETWEEN(term->cursor.y, term->scroll_top, term->scroll_bottom)) {
 				tscrolldown(term->cursor.y, n, 0);
 		}
 }
 
 void tdeleteline(int n) {
-		if (BETWEEN(term->cursor.y, term->top, term->scroll_bottom)) {
+		if (BETWEEN(term->cursor.y, term->scroll_top, term->scroll_bottom)) {
 				tscrollup(term->cursor.y, n, 0);
 		}
 }
