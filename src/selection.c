@@ -113,8 +113,8 @@ void select_or_drawcursor(int selectsearch_mode, int type) {
 		selextend(term->cursor.x, term->cursor.y, type, done);
 		xsetsel(getsel());
 	} else { //  
-		xdrawcursor(term->cursor.x, term->cursor.y, TLINE(term->cursor.y)[term->cursor.x], term->ocx,
-				term->ocy, TLINE(term->ocy)[term->ocx]);
+		xdrawcursor(term->cursor.x, term->cursor.y, TLINE(term->cursor.y)[term->cursor.x], term->oldcursor_x,
+				term->oldcursor_y, TLINE(term->oldcursor_y)[term->oldcursor_x]);
 	}
 }
 

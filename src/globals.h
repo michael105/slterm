@@ -221,8 +221,8 @@ typedef struct {
 	int *dirty;  /* dirtyness of lines */ // points to an array
 
 	TCursor cursor;                                /* cursor */
-	int ocx;                                  /* old cursor col */
-	int ocy;                                  /* old cursor row */
+	int oldcursor_x;                                  /* old cursor col */
+	int oldcursor_y;                                  /* old cursor row */
 	int mode;                                 /* terminal mode flags */
 	int esc;                                  /* escape state flags */
 	char trantbl[4];                          /* charset table translation */ 
