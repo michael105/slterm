@@ -117,6 +117,9 @@ typedef union {
 
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
+# define __Q(_x) #_x
+# define _Q(_x) __Q(_x)
+
 
 // the binary name
 extern char* argv0;

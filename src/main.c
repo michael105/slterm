@@ -71,7 +71,7 @@ void config_init(void) {
 #endif
 
 void printversion(){
-	fprintf( stderr, "slterm version " VERSION "\n" );
+	fprintf( stderr, "slterm version " _Q(VERSION) "\n" );
 }
 
 void printhelp(){
@@ -221,8 +221,6 @@ int main(int argc, char *argv[]) {
 					exit(0);
 				case 'V':
 					printversion();
-# define __Q(_x) #_x
-# define _Q(_x) __Q(_x)
 					printf( "Git Revision " _GITREVISION_"\n");
 					printf( "\nCompiled " __COMPILEDATE__ "\n"
 							__UNAME__ "\n"
