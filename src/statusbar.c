@@ -13,8 +13,8 @@ static int focusdraw = 1;
 
 
 void drawstatus(){
-	term->dirty[term->bot] = 1;
-	drawregion(0, term->bot, term->cols, term->bot + 1);
+	term->dirty[term->scroll_bottom] = 1;
+	drawregion(0, term->scroll_bottom, term->cols, term->scroll_bottom + 1);
 }
 
 void statusbar_focusin(){
@@ -114,8 +114,9 @@ int tfinputlen = 512;
 
 
 // for the mode MODE_ENTERSTRING
-void statusbar_kpress( KeySym *ks, char *buf ){
+int statusbar_kpress( XKeyEvent *ke, KeySym *ks, char *buf ){
 
+	return(0);
 }
 
 
@@ -124,68 +125,68 @@ void statusbar_kpress( KeySym *ks, char *buf ){
 // updates the statusbar with current line, etc., when visible.
 void updatestatus(){
 
-	if ( statusvisible ){
+	if ( !statusvisible )
+		return;
 
-		// currently shown number of cols
-		int stwidth = statuswidth;
-		if ( term->cols != statuswidth )
-			stwidth = term->cols;
+	// currently shown number of cols
+	int stwidth = statuswidth;
+	if ( term->cols != statuswidth )
+		stwidth = term->cols;
 
-		char buf[512];
-		memset( buf, ' ', 256 );
-		//bzero(buf+256,256);
+	char buf[512];
+	memset( buf, ' ', 256 );
+	//bzero(buf+256,256);
 
-		//int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d", p_status,
-		int p = 0;
+	//int p = sprintf(buf,"  %s  %5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d", p_status,
+	int p = 0;
 
-		int fstwidth = stwidth;
+	int fstwidth = stwidth;
 
-		stwidth -= strlen(p_status)+3; // try to keep that much free space at the left
+	stwidth -= strlen(p_status)+3; // try to keep that much free space at the left
 
-		// scrollinfo
-		if ( stwidth > 32 + 11 ){
-			p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
-					term->histindex-term->scr,term->histindex-term->scr+term->rows, 
-					term->histindex+term->rows, term->histindex+term->rows-(term->histindex-term->scr+term->rows),
-					((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1),
-					((term->histindex-term->scr-term->scrollmarks[0]+1)*100)/((term->histindex-term->scrollmarks[0]+1)?term->histindex-term->scrollmarks[0]+1:1),
-					term->scrolled_retmark
-					);
+	// scrollinfo
+	if ( stwidth > 32 + 11 ){
+		p = sprintf(buf+256,"%5d-%2d %5d %5d %3d%% (%3d%%)   RM:%3d ",
+				term->histindex-term->scr,term->histindex-term->scr+term->rows, 
+				term->histindex+term->rows, term->histindex+term->rows-(term->histindex-term->scr+term->rows),
+				((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1),
+				((term->histindex-term->scr-term->scrollmarks[0]+1)*100)/((term->histindex-term->scrollmarks[0]+1)?term->histindex-term->scrollmarks[0]+1:1),
+				term->scrolled_retmark
+				);
 
-			if ( stwidth > p+10 ){
-				for ( int a=1; a<10; a++ ){
-					if ( term->scrollmarks[a] )
-						buf[p++] = a+'0';
-					else
-						buf[p++] = ' ';
-				}
-				if ( term->scrollmarks[0] )
-					buf[p++] = '0';
-				else 
+		if ( stwidth > p+10 ){
+			for ( int a=1; a<10; a++ ){
+				if ( term->scrollmarks[a] )
+					buf[p++] = a+'0';
+				else
 					buf[p++] = ' ';
 			}
-
-		} else if ( stwidth > 20 + 6 ){ //TODO: other values (line number)
-			p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
-					term->histindex+term->rows, term->histindex+term->rows-(term->histindex-term->scr+term->rows),
-					((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1),
-					term->scrolled_retmark );
-		} else {
-			p = sprintf(buf+256,"%5d %3d%% ",
-					term->histindex+term->rows-(term->histindex-term->scr+term->rows),
-					((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1) );
+			if ( term->scrollmarks[0] )
+				buf[p++] = '0';
+			else 
+				buf[p++] = ' ';
 		}
 
-		//printf("p: %d\n",p);
-		buf[p] = 0;
-
-		int bp = 256 - fstwidth + p;
-		if ( bp <0 ) bp = 0;
-		if ( 256-bp > strlen(p_status) +3 )
-			memcpy( buf+bp+3, p_status, strlen(p_status) );
-
-		setstatus(buf+bp);
+	} else if ( stwidth > 20 + 6 ){ //TODO: other values (line number)
+		p = sprintf(buf+256,"%5d %5d %3d%%   RM:%3d ",
+				term->histindex+term->rows, term->histindex+term->rows-(term->histindex-term->scr+term->rows),
+				((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1),
+				term->scrolled_retmark );
+	} else {
+		p = sprintf(buf+256,"%5d %3d%% ",
+				term->histindex+term->rows-(term->histindex-term->scr+term->rows),
+				((term->histindex-term->scr)*100)/((term->histindex)?term->histindex:1) );
 	}
+
+	//printf("p: %d\n",p);
+	buf[p] = 0;
+
+	int bp = 256 - fstwidth + p;
+	if ( bp <0 ) bp = 0;
+	if ( 256-bp > strlen(p_status) +3 )
+		memcpy( buf+bp+3, p_status, strlen(p_status) );
+
+	setstatus(buf+bp);
 }
 
 
@@ -243,8 +244,8 @@ void showstatus(int show, char *status){
 		if ( statusvisible ){
 			statusvisible = 0;
 			// clear status
-			term->dirty[term->bot] = 1;
-			drawregion(0, term->bot, term->cols, term->bot + 1);
+			term->dirty[term->scroll_bottom] = 1;
+			drawregion(0, term->scroll_bottom, term->cols, term->scroll_bottom + 1);
 			//term->rows++;
 			//tresize(term->cols,term->rows+1);
 		}
@@ -256,7 +257,7 @@ void set_notifmode(int type, KeySym ksym) {
 	static char *lib[] = {" MOVE ", "SELECT"," LESS " };
 	static Glyph *g, *deb, *fin;
 	static int col, bot;
-	col = term->cols, bot = term->bot;
+	col = term->cols, bot = term->scroll_bottom;
 
 	if (ksym == -1) { // show
 		free(g);

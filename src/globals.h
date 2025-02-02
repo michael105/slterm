@@ -33,7 +33,7 @@ int ispagebased = 0; // counter, tries to keep track, whether the running progra
 // needs to be a power of 2.
 // memory usage is RETMARKCOUNT*4 bytes,
 // and the array is scanned linear when browsing to the marks.
-#define RETMARKCOUNT 512
+#define RETMARKCOUNT 256
 
 
 typedef unsigned char uchar;
@@ -69,7 +69,6 @@ typedef union {
 
 #else
 
-//#define utfchar char
 #define utfchar unsigned char
 #define UTF_INVALID 0xff
 #define UTF_SIZ 1
@@ -110,16 +109,19 @@ typedef union {
 #define MODBIT(x, set, bit) ((set) ? ((x) |= (bit)) : ((x) &= ~(bit)))
 
 
-//#define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);\
-	b = (void*)((POINTER)a ^ (POINTER)b);\
-	a = (void*)((POINTER)a ^ (POINTER)b);}
+//#define SWAPp(a,b) {a = (void*)((POINTER)a ^ (POINTER)b);
+//	b = (void*)((POINTER)a ^ (POINTER)b);
+//	a = (void*)((POINTER)a ^ (POINTER)b);}
 
 #define SWAPp(_a,_b) { void* _tmp = _a; _a=_b; _b=_tmp; }
 
 #define SWAPint(a,b) {a^=b;b^=a;a^=b;}
 
+# define __Q(_x) #_x
+# define _Q(_x) __Q(_x)
 
 
+// the binary name
 extern char* argv0;
 
 typedef XftColor Color;
@@ -169,7 +171,7 @@ typedef struct {
 typedef struct {
 	Display *dpy;
 	Colormap cmap;
-	Window win;
+	Window win; // the window itself, = XCreateWindow()
 	Drawable buf;
 	GlyphFontSpec *specbuf; /* font spec buffer used for rendering */
 	Atom xembed, wmdeletewin, netwmname, netwmpid;
@@ -202,7 +204,7 @@ typedef struct {
 	uint histsize; // history size-1, size of the buffer. (the count of written lines is in histindex,
 						// albite histindex only indicates the number of written lines in the hist buffer,
 						// until the buffer is circled.)
-	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll at the top
+	int scr;   // scroll back. scr is counted for scrolled lines. scr=histsize: scroll to the top
 				  // scr=0 : scroll to the bottom
 
 	// needed for defining scroll areas
@@ -214,17 +216,17 @@ typedef struct {
 	// Maybe. I'm always getting dizzy with the buffer stuff here.
 	// Other things are more important, imho. If someone likes to
 	// change it, the Macro TLINE and the functions in scroll.c are the locations to begin with.
-	int top;                                  /* top    scroll limit */
-	int bot;                                  /* bottom scroll limit */
+	int scroll_top;                                  /* top    scroll limit */
+	int scroll_bottom;                                  /* bottom scroll limit */
 	// top / bot: when only parts of the screen are scrolled (scroll areas set)
 			 
 	int *dirty;  /* dirtyness of lines */ // points to an array
 
 	TCursor cursor;                                /* cursor */
-	int ocx;                                  /* old cursor col */
-	int ocy;                                  /* old cursor row */
+	int oldcursor_x;                                  /* old cursor col */
+	int oldcursor_y;                                  /* old cursor row */
 	int mode;                                 /* terminal mode flags */
-	int esc;                                  /* escape state flags */
+	int esc_state;                                  /* escape state flags */
 	char trantbl[4];                          /* charset table translation */ 
 	int charset;                              /* current charset */
 	int icharset;                             /* selected charset for sequence */
@@ -234,7 +236,6 @@ typedef struct {
 	int retmarks[RETMARKCOUNT];
 	int current_retmark; // current retmark. retmarks are stored circular.
 	int scrolled_retmark; // to which retmark was scrolled
-	//int scroll_retmark; // to which retmark was scrolled
 	char circledhist;
 } Term;
 

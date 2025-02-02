@@ -61,7 +61,7 @@ LIBS = -L$(X11LIB) -lX11 -lXft -lc -lutil  \
        `$(PKG_CONFIG) --libs freetype2`
 
 # flags
-STCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600
+STCPPFLAGS = -DVERSION=$(VERSION) -D_XOPEN_SOURCE=600
 STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(XRESOURCESFLAG) \
            $(OPT_FLAG) $(UTF8FLAG) -DHISTSIZEBITS=$(HISTSIZEBITS) $(DBGFLAG) \
            -DEMBEDFONT=$(EMBEDFONT) $(OPTIONS) -Wno-unused-result
@@ -199,7 +199,7 @@ compile.h:
 	@echo '#define _VERSION_ "$(VERSION)"' >> compile.h 
 	@echo '#define _GITREVISION_ "'`git rev-parse HEAD`'"' >> compile.h 
 	@echo -n '#define __COMPILECOMMAND__ "' >> compile.h 
-	@echo -n '$(CC) -o slterm $(SRC) $(STCFLAGS) $(STLDFLAGS)' >> compile.h
+	@echo -n $(CC) -o slterm $(SRC) $(STCFLAGS) $(STLDFLAGS) >> compile.h
 	@echo '"' >> compile.h
 	@echo '#define __COMPILEDATE__ "'`date`\" >>compile.h
 	@echo '#define __UNAME__ "'`uname -m -o -r -s`\" >> compile.h
@@ -209,8 +209,11 @@ compile.h:
 	@echo '#define __ENABLEDEBUG__ "$(ENABLEDEBUG)"' >> compile.h
 	@echo '#define __CC_VERSION__ "'`$(CC) -dumpversion`'"' >> compile.h
 	@echo '#define __CC__ "$(CC)"' >> compile.h
-	@echo compile:
-	cat compile.h
+	@echo compile.h
+	@sed -ne 's/^#define //p' compile.h | sed -e 's/^_*//g' | sed -e 's/__* /: /' 
+
+
+#cat compile.h
 
 	
 	

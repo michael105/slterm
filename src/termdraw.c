@@ -33,12 +33,12 @@ void draw(void) {
 		}
 
 		/* adjust cursor position */
-		LIMIT(term->ocx, 0, term->cols - 1);
-		LIMIT(term->ocy, 0, term->rows - 1);
+		LIMIT(term->oldcursor_x, 0, term->cols - 1);
+		LIMIT(term->oldcursor_y, 0, term->rows - 1);
 
 #ifdef UTF8
-		if (term->line[term->ocy][term->ocx].mode & ATTR_WDUMMY) {
-				term->ocx--;
+		if (term->line[term->oldcursor_y][term->oldcursor_x].mode & ATTR_WDUMMY) {
+				term->oldcursor_x--;
 		}
 		if (term->line[term->cursor.y][cx].mode & ATTR_WDUMMY) {
 				cx--;
@@ -47,12 +47,12 @@ void draw(void) {
 
 		drawregion(0, 0, term->cols, term->rows);
 		if (term->scr == 0) {
-				xdrawcursor(cx, term->cursor.y, term->line[term->cursor.y][cx], term->ocx, term->ocy,
-								term->line[term->ocy][term->ocx]);
+				xdrawcursor(cx, term->cursor.y, term->line[term->cursor.y][cx], term->oldcursor_x, term->oldcursor_y,
+								term->line[term->oldcursor_y][term->oldcursor_x]);
 		}
-		term->ocx = cx, term->ocy = term->cursor.y;
+		term->oldcursor_x = cx, term->oldcursor_y = term->cursor.y;
 		xfinishdraw();
-		xximspot(term->ocx, term->ocy);
+		xximspot(term->oldcursor_x, term->oldcursor_y);
 }
 
 void redraw(void) {
@@ -379,13 +379,13 @@ void tinsertblank(int n) {
 }
 
 void tinsertblankline(int n) {
-		if (BETWEEN(term->cursor.y, term->top, term->bot)) {
+		if (BETWEEN(term->cursor.y, term->scroll_top, term->scroll_bottom)) {
 				tscrolldown(term->cursor.y, n, 0);
 		}
 }
 
 void tdeleteline(int n) {
-		if (BETWEEN(term->cursor.y, term->top, term->bot)) {
+		if (BETWEEN(term->cursor.y, term->scroll_top, term->scroll_bottom)) {
 				tscrollup(term->cursor.y, n, 0);
 		}
 }
