@@ -144,7 +144,7 @@ static_recurse: slterm_terminfo.h slterm_license.h compile.h $(EMBEDFONTS)
 		-lxcb -lXau -lc -lbsd \
 		-lXft -lfontconfig -lfreetype -lpng16 -lz -lexpat -luuid \
 		-lXrender -lX11  \
-		-Wl,--end-group -static -Os -s
+		-Wl,--end-group -static -O2 -s
 		
 		#-lintl -liconv 
 		#-lbz2 ( dummies in global.c )
@@ -162,15 +162,6 @@ embed/%.ttfz: embed/%.ttf
 	@echo "compressing $<  ->  $@"
 	../tools/ttfz $< $@
 
-staticold:
-	gcc -o slterm slterm_src.c \
-		-I/usr/X11R6/include -I/usr/include/uuid -I/usr/include/freetype2 \
-		-I/usr/include/freetype2 -DVERSION=\"0.98\" -D_XOPEN_SOURCE=600 \
-		-DHISTSIZEBITS=14 -DENABLEDEBUG=0 -DDEBUG_INCLUDESRC -L/usr/X11R6/lib \
-		-Wl,--start-group -lX11 -lxcb -lXau -lc -lXdmcp -lbsd -lXft -lfontconfig \
-		-lfreetype -lbz2 -lpng16 -lz -lexpat -luuid -lintl -liconv -lXrender -lX11 \
-		-lXt -lXm -lXmu -lfontconfig -lfreetype -lfreetype -Wl,--end-group \
-		-static -Os
 
 options:
 	@echo  build options:
