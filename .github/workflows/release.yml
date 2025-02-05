@@ -11,7 +11,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Download Binary using wget
         run: |
           wget https://github.com/michael105/static-bin/raw/refs/heads/main/xorg/slterm
