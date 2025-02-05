@@ -103,10 +103,10 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: slterm_${{ steps.get_version.outputs.version }}.deb
-            asset_name: slterm_${{ steps.get_version.outputs.version }}.deb
-            asset_content_type: application/vnd.debian.binary-package
-  
-  
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: slterm_${{ steps.get_version.outputs.version }}_static.deb
+          asset_name: slterm_${{ steps.get_version.outputs.version }}_static.deb
+          asset_content_type: application/vnd.debian.binary-package
+
+
