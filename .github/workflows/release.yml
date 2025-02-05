@@ -68,7 +68,7 @@ jobs:
           cp -R README.md LICENSE PATCHES.md test dist/debian/usr/local/share/doc/slterm/
           mkdir dist/debian/usr/local/share/doc/slterm/doc
           cp doc/BLURP.md doc/ansi_escape_sequences.txt doc/ascii-controlchars-vt102.txt doc/ascii_0-127.png doc/ascii_0-127.txt doc/ascii_128-255.png doc/ascii_128-255.txt doc/colornames.html doc/colornames_gray.html doc/fontconfig.txt  doc/patches-applied dist/debian/usr/local/share/doc/slterm/doc/
-          dpkg-deb --build dist/debian slterm_$VERSION_static.deb
+          dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}_static.deb
 
       - name: upload static package
         uses: actions/upload-release-asset@v1
@@ -93,7 +93,6 @@ jobs:
           sudo make install DESTDIR=$(pwd)/dist/debian
       - name: build package
         run: |
-          VERSION=${{ steps.get_version.outputs.version }}
           cat dist/debian/DEBIAN/control
           dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}.deb
       - name: package check
@@ -107,8 +106,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: slterm_${{ steps.get_version.outputs.version }}_static.deb
-          asset_name: slterm_${{ steps.get_version.outputs.version }}_static.deb
+          asset_path: slterm_${{ steps.get_version.outputs.version }}.deb
+          asset_name: slterm_${{ steps.get_version.outputs.version }}.deb
           asset_content_type: application/vnd.debian.binary-package
 
 
