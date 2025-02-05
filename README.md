@@ -6,25 +6,26 @@
 	with minimal external dependencies (Xlib, Xft, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
-	VT100 compatible.
+	VT102 compatible.
 
 	The focus is on stability, performance, good rendering and VTx compatibility,
 	for tabs or split screen I suggest to use either screen/tmux or 
-	i3(my recommendation)/dmux/tabbed.
+	i3(my recommendation)/herbstluft/tabbed.
 
 	Finally getting close to a first "stable" release.
 	Only things missing (imho) are history search and storing.
 	Should run stable, please open issues for any crashes.
 	
-	The statically linked binary (slterm_linux_amd64) in "releases" should work for every 
+	The statically linked binary 'slterm_linux_amd64' in 'releases' should work for every 
 	64bit linux with a running xorg xserver, and (surprisingly) doesn't need more
 	memory than the shared executable.
 
 	Ram usage with an empty history buffer is about (virtual) 6MB + (resident) 4MB.
 	
 	Packages for the latest release of ubuntu (linked shared) and a statically
-	linked linked binary for all 64bit versions of debian/ubuntu/any distribution with .deb
-	support is online under 'releases'.
+	linked linked binary package for all 64bit versions of debian/ubuntu/any distribution with .deb
+	support are also in 'releases'.
+
 
 
 ##### Features
@@ -41,7 +42,7 @@
    * Several performance and memory usage related modifications;
      slterm should be the fastest available terminal emulator for X,
      which does real scrolling 
-   * secure mode, option -X: lock all pages into memory, prevent swapping
+   * secure mode, option -X: lock all pages into memory, prevent swapping to disk
    * Gradient custom 32 color palette for colors 0..7
      (0..7 with attributes normal, bold, faint, bold_faint)
      and the first 16 background colors
@@ -74,6 +75,7 @@
   * `Tab`, `Tab left`: Jump back and forth to the locations, commands had been entered.
    
 <!-- <img align="right" src="images/vt-102-1984.jpg"> -->
+
 	 
 ##### Scrollmarks: Bookmarks within the history.
 
@@ -200,7 +202,7 @@ The scripts for creating the output are within ./test
 
 
 .. Did split the sourcefile (one big file with several thousand lines)
-into smaller pieces. Hopefully hacking st is in the future a little bit more conveniant. 
+into smaller pieces. Hopefully hacking slterm is in the future a little bit more conveniant. 
 
 
 ---
