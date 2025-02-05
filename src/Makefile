@@ -259,8 +259,8 @@ build/%.o: %.c
 
 man: slterm.1
 
-slterm.1: slterm.1.rst
-	rst2man slterm.1.rst > slterm.1 || rst2man.py slterm.1.rst > slterm.1
+slterm.1: ../slterm.1.rst
+	rst2man ../slterm.1.rst > slterm.1 || rst2man.py slterm.1.rst > slterm.1
 
 clean:
 	rm -f slterm $(OBJ) slterm-$(VERSION).tar.gz

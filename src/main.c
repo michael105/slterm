@@ -94,7 +94,7 @@ void fontusage(){
 void usage(void) {
 	printversion();
 	fprintf(stderr,"\nusage:\n\n"
-			" slterm -H: show help\n"
+			" slterm -H: Display the manpage\n"
 		  	"        -I: dump terminfo file\n"
 			"        -L display license\n\n"
 			" slterm [-aiv] [-c class] [-f font] [-g geometry] [-n name] [-o file]\n"

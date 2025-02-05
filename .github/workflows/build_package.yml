@@ -3,7 +3,7 @@ name: Build package
 on:
   push:
     tags:
-      - '*'
+      - 'never*'
 
   #push:
     #  branches: [ "master" ]
