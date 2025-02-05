@@ -67,7 +67,7 @@ jobs:
           mkdir -p dist/debian/usr/local/share/doc/slterm
           cp -R README.md LICENSE PATCHES.md test dist/debian/usr/local/share/doc/slterm/
           mkdir dist/debian/usr/local/share/doc/slterm/doc
-          cp doc/* dist/debian/usr/local/share/doc/slterm/doc/
+          cp doc/BLURP.md doc/ansi_escape_sequences.txt doc/ascii-controlchars-vt102.txt doc/ascii_0-127.png doc/ascii_0-127.txt doc/ascii_128-255.png doc/ascii_128-255.txt doc/colornames.html doc/colornames_gray.html doc/fontconfig.txt doc/patches-applied dist/debian/usr/local/share/doc/slterm/doc/
           dpkg-deb --build dist/debian slterm_$VERSION_static.deb
 
       - name: upload static package
