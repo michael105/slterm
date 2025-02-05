@@ -3,10 +3,14 @@
 
 
 	Slim (124kB linked shared) and fast terminal emulator for X11,
-	with minimal external dependencies (Xlib, fontconfig and freetype).
+	with minimal external dependencies (Xlib, Xft, fontconfig and freetype).
    Descendant of st (suckless terminal), modified extensively.
 
-	VTxxx compatible.
+	VT100 compatible.
+
+	The focus is on stability, performance, good rendering and VTx compatibility,
+	for tabs or split screen I suggest to use either screen/tmux or 
+	i3(my recommendation)/dmux/tabbed.
 
 	Finally getting close to a first "stable" release.
 	Only things missing (imho) are history search and storing.
@@ -18,6 +22,10 @@
 
 	Ram usage with an empty history buffer is about (virtual) 6MB + (resident) 4MB.
 	
+	Packages for the latest release of ubuntu (linked shared) and a statically
+	linked linked binary for all 64bit versions of debian/ubuntu/any distribution with .deb
+	support is online under 'releases'.
+
 
 ##### Features
 
@@ -30,7 +38,7 @@
    * Inline help (reference of the bound keys) 
    * Switching codepages with hotkeys (cp437,cp850,cp1252,..)
    * Input translation of unicode / X Keysyms to the current codepage
-   * Several performance and memory related modifications;
+   * Several performance and memory usage related modifications;
      slterm should be the fastest available terminal emulator for X,
      which does real scrolling 
    * secure mode, option -X: lock all pages into memory, prevent swapping
@@ -41,15 +49,6 @@
    * Additional cursor shapes
    * utf8 clipboard conversion
 
-
-Statically linked binaries with all dependencies are under "releases", 
-or at
-[https://github.com/michael105/static-bin/](https://github.com/michael105/static-bin)
-
-The latest development statically linked binary is named slterm_version.devel
-
-An ubuntu (debian) package is online at [github/actions/build_package](https://github.com/michael105/slterm/actions/workflows/build_package.yml) 
-(last workflow run -> Artifacts) 
 
 
 ---
@@ -105,6 +104,10 @@ An ubuntu (debian) package is online at [github/actions/build_package](https://g
  CP437 (IBM-PC1, et al., with those signs to draw borders and boxes),
  cp850, cp1250, cp1251, cp1253 are compiled in, 
  and can be selected by Ctrl+Win+[0..5]
+ A combination of cp437 and cp1252 is named cp4002, and used
+ with Ctrl_Win+6. It has German Umlauts and the box drawing characters
+ of cp437, at the usual codepoints.
+ 
  Other codepages would be possible, by adding them to charmap.h,
  and edit config.h
 
@@ -112,7 +115,7 @@ An ubuntu (debian) package is online at [github/actions/build_package](https://g
 
  Keyboard input is translated to the current charmap.
  
- UTF8 is abandoned for now, but the code for utf8 is left in the sources.
+ UTF8 is abandoned for now, besides utf8 conversion from/to the X clipboard.
 
 
 ##### Colors
@@ -221,18 +224,25 @@ For ubuntu : 'sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx1
 ### Install
 
 
-For Ubuntu/Debian:
+Statically linked 64bit binary: Download from 'releases', save the binary within 
+/usr/local/bin, (chmod a+x slterm), no further requirements besides a running Xserver are needed.
 
-download the latest release package from 
-(https://github.com/michael105/slterm/actions/workflows/build_package.yml) 
 
-(Select the topmost workflow run, at the bottom is a link under 'Artifacts' to the .deb package)
+For Ubuntu, latest release:
 
+download the latest release package .deb package from 'releases' at github. 
+
+For the shared linked package:
 	install dependencies: ' sudo apt-get install libfreetype6 libxft2 libfontconfig1 fonts-liberation '
-	install the package: ' sudo dpki -i slterm_xxx.deb '
+	install the package: ' sudo dpkg -i slterm_xxx.deb '
 
 
-from source: 
+Ubuntu/debian/any 64bit linux distribution with .deb package support,
+downlad the slterm_xxx_static.deb package, and install it with dpkg.
+No requirements besides the X Server are needed, the package is completely self containing.
+
+
+From source: 
 
 edit [config.make](config.make) (optionally) 
 edit [src/config.h](src/config.h) (optionally) 
@@ -244,7 +254,7 @@ The default configuration might be save.
 
 (no utf8, scrollback history 65536 lines, no XResources, installs into /usr/local/bin)
 
-If you'd like to change anything, please edit config.h and config.make
+If you'd like to change the preferences, please edit config.h and config.make
 
 
 
