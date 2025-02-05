@@ -78,38 +78,38 @@ jobs:
           asset_name: slterm_${{ steps.get_version.outputs.version }}_static.deb
           asset_content_type: application/vnd.debian.binary-package
 
-    - name: build requisites
-      run: sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx11-dev libxft-dev python3-docutils
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: Install project
-      run: |
-        rm dist/debian/usr/local/bin/slterm
-        cp ./control.tmp dist/debian/DEBIAN/control
-        sudo make install DESTDIR=$(pwd)/dist/debian
-    - name: build package
-      run: |
-        VERSION=${{ steps.get_version.outputs.version }}
-        cat dist/debian/DEBIAN/control
-        dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}.deb
-    - name: package check
-      run: |
-        sudo apt-get install libfreetype6 libxft2 libfontconfig1 fonts-liberation
-        sudo dpkg -i slterm_${{ steps.get_version.outputs.version }}.deb
-        slterm -V
-    - name: upload package
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: slterm_${{ steps.get_version.outputs.version }}.deb
-          asset_name: slterm_${{ steps.get_version.outputs.version }}.deb
-          asset_content_type: application/vnd.debian.binary-package
-
-
+      - name: build requisites
+        run: sudo apt-get install libfreetype-dev x11proto-dev fontconfig libx11-dev libxft-dev python3-docutils
+      - name: make
+        run: make
+      - name: make check
+        run: make check
+      - name: Install project
+        run: |
+          rm dist/debian/usr/local/bin/slterm
+          cp ./control.tmp dist/debian/DEBIAN/control
+          sudo make install DESTDIR=$(pwd)/dist/debian
+      - name: build package
+        run: |
+          VERSION=${{ steps.get_version.outputs.version }}
+          cat dist/debian/DEBIAN/control
+          dpkg-deb --build dist/debian slterm_${{ steps.get_version.outputs.version }}.deb
+      - name: package check
+        run: |
+          sudo apt-get install libfreetype6 libxft2 libfontconfig1 fonts-liberation
+          sudo dpkg -i slterm_${{ steps.get_version.outputs.version }}.deb
+          slterm -V
+      - name: upload package
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: slterm_${{ steps.get_version.outputs.version }}.deb
+            asset_name: slterm_${{ steps.get_version.outputs.version }}.deb
+            asset_content_type: application/vnd.debian.binary-package
+  
+  
 
             #    steps:
             #      - name: Checkout repository
