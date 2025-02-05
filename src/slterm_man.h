@@ -326,7 +326,7 @@ LICENSE
        slterm -L
 
 SEE ALSO
-       tabbed(1), utmp(1), stty(1)
+       i3(1), dwm(1), screen(1), tmux (1), tabbed(1), utmp(1), stty(1)
 
 BUGS
        See the README in the distribution.
