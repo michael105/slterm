@@ -43,18 +43,6 @@ void statusbar_focusout(){
 	}
 }
 
-// text entering, textfield
-// besser als struct, objektorientiert.
-uchar tfbuf[512];
-int tfbuflen = 512;
-
-int tfpos = 0; // is not necessarily the pos of the cursor.
-int tftextlen = 0;
-int tfvisible = 0;
-
-uchar tfinput[512];
-int tfinputlen = 512;
-
 // callbacks
 //
 // xkeyboard -> keypress
@@ -110,14 +98,6 @@ int tfinputlen = 512;
 // kann ich natuerlich auch gleich mit ids arbeiten.
 // fuer jede instanz, und jede klasse.
 //
-
-
-
-// for the mode MODE_ENTERSTRING
-int statusbar_kpress( XKeyEvent *ke, KeySym *ks, char *buf ){
-
-	return(0);
-}
 
 
 

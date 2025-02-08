@@ -1,4 +1,40 @@
 
+#define TFBLEN 256
+
+
+// text entering, textfield
+// besser als struct, objektorientiert.
+uchar tfbuf[TFBLEN];
+int tfbuflen = TFBLEN;
+
+int tfpos = 0; // is not necessarily the pos of the cursor.
+int tftextlen = 0;
+int tfvisible = 0;
+
+uchar tfinput[TFBLEN];
+int tfinputlen = TFBLEN;
+
+
+
+// toggle search
+void lessmode_search( const Arg *a ){
+	
+
+
+}
+
+
+
+
+// for the mode MODE_ENTERSTRING
+int statusbar_kpress( XKeyEvent *ke, KeySym *ks, char *buf ){
+
+	return(0);
+}
+
+
+
+
 // Argument Arg.i is one of LESSMODE_ON, LESSMODE_OFF, LESSMODE_TOGGLE
 // can be or'ed with SCROLL (all definitions), then scrolls also
 void lessmode_toggle(const Arg *a){
