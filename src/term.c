@@ -160,6 +160,7 @@ void tswapscreen(void) {
 	// swap the whole term struct
 	///printf("swapscreen, mode: %x\n",term->mode);
 	if ( p_alt != term ){ // altscr is not visible now
+		//tcursor( CURSOR_SAVE );
 		lessmode_toggle( &(Arg){.i=LESSMODE_OFF} ); 
 		if ( !p_alt ){ // displayed first time
 			tnew(term->cols, term->rows, ALTSCREEN_HISTSIZE);
@@ -180,6 +181,7 @@ void tswapscreen(void) {
 		term->mode |= MODE_ALTSCREEN;
 	} else {
 		term = p_term;
+		//tcursor( CURSOR_LOAD );
 		if ( ( p_alt->rows != term->rows ) || ( p_alt->cols != term->cols ))
 			tresize( p_alt->cols, p_alt->rows );
 	}
