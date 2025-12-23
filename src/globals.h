@@ -236,6 +236,9 @@ typedef struct {
 	int retmarks[RETMARKCOUNT];
 	int current_retmark; // current retmark. retmarks are stored circular.
 	int scrolled_retmark; // to which retmark was scrolled
+	char utf8buf[4];  // buffer for utf8 chars in tputc
+	int utf8bufpos;
+	int utf8len;
 	char circledhist;
 } Term;
 

@@ -122,12 +122,67 @@ void tputtab(int n) {
 		term->cursor.x = LIMIT(x, 0, term->cols - 1);
 }
 
-void tputc(Rune u) {
-		char c[UTF_SIZ];
-		int width, len;
-		Glyph *gp;
-//	if ( u>=0x80 )
-//		printf("r: %x\n",u);
+void _tputc(Rune u, int recurse) {
+	char c[UTF_SIZ];
+	int width, len;
+	Glyph *gp;
+
+	if ( !recurse ){
+		if ( term->utf8bufpos ){ //within a (possible) utf8 sequence
+			if ( term->utf8bufpos < term->utf8len ){
+				term->utf8buf[term->utf8bufpos] = u;
+				term->utf8bufpos++;
+				return;
+			}
+			char nc = 0;
+			if ( term->utf8bufpos == term->utf8len ){
+				uint uc = ( (term->utf8buf[0] & 0x1f) << 6 ) 
+								| (term->utf8buf[1] & 0x3f);
+				if ( term->utf8len > 2 ){
+					uc = ( uc << 6 ) | (term->utf8buf[2] & 0x3f);	
+				}
+				if ( term->utf8len > 3 ){
+					uc = (( uc << 6 )&0x1fffff ) | (term->utf8buf[3] & 0x3f);	
+				}
+				printf("uc: %d\n",uc);
+				nc = unicode_to_charmap( uc );
+				if ( nc ){ 
+					u = nc; 
+					printf("utf8: replace %d => %d\n",uc,nc);
+					term->utf8bufpos=term->utf8len=0;
+				} else {
+					printf("!!! utf8: unicode character not found: %d => %d\n",uc,nc);
+				}
+			}  
+			// wrong start / not found / no utf8
+			if ( !nc ){
+				tputc(term->utf8buf[0],1);  // remove first byte
+				term->utf8bufpos=term->utf8len=0;
+				for ( int a = 1; a<term->utf8bufpos; a++ )
+					tputc(term->utf8buf[a],0);
+				tputc( u,0 );
+				return;
+			}
+		} else {
+			term->utf8len = 0;
+			//printf("r1: %x\n",u);
+			if ( (u&0xc0) == 0xc0 ){ // start 
+				printf("r: %x\n",u);
+				if ( (u&0xe0) == 0xc0 )
+					term->utf8len = 2;
+				else if ( (u&0xf0) == 0xe0 )
+					term->utf8len = 3;
+				else if ( (u&0xf8) == 0xf0 )
+					term->utf8len = 4;
+
+				if ( term->utf8len ){
+					term->utf8buf[0] = u; // start fetching
+					term->utf8bufpos = 1;
+					return;
+				}
+			}
+		}
+	}
 
 		//control = 0; // display binary
 #ifndef UTF8

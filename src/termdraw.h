@@ -26,7 +26,11 @@ void tfulldirt(void);
 
 
 void tputtab(int);
-void tputc(Rune);
+void _tputc(Rune,int recurse);
+#define tputc(_u,...) __tputc(_u,__VA_OPT__(__VA_ARGS__,) 0 )
+#define __tputc(_u,_r,...) _tputc(_u,_r)
+
+
 void tsetattr(int *, int);
 void tsetchar(Rune, Glyph *, int, int);
 
