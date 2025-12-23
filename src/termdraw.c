@@ -129,9 +129,10 @@ void _tputc(Rune u, int recurse) {
 
 	if ( !recurse ){
 		if ( term->utf8bufpos ){ //within a (possible) utf8 sequence
+			term->utf8buf[term->utf8bufpos] = u;
+			term->utf8bufpos++;
+			
 			if ( term->utf8bufpos < term->utf8len ){
-				term->utf8buf[term->utf8bufpos] = u;
-				term->utf8bufpos++;
 				return;
 			}
 			char nc = 0;
@@ -156,11 +157,10 @@ void _tputc(Rune u, int recurse) {
 			}  
 			// wrong start / not found / no utf8
 			if ( !nc ){
-				tputc(term->utf8buf[0],1);  // remove first byte
 				term->utf8bufpos=term->utf8len=0;
-				for ( int a = 1; a<term->utf8bufpos; a++ )
-					tputc(term->utf8buf[a],0);
-				tputc( u,0 );
+				//tputc(term->utf8buf[0],1);  // remove first byte
+				for ( int a = 0; a<term->utf8bufpos; a++ )
+					tputc(term->utf8buf[a],1);
 				return;
 			}
 		} else {
