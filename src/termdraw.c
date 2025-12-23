@@ -136,23 +136,43 @@ void _tputc(Rune u, int recurse) {
 
 			term->utf8buf[term->utf8bufpos] = u;
 			term->utf8bufpos++;
+			char nc = 0;
+			int uc = 0;
 
-			if ( term->utf8bufpos < term->utf8len ){
-				return; // check value?
+			if ( (u & 0xC0) != 0x80 )
+				uc=-1;
+			else if ( term->utf8bufpos == 2 && term->utf8len >2 ){
+				unsigned char b1 = term->utf8buf[0]; 
+																
+				if (( b1 == 0xE0 && u < 0xA0 ) || 
+						( b1 == 0xED && u >= 0xA0 )) 
+					uc=-1; // Surrogate (D800-DFFF)
+				else if (( b1 == 0xF0 && u < 0x90 ) ||
+						( b1 == 0xF4 && u >= 0x90 )) uc=-1; // > 0x10FFFF 
 			}
 
-			// term->utf8bufpos == term->utf8len
-			uint uc = ( (term->utf8buf[0] & 0x1f) << 6 ) 
-				| (term->utf8buf[1] & 0x3f);
-			if ( term->utf8len > 2 ){
-				uc = ( uc << 6 ) | (term->utf8buf[2] & 0x3f);	
-			}
-			if ( term->utf8len > 3 ){
-				uc = (( uc << 6 )&0x1fffff ) | (term->utf8buf[3] & 0x3f);	
-			}
-			char nc = unicode_to_charmap( uc );
+			if ( !uc && term->utf8bufpos < term->utf8len ){
+					return; 
+			} else if (!uc) {
+				// term->utf8bufpos == term->utf8len
+				uc = ( (term->utf8buf[0] & 0x1f) << 6 ) 
+					| (term->utf8buf[1] & 0x3f);
+				if ( term->utf8len > 2 ){
+					uc = ( uc << 6 ) | (term->utf8buf[2] & 0x3f);	
+				}
+				if ( term->utf8len > 3 ){
+					uc = (( uc << 6 )&0x1fffff ) | (term->utf8buf[3] & 0x3f);	
+				}
+				nc = unicode_to_charmap( uc );
+
 				if ( !nc ) {
-				printf("!!! utf8: unicode character not found: %d => %d\n",uc,nc);
+					printf("!!! utf8: unicode character not found: %d => %d\n",uc,nc);
+					for ( int a = 0; a<term->utf8bufpos; a++ )
+						printf("%2x",(uchar)term->utf8buf[a]);
+					printf("\n");
+				}
+			}
+			if ( !nc ){
 				char tmp[4];
 				memcpy(tmp,term->utf8buf,4);
 				int b = term->utf8bufpos;
