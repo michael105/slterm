@@ -129,39 +129,39 @@ void _tputc(Rune u, int recurse) {
 
 	if ( !recurse ){
 		if ( term->utf8bufpos ){ //within a (possible) utf8 sequence
-			if ( term->utf8bufpos > term->utf8len ){
-				for ( int a = 0; a<term->utf8bufpos; a++ )
-					tputc(term->utf8buf[a],1);
-				tputc(u,1);
-				term->utf8bufpos=term->utf8len=0;
-				return;
-			}
+
 			term->utf8buf[term->utf8bufpos] = u;
 			term->utf8bufpos++;
-			if ( term->utf8bufpos == term->utf8len ){
-				uint uc = ( (term->utf8buf[0] & 0x1f) << 6 ) 
-								| (term->utf8buf[1] & 0x3f);
-				if ( term->utf8len > 2 ){
-					uc = ( uc << 6 ) | (term->utf8buf[2] & 0x3f);	
-				}
-				if ( term->utf8len > 3 ){
-					uc = (( uc << 6 )&0x1fffff ) | (term->utf8buf[3] & 0x3f);	
-				}
-				printf("uc: %d\n",uc);
-				char nc = unicode_to_charmap( uc );
-				if ( nc ){ 
-					tputc(nc,1); 
-					printf("utf8: replace %d => %d\n",uc,nc);
-					term->utf8bufpos=term->utf8len=0;
-				} else {
-					printf("!!! utf8: unicode character not found: %d => %d\n",uc,nc);
-				for ( int a = 0; a<term->utf8bufpos; a++ )
-					tputc(term->utf8buf[a],1);
-					term->utf8bufpos=term->utf8len=0;
-				}
 
+			if ( term->utf8bufpos < term->utf8len ){
+				return; // check value?
 			}
-			return;
+
+			// term->utf8bufpos == term->utf8len
+			uint uc = ( (term->utf8buf[0] & 0x1f) << 6 ) 
+				| (term->utf8buf[1] & 0x3f);
+			if ( term->utf8len > 2 ){
+				uc = ( uc << 6 ) | (term->utf8buf[2] & 0x3f);	
+			}
+			if ( term->utf8len > 3 ){
+				uc = (( uc << 6 )&0x1fffff ) | (term->utf8buf[3] & 0x3f);	
+			}
+			char nc = unicode_to_charmap( uc );
+				if ( !nc ) {
+				printf("!!! utf8: unicode character not found: %d => %d\n",uc,nc);
+				char tmp[4];
+				memcpy(tmp,term->utf8buf,4);
+				int b = term->utf8bufpos;
+				term->utf8bufpos=term->utf8len=0;
+				for ( int a = 0; a<b; a++ ) 
+					tputc(tmp[a],(a==0)); // unshift first byte. eventually restart
+												 // next utf8 sequence
+				return;
+			}
+
+			u = nc; // replacement
+			printf("utf8: replace %d => %d\n",uc,nc);
+			term->utf8bufpos=term->utf8len=0;
 		} else {
 			term->utf8len = 0;
 			//printf("r1: %x\n",u);
