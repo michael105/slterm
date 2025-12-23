@@ -127,6 +127,10 @@ void _tputc(Rune u, int recurse) {
 	int width, len;
 	Glyph *gp;
 
+#ifndef BUTF8
+	recurse=1;
+#endif
+
 	if ( !recurse ){
 		if ( term->utf8bufpos ){ //within a (possible) utf8 sequence
 

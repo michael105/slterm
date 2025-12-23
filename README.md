@@ -19,6 +19,12 @@
 	Ram usage with an empty history buffer is about (virtual) 6MB + (resident) 4MB.
 	
 
+	NOTE: Experimental input conversion from utf8 to the current 
+	codepage added. enable with `BUTF8=1 make`
+	clipboard is converted to and from utf8 per default.
+
+
+
 ##### Features
 
    * Lessmode: scroll around with less like keybindings
