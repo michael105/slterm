@@ -129,13 +129,15 @@ void _tputc(Rune u, int recurse) {
 
 	if ( !recurse ){
 		if ( term->utf8bufpos ){ //within a (possible) utf8 sequence
-			term->utf8buf[term->utf8bufpos] = u;
-			term->utf8bufpos++;
-			
-			if ( term->utf8bufpos < term->utf8len ){
+			if ( term->utf8bufpos > term->utf8len ){
+				for ( int a = 0; a<term->utf8bufpos; a++ )
+					tputc(term->utf8buf[a],1);
+				tputc(u,1);
+				term->utf8bufpos=term->utf8len=0;
 				return;
 			}
-			char nc = 0;
+			term->utf8buf[term->utf8bufpos] = u;
+			term->utf8bufpos++;
 			if ( term->utf8bufpos == term->utf8len ){
 				uint uc = ( (term->utf8buf[0] & 0x1f) << 6 ) 
 								| (term->utf8buf[1] & 0x3f);
@@ -146,23 +148,20 @@ void _tputc(Rune u, int recurse) {
 					uc = (( uc << 6 )&0x1fffff ) | (term->utf8buf[3] & 0x3f);	
 				}
 				printf("uc: %d\n",uc);
-				nc = unicode_to_charmap( uc );
+				char nc = unicode_to_charmap( uc );
 				if ( nc ){ 
-					u = nc; 
+					tputc(nc,1); 
 					printf("utf8: replace %d => %d\n",uc,nc);
 					term->utf8bufpos=term->utf8len=0;
 				} else {
 					printf("!!! utf8: unicode character not found: %d => %d\n",uc,nc);
-				}
-			}  
-			// wrong start / not found / no utf8
-			if ( !nc ){
-				term->utf8bufpos=term->utf8len=0;
-				//tputc(term->utf8buf[0],1);  // remove first byte
 				for ( int a = 0; a<term->utf8bufpos; a++ )
 					tputc(term->utf8buf[a],1);
-				return;
+					term->utf8bufpos=term->utf8len=0;
+				}
+
 			}
+			return;
 		} else {
 			term->utf8len = 0;
 			//printf("r1: %x\n",u);
