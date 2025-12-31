@@ -130,14 +130,14 @@ void _tputc(Rune u, int recurse) {
 #ifndef BUTF8
 	recurse=1;
 #endif
+	int uc = 0;
 
 	if ( !recurse ){
 		if ( term->utf8bufpos ){ //within a (possible) utf8 sequence
 
 			term->utf8buf[term->utf8bufpos] = u;
 			term->utf8bufpos++;
-			char nc = 0;
-			int uc = 0;
+			uchar nc = 0;
 
 			if ( (u & 0xC0) != 0x80 )
 				uc=-1;
@@ -276,6 +276,11 @@ void _tputc(Rune u, int recurse) {
 				}
 		}
 #endif
+		if ( uc ){
+			//gp->mode |=  ATTR_REVERSE | ATTR_FAINT;
+			//gp->bg = 239;
+			gp->mode |= ATTR_BOLD | ATTR_FAINT;
+		}
 
 		if (term->cursor.x + width < term->cols ) {
 				tmoveto(term->cursor.x + width, term->cursor.y);
