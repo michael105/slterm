@@ -1,7 +1,7 @@
 
 $CYAN     slterm - ${MAGENTA}sl${CYAN}im ${MAGENTA}t${CYAN}erminal emulator for X $NORM
 
-(Homepage: http://github.com/michael105/slterm)
+(Homepage: https://codeberg.org/misc1/slterm)
 
 
 $YELLOW Help $NORM

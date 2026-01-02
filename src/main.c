@@ -105,7 +105,8 @@ void usage(void) {
 			);
 	fontusage();
 	
-	fprintf(stderr," Original author Aurelien Aptel. 20xx-2019 st, suckless.\n 2020-2025 fork, slterm, misc147 github.com/michael105, MIT license\n\n");
+	fprintf(stderr," Original author Aurelien Aptel. 20xx-2019 st, suckless.\n" 
+	               " 2020-2026, slterm, misc147 codeberg.org/misc1, MIT license\n\n");
 
 	exit(0);
 }

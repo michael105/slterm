@@ -8,7 +8,7 @@ static char* helpcontents = "\
 \n\r\
 [36m     slterm - [00;35msl[36mim [00;35mt[36merminal emulator for X [0;0m\n\r\
 \n\r\
-http://github.com/michael105/slterm\n\r\
+https://codeberg.org/misc1/slterm\n\r\
 Version: {VERSION}\n\r\
 \n\r\
 \n\r\
