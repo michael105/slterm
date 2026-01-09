@@ -306,7 +306,7 @@ OPTIONS
               memory pages into ram.
 
 AUTHORS
-       (2020-2025) Michael (misc147), www.github.com/michael105
+       (2020-2026) Michael (misc147), www.codeberg.org/misc1
 
        The code is based on st, the suckless terminal emulator, fetched  from
        git 1.1.2020, which was originally written by Aurelien Aptel.

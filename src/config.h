@@ -357,7 +357,7 @@ static MouseShortcut mshortcuts[] = {
 #define ALLMODES 0xffffffff
 #define MODE_DEFAULT 0x01
 #define MODE_REGULAR MODE_DEFAULT
-#define MODE_LESS 0x02
+//#define MODE_LESS 0x02 // deined as enum in xwindow.h
 #define IMODE_HELP 0x04 // 0x4 | 0x2 , keys for lessmode
 
 #define ALL_KEYS UINT_MAX-1
@@ -553,7 +553,7 @@ BIND( XK_ANY_MOD,XK_Tab, retmark , { .i=-1 },MODE_LESS ), // tab -> to scroll do
 // quit with q or Escape
 	// switch on.
 //BIND( TERMMOD, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
-BIND( ALT+ShiftMask, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
+BIND( ALT+SHIFT, XK_Up, lessmode_toggle, I( LESSMODE_ON | SCROLLUP(3) ) ,ALLMODES ),
 //BIND( TERMMOD, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
 BIND( ALT+SHIFT, XK_Page_Up, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEUP) ,ALLMODES ),
 //BIND( TERMMOD, XK_Page_Down, lessmode_toggle, I( LESSMODE_ON | SCROLL_PAGEDOWN),ALLMODES ),

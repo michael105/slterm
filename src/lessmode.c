@@ -38,7 +38,9 @@ int statusbar_kpress( XKeyEvent *ke, KeySym *ks, char *buf ){
 // Argument Arg.i is one of LESSMODE_ON, LESSMODE_OFF, LESSMODE_TOGGLE
 // can be or'ed with SCROLL (all definitions), then scrolls also
 void lessmode_toggle(const Arg *a){
+	//printf("Lessmode toggle\n");
 	if (term!=p_term) return;
+	//printf("inp: %x\n",inputmode);
 
 	switch( a->i & LESSMODEMASK ){
 		case LESSMODE_ON:
@@ -52,10 +54,11 @@ void lessmode_toggle(const Arg *a){
 			inputmode ^= MODE_LESS;
 			break;
 	}
+	//printf("inp: %x\n",inputmode);
 
 	if ( a->i & ~LESSMODEMASK ){
-		//DBG("scroll %d\n",a->i);
-		//DBG("scroll %d\n",d.i);
+		DBG("scroll %d\n",a->i);
+		//printf("scroll %d\n",a->i);
 		scroll(ARGP(i = SCROLLMASK & a->i ));
 	}
 

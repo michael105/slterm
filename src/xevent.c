@@ -8,6 +8,14 @@
 #include "config.h"
 
 
+#ifdef MISC // trying to link with tinyxlib
+Bool	XkbBell(
+	Display *s		/* dpy */,
+	Window	w		/* win */,
+	int	p		/* percent */,
+	Atom	a		/* name */
+){ return 0; };
+#endif
 
 
 // The callbacks for the different Events are egistered here.

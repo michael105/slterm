@@ -21,7 +21,9 @@
 
 	NOTE: Experimental input conversion from utf8 to the current 
 	codepage added. enable with `BUTF8=1 make`
-	clipboard is converted to and from utf8 per default.
+
+	clipboard in- and output is converted to and from utf8 to the
+	current codepage (cp850,cp437,..) per default.
 
 
 
