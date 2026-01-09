@@ -83,7 +83,7 @@ endif
 # my local preferences
 ifdef MISC
 $(info MISC)
-STCFLAGS := $(STCFLAGS) -DMISC -DBUTF8
+STCFLAGS := $(STCFLAGS) -DMISC -DBUTF8 -flto
 endif
 
 ifeq "$(strip $(SHOWCONFIGINFO))" "1"
