@@ -243,7 +243,7 @@ typedef struct {
 } Term;
 
 // would be possible to have several terminals as tabbed or split screens
-// I suggest to use i3 or "tabbed", so I'm not going to add that
+// I use i3, and there is "tabbed", so I'm not going to add that
 // the visible terminal
 extern Term *term; 
 // help terminal. 
