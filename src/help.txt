@@ -2,6 +2,11 @@ $YELLOW Keybinding reference $NORM
 
 The keycombinations can be changed in config.h(recompile needed)
 
+When experiencing trouble with e.g. curses and keys,
+installing the terminfo file can help.
+('tic -sx -' and hit Ctrl+Shift+Alt+Win+i, then Ctrl+d)
+The TERM env variable is 'slterm-256color'.
+
 For other information please have a look into the man page,
 also accessible with 'slterm -H'
 

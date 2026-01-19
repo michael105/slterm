@@ -926,6 +926,7 @@ int selected_codepage = 2;
 // environment variables, exported to the shell
 // besides SHELL, USER, HOME, TERM, COLUMNS, LINES, TERMCAP 
 // which are determined and set in system.c 
+// TERM is set as termname around line 145 in this file.
 const char *export_env[][2] = {
 
 		// display chars 128-255 in less
