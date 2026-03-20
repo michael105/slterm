@@ -29,14 +29,14 @@
 
 ##### Features
 
-   * Lessmode: scroll around with less like keybindings
+   * Lessmode: scrolling with less like keybindings
    * Shift+Backspace: enter 'lessmode', and scroll
       back to the line the last command has been entered in the shell
 	* Retmarks: Tab/Backspace to jump in lessmode to the locations of entered commands
    * Scrollmarks: Set bookmarks to scroll back and forward
-   * Hotkeys for changing font size, -spacing and inverting colors
+   * Hotkeys for changing font size, font spacing and inverting colors
    * Inline help (reference of the bound keys) 
-   * Switching codepages with hotkeys (cp437,cp850,cp1252,..)
+   * Switch codepages with hotkeys (cp437,cp850,cp1252,..)
    * Input translation of unicode / X Keysyms to the current codepage
    * Several performance and memory related modifications;
      slterm should be the fastest available terminal emulator for X,
@@ -205,7 +205,7 @@ The scripts for creating the output are within ./test
 
 
 .. Did split the sourcefile (one big file with several thousand lines)
-into smaller pieces. Hopefully hacking st is in the future a little bit more conveniant. 
+into smaller pieces. About 50% rewritten.
 
 
 ---
@@ -297,7 +297,7 @@ No UTF8
 UTF-8 currently would need some work,
 stripped for performance reasons.
 
-Xresources, untested for a while. Currently colors are not used.
+Xresources, untested for a while. 
 
 
 #### fixed:
@@ -310,7 +310,7 @@ corrected ret marks and scrollmarks
 
 
 
-(misc147 2020-2025 - github.com/michael105)
+(misc147 2020-2026 - github.com/michael105)
 
 
 Credits
