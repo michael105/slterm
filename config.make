@@ -28,8 +28,10 @@ EMBEDFONT := 0
 # utf8-support (currently abandoned. Will not work )
 #UTF8 := 0
 
-# Length of history, in bits, -> log(size in lines) ~ bits */
+# Maximum count of history lines in bits
 # 8 equals 1<<8 = 256 lines, 9 = 512, 10 = 1024, ..
+# memory usage is line count * 4 Bytes per Glyph * linelen,
+# e.g. 1<<16 * 4 * 120 = 30MB
 HISTSIZEBITS := 16
 #HISTSIZEBITS = 7
 
