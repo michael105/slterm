@@ -49,8 +49,8 @@ void execsh(char *cmd, char **args) {
 		setenv("TERM", termname, 1);
 
 		// define env in config.h
-		for ( const char **p = (const char**)export_env; *p; p++ ){
-			setenv( p[0], p[1], 1 );
+		for ( int i = 0; export_env[i][0] != NULL; i++ ){
+			setenv( export_env[i][0], export_env[i][1], 1 );
 		}
 
 
