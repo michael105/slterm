@@ -301,7 +301,7 @@ void selnotify(XEvent *e) {
 		//printf("Paste: %s  \nsize: %d\n",data,last-data);
 		//convert from utf8 / different charmap here
 			{
-				uchar buf[last-data];
+				uchar buf[last-data + 1];
 				int len = from_utf8( buf, data, last-data );
 				ttywrite(buf, len, 1);
 			}
