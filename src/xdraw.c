@@ -59,7 +59,8 @@ Color* xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len,
 #endif
 	int winx = twin.hborderpx + x * twin.cw, winy = twin.vborderpx + y * twin.ch,
 		 width = charlen * twin.cw;
-	Color *fg, *bg, revfg, revbg, truefg, truebg, *cltmp;
+	Color *fg, *bg, *cltmp;
+	static Color revfg, revbg, truefg, truebg;
 	XRenderColor colfg, colbg;
 	XRectangle r;
 	int fgcache = 0, bgcache = 0;
