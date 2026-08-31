@@ -149,7 +149,7 @@ void xloadcolors(void) {
 int xsetcolorname(int x, const char *name) {
 	Color p_color;
 
-	if (!BETWEEN(x, 0, dc.color_arraylen))
+	if (!BETWEEN(x, 0, dc.color_arraylen - 1))
 		return 1;
 
 	if (!xloadcolor(x, name, &p_color))
