@@ -82,7 +82,8 @@ void fontusage(){
 	fprintf(stderr, 
 			" slterm [-f fontname] [-fb boldname] [-fi italicname] [-fI bolditalicname]\n"
 			"        [-fw fontwidth] [-fh fontheight] [other options]\n"
-			"\n   The fontname format is specified in the fontconfig documentation,\n"
+			"\n"
+			"   The fontname format is specified in the fontconfig documentation,\n"
 			"   http://freedesktop.org/software/fontconfig/fontconfig-user.html\n"
 			"   A list of attributes is in doc/fontconfig.txt\n"
 			"   Supply 0 to disable bold, italic or bolditalic fonts,\n"
@@ -106,7 +107,8 @@ void usage(void) {
 	fontusage();
 	
 	fprintf(stderr," Original author Aurelien Aptel. 20xx-2019 st, suckless.\n" 
-	               " 2020-2026, slterm, misc147 codeberg.org/misc1, MIT license\n\n");
+						"\n"
+	               " 2020-2026, slterm, misc147 www.codeberg.org/misc1, MIT license\n\n");
 
 	exit(0);
 }

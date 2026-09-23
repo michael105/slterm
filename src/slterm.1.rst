@@ -274,6 +274,8 @@ OPTIONS
 
 -H Display this manpage as text
 
+-I Dump terminfo file
+
 -L show license
 
 -a
@@ -343,10 +345,9 @@ OPTIONS
    prints version and compile information, then exits
 
 -e command [ arguments ... ]
-   slterm executes command instead of the shell. If this is used it must
-   be the last option on the command line, as in xterm / rxvt. This
-   option is only intended for compatibility, and all the remaining
-   arguments are used as a command even without it.
+   slterm executes command instead of the default shell. 
+   If this is used it must be the last option on the command line, 
+   as in xterm / rxvt.  All remaining arguments are supplied to 'command'.
 
 -x
    enable reading of the XResources database for the configuration
